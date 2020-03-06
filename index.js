@@ -119,6 +119,7 @@ client.on("message", async message => {
   }
   if (!guild.config.channel) {
     guild.config.channel = message.channel.id;
+    config.setConfig(guild);
   }
   guild.channel = client.channels.find(c => c.id === guild.config.channel);
 
