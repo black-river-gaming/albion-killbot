@@ -47,15 +47,15 @@ function getNewEvents(
   return newEvents;
 }
 
-exports.getEvents = async serverConfig => {
+exports.getEvents = async allConfigs => {
   console.log("Fetching Albion Online events...");
   const newEvents = {};
   try {
     const res = await axios.get(EVENTS_ENDPOINT);
     const events = res.data;
 
-    for (let key of Object.keys(serverConfig)) {
-      const config = serverConfig[key];
+    for (let key of Object.keys(allConfigs)) {
+      const config = allConfigs[key];
       newEvents[key] = getNewEvents(
         events,
         config.trackedPlayers,

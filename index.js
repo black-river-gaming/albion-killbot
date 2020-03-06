@@ -35,6 +35,11 @@ const scanEvents = async () => {
     if (!guild.config || !newEvents[guild.id]) continue;
 
     const lang = guild.config.lang;
+    if (newEvents[guild.id].length > 0) {
+      console.log(
+        `Sending ${newEvents[guild.id].length} new events to guild "${guild.name}"`
+      );
+    }
     newEvents[guild.id].forEach(event => {
       sendGuildMessage(guild, messages.embedEvent(event, lang));
     });
