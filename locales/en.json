@@ -35,5 +35,12 @@
   "LANGUAGE": {
     "NOT_SUPPORTED": "This language is not supported.",
     "SET_LANGUAGE": "Language set to '{{ lang }}'"
+  },
+  "TRACK": {
+    "LIST": "Tracking list",
+    "NONE": "None",
+    "PLAYERS": "Players",
+    "GUILDS": "Guilds",
+    "ALLIANCES": "Alliances"
   }
 }

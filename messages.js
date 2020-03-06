@@ -27,12 +27,12 @@ function nFormatter(num, digits) {
   return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
 }
 
-function setLocale(locale) {
+function setLocale(locale = "en") {
   const l = {};
   i18n.configure({
     directory: LOCALE_DIR,
     objectNotation: true,
-    defaultLocale: locale || "en",
+    defaultLocale: locale,
     register: l
   });
   return l;
@@ -205,6 +205,38 @@ exports.embedRankings = (rankings, locale) => {
         }
       ],
       timestamp: moment().toISOString()
+    }
+  };
+};
+
+exports.embedList = config => {
+  const l = setLocale(config.lang);
+
+  const configToList = list => {
+    if (!list) return l.__("TRACK.NONE");
+    return list.map(item => item.name).join("\n");
+  };
+
+  return {
+    embed: {
+      description: l.__("TRACK.LIST"),
+      fields: [
+        {
+          name: l.__("TRACK.PLAYERS"),
+          value: configToList(config.trackedPlayers),
+          inline: true
+        },
+        {
+          name: l.__("TRACK.GUILDS"),
+          value: configToList(config.trackedGuilds),
+          inline: true
+        },
+        {
+          name: l.__("TRACK.ALLIANCES"),
+          value: configToList(config.trackedAlliances),
+          inline: true
+        }
+      ]
     }
   };
 };

@@ -5,7 +5,16 @@ const EVENTS_ENDPOINT =
 
 let lastEventId = null;
 
-function getNewEvents(events, playerIds = [], guildIds = [], allianceIds = []) {
+function getNewEvents(
+  events,
+  trackedPlayers = [],
+  trackedGuilds = [],
+  trackedAlliances = []
+) {
+  const playerIds = trackedPlayers.map(t => t.id);
+  const guildIds = trackedGuilds.map(t => t.id);
+  const allianceIds = trackedAlliances.map(t => t.id);
+
   const newEvents = [];
   events.every(event => {
     if (event.EventId <= lastEventId) {
@@ -49,9 +58,9 @@ exports.getEvents = async serverConfig => {
       const config = serverConfig[key];
       newEvents[key] = getNewEvents(
         events,
-        config.playerIds,
-        config.guildIds,
-        config.allianceIds
+        config.trackedPlayers,
+        config.trackedGuilds,
+        config.trackedAlliances
       );
     }
 

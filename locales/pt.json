@@ -35,5 +35,12 @@
   "LANGUAGE": {
     "NOT_SUPPORTED": "Este idioma não é suportado.",
     "SET_LANGUAGE": "Idioma definido para '{{ lang }}'"
+  },
+  "TRACK": {
+    "LIST": "Lista de rastreamentos",
+    "NONE": "Nenhum(a)",
+    "PLAYERS": "Jogadores",
+    "GUILDS": "Guildas",
+    "ALLIANCES": "Alianças"
   }
 }

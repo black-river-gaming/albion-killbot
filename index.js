@@ -44,8 +44,8 @@ const scanEvents = async () => {
 const scanRanking = async () => {
   for (let guild of client.guilds.array()) {
     if (!guild.config) continue;
-    guild.config.guildIds.forEach(async guildId => {
-      const rankings = await guilds.getGuildRankings(guildId);
+    guild.config.trackedGuilds.forEach(async trackedGuild => {
+      const rankings = await guilds.getGuildRankings(trackedGuild.id);
       const lang = guild.config.lang;
       sendGuildMessage(guild, messages.embedRankings(rankings, lang));
     });
