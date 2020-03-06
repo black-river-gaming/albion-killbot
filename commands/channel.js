@@ -16,7 +16,7 @@ module.exports = {
 
     guild.config.channel = channel.id;
     if (!(await setConfig(guild))) {
-      message.channel.send(l.__("CHANNEL.NOT_SET"));
+      message.channel.send(l.__("CONFIG_NOT_SET"));
     }
 
     message.channel.send(l.__("CHANNEL.SET_CHANNEL", { channel: channel }));

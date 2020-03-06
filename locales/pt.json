@@ -1,4 +1,5 @@
 {
+  "CONFIG_NOT_SET": "AVISO: Não foi possível persistir a configuração do servidor. Ela será revertida quando o bot reiniciar.",
   "KILL": {
     "EVENT": "{{ killer }} matou {{ victim }}!",
     "SOLO_0": "Solado parça!",
@@ -24,11 +25,15 @@
   },
   "HELP": {
     "HELP": "Mostra a lista de comandos do bot.",
-    "CHANNEL": "Define o canal para mostrar as notificações."
+    "CHANNEL": "Define o canal para mostrar as notificações.",
+    "LANGUAGE": "Define o idioma do bot."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",
-    "SET_CHANNEL": "Canal definido para {{{ channel }}}.",
-    "NOT_SET": "AVISO: Não foi possível persistir a configuração do servidor. Ela será revertida quando o bot reiniciar."
+    "SET_CHANNEL": "Canal definido para {{{ channel }}}."
+  },
+  "LANGUAGE": {
+    "NOT_SUPPORTED": "Este idioma não é suportado.",
+    "SET_LANGUAGE": "Idioma definido para '{{ lang }}'"
   }
 }

@@ -1,4 +1,5 @@
 {
+  "CONFIG_NOT_SET": "WARNING: Unable to persist server configuration. They will be reverted upon bot restart.",
   "KILL": {
     "EVENT": "{{ killer }} killed {{ victim }}!",
     "SOLO_0": "Die casual! Solo kill!!!",
@@ -24,11 +25,15 @@
   },
   "HELP": {
     "HELP": "Show bot command list.",
-    "CHANNEL": "Defines the channel to send notifications."
+    "CHANNEL": "Sets the channel to send notifications.",
+    "LANGUAGE": "Set bot language."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Please input a channel for notifications.",
-    "SET_CHANNEL": "Channel defined to {{{ channel }}}.",
-    "NOT_SET": "WARNING: Unable to persist server configuration. They will be reverted upon bot restart."
+    "SET_CHANNEL": "Channel defined to {{{ channel }}}."
+  },
+  "LANGUAGE": {
+    "NOT_SUPPORTED": "This language is not supported.",
+    "SET_LANGUAGE": "Language set to '{{ lang }}'"
   }
 }

@@ -7,9 +7,7 @@ cmdFiles.forEach(cmdFile => {
   try {
     console.log(`Loading command: ${cmdFile}`);
     const command = require(`./${cmdFile}`);
-    command.aliases.forEach(alias => {
-      commands[alias] = command;
-    });
+    commands[command.aliases[0]] = command;
   } catch (e) {
     console.log(`Error loading command ${cmdFile}: ${e}`);
   }
