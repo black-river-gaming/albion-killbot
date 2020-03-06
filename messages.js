@@ -21,7 +21,7 @@ exports.embed = event => {
     let description;
     if (event.numberOfParticipants === 1) {
         description =
-      soloMessages[Math.floor(Math.random() * soloMessages.length)];
+            soloMessages[Math.floor(Math.random() * soloMessages.length)];
     } else {
         const assist = [];
         event.Participants.forEach(participant => {
@@ -37,6 +37,22 @@ exports.embed = event => {
         }
     }
 
+    let killerGuildValue;
+    if (event.Killer.GuildName) {
+        killerGuildValue = event.Killer.AllianceName
+            ? `[${event.Killer.AllianceName}] `
+            : "";
+        killerGuildValue += event.Killer.GuildName;
+    }
+
+    let victimGuildValue;
+    if (event.Victim.GuildName) {
+        victimGuildValue = event.Victim.AllianceName
+            ? `[${event.Victim.AllianceName}] `
+            : "";
+        victimGuildValue += event.Victim.GuildName;
+    }
+
     // TODO: More info
     return {
         color: good ? GREEN : RED,
@@ -45,22 +61,26 @@ exports.embed = event => {
         description,
         thumbnail: {
             url:
-        "https://assets.albiononline.com/assets/images/killboard/kill__date.png?ud136854d"
+                "https://assets.albiononline.com/assets/images/killboard/kill__date.png?ud136854d"
         },
         fields: [
             {
                 name: "Fama do Abate",
-                value: event.TotalVictimKillFame.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") || 0,
+                value:
+                    event.TotalVictimKillFame.toString().replace(
+                        /\B(?=(\d{3})+(?!\d))/g,
+                        "."
+                    ) || 0,
                 inline: false
             },
             {
                 name: "Guilda do Matador",
-                value: event.Killer.GuildName || "Sem guilda",
+                value: killerGuildValue || "Sem guilda",
                 inline: true
             },
             {
                 name: "Guilda da Vítima",
-                value: event.Victim.GuildName || "Sem guilda",
+                value: victimGuildValue || "Sem guilda",
                 inline: true
             },
             {
