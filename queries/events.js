@@ -10,7 +10,7 @@ function getNewEvents(events, playerIds, guildIds, allianceIds) {
   const newEvents = [];
   let scanned = 0;
   events.every(event => {
-    if (event.EventId === lastEventId) {
+    if (event.EventId <= lastEventId) {
       return false;
     }
     // Ignore Arena kills or Duel kills
@@ -39,7 +39,8 @@ function getNewEvents(events, playerIds, guildIds, allianceIds) {
     `Events scanned: ${scanned} events. New events: ${newEvents.length}`
   );
 
-  if (events.length > 0) {
+  // Sometimes the API return old values, se we just want increasing values
+  if (events.length > 0 && events[0].EventId > lastEventId) {
     lastEventId = events[0].EventId;
   }
 

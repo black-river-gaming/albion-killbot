@@ -66,7 +66,7 @@ client.on("ready", async () => {
   const exit = false;
   while (!exit) {
     scanEvents();
-    await sleep(20000);
+    await sleep(30000);
   }
 });
 
