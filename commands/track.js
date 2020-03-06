@@ -69,26 +69,26 @@ module.exports = {
 
     const results = await search(name);
     switch (type) {
-      case "player":
-        return track(
-          results.players,
-          guild.config.trackedPlayers,
-          "TRACK.PLAYER_TRACKED",
-          30
-        );
-      case "guild":
-        return track(
-          results.guilds,
-          guild.config.trackedGuilds,
-          "TRACK.GUILD_TRACKED"
-        );
-      case "alliance":
-        return track(
-          results.alliances,
-          guild.config.trackedAlliances,
-          "TRACK.ALLIANCE_TRACKED",
-          1
-        );
+    case "player":
+      return track(
+        results.players,
+        guild.config.trackedPlayers,
+        "TRACK.PLAYER_TRACKED",
+        30
+      );
+    case "guild":
+      return track(
+        results.guilds,
+        guild.config.trackedGuilds,
+        "TRACK.GUILD_TRACKED"
+      );
+    case "alliance":
+      return track(
+        results.alliances,
+        guild.config.trackedAlliances,
+        "TRACK.ALLIANCE_TRACKED",
+        1
+      );
     }
   }
 };

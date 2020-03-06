@@ -108,9 +108,12 @@ client.on("ready", async () => {
 client.on("message", async message => {
   if (message.author.bot) return;
   // For now, bot only accepts commands from server admins
+  if (!message.guild) {
+    message.reply("Sorry, I can only accept commands inside a channel.");
+    return;
+  }
   if (message.author.id !== message.guild.owner.id) return;
   if (!message.content || !message.content.startsWith(COMMAND_PREFIX)) return;
-  if (!message.guild) return;
 
   // This is needed to inherit configs to guild object
   const guild = client.guilds.find(g => g.id === message.guild.id);
