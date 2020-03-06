@@ -63,7 +63,13 @@ const sendGuildMessage = async (guild, message) => {
     console.log(`WARNING: Channel not configured for guild ${guild.name}.`);
     return;
   }
-  channel.send(message);
+  try {
+    await channel.send(message);
+  } catch (e) {
+    console.log(
+      `Unable to send message to guild ${guild.name}/${channel.name}: ${e}`
+    );
+  }
 };
 
 // TODO: Handle when the bot joins/leaves guilds
