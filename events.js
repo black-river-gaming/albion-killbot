@@ -5,8 +5,8 @@ const EVENTS_ENDPOINT =
 
 let lastEventId = null;
 function parse(events, callback) {
-  console.log(`Parsing ${events.length} events`);
-  const newsEvents = [];
+  console.log(`Events fetched: ${events.length} events.`);
+  const newEvents = [];
   events.every(event => {
     if (event.EventId === lastEventId) return false;
     // Ignore Arena kills or Duel kills
@@ -22,7 +22,7 @@ function parse(events, callback) {
     ) {
       // Since we are parsing from newer to older events
       // we need to use FILO array
-      newsEvents.unshift(event);
+      newEvents.unshift(event);
     }
 
     return true;
@@ -32,8 +32,9 @@ function parse(events, callback) {
     lastEventId = events[0].EventId;
   }
 
-  if (newsEvents.length > 0) {
-    callback(newsEvents);
+  if (newEvents.length > 0) {
+    console.log(`New events: ${newEvents.length}.`);
+    callback(newEvents);
   }
 }
 

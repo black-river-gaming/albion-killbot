@@ -14,7 +14,7 @@
     "start": "node index.js"
   },
   "engines": {
-    "node": "12.x",
+    "node": "13.x",
     "yarn": "1.x"
   }
 }

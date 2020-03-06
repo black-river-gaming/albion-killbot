@@ -20,11 +20,11 @@ exports.embed = event => {
 
   let description;
   if (event.numberOfParticipants === 1) {
-    description +=
+    description =
       soloMessages[Math.floor(Math.random() * soloMessages.length)];
   } else {
     const assist = [];
-    event.Partipants.forEach(participant => {
+    event.Participants.forEach(participant => {
       // Self-damage isn't assist :P
       if (participant.Name === event.Victim.Name) {
         return;
@@ -33,7 +33,7 @@ exports.embed = event => {
     });
 
     if (assist.length > 0) {
-      description += `Assistência(s): ${assist.join(" / ")}`;
+      description = `Assistência(s): ${assist.join(" / ")}`;
     }
   }
 

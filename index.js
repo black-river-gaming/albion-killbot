@@ -12,18 +12,25 @@ if (!token) {
 
 const client = new Discord.Client();
 const notify = events => {
+  // TODO: Configure channel
+  const channel = client.channels.find(c => c.name === 'geral');
+
   events.forEach(event => {
-    console.log("Notify kill " + event.EventId);
     const embed = messages.embed(event);
 
     // TODO: Send messages to channels based on tracking settings
-    client.channels.forEach(channel => {
-      channel.send(embed);
+    channel.send({
+      embed
     });
   });
 };
 client.on("ready", () => {
   console.log(`Connected successfully as ${client.user.tag}`);
   setInterval(() => eventHandler.fetch(notify), 30000);
+});
+client.on("message", msg => {
+  if (msg.content === 'test') {
+    eventHandler.fetch(notify);
+    }
 });
 client.login(token);
