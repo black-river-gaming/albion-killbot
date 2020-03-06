@@ -8,7 +8,7 @@
     "SOLO_3": "Ciiirco de soled.",
     "SOLO_4": "Chamou pro duelo e foi de base.",
     "SOLO_5": "Não garantiu no x1.",
-    "ASSIST": "Assistência(s): {{ assists }}",
+    "ASSIST": "Assistência(s): {{{ assists }}}",
     "FAME": "Fama do Abate",
     "KILLER_GUILD": "Guilda do Matador",
     "VICTIM_GUILD": "Guilda da Vítima",
