@@ -26,7 +26,10 @@
   "HELP": {
     "HELP": "Mostra a lista de comandos do bot.",
     "CHANNEL": "Define o canal para mostrar as notificações.",
-    "LANGUAGE": "Define o idioma do bot."
+    "LANGUAGE": "Define o idioma do bot.",
+    "LIST": "Lista os jogadores, guildas e alianças rastreadas.",
+    "TRACK": "Rastreia um jogador, guilda ou aliança.",
+    "UNTRACK": "Para de rastrear um jogador, guilda ou aliança."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",
@@ -41,6 +44,14 @@
     "NONE": "Nenhum(a)",
     "PLAYERS": "Jogadores",
     "GUILDS": "Guildas",
-    "ALLIANCES": "Alianças"
+    "ALLIANCES": "Alianças",
+    "MISSING_PARAMETERS": "Por favor, insira todos os parametros. Digite !help para ver mais",
+    "UNSUPPORTED_TYPE": "Tipo de rastreamento não suportado. Digite !help para ver mais.",
+    "ALLIANCE_DISABLED": "Desculpe, rastreamento de alianças está desabilitado por enquanto. Consulte o administrador do bot para mais informações.",
+    "NOT_FOUND": "Desculpe, não consegui encontrar nada com este nome",
+    "LIMIT_REACHED": "Você atingiu o limite de {{ limit }} itens nesta lista",
+    "PLAYER_TRACKED": "Rastreando jogador: {{ name }}",
+    "GUILD_TRACKED": "Rastreando guilda: {{ name }}",
+    "ALLIANCE_TRACKED": "Rastreano aliança: {{ name }}"
   }
 }

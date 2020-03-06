@@ -26,7 +26,10 @@
   "HELP": {
     "HELP": "Show bot command list.",
     "CHANNEL": "Sets the channel to send notifications.",
-    "LANGUAGE": "Set bot language."
+    "LANGUAGE": "Set bot language.",
+    "LIST": "Lists tracked players, guilds and alliances.",
+    "TRACK": "Tracks a player, guild or alliance.",
+    "UNTRACK": "Stops tracking a player, guild or alliance."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Please input a channel for notifications.",
@@ -41,6 +44,14 @@
     "NONE": "None",
     "PLAYERS": "Players",
     "GUILDS": "Guilds",
-    "ALLIANCES": "Alliances"
+    "ALLIANCES": "Alliances",
+    "MISSING_PARAMETERS": "Please insert all parameters. Type !help to see more.",
+    "UNSUPPORTED_TYPE": "Unsupported type of tracking. Type !help to see more.",
+    "ALLIANCE_DISABLED": "Sorry, tracking of alliances is disabled for now. Please contact bot admin for more information.",
+    "NOT_FOUND": "Sorry, I couldn't find anything with this name",
+    "LIMIT_REACHED": "You already reached the limit of {{ limit }} items in this list",
+    "PLAYER_TRACKED": "Tracking player: {{ name }}",
+    "GUILD_TRACKED": "Tracking guild: {{ name }}",
+    "ALLIANCE_TRACKED": "Tracking alliance: {{ name }}"
   }
 }

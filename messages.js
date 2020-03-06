@@ -213,7 +213,7 @@ exports.embedList = config => {
   const l = setLocale(config.lang);
 
   const configToList = list => {
-    if (!list) return l.__("TRACK.NONE");
+    if (!list || list.length === 0) return l.__("TRACK.NONE");
     return list.map(item => item.name).join("\n");
   };
 
