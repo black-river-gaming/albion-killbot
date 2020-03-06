@@ -21,5 +21,8 @@
     "PVP": "Ranking PvP",
     "GATHERING": "Ranking de Coleta",
     "CRAFTING": "Ranking de Criação"
+  },
+  "HELP": {
+    "HELP": "Mostra a lista de comandos do bot."
   }
 }

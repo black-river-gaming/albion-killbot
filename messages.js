@@ -38,6 +38,8 @@ function setLocale(locale) {
   return l;
 }
 
+exports.getI18n = guild => setLocale(guild.config.lang);
+
 exports.embedEvent = (event, locale) => {
   const l = setLocale(locale);
   const good = event.good;

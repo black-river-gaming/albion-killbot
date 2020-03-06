@@ -4,14 +4,9 @@ const Discord = require("discord.js");
 const moment = require("moment");
 const config = require("./config");
 const messages = require("./messages");
+const commands = require("./commands");
 const events = require("./queries/events");
 const guilds = require("./queries/guilds");
-
-const serverConfig = {};
-
-const sleep = milliseconds => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds));
-};
 
 const token = process.env.TOKEN;
 if (!token) {
@@ -20,15 +15,26 @@ if (!token) {
   );
   process.exit(0);
 }
+const COMMAND_PREFIX = "!";
+
+const sleep = milliseconds => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
+};
+
 const client = new Discord.Client();
+client.commands = commands;
 
 const scanEvents = async () => {
-  const newEvents = await events.getEvents(serverConfig);
+  const allGuildConfigs = {};
+  client.guilds.tap(guild => {
+    allGuildConfigs[guild.id] = guild.config;
+  });
+  const newEvents = await events.getEvents(allGuildConfigs);
 
   for (let guild of client.guilds.array()) {
-    if (!serverConfig[guild.id] || !newEvents[guild.id]) continue;
+    if (!guild.config || !newEvents[guild.id]) continue;
 
-    const lang = serverConfig[guild.id].lang;
+    const lang = guild.config.lang;
     newEvents[guild.id].forEach(event => {
       sendGuildMessage(guild, messages.embedEvent(event, lang));
     });
@@ -37,19 +43,18 @@ const scanEvents = async () => {
 
 const scanRanking = async () => {
   for (let guild of client.guilds.array()) {
-    if (!serverConfig[guild.id]) continue;
-    serverConfig[guild.id].guildIds.forEach(async guildId => {
+    if (!guild.config) continue;
+    guild.config.guildIds.forEach(async guildId => {
       const rankings = await guilds.getGuildRankings(guildId);
-      const lang = serverConfig[guild.id].lang;
+      const lang = guild.config.lang;
       sendGuildMessage(guild, messages.embedRankings(rankings, lang));
     });
   }
 };
 
 const sendGuildMessage = async (guild, message) => {
-  const channelName = serverConfig[guild.id].channel;
   const channel = client.channels.find(
-    c => c.name === channelName && c.guild.id === guild.id
+    c => c.name === guild.config.channel && c.guild.id === guild.id
   );
 
   if (!channel) {
@@ -67,7 +72,7 @@ client.on("ready", async () => {
 
   // Update config for all guilds
   for (let guild of client.guilds.array()) {
-    serverConfig[guild.id] = await config.getConfig(guild.id);
+    guild.config = await config.getConfig(guild.id);
   }
 
   // Specific times events
@@ -93,10 +98,24 @@ client.on("ready", async () => {
   }
 });
 
-client.on("message", msg => {
-  if (msg.content === "test2") {
-    scanRanking();
-    return;
+client.on("message", message => {
+  if (message.author.bot) return;
+  if (!message.content || !message.content.startsWith(COMMAND_PREFIX)) return;
+  if (!message.guild) return;
+
+  // This is needed to inherit configs to guild object
+  const guild = client.guilds.find(g => g.id === message.guild.id);
+  guild.channel = client.channels.find(
+    c => c.name === guild.config.channel && c.guild.id === guild.id
+  );
+  const args = message.content
+    .slice(COMMAND_PREFIX.length)
+    .trim()
+    .split(/ +/g);
+  const cmd = args.shift().toLowerCase();
+
+  if (commands[cmd]) {
+    commands[cmd].run(client, guild, message, args);
   }
 });
 
