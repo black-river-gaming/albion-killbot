@@ -53,15 +53,11 @@ const scanRanking = async () => {
 };
 
 const sendGuildMessage = async (guild, message) => {
-  const channel = client.channels.find(
-    c => c.name === guild.config.channel && c.guild.id === guild.id
-  );
-
+  const channel = client.channels.find(c => c.id === guild.config.channel);
   if (!channel) {
-    console.log(`WARNING: Channel not configured for guild ${guild.name}`);
+    console.log(`WARNING: Channel not configured for guild ${guild.name}.`);
     return;
   }
-
   channel.send(message);
 };
 
@@ -100,14 +96,20 @@ client.on("ready", async () => {
 
 client.on("message", message => {
   if (message.author.bot) return;
+  // For now, bot only accepts commands from server admins
+  if (message.author.id !== message.guild.owner.id) return;
   if (!message.content || !message.content.startsWith(COMMAND_PREFIX)) return;
   if (!message.guild) return;
 
   // This is needed to inherit configs to guild object
   const guild = client.guilds.find(g => g.id === message.guild.id);
-  guild.channel = client.channels.find(
-    c => c.name === guild.config.channel && c.guild.id === guild.id
-  );
+  if (guild.config) {
+    guild.channel = client.channels.find(c => c.id === guild.config.channel);
+  } else {
+    console.log(
+      `WARNING: Unable to fetch guild config for guild ${guild.name}`
+    );
+  }
   const args = message.content
     .slice(COMMAND_PREFIX.length)
     .trim()

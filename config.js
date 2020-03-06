@@ -50,20 +50,17 @@ exports.getConfig = async guild => {
   }
 };
 
-exports.setConfig = async (guild, config) => {
+exports.setConfig = async guild => {
   if (!db) {
-    return DEFAULT_CONFIG;
+    return false;
   }
   const collection = db.collection(SERVER_CONFIG_COLLECTION);
   try {
     const guildConfig = await collection.updateOne(
-      { guild },
-      { $set: config },
+      { guild: guild.id },
+      { $set: guild.config },
       { upsert: true }
     );
-    if (!guildConfig) {
-      return false;
-    }
     return guildConfig;
   } catch (e) {
     console.log(`Unable to write guildConfig for guild ${guild}: ${e}`);

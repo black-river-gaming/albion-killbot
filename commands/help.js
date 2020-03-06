@@ -9,13 +9,17 @@ module.exports = {
     let response = "```\n";
     Object.keys(client.commands).forEach(key => {
       const command = client.commands[key];
+      let commandKey = `!${command.aliases[0]}`;
+      if (command.args && command.args.length > 0) {
+        command.args.forEach(arg => {
+          commandKey += ` [${arg}]`;
+          ("");
+        });
+      }
       const description = l.__(command.description);
       response +=
-        "!" +
-        command.aliases[0] +
-        " ".repeat(
-          LINE_LENGTH - 1 - command.aliases[0].length - description.length
-        ) +
+        commandKey +
+        " ".repeat(LINE_LENGTH - commandKey.length) +
         description +
         "\n";
     });

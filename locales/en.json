@@ -23,6 +23,12 @@
     "CRAFTING": "Crafting Ranking"
   },
   "HELP": {
-    "HELP": "Show bot command list."
+    "HELP": "Show bot command list.",
+    "CHANNEL": "Defines the channel to send notifications."
+  },
+  "CHANNEL": {
+    "NO_CHANNEL": "Please input a channel for notifications.",
+    "SET_CHANNEL": "Channel defined to {{{ channel }}}.",
+    "NOT_SET": "WARNING: Unable to persist server configuration. They will be reverted upon bot restart."
   }
 }

@@ -23,6 +23,12 @@
     "CRAFTING": "Ranking de Criação"
   },
   "HELP": {
-    "HELP": "Mostra a lista de comandos do bot."
+    "HELP": "Mostra a lista de comandos do bot.",
+    "CHANNEL": "Define o canal para mostrar as notificações."
+  },
+  "CHANNEL": {
+    "NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",
+    "SET_CHANNEL": "Canal definido para {{{ channel }}}.",
+    "NOT_SET": "AVISO: Não foi possível persistir a configuração do servidor. Ela será revertida quando o bot reiniciar."
   }
 }
