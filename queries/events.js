@@ -56,6 +56,7 @@ exports.getEvents = async allConfigs => {
 
     for (let key of Object.keys(allConfigs)) {
       const config = allConfigs[key];
+      if (!config) continue;
       newEvents[key] = getNewEvents(
         events,
         config.trackedPlayers,
