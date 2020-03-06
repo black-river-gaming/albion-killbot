@@ -53,7 +53,7 @@ exports.getConfig = async guild => {
 };
 
 exports.setConfig = async guild => {
-  if (guild.config) guildConfig[guild.id] = guild.config;
+  if (guild.config) guildConfigs[guild.id] = guild.config;
   if (!db) {
     return false;
   }

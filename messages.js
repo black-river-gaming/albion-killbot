@@ -145,11 +145,11 @@ exports.embedEvent = (event, locale) => {
   };
 };
 
-exports.embedRankings = (rankings, locale) => {
+exports.embedRankings = (trackedGuild, rankings, locale) => {
   const l = setLocale(locale);
 
-  const guildId = rankings.pvp[0].GuildId;
-  const guildName = rankings.pvp[0].GuildName;
+  const guildId = trackedGuild.id;
+  const guildName = trackedGuild.name;
 
   const generateRankFieldValue = (ranking, pvp = false) => {
     let value = "```c";

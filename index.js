@@ -55,7 +55,7 @@ const scanRanking = async () => {
       const rankings = await guilds.getGuildRankings(trackedGuild.id);
       await sendGuildMessage(
         guild,
-        messages.embedRankings(rankings, guild.config.lang)
+        messages.embedRankings(trackedGuild, rankings, guild.config.lang)
       );
     }
   }
