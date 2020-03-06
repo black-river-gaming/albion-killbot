@@ -25,47 +25,55 @@ const client = new Discord.Client();
 client.commands = commands;
 
 const scanEvents = async () => {
+  // TODO: Have getConfig method to support guild arrays (bulk get)
   const allGuildConfigs = {};
-  client.guilds.tap(guild => {
-    allGuildConfigs[guild.id] = guild.config;
-  });
+  for (let guild of client.guilds.array()) {
+    allGuildConfigs[guild.id] = await config.getConfig(guild);
+  }
   const newEvents = await events.getEvents(allGuildConfigs);
 
   for (let guild of client.guilds.array()) {
+    guild.config = allGuildConfigs[guild.id];
     if (!guild.config || !newEvents[guild.id]) continue;
 
-    const lang = guild.config.lang;
     if (newEvents[guild.id].length > 0) {
       console.log(
         `Sending ${newEvents[guild.id].length} new events to guild "${guild.name}"`
       );
     }
     newEvents[guild.id].forEach(event => {
-      sendGuildMessage(guild, messages.embedEvent(event, lang));
+      sendGuildMessage(guild, messages.embedEvent(event, guild.config.lang));
     });
   }
+  ("");
 };
 
 const scanRanking = async () => {
   for (let guild of client.guilds.array()) {
+    guild.config = await config.getConfig(guild);
     if (!guild.config) continue;
     for (let trackedGuild of guild.config.trackedGuilds) {
       const rankings = await guilds.getGuildRankings(trackedGuild.id);
-      const lang = guild.config.lang;
-      await sendGuildMessage(guild, messages.embedRankings(rankings, lang));
+      await sendGuildMessage(
+        guild,
+        messages.embedRankings(rankings, guild.config.lang)
+      );
     }
   }
 };
 
 const sendGuildMessage = async (guild, message) => {
+  guild.config = await config.getConfig(guild);
   const channel = client.channels.find(c => c.id === guild.config.channel);
   if (!channel) {
+    // TODO: Send a message to server owner to warn about this
     console.log(`WARNING: Channel not configured for guild ${guild.name}.`);
     return;
   }
   try {
     await channel.send(message);
   } catch (e) {
+    // TODO: Send a message to server owner to warn about this
     console.log(
       `Unable to send message to guild ${guild.name}/${channel.name}: ${e}`
     );
@@ -76,11 +84,6 @@ const sendGuildMessage = async (guild, message) => {
 // See more: https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildCreate
 client.on("ready", async () => {
   console.log(`Connected successfully as ${client.user.tag}`);
-
-  // Update config for all guilds
-  for (let guild of client.guilds.array()) {
-    guild.config = await config.getConfig(guild.id);
-  }
 
   // Specific times events
   let millisTill12 =
@@ -114,9 +117,7 @@ client.on("message", async message => {
 
   // This is needed to inherit configs to guild object
   const guild = client.guilds.find(g => g.id === message.guild.id);
-  if (!guild.config) {
-    guild.config = await config.getConfig(guild.id);
-  }
+  guild.config = await config.getConfig(guild);
   if (!guild.config.channel) {
     guild.config.channel = message.channel.id;
     config.setConfig(guild);

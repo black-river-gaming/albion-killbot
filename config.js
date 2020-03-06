@@ -20,6 +20,7 @@ const client = new MongoClient(MONGODB_URL, {
   useUnifiedTopology: true
 });
 let db;
+const guildConfigs = {};
 
 exports.connect = async () => {
   try {
@@ -35,15 +36,15 @@ exports.connect = async () => {
 
 // TODO: Implement bulk get/write guild config
 exports.getConfig = async guild => {
+  if (guildConfigs[guild.id]) return guildConfigs[guild.id];
   if (!db) {
     return DEFAULT_CONFIG;
   }
   const collection = db.collection(SERVER_CONFIG_COLLECTION);
   try {
-    const guildConfig = await collection.findOne({ guild });
-    if (!guildConfig) {
-      return DEFAULT_CONFIG;
-    }
+    const guildConfig =
+      (await collection.findOne({ guild: guild.id })) || DEFAULT_CONFIG;
+    guildConfigs[guild.id] = guildConfig;
     return guildConfig;
   } catch (e) {
     console.log(`Unable to find guildConfig for guild ${guild}: ${e}`);
@@ -52,6 +53,7 @@ exports.getConfig = async guild => {
 };
 
 exports.setConfig = async guild => {
+  if (guild.config) guildConfig[guild.id] = guild.config;
   if (!db) {
     return false;
   }
