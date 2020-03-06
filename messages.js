@@ -32,9 +32,10 @@ function setLocale(locale = "en") {
   i18n.configure({
     directory: LOCALE_DIR,
     objectNotation: true,
-    defaultLocale: locale,
+    defaultLocale: "en",
     register: l
   });
+  l.setLocale(locale);
   return l;
 }
 
