@@ -13,10 +13,11 @@
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon ."
+    "dev": "nodemon .",
+    "lint": "eslint ."
   },
   "engines": {
-    "node": "13.x",
+    "node": ">=12.x",
     "yarn": "1.x"
   },
   "devDependencies": {

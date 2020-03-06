@@ -89,8 +89,9 @@ exports.embedEvent = event => {
       url: `https://albiononline.com/pt/killboard/kill/${event.EventId}`,
       description,
       thumbnail: {
-        url:
-          "https://assets.albiononline.com/assets/images/killboard/kill__date.png?ud136854d"
+        url: good
+          ? "https://user-images.githubusercontent.com/13356774/74859732-e0450c80-531d-11ea-9f34-e7074a817454.png"
+          : "https://user-images.githubusercontent.com/13356774/74859728-df13df80-531d-11ea-8bf2-7f8567af6a99.png"
       },
       fields: [
         {
@@ -168,7 +169,7 @@ exports.embedRankings = rankings => {
       url: `https://albiononline.com/pt/killboard/guild/${guildId}`,
       thumbnail: {
         url:
-          "https://lh3.googleusercontent.com/proxy/jlLaug3U317mYo7Sk58pAGK9XxeQO_FLojvRb-vnRTbBmEraP5JMoyo6ggYogktbAK0bZQGvycNAPZRXCl4CCrxWYV2dfTQgnPRA2J1nIMaDhplBzKIIbURB7lKLJUQrtBdd2M8"
+          "https://user-images.githubusercontent.com/13356774/74859708-d7543b00-531d-11ea-8bdb-b3aac5055078.png"
       },
       fields: [
         {
