@@ -48,10 +48,14 @@
     "MISSING_PARAMETERS": "Por favor, insira todos os parametros. Digite !help para ver mais",
     "UNSUPPORTED_TYPE": "Tipo de rastreamento não suportado. Digite !help para ver mais.",
     "ALLIANCE_DISABLED": "Desculpe, rastreamento de alianças está desabilitado por enquanto. Consulte o administrador do bot para mais informações.",
-    "NOT_FOUND": "Desculpe, não consegui encontrar nada com este nome",
-    "LIMIT_REACHED": "Você atingiu o limite de {{ limit }} itens nesta lista",
-    "PLAYER_TRACKED": "Rastreando jogador: {{ name }}",
-    "GUILD_TRACKED": "Rastreando guilda: {{ name }}",
-    "ALLIANCE_TRACKED": "Rastreano aliança: {{ name }}"
+    "NOT_FOUND": "Desculpe, não consegui encontrar nada com este nome.",
+    "ALREADY_TRACKED": "Já estou rastreando este item.",
+    "LIMIT_REACHED": "Você atingiu o limite de {{ limit }} itens nesta lista.",
+    "PLAYER_TRACKED": "Rastreando jogador: {{ name }}.",
+    "GUILD_TRACKED": "Rastreando guilda: {{ name }}.",
+    "ALLIANCE_TRACKED": "Rastreano aliança: {{ name }}.",
+    "PLAYER_UNTRACKED": "Parando de rastrear jogador: {{ name }}.",
+    "GUILD_UNTRACKED": "Parando de rastrear guilda: {{ name }}.",
+    "ALLIANCE_UNTRACKED": "Parando de rastrear aliança: {{ name }}."
   }
 }

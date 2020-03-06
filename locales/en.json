@@ -48,10 +48,14 @@
     "MISSING_PARAMETERS": "Please insert all parameters. Type !help to see more.",
     "UNSUPPORTED_TYPE": "Unsupported type of tracking. Type !help to see more.",
     "ALLIANCE_DISABLED": "Sorry, tracking of alliances is disabled for now. Please contact bot admin for more information.",
-    "NOT_FOUND": "Sorry, I couldn't find anything with this name",
-    "LIMIT_REACHED": "You already reached the limit of {{ limit }} items in this list",
-    "PLAYER_TRACKED": "Tracking player: {{ name }}",
-    "GUILD_TRACKED": "Tracking guild: {{ name }}",
-    "ALLIANCE_TRACKED": "Tracking alliance: {{ name }}"
+    "NOT_FOUND": "Sorry, I couldn't find anything with this name.",
+    "ALREADY_TRACKED": "I am already tracking this item.",
+    "LIMIT_REACHED": "You already reached the limit of {{ limit }} items in this list.",
+    "PLAYER_TRACKED": "Tracking player: {{ name }}.",
+    "GUILD_TRACKED": "Tracking guild: {{ name }}.",
+    "ALLIANCE_TRACKED": "Tracking alliance: {{ name }}.",
+    "PLAYER_UNTRACKED": "Untracking player: {{ name }}.",
+    "GUILD_UNTRACKED": "Untracking guild: {{ name }}.",
+    "ALLIANCE_UNTRACKED": "Untracking alliance: {{ name }}."
   }
 }
