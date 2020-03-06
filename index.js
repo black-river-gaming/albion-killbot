@@ -94,7 +94,7 @@ client.on("ready", async () => {
   }
 });
 
-client.on("message", message => {
+client.on("message", async message => {
   if (message.author.bot) return;
   // For now, bot only accepts commands from server admins
   if (message.author.id !== message.guild.owner.id) return;
@@ -103,13 +103,14 @@ client.on("message", message => {
 
   // This is needed to inherit configs to guild object
   const guild = client.guilds.find(g => g.id === message.guild.id);
-  if (guild.config) {
-    guild.channel = client.channels.find(c => c.id === guild.config.channel);
-  } else {
-    console.log(
-      `WARNING: Unable to fetch guild config for guild ${guild.name}`
-    );
+  if (!guild.config) {
+    guild.config = await config.getConfig(guild.id);
   }
+  if (!guild.config.channel) {
+    guild.config.channel = message.channel.id;
+  }
+  guild.channel = client.channels.find(c => c.id === guild.config.channel);
+
   const args = message.content
     .slice(COMMAND_PREFIX.length)
     .trim()

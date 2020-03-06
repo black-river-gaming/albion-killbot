@@ -5,7 +5,7 @@ const SERVER_CONFIG_COLLECTION = "guildConfig";
 const DEFAULT_CONFIG = {
   trackedPlayers: [],
   trackedGuilds: [],
-  trackerAlliances: [],
+  trackedAlliances: [],
   lang: "en"
 };
 
