@@ -1,9 +1,12 @@
 const moment = require("moment");
+const i18n = require("i18n");
 
+const LOCALE_DIR = __dirname + "/locales";
 const GREEN = 52224;
 const RED = 13369344;
+const RANKING_LINE_LENGTH = 23;
 
-// TODO: Mode to utils file
+// TODO: Move to utils file
 function nFormatter(num, digits) {
   var si = [
     { value: 1, symbol: "" },
@@ -24,26 +27,28 @@ function nFormatter(num, digits) {
   return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
 }
 
-// TODO: i18n based on config
-const soloMessages = [
-  "SOLADINHO BR!!! HUEHUEU",
-  "E foi de soled!",
-  "Ciiiiiirco de soled",
-  "Chamou pro duelo e foi de beise",
-  "Não garantiu no x1",
-  "O maluco foi solado!",
-  "Solado parça!"
-];
+function setLocale(locale) {
+  const l = {};
+  i18n.configure({
+    directory: LOCALE_DIR,
+    objectNotation: true,
+    defaultLocale: locale || "en",
+    register: l
+  });
+  return l;
+}
 
-exports.embedEvent = event => {
-  // TODO: Tracking based on config
-  const good = event.Killer.GuildName === "Black River";
-
-  const title = `${event.Killer.Name} eliminou ${event.Victim.Name}!`;
+exports.embedEvent = (event, locale) => {
+  const l = setLocale(locale);
+  const good = event.good;
+  const title = l.__("KILL.EVENT", {
+    killer: event.Killer.Name,
+    victim: event.Victim.Name
+  });
 
   let description;
   if (event.numberOfParticipants === 1) {
-    description = soloMessages[Math.floor(Math.random() * soloMessages.length)];
+    description = l.__(`KILL.SOLO_${Math.floor(Math.random() * 6)}`);
   } else {
     const totalDamage = event.Participants.reduce((sum, participant) => {
       return sum + participant.DamageDone;
@@ -61,7 +66,7 @@ exports.embedEvent = event => {
     });
 
     if (assist.length > 0) {
-      description = `Assistência(s): ${assist.join(" / ")}`;
+      description = l.__("KILL.ASSIST", { assists: assist.join(" / ") });
     }
   }
 
@@ -81,7 +86,6 @@ exports.embedEvent = event => {
     victimGuildValue += event.Victim.GuildName;
   }
 
-  // TODO: More info
   return {
     embed: {
       color: good ? GREEN : RED,
@@ -95,7 +99,7 @@ exports.embedEvent = event => {
       },
       fields: [
         {
-          name: "Fama do Abate",
+          name: l.__("KILL.FAME"),
           value:
             event.TotalVictimKillFame.toString().replace(
               /\B(?=(\d{3})+(?!\d))/g,
@@ -104,13 +108,13 @@ exports.embedEvent = event => {
           inline: false
         },
         {
-          name: "Guilda do Matador",
-          value: killerGuildValue || "Sem guilda",
+          name: l.__("KILL.KILLER_GUILD"),
+          value: killerGuildValue || l.__("KILL.NO_GUILD"),
           inline: true
         },
         {
-          name: "Guilda da Vítima",
-          value: victimGuildValue || "Sem guilda",
+          name: l.__("KILL.VICTIM_GUILD"),
+          value: victimGuildValue || l.__("KILL.NO_GUILD"),
           inline: true
         },
         {
@@ -119,12 +123,12 @@ exports.embedEvent = event => {
           inline: true
         },
         {
-          name: "IP do Matador",
+          name: l.__("KILL.KILLER_IP"),
           value: Math.round(event.Killer.AverageItemPower),
           inline: true
         },
         {
-          name: "IP da Vítima",
+          name: l.__("KILL.VICTIM_IP"),
           value: Math.round(event.Victim.AverageItemPower),
           inline: true
         },
@@ -138,9 +142,9 @@ exports.embedEvent = event => {
   };
 };
 
-const LINE_LENGTH = 23;
+exports.embedRankings = (rankings, locale) => {
+  const l = setLocale(locale);
 
-exports.embedRankings = rankings => {
   const guildId = rankings.pvp[0].GuildId;
   const guildName = rankings.pvp[0].GuildName;
 
@@ -150,12 +154,12 @@ exports.embedRankings = rankings => {
       if (pvp) {
         const fameValue = nFormatter(item.KillFame, 2);
         value += `\n${item.Name}${" ".repeat(
-          LINE_LENGTH - fameValue.length - item.Name.length
+          RANKING_LINE_LENGTH - fameValue.length - item.Name.length
         )}${fameValue}`;
       } else {
         const fameValue = nFormatter(item.Fame, 2);
         value += `\n${item.Player.Name}${" ".repeat(
-          LINE_LENGTH - fameValue.length - item.Player.Name.length
+          RANKING_LINE_LENGTH - fameValue.length - item.Player.Name.length
         )}${fameValue}`;
       }
     });
@@ -165,7 +169,7 @@ exports.embedRankings = rankings => {
 
   return {
     embed: {
-      title: `Ranking Mensal - ${guildName}`,
+      title: l.__("RANKING.MONTHLY", { guild: guildName }),
       url: `https://albiononline.com/pt/killboard/guild/${guildId}`,
       thumbnail: {
         url:
@@ -173,12 +177,12 @@ exports.embedRankings = rankings => {
       },
       fields: [
         {
-          name: "Ranking PvE",
+          name: l.__("RANKING.PVE"),
           value: generateRankFieldValue(rankings.pve),
           inline: true
         },
         {
-          name: "Ranking PvP",
+          name: l.__("RANKING.PVP"),
           value: generateRankFieldValue(rankings.pvp, true),
           inline: true
         },
@@ -188,12 +192,12 @@ exports.embedRankings = rankings => {
           inline: false
         },
         {
-          name: "Ranking de Coleta",
+          name: l.__("RANKING.GATHERING"),
           value: generateRankFieldValue(rankings.gathering),
           inline: true
         },
         {
-          name: "Ranking de Criação",
+          name: l.__("RANKING.CRAFTING"),
           value: generateRankFieldValue(rankings.crafting),
           inline: true
         }

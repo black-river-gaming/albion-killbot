@@ -14,7 +14,10 @@ if (!MONGODB_URL) {
   );
 }
 
-const client = new MongoClient(MONGODB_URL, { useNewUrlParser: true });
+const client = new MongoClient(MONGODB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 let db;
 
 exports.connect = async () => {

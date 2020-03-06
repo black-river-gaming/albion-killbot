@@ -1,0 +1,25 @@
+{
+  "KILL": {
+    "EVENT": "{{ killer }} killed {{ victim }}!",
+    "SOLO_0": "Die casual! Solo kill!!!",
+    "SOLO_1": "And it was a solo kill.",
+    "SOLO_2": "A clean solo kill.",
+    "SOLO_3": "No assists needed.",
+    "SOLO_4": "Get rekt! Solo kill.",
+    "SOLO_5": "Solo killed. No questions asked.",
+    "ASSIST": "Assist(s): {{ assists }}",
+    "FAME": "Kill Fame",
+    "KILLER_GUILD": "Killer's Guild",
+    "VICTIM_GUILD": "Victim's Guild",
+    "NO_GUILD": "No guild",
+    "KILLER_IP": "Killer's IP",
+    "VICTIM_IP": "Victim's IP"
+  },
+  "RANKING": {
+    "MONTHLY": "Monthly Ranking - {{ guild }}",
+    "PVE": "PvE Ranking",
+    "PVP": "PvP Ranking",
+    "GATHERING": "Gathering Ranking",
+    "CRAFTING": "Crafting Ranking"
+  }
+}

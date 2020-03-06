@@ -3,7 +3,6 @@ const axios = require("axios");
 const EVENTS_ENDPOINT =
   "https://gameinfo.albiononline.com/api/gameinfo/events?limit=51&offset=0";
 
-// TODO: Persist this
 let lastEventId = null;
 
 function getNewEvents(events, playerIds = [], guildIds = [], allianceIds = []) {
@@ -20,14 +19,16 @@ function getNewEvents(events, playerIds = [], guildIds = [], allianceIds = []) {
     // Check for kill in event.Killer / event.Victim for anything tracked
     // Since we are parsing from newer to older events
     // we need to use FILO array
-    if (
+    const goodEvent =
       allianceIds.indexOf(event.Killer.AllianceId) >= 0 ||
-      allianceIds.indexOf(event.Victim.AllianceId) >= 0 ||
       guildIds.indexOf(event.Killer.GuildId) >= 0 ||
+      playerIds.indexOf(event.Killer.Id) >= 0;
+    const badEvent =
+      allianceIds.indexOf(event.Victim.AllianceId) >= 0 ||
       guildIds.indexOf(event.Victim.GuildId) >= 0 ||
-      playerIds.indexOf(event.Killer.Id) >= 0 ||
-      playerIds.indexOf(event.Victim.Id) >= 0
-    ) {
+      playerIds.indexOf(event.Victim.Id) >= 0;
+    if (goodEvent || badEvent) {
+      event.good = goodEvent;
       newEvents.unshift(event);
     }
 

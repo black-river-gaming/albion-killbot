@@ -1,0 +1,25 @@
+{
+  "KILL": {
+    "EVENT": "{{ killer }} matou {{ victim }}!",
+    "SOLO_0": "Solado parça!",
+    "SOLO_1": "SOLADINHO BR!!! HUEHUEU",
+    "SOLO_2": "E foi de soled!",
+    "SOLO_3": "Ciiirco de soled.",
+    "SOLO_4": "Chamou pro duelo e foi de base.",
+    "SOLO_5": "Não garantiu no x1.",
+    "ASSIST": "Assistência(s): {{ assists }}",
+    "FAME": "Fama do Abate",
+    "KILLER_GUILD": "Guilda do Matador",
+    "VICTIM_GUILD": "Guilda da Vítima",
+    "NO_GUILD": "Sem guilda",
+    "KILLER_IP": "IP do Matador",
+    "VICTIM_IP": "IP da Vítima"
+  },
+  "RANKING": {
+    "MONTHLY": "Ranking Mensal - {{ guild }}",
+    "PVE": "Ranking PvE",
+    "PVP": "Ranking PvP",
+    "GATHERING": "Ranking de Coleta",
+    "CRAFTING": "Ranking de Criação"
+  }
+}

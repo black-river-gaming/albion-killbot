@@ -28,17 +28,20 @@ const scanEvents = async () => {
   for (let guild of client.guilds.array()) {
     if (!serverConfig[guild.id] || !newEvents[guild.id]) continue;
 
+    const lang = serverConfig[guild.id].lang;
     newEvents[guild.id].forEach(event => {
-      sendGuildMessage(guild, messages.embedEvent(event));
+      sendGuildMessage(guild, messages.embedEvent(event, lang));
     });
   }
 };
 
 const scanRanking = async () => {
   for (let guild of client.guilds.array()) {
+    if (!serverConfig[guild.id]) continue;
     serverConfig[guild.id].guildIds.forEach(async guildId => {
       const rankings = await guilds.getGuildRankings(guildId);
-      sendGuildMessage(guild, messages.embedRankings(rankings));
+      const lang = serverConfig[guild.id].lang;
+      sendGuildMessage(guild, messages.embedRankings(rankings, lang));
     });
   }
 };
@@ -91,7 +94,7 @@ client.on("ready", async () => {
 });
 
 client.on("message", msg => {
-  if (msg.content === "test") {
+  if (msg.content === "test2") {
     scanRanking();
     return;
   }
