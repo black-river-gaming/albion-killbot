@@ -15,7 +15,7 @@ exports.getGuild = async guildId => {
   console.log(`Fetching guild ${guildId}...`);
   try {
     const res = await axios.get(`${GUILDS_ENDPOINT}/${guildId}`);
-    return getNewEvents(res.data);
+    return res.data;
   } catch (err) {
     console.error(`Unable to fetch data from API: ${err}`);
     return [];

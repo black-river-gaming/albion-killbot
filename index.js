@@ -59,8 +59,8 @@ client.on("ready", () => {
 
 client.on("message", msg => {
   if (msg.content === "test") {
-    const channel = client.channels.find(c => c.name === "geral");
-    channel.send(messages.embedRankings(null));
+    scanRanking();
+    return;
   }
 });
 
