@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const Discord = require("discord.js");
 const moment = require("moment");
 const events = require("./queries/events");
@@ -8,6 +10,10 @@ const messages = require("./messages");
 const PLAYER_IDS = [];
 const GUILD_IDS = ["m1HVpwomTMiAJKxwopwIpQ"]; // Black River
 const ALLIANCE_IDS = [];
+
+const sleep = milliseconds => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
+};
 
 const token = process.env.TOKEN;
 if (!token) {
@@ -38,10 +44,10 @@ const scanRanking = async () => {
   });
 };
 
-client.on("ready", () => {
+client.on("ready", async () => {
   console.log(`Connected successfully as ${client.user.tag}`);
-  setInterval(scanEvents, 30000);
 
+  // Specific times events
   let millisTill12 =
     moment()
       .hour(12)
@@ -55,6 +61,13 @@ client.on("ready", () => {
   setTimeout(function() {
     scanRanking();
   }, millisTill12);
+
+  // Interval events
+  const exit = false;
+  while (!exit) {
+    scanEvents();
+    await sleep(20000);
+  }
 });
 
 client.on("message", msg => {
