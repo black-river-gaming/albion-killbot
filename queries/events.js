@@ -6,9 +6,8 @@ const EVENTS_ENDPOINT =
 // TODO: Persist this
 let lastEventId = null;
 
-function getNewEvents(events, playerIds, guildIds, allianceIds) {
+function getNewEvents(events, playerIds = [], guildIds = [], allianceIds = []) {
   const newEvents = [];
-  let scanned = 0;
   events.every(event => {
     if (event.EventId <= lastEventId) {
       return false;
@@ -17,7 +16,6 @@ function getNewEvents(events, playerIds, guildIds, allianceIds) {
     if (event.TotalVictimKillFame <= 0) {
       return true;
     }
-    scanned++;
 
     // Check for kill in event.Killer / event.Victim for anything tracked
     // Since we are parsing from newer to older events
@@ -35,23 +33,33 @@ function getNewEvents(events, playerIds, guildIds, allianceIds) {
 
     return true;
   });
-  console.log(
-    `Events scanned: ${scanned} events. New events: ${newEvents.length}`
-  );
-
-  // Sometimes the API return old values, se we just want increasing values
-  if (events.length > 0 && events[0].EventId > lastEventId) {
-    lastEventId = events[0].EventId;
-  }
 
   return newEvents;
 }
 
-exports.getEvents = async (playerIds = [], guildIds = [], allianceIds = []) => {
+exports.getEvents = async serverConfig => {
   console.log("Fetching Albion Online events...");
+  const newEvents = {};
   try {
     const res = await axios.get(EVENTS_ENDPOINT);
-    return getNewEvents(res.data, playerIds, guildIds, allianceIds);
+    const events = res.data;
+
+    for (let key of Object.keys(serverConfig)) {
+      const config = serverConfig[key];
+      newEvents[key] = getNewEvents(
+        events,
+        config.playerIds,
+        config.guildIds,
+        config.allianceIds
+      );
+    }
+
+    // Sometimes the API return old values, se we just want increasing values
+    if (events.length > 0 && events[0].EventId > lastEventId) {
+      lastEventId = events[0].EventId;
+    }
+
+    return newEvents;
   } catch (err) {
     console.error(`Unable to fetch data from API: ${err}`);
     return [];
