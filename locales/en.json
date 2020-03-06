@@ -1,6 +1,8 @@
 {
   "CONFIG_NOT_SET": "WARNING: Unable to persist server configuration. They will be reverted upon bot restart.",
   "CHANNEL_NOT_SET": "WARNING: Channel to send notifications is not set. Please use !channel [channel] to configure it.",
+  "TEST_MSG": "I have permission to send messages to the channel {{{ channel }}}.",
+  "TEST_FAIL": "I DON'T have permissions to send messages to the configured channel.",
   "KILL": {
     "EVENT": "{{ killer }} killed {{ victim }}!",
     "SOLO_0": "Die casual! Solo kill!!!",
@@ -30,7 +32,8 @@
     "LANGUAGE": "Set bot language.",
     "LIST": "Lists tracked players, guilds and alliances.",
     "TRACK": "Tracks a player, guild or alliance.",
-    "UNTRACK": "Stops tracking a player, guild or alliance."
+    "UNTRACK": "Stops tracking a player, guild or alliance.",
+    "TEST": "Verify if the bot has permission to send messages."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Please input a channel for notifications.",
