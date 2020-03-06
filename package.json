@@ -11,10 +11,15 @@
     "discord.js": "^11.5.1"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "nodemon ."
   },
   "engines": {
     "node": "13.x",
     "yarn": "1.x"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "nodemon": "^2.0.2"
   }
 }
