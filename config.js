@@ -3,9 +3,10 @@ const MongoClient = require("mongodb").MongoClient;
 const MONGODB_URL = process.env.MONGODB_URL;
 const SERVER_CONFIG_COLLECTION = "guildConfig";
 const DEFAULT_CONFIG = {
-  playerIds: [],
-  guildIds: [],
-  allianceIds: []
+  trackedPlayers: [],
+  trackedGuilds: [],
+  trackerAlliances: [],
+  lang: "en"
 };
 
 if (!MONGODB_URL) {
