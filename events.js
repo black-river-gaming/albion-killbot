@@ -3,8 +3,10 @@ const axios = require("axios");
 const EVENTS_ENDPOINT =
     "https://gameinfo.albiononline.com/api/gameinfo/events?limit=51&offset=0";
 
+// TODO: Persist this
 let lastEventId = null;
-function parse(events, callback) {
+
+function getNewEvents(events) {
     const newEvents = [];
     let scanned = 0;
     events.every(event => {
@@ -30,24 +32,24 @@ function parse(events, callback) {
 
         return true;
     });
-    console.log(`Events scanned: ${scanned} events.`);
+    console.log(
+        `Events scanned: ${scanned} events. New events: ${newEvents.length}`
+    );
 
     if (events.length > 0) {
         lastEventId = events[0].EventId;
     }
 
-    if (newEvents.length > 0) {
-        console.log(`New events: ${newEvents.length}.`);
-        callback(newEvents);
-    }
+    return newEvents;
 }
 
-exports.fetch = async callback => {
+exports.getEvents = async () => {
     console.log("Fetching Albion Online events...");
     try {
         const res = await axios.get(EVENTS_ENDPOINT);
-        parse(res.data, callback);
+        return getNewEvents(res.data);
     } catch (err) {
         console.error(`Unable to fetch data from API: ${err}`);
+        return [];
     }
 };

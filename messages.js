@@ -12,7 +12,7 @@ const soloMessages = [
     "Solado parça!"
 ];
 
-exports.embed = event => {
+exports.embedEvent = event => {
     // TODO: Tracking based on config
     const good = event.Killer.GuildName === "Black River";
 
@@ -23,13 +23,19 @@ exports.embed = event => {
         description =
             soloMessages[Math.floor(Math.random() * soloMessages.length)];
     } else {
+        const totalDamage = event.Participants.reduce((sum, participant) => {
+            return sum + participant.DamageDone;
+        }, 0);
         const assist = [];
         event.Participants.forEach(participant => {
             // Self-damage isn't assist :P
             if (participant.Name === event.Victim.Name) {
                 return;
             }
-            assist.push(participant.Name);
+            const damagePercent = Math.round(
+                (participant.DamageDone / totalDamage) * 100
+            );
+            assist.push(`${participant.Name} (${damagePercent}%)`);
         });
 
         if (assist.length > 0) {
