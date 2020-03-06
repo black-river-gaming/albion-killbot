@@ -49,11 +49,11 @@ const scanEvents = async () => {
 const scanRanking = async () => {
   for (let guild of client.guilds.array()) {
     if (!guild.config) continue;
-    guild.config.trackedGuilds.forEach(async trackedGuild => {
+    for (let trackedGuild of guild.config.trackedGuilds) {
       const rankings = await guilds.getGuildRankings(trackedGuild.id);
       const lang = guild.config.lang;
-      sendGuildMessage(guild, messages.embedRankings(rankings, lang));
-    });
+      await sendGuildMessage(guild, messages.embedRankings(rankings, lang));
+    }
   }
 };
 
@@ -100,7 +100,7 @@ client.on("ready", async () => {
   // Interval events
   const exit = false;
   while (!exit) {
-    scanEvents();
+    await scanEvents();
     await sleep(30000);
   }
 });
