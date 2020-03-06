@@ -8,7 +8,7 @@ if (!token) {
   process.exit(0);
 }
 
-const client = Discord.client();
+const client = new Discord.Client();
 
 client.on("ready", () => {
   console.log(`Connected successfully as ${client.user.tag}`);
