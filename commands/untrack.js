@@ -42,27 +42,31 @@ module.exports = {
         message.channel.send(l.__("CONFIG_NOT_SET"));
       }
       message.channel.send(l.__(msg, { name: entity.name }));
+
+      if (!guild.config.channel) {
+        message.channel.send(l.__("CHANNEL_NOT_SET"));
+      }
     };
 
     switch (type) {
-    case "player":
-      return untrack(
-        name,
-        guild.config.trackedPlayers,
-        "TRACK.PLAYER_UNTRACKED"
-      );
-    case "guild":
-      return untrack(
-        name,
-        guild.config.trackedGuilds,
-        "TRACK.GUILD_UNTRACKED"
-      );
-    case "alliance":
-      return untrack(
-        name,
-        guild.config.trackedAlliances,
-        "TRACK.ALLIANCE_UNTRACKED"
-      );
+      case "player":
+        return untrack(
+          name,
+          guild.config.trackedPlayers,
+          "TRACK.PLAYER_UNTRACKED"
+        );
+      case "guild":
+        return untrack(
+          name,
+          guild.config.trackedGuilds,
+          "TRACK.GUILD_UNTRACKED"
+        );
+      case "alliance":
+        return untrack(
+          name,
+          guild.config.trackedAlliances,
+          "TRACK.ALLIANCE_UNTRACKED"
+        );
     }
   }
 };

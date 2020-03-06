@@ -1,5 +1,6 @@
 {
   "CONFIG_NOT_SET": "WARNING: Unable to persist server configuration. They will be reverted upon bot restart.",
+  "CHANNEL_NOT_SET": "WARNING: Channel to send notifications is not set. Please use !channel [channel] to configure it.",
   "KILL": {
     "EVENT": "{{ killer }} killed {{ victim }}!",
     "SOLO_0": "Die casual! Solo kill!!!",

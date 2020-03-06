@@ -25,5 +25,9 @@ module.exports = {
     });
     response += "```";
     message.channel.send(response);
+
+    if (!guild.config.channel) {
+      message.channel.send(l.__("CHANNEL_NOT_SET"));
+    }
   }
 };

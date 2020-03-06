@@ -66,14 +66,12 @@ const sendGuildMessage = async (guild, message) => {
   guild.config = await config.getConfig(guild);
   const channel = client.channels.find(c => c.id === guild.config.channel);
   if (!channel) {
-    // TODO: Send a message to server owner to warn about this
     console.log(`WARNING: Channel not configured for guild ${guild.name}.`);
     return;
   }
   try {
     await channel.send(message);
   } catch (e) {
-    // TODO: Send a message to server owner to warn about this
     console.log(
       `Unable to send message to guild ${guild.name}/${channel.name}: ${e}`
     );
@@ -122,7 +120,6 @@ client.on("message", async message => {
     guild.config.channel = message.channel.id;
     config.setConfig(guild);
   }
-  guild.channel = client.channels.find(c => c.id === guild.config.channel);
 
   const args = message.content
     .slice(COMMAND_PREFIX.length)
