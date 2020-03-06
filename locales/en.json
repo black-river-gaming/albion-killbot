@@ -33,6 +33,7 @@
   },
   "CHANNEL": {
     "NO_CHANNEL": "Please input a channel for notifications.",
+    "NOT_FOUND": "Sorry, I can't find the mentioned channel. Please verifiy if I have acess to it and try again.",
     "SET_CHANNEL": "Channel defined to {{{ channel }}}."
   },
   "LANGUAGE": {
