@@ -7,7 +7,7 @@ const messages = require("./messages");
 const events = require("./queries/events");
 const guilds = require("./queries/guilds");
 
-let serverConfig = {};
+const serverConfig = {};
 
 const sleep = milliseconds => {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
@@ -22,49 +22,44 @@ if (!token) {
 }
 const client = new Discord.Client();
 
-// TODO: replace serverConfig[guild.id] calls for config.getConfig(guild.id)
 const scanEvents = async () => {
   const newEvents = await events.getEvents(serverConfig);
 
   for (let guild of client.guilds.array()) {
     if (!serverConfig[guild.id] || !newEvents[guild.id]) continue;
 
-    // TODO: Configure channel in serverConfig
-    const channel = client.channels.find(
-      c => c.name === "geral" && c.guild.id === guild.id
-    );
-
-    if (!channel) {
-      console.log(`WARNING: Channel not configured for guild ${guild.name}`);
-      continue;
-    }
-
     newEvents[guild.id].forEach(event => {
-      channel.send(messages.embedEvent(event));
+      sendGuildMessage(guild, messages.embedEvent(event));
     });
   }
 };
 
 const scanRanking = async () => {
   for (let guild of client.guilds.array()) {
-    // TODO: Configure channel in serverConfig
-    const channel = client.channels.find(
-      c => c.name === "geral" && c.guild.id === guild.id
-    );
-
     serverConfig[guild.id].guildIds.forEach(async guildId => {
       const rankings = await guilds.getGuildRankings(guildId);
-      channel.send(messages.embedRankings(rankings));
+      sendGuildMessage(guild, messages.embedRankings(rankings));
     });
   }
+};
+
+const sendGuildMessage = async (guild, message) => {
+  const channelName = serverConfig[guild.id].channel;
+  const channel = client.channels.find(
+    c => c.name === channelName && c.guild.id === guild.id
+  );
+
+  if (!channel) {
+    console.log(`WARNING: Channel not configured for guild ${guild.name}`);
+    return;
+  }
+
+  channel.send(message);
 };
 
 // TODO: Handle when the bot joins/leaves guilds
 // See more: https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildCreate
 client.on("ready", async () => {
-  // Connect to mongo to enable persist config
-  await config.connect();
-
   console.log(`Connected successfully as ${client.user.tag}`);
 
   // Update config for all guilds
@@ -102,4 +97,7 @@ client.on("message", msg => {
   }
 });
 
-client.login(token);
+(async () => {
+  await config.connect();
+  client.login(token);
+})();
