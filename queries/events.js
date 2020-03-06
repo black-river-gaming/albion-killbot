@@ -11,6 +11,14 @@ function getNewEvents(
   trackedGuilds = [],
   trackedAlliances = []
 ) {
+  if (
+    trackedPlayers.length === 0 &&
+    trackedGuilds.length === 0 &&
+    trackedAlliances.length === 0
+  ) {
+    return;
+  }
+
   const playerIds = trackedPlayers.map(t => t.id);
   const guildIds = trackedGuilds.map(t => t.id);
   const allianceIds = trackedAlliances.map(t => t.id);

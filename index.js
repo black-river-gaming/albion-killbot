@@ -45,7 +45,6 @@ const scanEvents = async () => {
       sendGuildMessage(guild, messages.embedEvent(event, guild.config.lang));
     });
   }
-  ("");
 };
 
 const scanRanking = async () => {
