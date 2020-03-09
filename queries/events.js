@@ -45,8 +45,8 @@ function getNewEvents(
       guildIds.indexOf(event.Victim.GuildId) >= 0 ||
       playerIds.indexOf(event.Victim.Id) >= 0;
     if (goodEvent || badEvent) {
-      event.good = goodEvent;
-      newEvents.unshift(event);
+      // We need to create a new object here for every guild
+      newEvents.unshift(Object.assign({}, event, { good: goodEvent }));
     }
 
     return true;
