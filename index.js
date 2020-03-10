@@ -82,20 +82,13 @@ const sendGuildMessage = async (guild, message) => {
 client.on("ready", async () => {
   console.log(`Connected successfully as ${client.user.tag}`);
 
-  // Specific times events
-  let millisTill12 =
-    moment()
-      .hour(12)
-      .minute(0)
-      .second(0) -
-    moment() +
-    1;
-  if (millisTill12 < 0) {
-    millisTill12 += 86400000;
-  }
-  setTimeout(function() {
-    scanRanking();
-  }, millisTill12);
+  // Events that fires daily (12:00 pm)
+  setInterval(() => {
+    const now = moment();
+    if (now.hour() === 12 && now.minute() === 0) {
+      scanRanking();
+    }
+  }, 60000); // Every minute
 
   // Interval events
   const exit = false;
