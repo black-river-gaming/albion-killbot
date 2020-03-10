@@ -19,6 +19,13 @@
     "KILLER_IP": "IP do Matador",
     "VICTIM_IP": "IP da Vítima"
   },
+  "BATTLE": {
+    "EVENT": "Ocorreu uma batalha entre {{ guilds }} guildas!",
+    "DESCRIPTION": "Jogadores: {{ players }} / Abates: {{ kills }} / Fama: {{ fame }}\nDuração: {{ duration }}",
+    "LINE": "{{ name }} ({{ kills }}/{{ deaths }}) - Fama: {{fame}}",
+    "NO_ALLIANCE": "Outros",
+    "NO_GUILD": "Jogadores sem Guilda"
+  },
   "RANKING": {
     "MONTHLY": "Ranking Mensal - {{ guild }}",
     "PVE": "Ranking PvE",

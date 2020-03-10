@@ -19,6 +19,13 @@
     "KILLER_IP": "Killer's IP",
     "VICTIM_IP": "Victim's IP"
   },
+  "BATTLE": {
+    "EVENT": "A battle ocurred between {{ guilds }} guilds!",
+    "DESCRIPTION": "Players: {{ players }} / Kills: {{ kills }} / Fame: {{ fame }}\nDuration: {{ duration }}",
+    "LINE": "{{ name }} ({{ kills }}/{{ deaths }}) - Fame: {{fame}}",
+    "NO_ALLIANCE": "Others",
+    "NO_GUILD": "Players without Guild"
+  },
   "RANKING": {
     "MONTHLY": "Monthly Ranking - {{ guild }}",
     "PVE": "PvE Ranking",

@@ -11,7 +11,7 @@ const DEFAULT_CONFIG = {
 
 if (!MONGODB_URL) {
   console.log(
-    "Please define MONGODB_URL environment variable with the MongoDB location. Guild config is disabled."
+    "Please define MONGODB_URL environment variable with the MongoDB location. Server config persistence is disabled."
   );
 }
 

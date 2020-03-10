@@ -4,11 +4,12 @@ const i18n = require("i18n");
 const LOCALE_DIR = __dirname + "/locales";
 const GREEN = 52224;
 const RED = 13369344;
+const BATTLE = 16752981;
 const RANKING_LINE_LENGTH = 23;
 
 // TODO: Move to utils file
 function nFormatter(num, digits) {
-  var si = [
+  const si = [
     { value: 1, symbol: "" },
     { value: 1e3, symbol: "k" },
     { value: 1e6, symbol: "m" },
@@ -17,14 +18,18 @@ function nFormatter(num, digits) {
     { value: 1e15, symbol: "q" },
     { value: 1e18, symbol: "Q" }
   ];
-  var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-  var i;
+  const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+  let i;
   for (i = si.length - 1; i > 0; i--) {
     if (num >= si[i].value) {
       break;
     }
   }
   return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
+}
+
+function dFormatter(num) {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") || 0;
 }
 
 function setLocale(locale = "en") {
@@ -102,11 +107,7 @@ exports.embedEvent = (event, locale) => {
       fields: [
         {
           name: l.__("KILL.FAME"),
-          value:
-            event.TotalVictimKillFame.toString().replace(
-              /\B(?=(\d{3})+(?!\d))/g,
-              "."
-            ) || 0,
+          value: dFormatter(event.TotalVictimKillFame),
           inline: false
         },
         {
@@ -140,6 +141,102 @@ exports.embedEvent = (event, locale) => {
           inline: true
         }
       ]
+    }
+  };
+};
+
+exports.embedBattle = (battle, locale) => {
+  const l = setLocale(locale);
+
+  const guildCount = Object.keys(battle.guilds || {}).length;
+
+  const duration = moment
+    .duration(moment(battle.endTime) - moment(battle.startTime))
+    .locale(locale || "en")
+    .humanize();
+  const description = l.__("BATTLE.DESCRIPTION", {
+    players: Object.keys(battle.players || {}).length,
+    kills: battle.totalKills,
+    fame: dFormatter(battle.totalFame),
+    duration
+  });
+
+  const line = item => {
+    return l.__("BATTLE.LINE", {
+      name: item.name,
+      kills: item.kills,
+      deaths: item.deaths,
+      fame: dFormatter(item.killFame)
+    });
+  };
+
+  const fields = [];
+  Object.keys(battle.alliances).forEach(id => {
+    const alliance = battle.alliances[id];
+    const name = line(alliance);
+
+    let value = "";
+    Object.values(battle.guilds)
+      .filter(guild => guild.allianceId === id)
+      .forEach(guild => {
+        value += line(guild);
+        value += "\n";
+      });
+
+    fields.push({
+      name,
+      value
+    });
+  });
+
+  const guildsWithoutAlliance = Object.values(battle.guilds).filter(
+    guild => !guild.allianceId
+  );
+  const playersWithoutGuild = Object.values(battle.players).filter(
+    player => !player.guildId
+  );
+  if (guildsWithoutAlliance.length > 0 || playersWithoutGuild.length > 0) {
+    const name = l.__("BATTLE.NO_ALLIANCE");
+
+    let value = "";
+    guildsWithoutAlliance.forEach(guild => {
+      value += line(guild);
+      value += "\n";
+    });
+
+    if (playersWithoutGuild.length > 0) {
+      const stats = {
+        name: l.__("BATTLE.NO_GUILD"),
+        kills: 0,
+        deaths: 0,
+        killFame: 0
+      };
+      playersWithoutGuild.forEach(player => {
+        stats.kills += player.kills;
+        stats.deaths += player.deaths;
+        stats.killFame += player.killFame;
+      });
+      value += line(stats);
+      value += "\n";
+    }
+
+    fields.push({
+      name,
+      value
+    });
+  }
+
+  return {
+    embed: {
+      color: BATTLE,
+      title: l.__("BATTLE.EVENT", { guilds: guildCount }),
+      url: `http://www.yaga.sk/killboard/battle.php?id=${battle.id}`,
+      description,
+      thumbnail: {
+        url:
+          "https://user-images.githubusercontent.com/13356774/76130049-b9eec480-5fdf-11ea-95c0-7de130a705a3.png"
+      },
+      fields
     }
   };
 };
