@@ -67,7 +67,7 @@ exports.getEvents = async allConfigs => {
     if (events.length === 0) {
       return {
         eventsByGuild: {},
-        rate: 100
+        rate: 999
       };
     }
 
@@ -95,7 +95,7 @@ exports.getEvents = async allConfigs => {
     console.error(`Unable to fetch data from API: ${err}`);
     return {
       eventsByGuild: {},
-      rate: 100
+      rate: 0
     };
   }
 };
