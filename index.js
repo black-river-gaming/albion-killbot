@@ -17,6 +17,12 @@ if (!token) {
   process.exit(0);
 }
 const COMMAND_PREFIX = "!";
+const INTERVAL = {
+  THRESHOLD: 2, // Ex, 30 seconds interval can go from 15 to 60 with 2 THRESHOLD
+  FACTOR: 1.2, // Multiply/divide by this number each iteration
+  MIN_RATIO: 50, // Maximum ratio to decrease interval
+  MAX_RATIO: 90 // Minimum ratio to increase interval
+};
 
 const sleep = milliseconds => {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
@@ -31,42 +37,48 @@ const scanEvents = async () => {
   for (let guild of client.guilds.array()) {
     allGuildConfigs[guild.id] = await config.getConfig(guild);
   }
-  const newEvents = await events.getEvents(allGuildConfigs);
+  const getEvents = await events.getEvents(allGuildConfigs);
+  const eventsByGuild = getEvents.eventsByGuild;
 
   for (let guild of client.guilds.array()) {
     guild.config = allGuildConfigs[guild.id];
-    if (!guild.config || !newEvents[guild.id]) continue;
-
+    if (!guild.config || !eventsByGuild[guild.id]) continue;
     // Debug
-    if (newEvents[guild.id].length > 0) {
+    const newEventsCount = eventsByGuild[guild.id].length;
+    if (newEventsCount > 0) {
       console.log(
-        `Sending ${newEvents[guild.id].length} new events to guild "${guild.name}"`
+        `Sending ${newEventsCount} new events to guild "${guild.name}"`
       );
     }
-    newEvents[guild.id].forEach(event => {
+    eventsByGuild[guild.id].forEach(event => {
       sendGuildMessage(guild, messages.embedEvent(event, guild.config.lang));
     });
   }
+
+  return getEvents.rate;
 };
 
 const scanBattles = async () => {
-  const newBattles = await battles.getBattles(client.guilds.array());
+  const getBattles = await battles.getBattles(client.guilds.array());
+  const battlesByGuild = getBattles.battlesByGuild;
 
   for (let guild of client.guilds.array()) {
     guild.config = await config.getConfig(guild);
-    if (!guild.config || !newBattles[guild.id]) continue;
+    if (!guild.config || !battlesByGuild[guild.id]) continue;
 
     // Debug
-    const newBattlesCount = newBattles[guild.id].length;
+    const newBattlesCount = battlesByGuild[guild.id].length;
     if (newBattlesCount > 0) {
       console.log(
         `Sending ${newBattlesCount} new battles to guild "${guild.name}"`
       );
     }
-    newBattles[guild.id].forEach(battle =>
+    battlesByGuild[guild.id].forEach(battle =>
       sendGuildMessage(guild, messages.embedBattle(battle, guild.config.lang))
     );
   }
+
+  return getBattles.rate;
 };
 
 const scanRanking = async () => {
@@ -113,12 +125,30 @@ client.on("ready", async () => {
   }, 60000); // Every minute
 
   // Interval events
-  const exit = false;
-  while (!exit) {
-    await scanEvents();
-    await scanBattles();
-    await sleep(30000);
-  }
+  const runInterval = async (func, baseTime) => {
+    let time = baseTime;
+
+    const exit = false;
+    while (!exit) {
+      const rate = await func();
+
+      // Change interval based on rate
+      if (rate >= INTERVAL.MAX_RATIO)
+        time = Math.round(
+          Math.max(baseTime / INTERVAL.THRESHOLD, time / INTERVAL.FACTOR)
+        );
+      else if (rate <= INTERVAL.MIN_RATIO)
+        time = Math.round(
+          Math.min(baseTime * INTERVAL.THRESHOLD, time * INTERVAL.FACTOR)
+        );
+      console.log(`${func.name} - Unread rate: ${rate}%. New time: ${time}ms`);
+
+      await sleep(time);
+    }
+  };
+
+  runInterval(scanEvents, 20000);
+  runInterval(scanBattles, 90000);
 });
 
 client.on("message", async message => {

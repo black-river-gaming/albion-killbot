@@ -2,7 +2,7 @@ const axios = require("axios");
 const { getConfig } = require("../config");
 
 const BATTLES_ENDPOINT =
-  "https://gameinfo.albiononline.com/api/gameinfo/battles?offset=0&limit=51&sort=recent";
+  "https://gameinfo.albiononline.com/api/gameinfo/battles?offset=0&limit=20&sort=recent";
 
 let lastBattleId = null;
 
@@ -48,15 +48,16 @@ function getNewBattles(battles, config) {
 
 exports.getBattles = async guilds => {
   console.log("Fetching Albion Online battles...");
-  const newBattles = {};
+  const battlesByGuild = {};
   try {
     const res = await axios.get(BATTLES_ENDPOINT);
-    const battles = res.data;
+    // We only want unread battles
+    const battles = res.data.filter(bat => bat.id > lastBattleId);
 
     for (let guild of guilds) {
       const config = await getConfig(guild);
       if (!config) continue;
-      newBattles[guild.id] = getNewBattles(battles, config);
+      battlesByGuild[guild.id] = getNewBattles(battles, config);
     }
 
     // Sometimes the API return old values, se we just want increasing values
@@ -64,9 +65,15 @@ exports.getBattles = async guilds => {
       lastBattleId = battles[0].id;
     }
 
-    return newBattles;
+    return {
+      battlesByGuild,
+      rate: Math.round((battles.length / 20) * 100)
+    };
   } catch (err) {
     console.error(`Unable to fetch battles from API: ${err}`);
-    return {};
+    return {
+      battlesByGuild: {},
+      rate: 100
+    };
   }
 };

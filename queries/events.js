@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 const EVENTS_ENDPOINT =
-  "https://gameinfo.albiononline.com/api/gameinfo/events?limit=51&offset=0";
+  "https://gameinfo.albiononline.com/api/gameinfo/events?limit=50&offset=0";
 
 let lastEventId = null;
 
@@ -57,15 +57,24 @@ function getNewEvents(
 
 exports.getEvents = async allConfigs => {
   console.log("Fetching Albion Online events...");
-  const newEvents = {};
+  const eventsByGuild = {};
   try {
     const res = await axios.get(EVENTS_ENDPOINT);
-    const events = res.data;
+    // We only want unread events
+    const events = res.data.filter(ev => ev.EventId > lastEventId);
+    // Currently there is a bug in Albion API that sometimes brings past events instead of new ones
+    // So we are ignoring requests from the "past" for now
+    if (events.length === 0) {
+      return {
+        eventsByGuild: {},
+        rate: 100
+      };
+    }
 
     for (let key of Object.keys(allConfigs)) {
       const config = allConfigs[key];
       if (!config) continue;
-      newEvents[key] = getNewEvents(
+      eventsByGuild[key] = getNewEvents(
         events,
         config.trackedPlayers,
         config.trackedGuilds,
@@ -78,9 +87,15 @@ exports.getEvents = async allConfigs => {
       lastEventId = events[0].EventId;
     }
 
-    return newEvents;
+    return {
+      eventsByGuild,
+      rate: Math.round((events.length / 50) * 100)
+    };
   } catch (err) {
     console.error(`Unable to fetch data from API: ${err}`);
-    return [];
+    return {
+      eventsByGuild: {},
+      rate: 100
+    };
   }
 };
