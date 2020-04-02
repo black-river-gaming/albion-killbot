@@ -15,22 +15,34 @@ if (!MONGODB_URL) {
   );
 }
 
+const sleep = milliseconds => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
+};
+
 const client = new MongoClient(MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
+function isConnected() {
+  return !!client && !!client.topology && client.topology.isConnected();
+}
 let db;
 const guildConfigs = {};
 
 exports.connect = async () => {
-  try {
-    await client.connect();
-    console.log("Connected to database.");
-    db = client.db();
-  } catch (e) {
-    console.log(
-      `Unable to connect to database: ${e}. Guild config is disabled.`
-    );
+  const exit = false;
+  while (!exit) {
+    try {
+      if (!isConnected()) {
+        console.log("Connecting to database...");
+        await client.connect();
+        console.log("Connection to database stabilished.");
+        db = client.db();
+      }
+      await sleep(60000);
+    } catch (e) {
+      console.log(`Unable to connect to database: ${e}`);
+    }
   }
 };
 
@@ -59,6 +71,7 @@ exports.setConfig = async guild => {
   }
   const collection = db.collection(SERVER_CONFIG_COLLECTION);
   try {
+    guild.config.name = guild.name;
     const guildConfig = await collection.updateOne(
       { guild: guild.id },
       { $set: guild.config },
@@ -68,5 +81,15 @@ exports.setConfig = async guild => {
   } catch (e) {
     console.log(`Unable to write guildConfig for guild ${guild}: ${e}`);
     return false;
+  }
+};
+
+exports.deleteConfig = async guild => {
+  if (guildConfigs[guild.id]) delete guildConfigs[guild.id];
+  const collection = db.collection(SERVER_CONFIG_COLLECTION);
+  try {
+    return await collection.remove({ guild: guild.id }, true);
+  } catch (e) {
+    console.log(`Unable to delete guildConfig for guild ${guild}: ${e}`);
   }
 };

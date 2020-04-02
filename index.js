@@ -180,7 +180,42 @@ client.on("message", async message => {
   }
 });
 
+client.on("guildCreate", async guild => {
+  const getDefaultChannel = guild => {
+    // get "original" default channel
+    if (guild.channels.has(guild.id)) return guild.channels.get(guild.id);
+
+    // Check for a "general" channel, which is often default chat
+    const generalChannel = guild.channels.find(
+      channel => channel.name === "general"
+    );
+    if (generalChannel) return generalChannel;
+    // Now we get into the heavy stuff: first channel in order where the bot can speak
+    // hold on to your hats!
+    return guild.channels
+      .filter(
+        c =>
+          c.type === "text" &&
+          c.permissionsFor(guild.client.user).has("SEND_MESSAGES")
+      )
+      .sort((a, b) => a.position - b.position)
+      .first();
+  };
+
+  console.log(`Joined guild "${guild.name}". Creating default settings.`);
+  guild.config = await config.getConfig(guild);
+  guild.config.channel = getDefaultChannel(guild).id;
+  config.setConfig(guild);
+  const l = messages.getI18n(guild);
+  sendGuildMessage(guild, l.__("JOIN"));
+});
+
+client.on("guildDelete", guild => {
+  console.log(`Left guild "${guild.name}". Deleting settings.`);
+  config.deleteConfig(guild);
+});
+
 (async () => {
-  await config.connect();
+  config.connect();
   client.login(token);
 })();
