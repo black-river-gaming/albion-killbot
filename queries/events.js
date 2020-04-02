@@ -16,7 +16,7 @@ function getNewEvents(
     trackedGuilds.length === 0 &&
     trackedAlliances.length === 0
   ) {
-    return;
+    return [];
   }
 
   const playerIds = trackedPlayers.map(t => t.id);
@@ -73,7 +73,9 @@ exports.getEvents = async allConfigs => {
 
     for (let key of Object.keys(allConfigs)) {
       const config = allConfigs[key];
-      if (!config) continue;
+      if (!config) {
+        continue;
+      }
       eventsByGuild[key] = getNewEvents(
         events,
         config.trackedPlayers,
