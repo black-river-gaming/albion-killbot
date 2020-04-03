@@ -48,7 +48,7 @@ exports.connect = async () => {
 
 // TODO: Implement bulk get/write guild config
 exports.getConfig = async guild => {
-  if (guildConfigs[guild.id]) return guildConfigs[guild.id];
+  // if (guildConfigs[guild.id]) return guildConfigs[guild.id];
   if (!db) {
     return DEFAULT_CONFIG;
   }
