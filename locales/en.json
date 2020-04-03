@@ -1,5 +1,6 @@
 {
   "JOIN": "Hello everyone! I'm Albion Killbot. If you are an admin, please configure me by typing !help and seeing what I can do.",
+  "NO_PERMISSION": "Sorry, I only accept commands from server admins.",
   "CONFIG_NOT_SET": "WARNING: Unable to persist server configuration. They will be reverted upon bot restart.",
   "CHANNEL_NOT_SET": "WARNING: Channel to send notifications is not set. Please use !channel [channel] to configure it.",
   "TEST_MSG": "I have permission to send messages to the channel {{{ channel }}}.",

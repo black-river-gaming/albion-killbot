@@ -1,5 +1,6 @@
 {
   "JOIN": "Olá todo mundo! Sou Albion Killbot. Se você é um admin, por favor me configure usando !help para ver o que sei fazer.",
+  "NO_PERMISSION": "Desulpe, mas só aceito comandos de administradores.",
   "CONFIG_NOT_SET": "AVISO: Não foi possível persistir a configuração do servidor. Ela será revertida quando o bot reiniciar.",
   "CHANNEL_NOT_SET": "AVISO: Canal para enviar notificações não configurado. Por favor, use !channel [channel] to configurá-lo.",
   "TEST_MSG": "Eu tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
