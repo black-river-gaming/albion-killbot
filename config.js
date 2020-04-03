@@ -27,7 +27,6 @@ function isConnected() {
   return !!client && !!client.topology && client.topology.isConnected();
 }
 let db;
-const guildConfigs = {};
 
 exports.connect = async () => {
   const exit = false;
@@ -46,17 +45,12 @@ exports.connect = async () => {
   }
 };
 
-// TODO: Implement bulk get/write guild config
 exports.getConfig = async guild => {
-  // if (guildConfigs[guild.id]) return guildConfigs[guild.id];
-  if (!db) {
-    return DEFAULT_CONFIG;
-  }
+  if (!db) { return DEFAULT_CONFIG; }
   const collection = db.collection(SERVER_CONFIG_COLLECTION);
   try {
     const guildConfig =
       (await collection.findOne({ guild: guild.id })) || DEFAULT_CONFIG;
-    guildConfigs[guild.id] = guildConfig;
     return guildConfig;
   } catch (e) {
     console.log(`Unable to find guildConfig for guild ${guild}: ${e}`);
@@ -64,11 +58,28 @@ exports.getConfig = async guild => {
   }
 };
 
-exports.setConfig = async guild => {
-  if (guild.config) guildConfigs[guild.id] = guild.config;
-  if (!db) {
-    return false;
+exports.getConfigByGuild = async guildList => {
+  const configByGuild = {};
+  guildList.forEach(guild => {
+    configByGuild[guild.id] = DEFAULT_CONFIG;
+  });
+
+  if (!db) return configByGuild;
+  const collection = db.collection(SERVER_CONFIG_COLLECTION);
+  try {
+    const results = await collection.find({ guild: { $in: guildList.map(g => g.id) } }).toArray();
+    results.forEach(result => {
+      configByGuild[result.guild] = result;
+    });
+    return configByGuild;
+  } catch (e) {
+    console.log(`Unable to find guildConfig for ${guildList.length} guilds: ${e}`);
+    return configByGuild;
   }
+};
+
+exports.setConfig = async guild => {
+  if (!db) { return false; }
   const collection = db.collection(SERVER_CONFIG_COLLECTION);
   try {
     guild.config.name = guild.name;
@@ -85,7 +96,7 @@ exports.setConfig = async guild => {
 };
 
 exports.deleteConfig = async guild => {
-  if (guildConfigs[guild.id]) delete guildConfigs[guild.id];
+  if (!db) { return false; }
   const collection = db.collection(SERVER_CONFIG_COLLECTION);
   try {
     return await collection.remove({ guild: guild.id }, true);

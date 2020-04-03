@@ -32,11 +32,7 @@ const client = new Discord.Client();
 client.commands = commands;
 
 const scanEvents = async () => {
-  // TODO: Have getConfig method to support guild arrays (bulk get)
-  const allGuildConfigs = {};
-  for (let guild of client.guilds.array()) {
-    allGuildConfigs[guild.id] = await config.getConfig(guild);
-  }
+  const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
   const getEvents = await events.getEvents(allGuildConfigs);
   const eventsByGuild = getEvents.eventsByGuild;
 
