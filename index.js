@@ -31,6 +31,28 @@ const sleep = milliseconds => {
 const client = new Discord.Client();
 client.commands = commands;
 
+const getDefaultChannel = guild => {
+  // get "original" default channel
+  if (guild.channels.has(guild.id)) return guild.channels.get(guild.id);
+
+  // Check for a "general" channel, which is often default chat
+  const generalChannel = guild.channels.find(
+    channel => channel.name === "general"
+  );
+  if (generalChannel) return generalChannel;
+  // Now we get into the heavy stuff: first channel in order where the bot can speak
+  // hold on to your hats!
+  return guild.channels
+    .filter(
+      c =>
+        c.type === "text" &&
+          c.permissionsFor(guild.client.user).has("SEND_MESSAGES")
+    )
+    .sort((a, b) => a.position - b.position)
+    .first();
+};
+
+
 const scanEvents = async () => {
   const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
   const getEvents = await events.getEvents(allGuildConfigs);
@@ -93,10 +115,10 @@ const scanRanking = async () => {
 
 const sendGuildMessage = async (guild, message) => {
   guild.config = await config.getConfig(guild);
-  const channel = client.channels.find(c => c.id === guild.config.channel);
+  let channel = client.channels.find(c => c.id === guild.config.channel);
   if (!channel) {
     console.log(`WARNING: Channel not configured for guild ${guild.name}.`);
-    return;
+    channel = getDefaultChannel(guild);
   }
   try {
     await channel.send(message);
@@ -107,7 +129,6 @@ const sendGuildMessage = async (guild, message) => {
   }
 };
 
-// TODO: Handle when the bot joins/leaves guilds
 // See more: https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildCreate
 client.on("ready", async () => {
   console.log(`Connected successfully as ${client.user.tag}`);
@@ -149,7 +170,6 @@ client.on("ready", async () => {
 
 client.on("message", async message => {
   if (message.author.bot) return;
-  // For now, bot only accepts commands from server admins
   if (!message.member) {
     return message.reply("Sorry, I can only accept commands inside a channel.");
   }
@@ -164,6 +184,7 @@ client.on("message", async message => {
   }
   const l = messages.getI18n(guild);
 
+  // For now, bot only accepts commands from server admins
   if (!message.member.hasPermission("ADMINISTRATOR")) {
     return message.author.send(l.__("NO_PERMISSION"));
   }
@@ -180,27 +201,6 @@ client.on("message", async message => {
 });
 
 client.on("guildCreate", async guild => {
-  const getDefaultChannel = guild => {
-    // get "original" default channel
-    if (guild.channels.has(guild.id)) return guild.channels.get(guild.id);
-
-    // Check for a "general" channel, which is often default chat
-    const generalChannel = guild.channels.find(
-      channel => channel.name === "general"
-    );
-    if (generalChannel) return generalChannel;
-    // Now we get into the heavy stuff: first channel in order where the bot can speak
-    // hold on to your hats!
-    return guild.channels
-      .filter(
-        c =>
-          c.type === "text" &&
-          c.permissionsFor(guild.client.user).has("SEND_MESSAGES")
-      )
-      .sort((a, b) => a.position - b.position)
-      .first();
-  };
-
   console.log(`Joined guild "${guild.name}". Creating default settings.`);
   guild.config = await config.getConfig(guild);
   guild.config.channel = getDefaultChannel(guild).id;
