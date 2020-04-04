@@ -1,4 +1,5 @@
 const axios = require("axios");
+const logger = require("../logger");
 const { getConfig } = require("../config");
 
 const BATTLES_ENDPOINT =
@@ -47,7 +48,7 @@ function getNewBattles(battles, config) {
 }
 
 exports.getBattles = async guilds => {
-  console.log("Fetching Albion Online battles...");
+  logger.debug("Fetching Albion Online battles...");
   const battlesByGuild = {};
   try {
     const res = await axios.get(BATTLES_ENDPOINT);
@@ -70,7 +71,7 @@ exports.getBattles = async guilds => {
       rate: Math.round((battles.length / 20) * 100)
     };
   } catch (err) {
-    console.error(`Unable to fetch battles from API: ${err}`);
+    logger.error(`Unable to fetch battles from API: ${err}`);
     return {
       battlesByGuild: {},
       rate: 100

@@ -1,4 +1,5 @@
 const axios = require("axios");
+const logger = require("../logger");
 
 const EVENTS_ENDPOINT =
   "https://gameinfo.albiononline.com/api/gameinfo/events?limit=50&offset=0";
@@ -56,7 +57,7 @@ function getNewEvents(
 }
 
 exports.getEvents = async allConfigs => {
-  console.log("Fetching Albion Online events...");
+  logger.debug("Fetching Albion Online events...");
   const eventsByGuild = {};
   try {
     const res = await axios.get(EVENTS_ENDPOINT);
@@ -94,7 +95,7 @@ exports.getEvents = async allConfigs => {
       rate: Math.round((events.length / 50) * 100)
     };
   } catch (err) {
-    console.error(`Unable to fetch data from API: ${err}`);
+    logger.error(`Unable to fetch data from API: ${err}`);
     return {
       eventsByGuild: {},
       rate: 0

@@ -1,3 +1,4 @@
+const logger = require("./logger");
 const MongoClient = require("mongodb").MongoClient;
 
 const MONGODB_URL = process.env.MONGODB_URL;
@@ -10,7 +11,7 @@ const DEFAULT_CONFIG = {
 };
 
 if (!MONGODB_URL) {
-  console.log(
+  logger.warn(
     "Please define MONGODB_URL environment variable with the MongoDB location. Server config persistence is disabled."
   );
 }
@@ -33,27 +34,30 @@ exports.connect = async () => {
   while (!exit) {
     try {
       if (!isConnected()) {
-        console.log("Connecting to database...");
+        logger.info("Connecting to database...");
         await client.connect();
-        console.log("Connection to database stabilished.");
+        logger.info("Connection to database stabilished.");
         db = client.db();
       }
       await sleep(60000);
     } catch (e) {
-      console.log(`Unable to connect to database: ${e}`);
+      logger.error(`Unable to connect to database: ${e}`);
+      await sleep(5000);
     }
   }
 };
 
 exports.getConfig = async guild => {
-  if (!db) { return DEFAULT_CONFIG; }
+  if (!db) {
+    return DEFAULT_CONFIG;
+  }
   const collection = db.collection(SERVER_CONFIG_COLLECTION);
   try {
     const guildConfig =
       (await collection.findOne({ guild: guild.id })) || DEFAULT_CONFIG;
     return guildConfig;
   } catch (e) {
-    console.log(`Unable to find guildConfig for guild ${guild}: ${e}`);
+    logger.error(`Unable to find guildConfig for guild ${guild}: ${e}`);
     return DEFAULT_CONFIG;
   }
 };
@@ -67,19 +71,25 @@ exports.getConfigByGuild = async guildList => {
   if (!db) return configByGuild;
   const collection = db.collection(SERVER_CONFIG_COLLECTION);
   try {
-    const results = await collection.find({ guild: { $in: guildList.map(g => g.id) } }).toArray();
+    const results = await collection
+      .find({ guild: { $in: guildList.map(g => g.id) } })
+      .toArray();
     results.forEach(result => {
       configByGuild[result.guild] = result;
     });
     return configByGuild;
   } catch (e) {
-    console.log(`Unable to find guildConfig for ${guildList.length} guilds: ${e}`);
+    logger.error(
+      `Unable to find guildConfig for ${guildList.length} guilds: ${e}`
+    );
     return configByGuild;
   }
 };
 
 exports.setConfig = async guild => {
-  if (!db) { return false; }
+  if (!db) {
+    return false;
+  }
   const collection = db.collection(SERVER_CONFIG_COLLECTION);
   try {
     guild.config.name = guild.name;
@@ -90,17 +100,19 @@ exports.setConfig = async guild => {
     );
     return guildConfig;
   } catch (e) {
-    console.log(`Unable to write guildConfig for guild ${guild}: ${e}`);
+    logger.error(`Unable to write guildConfig for guild ${guild}: ${e}`);
     return false;
   }
 };
 
 exports.deleteConfig = async guild => {
-  if (!db) { return false; }
+  if (!db) {
+    return false;
+  }
   const collection = db.collection(SERVER_CONFIG_COLLECTION);
   try {
     return await collection.remove({ guild: guild.id }, true);
   } catch (e) {
-    console.log(`Unable to delete guildConfig for guild ${guild}: ${e}`);
+    logger.error(`Unable to delete guildConfig for guild ${guild}: ${e}`);
   }
 };

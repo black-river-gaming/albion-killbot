@@ -5,13 +5,14 @@ const moment = require("moment");
 const config = require("./config");
 const messages = require("./messages");
 const commands = require("./commands");
+const logger = require("./logger");
 const events = require("./queries/events");
 const battles = require("./queries/battles");
 const guilds = require("./queries/guilds");
 
 const token = process.env.TOKEN;
 if (!token) {
-  console.log(
+  logger.error(
     "Please define TOKEN environment variable with the discord token."
   );
   process.exit(0);
@@ -46,12 +47,11 @@ const getDefaultChannel = guild => {
     .filter(
       c =>
         c.type === "text" &&
-          c.permissionsFor(guild.client.user).has("SEND_MESSAGES")
+        c.permissionsFor(guild.client.user).has("SEND_MESSAGES")
     )
     .sort((a, b) => a.position - b.position)
     .first();
 };
-
 
 const scanEvents = async () => {
   const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
@@ -61,10 +61,10 @@ const scanEvents = async () => {
   for (let guild of client.guilds.array()) {
     guild.config = allGuildConfigs[guild.id];
     if (!guild.config || !eventsByGuild[guild.id]) continue;
-    // Debug
+
     const newEventsCount = eventsByGuild[guild.id].length;
     if (newEventsCount > 0) {
-      console.log(
+      logger.info(
         `Sending ${newEventsCount} new events to guild "${guild.name}"`
       );
     }
@@ -84,10 +84,9 @@ const scanBattles = async () => {
     guild.config = await config.getConfig(guild);
     if (!guild.config || !battlesByGuild[guild.id]) continue;
 
-    // Debug
     const newBattlesCount = battlesByGuild[guild.id].length;
     if (newBattlesCount > 0) {
-      console.log(
+      logger.info(
         `Sending ${newBattlesCount} new battles to guild "${guild.name}"`
       );
     }
@@ -117,13 +116,13 @@ const sendGuildMessage = async (guild, message) => {
   guild.config = await config.getConfig(guild);
   let channel = client.channels.find(c => c.id === guild.config.channel);
   if (!channel) {
-    console.log(`WARNING: Channel not configured for guild ${guild.name}.`);
+    logger.warn(`Channel not configured for guild ${guild.name}.`);
     channel = getDefaultChannel(guild);
   }
   try {
     await channel.send(message);
   } catch (e) {
-    console.log(
+    logger.error(
       `Unable to send message to guild ${guild.name}/${channel.name}: ${e}`
     );
   }
@@ -131,7 +130,7 @@ const sendGuildMessage = async (guild, message) => {
 
 // See more: https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildCreate
 client.on("ready", async () => {
-  console.log(`Connected successfully as ${client.user.tag}`);
+  logger.info(`Connected successfully as ${client.user.tag}`);
 
   // Events that fires daily (12:00 pm)
   setInterval(() => {
@@ -158,7 +157,7 @@ client.on("ready", async () => {
         time = Math.round(
           Math.min(baseTime * INTERVAL.THRESHOLD, time * INTERVAL.FACTOR)
         );
-      console.log(`${func.name} - Unread rate: ${rate}%. New time: ${time}ms`);
+      logger.debug(`${func.name} - Unread rate: ${rate}%. New time: ${time}ms`);
 
       await sleep(time);
     }
@@ -201,7 +200,7 @@ client.on("message", async message => {
 });
 
 client.on("guildCreate", async guild => {
-  console.log(`Joined guild "${guild.name}". Creating default settings.`);
+  logger.info(`Joined guild "${guild.name}". Creating default settings.`);
   guild.config = await config.getConfig(guild);
   guild.config.channel = getDefaultChannel(guild).id;
   config.setConfig(guild);
@@ -210,7 +209,7 @@ client.on("guildCreate", async guild => {
 });
 
 client.on("guildDelete", guild => {
-  console.log(`Left guild "${guild.name}". Deleting settings.`);
+  logger.info(`Left guild "${guild.name}". Deleting settings.`);
   config.deleteConfig(guild);
 });
 
