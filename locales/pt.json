@@ -36,6 +36,7 @@
     "CRAFTING": "Ranking de Criação"
   },
   "HELP": {
+    "VERSION": "Albion Killbot v{{ version }}",
     "HELP": "Mostra a lista de comandos do bot.",
     "CHANNEL": "Define o canal para mostrar as notificações.",
     "LANGUAGE": "Define o idioma do bot.",

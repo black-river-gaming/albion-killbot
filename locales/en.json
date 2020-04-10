@@ -36,6 +36,7 @@
     "CRAFTING": "Crafting Ranking"
   },
   "HELP": {
+    "VERSION": "Albion Killbot v{{ version }}",
     "HELP": "Show bot command list.",
     "CHANNEL": "Sets the channel to send notifications.",
     "LANGUAGE": "Set bot language.",

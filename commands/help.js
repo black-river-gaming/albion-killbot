@@ -7,6 +7,14 @@ module.exports = {
   run: (client, guild, message) => {
     const l = getI18n(guild);
     let response = "```\n";
+
+    if (process.env.npm_package_version) {
+      response += l.__("HELP.VERSION", {
+        version: process.env.npm_package_version
+      });
+      response += "\n\n";
+    }
+
     Object.keys(client.commands).forEach(key => {
       const command = client.commands[key];
       let commandKey = `!${command.aliases[0]}`;
@@ -23,6 +31,7 @@ module.exports = {
         description +
         "\n";
     });
+
     response += "```";
     message.channel.send(response);
 
