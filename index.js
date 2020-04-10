@@ -114,8 +114,10 @@ const scanRanking = async () => {
   }
 };
 
+const msgErrors = {};
 const sendGuildMessage = async (guild, message) => {
   guild.config = await config.getConfig(guild);
+  const l = messages.getI18n(guild);
   let channel = client.channels.find(c => c.id === guild.config.channel);
   if (!channel) {
     logger.warn(`Channel not configured for guild ${guild.name}.`);
@@ -123,10 +125,28 @@ const sendGuildMessage = async (guild, message) => {
   }
   try {
     await channel.send(message);
+    msgErrors[guild.id] = 0;
   } catch (e) {
     logger.error(
       `Unable to send message to guild ${guild.name}/${channel.name}: ${e}`
     );
+
+    if (
+      e.code === Discord.Constants.APIErrors.UNKNOWN_CHANNEL ||
+      e.code === Discord.Constants.APIErrors.MISSING_ACCESS ||
+      e.code === Discord.Constants.APIErrors.MISSING_PERMISSIONS
+    ) {
+      if (!msgErrors[guild.id]) msgErrors[guild.id] = 0;
+      msgErrors[guild.id]++;
+      // If more than 50 msg errors occur in succession, bot will leave and warn owner
+      if (msgErrors[guild.id] > 50) {
+        logger.warn(
+          `Leaving guild ${guild.name} due to excessive message errors. Warning owner.`
+        );
+        await guild.owner.send(l.__("LEAVE", { guild: guild.name }));
+        await guild.leave();
+      }
+    }
   }
 };
 
