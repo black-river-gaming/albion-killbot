@@ -29,7 +29,9 @@ const sleep = milliseconds => {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
 };
 
-const client = new Discord.Client();
+const client = new Discord.Client({
+  autoReconnect: true
+});
 client.commands = commands;
 
 const getDefaultChannel = guild => {
@@ -128,43 +130,8 @@ const sendGuildMessage = async (guild, message) => {
   }
 };
 
-// See more: https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildCreate
 client.on("ready", async () => {
-  logger.info(`Connected successfully as ${client.user.tag}`);
-
-  // Events that fires daily (12:00 pm)
-  setInterval(() => {
-    const now = moment();
-    if (now.hour() === 12 && now.minute() === 0) {
-      scanRanking();
-    }
-  }, 60000); // Every minute
-
-  // Interval events
-  const runInterval = async (func, baseTime) => {
-    let time = baseTime;
-
-    const exit = false;
-    while (!exit) {
-      const rate = await func();
-
-      // Change interval based on rate
-      if (rate >= INTERVAL.MAX_RATIO)
-        time = Math.round(
-          Math.max(baseTime / INTERVAL.THRESHOLD, time / INTERVAL.FACTOR)
-        );
-      else if (rate <= INTERVAL.MIN_RATIO)
-        time = Math.round(
-          Math.min(baseTime * INTERVAL.THRESHOLD, time * INTERVAL.FACTOR)
-        );
-      logger.debug(`${func.name} - Unread rate: ${rate}%. New time: ${time}ms`);
-
-      await sleep(time);
-    }
-  };
-
-  runInterval(scanEvents, 30000);
-  runInterval(scanBattles, 90000);
+  logger.info(`Connected to Discord as ${client.user.tag}`);
 });
 
 client.on("message", async message => {
@@ -215,5 +182,39 @@ client.on("guildDelete", guild => {
 
 (async () => {
   config.connect();
-  client.login(token);
+  await client.login(token);
+
+  // Events that fires daily (12:00 pm)
+  setInterval(() => {
+    const now = moment();
+    if (now.hour() === 12 && now.minute() === 0) {
+      scanRanking();
+    }
+  }, 60000); // Every minute
+
+  // Interval events
+  const runInterval = async (func, baseTime) => {
+    let time = baseTime;
+
+    const exit = false;
+    while (!exit) {
+      const rate = await func();
+
+      // Change interval based on rate
+      if (rate >= INTERVAL.MAX_RATIO)
+        time = Math.round(
+          Math.max(baseTime / INTERVAL.THRESHOLD, time / INTERVAL.FACTOR)
+        );
+      else if (rate <= INTERVAL.MIN_RATIO)
+        time = Math.round(
+          Math.min(baseTime * INTERVAL.THRESHOLD, time * INTERVAL.FACTOR)
+        );
+      logger.debug(`${func.name} - Unread rate: ${rate}%. New time: ${time}ms`);
+
+      await sleep(time);
+    }
+  };
+
+  runInterval(scanEvents, 30000);
+  runInterval(scanBattles, 90000);
 })();
