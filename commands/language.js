@@ -1,8 +1,13 @@
+const { readdirSync } = require("fs");
+const path = require("path");
 const { setConfig } = require("../config");
 const { getI18n } = require("../messages");
 
-// TODO: Supported languages from locales folder
-const SUPPORTED_LANGS = ["en", "pt"];
+const langs = [];
+const langFiles = readdirSync(path.join(__dirname, "..", "locales"));
+langFiles.forEach(langFile => {
+  langs.push(path.parse(langFile).name);
+});
 
 module.exports = {
   aliases: ["language", "lang"],
@@ -11,10 +16,15 @@ module.exports = {
   run: async (client, guild, message, args) => {
     const l = getI18n(guild);
 
-    const lang = (args[0] || "").toLowerCase();
-    if (SUPPORTED_LANGS.indexOf(lang) < 0) {
-      message.channel.send(l.__("LANGUAGE.NOT_SUPPORTED"));
-      return;
+    if (!args[0]) {
+      return message.channel.send(
+        l.__("LANGUAGE.AVAILABLE", { langs: langs.join(", ") })
+      );
+    }
+
+    const lang = args[0].toLowerCase();
+    if (langs.indexOf(lang) < 0) {
+      return message.channel.send(l.__("LANGUAGE.NOT_SUPPORTED"));
     }
 
     guild.config.lang = lang;

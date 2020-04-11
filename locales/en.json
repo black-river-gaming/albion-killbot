@@ -52,6 +52,7 @@
     "SET_CHANNEL": "Channel defined to {{{ channel }}}."
   },
   "LANGUAGE": {
+    "AVAILABLE": "Supported languages: {{ langs }}",
     "NOT_SUPPORTED": "This language is not supported.",
     "SET_LANGUAGE": "Language set to '{{ lang }}'"
   },
