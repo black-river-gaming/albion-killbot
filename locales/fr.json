@@ -1,0 +1,78 @@
+{
+  "JOIN": "Bonjour tout le monde! Je suis Albion Killbot. Si vous êtes un admin, s'il vous plait configurer moi en écrivant !help et regarder ce que je peux faire.",
+  "LEAVE": "Triste!, J'ai du mal à envoyer des messages à votre serveur {{ guild }}, Donc je dois vous quitter =(\nOn se revoit bientot!",
+  "NO_PERMISSION": "Désolé, j'accepte seulement les commandes des admins du serveur.",
+  "CONFIG_NOT_SET": "ATTENTION: Impossible d'enregistrer la configuration du serveur. Ils seront réinitialiser au redémarrage du bot.",
+  "CHANNEL_NOT_SET": "ATTENTION: Le channel d'envoi des messages du bot n'est pas défini. Veuillez utiliser !channel [channel] Pour le configurer.",
+  "TEST_MSG": "J'ai la permission d'envoyer des messages dans le channel {{{ channel }}}.",
+  "TEST_FAIL": "Je n'ai pas la permission d'envoyer des messages au channel configuré.",
+  "KILL": {
+    "EVENT": "{{ killer }} a tué {{ victim }}!",
+    "SOLO_0": "Facile! Solo kill!!!",
+    "SOLO_1": "Solo kill.",
+    "SOLO_2": "Un solo kill propre.",
+    "SOLO_3": "Pas besoin d'aide.",
+    "SOLO_4": "Il s'est fait soulever! Solo kill.",
+    "SOLO_5": "Solo kill. Quelle facilitée.",
+    "ASSIST": "Assist(s): {{{ assists }}}",
+    "FAME": "Kill Fame",
+    "KILLER_GUILD": "Guilde tueuse",
+    "VICTIM_GUILD": "Guilde victime",
+    "NO_GUILD": "Pas de guilde",
+    "KILLER_IP": "IP du tueur",
+    "VICTIM_IP": "IP de la victime"
+  },
+  "BATTLE": {
+    "EVENT": "Une bataille a éclaté entre {{ guilds }} guildes!",
+    "DESCRIPTION": "Joueurs: {{ players }} / Tués: {{ kills }} / Fame: {{ fame }}\nDurée: {{ duration }}",
+    "LINE": "{{ name }} ({{ kills }}/{{ deaths }}) - Fame: {{fame}}",
+    "NO_ALLIANCE": "Autres",
+    "NO_GUILD": "Joueur sans Guilde"
+  },
+  "RANKING": {
+    "MONTHLY": "Classement mensuel - {{ guild }}",
+    "PVE": "Classement PvE",
+    "PVP": "Classement PvP",
+    "GATHERING": "Classement de collecte",
+    "CRAFTING": "Classement de craft"
+  },
+  "HELP": {
+    "VERSION": "Albion Killbot v{{ version }}",
+    "HELP": "Afficher la liste des commandes du bot.",
+    "CHANNEL": "Définir le channel pour envoyer les notifications.",
+    "LANGUAGE": "Définir la langue du bot.",
+    "LIST": "Liste des joueurs, guildes et alliances suivis.",
+    "TRACK": "Suivre un joueur, une guilde ou une alliance.",
+    "UNTRACK": "Arrêter de suivre un joueur, une alliance ou une guilde.",
+    "TEST": "Verifiez si le bot a les permissions pour envoyer des messages."
+  },
+  "CHANNEL": {
+    "NO_CHANNEL": "Veuillez sélectionner un channel dans le quel les notifications seront envoyées.",
+    "NOT_FOUND": "Désoler, je ne trouve pas le channel spécifié. Verifiez que j'ai les permissions d'y acceder.",
+    "SET_CHANNEL": "Channel sélectionné {{{ channel }}}."
+  },
+  "LANGUAGE": {
+    "AVAILABLE": "Languge disponnible: {{ langs }}",
+    "NOT_SUPPORTED": "Ce language n'est pas disponnible.",
+    "SET_LANGUAGE": "Language sélectionné '{{ lang }}'"
+  },
+  "TRACK": {
+    "LIST": "Liste des suivis",
+    "NONE": "Aucun",
+    "PLAYERS": "Joueurs",
+    "GUILDS": "Guildes",
+    "ALLIANCES": "Alliances",
+    "MISSING_PARAMETERS": "Veuillez renseigner tout les paramètres. Ecrivez !help pour connaître les commandes.",
+    "UNSUPPORTED_TYPE": "Je ne peux pas suivre ceci. Ecrivez !help pour en savoir plus.",
+    "ALLIANCE_DISABLED": "Désoler, le suivi d'alliance est désactivé. Contacter l'administrateur pour plus d'informations.",
+    "NOT_FOUND": "Désoler, je ne  trouve rien portant ce nom",
+    "ALREADY_TRACKED": "Je suis déja ceci.",
+    "LIMIT_REACHED": "Tu as déja atteint la limite de {{ limit }} suivis dans la liste..",
+    "PLAYER_TRACKED": "Suivi du joueur: {{ name }}.",
+    "GUILD_TRACKED": "Suivi de la guilde: {{ name }}.",
+    "ALLIANCE_TRACKED": "Suivi de l'alliance: {{ name }}.",
+    "PLAYER_UNTRACKED": "Désactivation de la suivie du joueur: {{ name }}.",
+    "GUILD_UNTRACKED": "Désactivation de la suivie de la guilde: {{ name }}.",
+    "ALLIANCE_UNTRACKED": "Désactivation de la suivie de l'alliance: {{ name }}."
+  }
+}
