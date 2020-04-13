@@ -1,0 +1,78 @@
+{
+  "JOIN": "¡Hola a todos! Soy Albion Killbot. Si es administrador, configúreme escribiendo ayuda y vea qué puedo hacer.",
+  "LEAVE": "Lamentablemente, tengo problemas para enviar mensajes a su servidor {{ guild }}, así que me tengo que ir now =(\nte veo pronto!",
+  "NO_PERMISSION": "Lo sentimos, solo acepto los comandos de los administradores del servidor.",
+  "CONFIG_NOT_SET": "ADVERTENCIA: no se puede mantener la configuración del servidor. Se revertirán al reiniciar el bot.",
+  "CHANNEL_NOT_SET": "ADVERTENCIA: el canal para enviar notificaciones no está configurado. Utilice !Channel [Canal] para configurarlo.",
+  "TEST_MSG": "Tengo permiso para enviar mensajes al canal. {{{ channel }}}.",
+  "TEST_FAIL": "NO tengo permisos para enviar mensajes al canal configurado.",
+  "KILL": {
+    "EVENT": "{{ killer }} Mató {{ victim }}!",
+    "SOLO_0": "Muerte casual! Muerte en solitario!!!",
+    "SOLO_1": "Fue un asesinato en solitario.",
+    "SOLO_2": "A clean solo kill.",
+    "SOLO_3": "No se necesitan asistencias.",
+    "SOLO_4": "Obtener rekt! Matar solo.",
+    "SOLO_5": "Solo asesinado. No se hicieron preguntas.",
+    "ASSIST": "Ayuda(s): {{{ assists }}}",
+    "FAME": "Fama por Muerte",
+    "KILLER_GUILD": "Gremio de Asesino",
+    "VICTIM_GUILD": "Gremio de Victima",
+    "NO_GUILD": "Sin Gremio",
+    "KILLER_IP": "IP de el Asesino",
+    "VICTIM_IP": "IP de la Victima"
+  },
+  "BATTLE": {
+    "EVENT": "Ocurrio una batalla entre {{ guilds }} guilds!",
+    "DESCRIPTION": "Jugadores: {{ players }} / Muertes: {{ kills }} / Fama: {{ fame }}\nDuración: {{ duration }}",
+    "LINE": "{{ name }} ({{ kills }}/{{ deaths }}) - Fama: {{fame}}",
+    "NO_ALLIANCE": "Otros",
+    "NO_GUILD": "Jugadores sin gremios."
+  },
+  "RANKING": {
+    "MONTHLY": "Ranking Mensual - {{ guild }}",
+    "PVE": "Ranking de PVE",
+    "PVP": "Ranking de PVP",
+    "GATHERING": "Ranking de Recoleción",
+    "CRAFTING": "Ranking de Creacion"
+  },
+  "HELP": {
+    "VERSION": "Albion Killbot v{{ version }}",
+    "HELP": "Mostrar Lista de Comandos.",
+    "CHANNEL": "Establecer Canal para enviar notificaciones",
+    "LANGUAGE": "Establecer idioma de bot.",
+    "LIST": "Lista de jugadores,gremios y alianzas rastreadas.",
+    "TRACK": "Rastrea a un jugador, gremio o alianza.",
+    "UNTRACK": "Dejar de seguir a un jugador, gremio o alianza.",
+    "TEST": "Verificar si el bot tiene permisos para enviar mensajes."
+  },
+  "CHANNEL": {
+    "NO_CHANNEL": "Ingrese un canal para las notificaciones",
+    "NOT_FOUND": "Lo siento, no puedo encontrar el canal mencionado. Verifique si tengo acceso e intente nuevamente.",
+    "SET_CHANNEL": "Canal definido  {{{ channel }}}."
+  },
+  "LANGUAGE": {
+    "AVAILABLE": "Idiomas soportados: {{ langs }}",
+    "NOT_SUPPORTED": "Este idioma no es soportado.",
+    "SET_LANGUAGE": "Idioma definido '{{ lang }}'"
+  },
+  "TRACK": {
+    "LIST": "Lista de rastreo",
+    "NONE": "Ninguna",
+    "PLAYERS": "Jugadores",
+    "GUILDS": "Gremios",
+    "ALLIANCES": "Alianzas",
+    "MISSING_PARAMETERS": "Por favor inserte todos los parámetros. Escriba !Help para ver más..",
+    "UNSUPPORTED_TYPE": "Tipo de seguimiento no compatible. Escriba !Help para ver más.",
+    "ALLIANCE_DISABLED": "Lo sentimos, el seguimiento de las alianzas está deshabilitado por ahora. Póngase en contacto con el administrador de bot para obtener más información.",
+    "NOT_FOUND": "Lo siento, no pude encontrar nada con este nombre.",
+    "ALREADY_TRACKED": "Ya estoy rastreando este artículo.",
+    "LIMIT_REACHED": "Limite Alcanzado de {{ limit }} articulos en esta lista.",
+    "PLAYER_TRACKED": "Jugador rastreado: {{ name }}.",
+    "GUILD_TRACKED": "Gremio rastreado: {{ name }}.",
+    "ALLIANCE_TRACKED": "Alianza rastreada: {{ name }}.",
+    "PLAYER_UNTRACKED": "Dejar de rastrear Jugador: {{ name }}.",
+    "GUILD_UNTRACKED": "Dejar de rastrear gremio: {{ name }}.",
+    "ALLIANCE_UNTRACKED": "Dejar de rastrear Alianza: {{ name }}."
+  }
+}
