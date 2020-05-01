@@ -20,15 +20,30 @@ Make sure the bot have the following permissions:
 - Send Messages
 - Embed Links
 
-# Configuration
-
-Type `!help` to see the bot's command.
+Type `!help` to see the bot's command. Don't forget to set up the notification channel using `!channel #channel` command.
 
 The bot can track players and guilds. Alliances are disabled for now to avoid bot spam.
 
+# Development
+
+To set up the bot in a self-hosted way:
+
+1. Clone the repository
+```
+git clone git@github.com:agnjunio/albion-killbot.git
+cd albion-killbot
+```
+
+2. Run yarn to install dependencies
+```
+yarn
+```
+
+3. Create an .env file or set the environment variables that you wish to use
+```
+cp .env.example .env
+```
+
 # Contributing
 
-The bot development is simple as cloning the repository, cd'ing into it and running yarn.
-You only need to set the Discord token using the `TOKEN` env. And `MONGODB_URL` if you want to persist server config.
-
-Patches and suggestions are very welcome!
+Patches and suggestions are very welcome, but please note that I will judge the quality of the code before merging it through the Pull Request process.
