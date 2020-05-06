@@ -19,7 +19,7 @@ if (!token) {
 }
 const COMMAND_PREFIX = "!";
 const INTERVAL = {
-  THRESHOLD: 3, // Ex, 30 seconds interval can go from 15 to 60 with 2 THRESHOLD
+  THRESHOLD: 2, // Ex, 30 seconds interval can go from 15 to 60 with 2 THRESHOLD
   FACTOR: 1.2, // Multiply/divide by this number each iteration
   MIN_RATIO: 30, // Maximum ratio to decrease interval
   MAX_RATIO: 70 // Minimum ratio to increase interval
@@ -235,6 +235,6 @@ client.on("guildDelete", guild => {
     }
   };
 
-  runInterval(scanEvents, 30000);
+  runInterval(scanEvents, 20000);
   runInterval(scanBattles, 90000);
 })();
