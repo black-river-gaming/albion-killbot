@@ -1,7 +1,6 @@
 const logger = require("./logger");
-const MongoClient = require("mongodb").MongoClient;
+const database = require("./database");
 
-const MONGODB_URL = process.env.MONGODB_URL;
 const SERVER_CONFIG_COLLECTION = "guildConfig";
 const DEFAULT_CONFIG = {
   trackedPlayers: [],
@@ -10,48 +9,11 @@ const DEFAULT_CONFIG = {
   lang: "en"
 };
 
-if (!MONGODB_URL) {
-  logger.warn(
-    "Please define MONGODB_URL environment variable with the MongoDB location. Server config persistence is disabled."
-  );
-}
-
-const sleep = milliseconds => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds));
-};
-
-const client = new MongoClient(MONGODB_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-function isConnected() {
-  return !!client && !!client.topology && client.topology.isConnected();
-}
-let db;
-
-exports.connect = async () => {
-  const exit = false;
-  while (!exit) {
-    try {
-      if (!isConnected()) {
-        logger.info("Connecting to database...");
-        await client.connect();
-        logger.info("Connection to database stabilished.");
-        db = client.db();
-      }
-      await sleep(60000);
-    } catch (e) {
-      logger.error(`Unable to connect to database: ${e}`);
-      await sleep(5000);
-    }
-  }
-};
-
 exports.getConfig = async guild => {
-  if (!db) {
+  const collection = database.collection(SERVER_CONFIG_COLLECTION);
+  if (!collection) {
     return DEFAULT_CONFIG;
   }
-  const collection = db.collection(SERVER_CONFIG_COLLECTION);
   try {
     const guildConfig =
       (await collection.findOne({ guild: guild.id })) || DEFAULT_CONFIG;
@@ -68,8 +30,8 @@ exports.getConfigByGuild = async guildList => {
     configByGuild[guild.id] = DEFAULT_CONFIG;
   });
 
-  if (!db) return configByGuild;
-  const collection = db.collection(SERVER_CONFIG_COLLECTION);
+  const collection = database.collection(SERVER_CONFIG_COLLECTION);
+  if (!collection) return configByGuild;
   try {
     const results = await collection
       .find({ guild: { $in: guildList.map(g => g.id) } })
@@ -87,10 +49,10 @@ exports.getConfigByGuild = async guildList => {
 };
 
 exports.setConfig = async guild => {
-  if (!db) {
+  const collection = database.collection(SERVER_CONFIG_COLLECTION);
+  if (!collection) {
     return false;
   }
-  const collection = db.collection(SERVER_CONFIG_COLLECTION);
   try {
     guild.config.name = guild.name;
     const guildConfig = await collection.updateOne(
@@ -106,10 +68,10 @@ exports.setConfig = async guild => {
 };
 
 exports.deleteConfig = async guild => {
-  if (!db) {
+  const collection = database.collection(SERVER_CONFIG_COLLECTION);
+  if (!collection) {
     return false;
   }
-  const collection = db.collection(SERVER_CONFIG_COLLECTION);
   try {
     return await collection.remove({ guild: guild.id }, true);
   } catch (e) {
