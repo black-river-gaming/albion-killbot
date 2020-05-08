@@ -48,7 +48,11 @@ exports.getBattles = async () => {
 
   let battles;
   try {
-    const res = await axios.get(BATTLES_ENDPOINT);
+    const res = await axios.get(BATTLES_ENDPOINT, {
+      params: {
+        timestamp: moment().unix()
+      }
+    });
     battles = res.data;
   } catch (err) {
     return logger.error(`Unable to fetch battle data from API [${err}]`);

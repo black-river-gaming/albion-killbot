@@ -59,7 +59,11 @@ exports.getEvents = async () => {
 
   let events;
   try {
-    const res = await axios.get(EVENTS_ENDPOINT);
+    const res = await axios.get(EVENTS_ENDPOINT, {
+      params: {
+        timestamp: moment().unix()
+      }
+    });
     events = res.data;
   } catch (err) {
     return logger.error(`Unable to fetch event data from API [${err}]`);

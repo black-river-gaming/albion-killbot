@@ -87,8 +87,6 @@ const scanBattles = async () => {
       sendGuildMessage(guild, messages.embedBattle(battle, guild.config.lang))
     );
   }
-
-  return getBattles.rate;
 };
 
 const scanRanking = async () => {
@@ -214,7 +212,7 @@ client.on("guildDelete", guild => {
     }
   };
 
-  runInterval(getEvents, 8000);
+  runInterval(getEvents, 6000);
   runInterval(scanEvents, 30000);
   runInterval(getBattles, 100000);
   runInterval(scanBattles, 60000);
