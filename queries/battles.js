@@ -4,7 +4,7 @@ const logger = require("../logger");
 const database = require("../database");
 
 const BATTLES_ENDPOINT =
-  "https://gameinfo.albiononline.com/api/gameinfo/battles?offset=0&limit=20&sort=recent";
+  "https://gameinfo.albiononline.com/api/gameinfo/battles?offset=0&limit=50&sort=recent";
 const BATTLES_COLLECTION = "battles";
 const BATTLES_KEEP_HOURS = 4;
 
