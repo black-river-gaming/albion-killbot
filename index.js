@@ -6,8 +6,10 @@ const config = require("./config");
 const messages = require("./messages");
 const commands = require("./commands");
 const logger = require("./logger");
-const events = require("./queries/events");
-const battles = require("./queries/battles");
+const database = require("./database");
+const { sleep } = require("./utils");
+const { getEvents, getEventsByGuild } = require("./queries/events");
+const { getBattles, getBattlesByGuild } = require("./queries/battles");
 const guilds = require("./queries/guilds");
 
 const token = process.env.TOKEN;
@@ -18,16 +20,6 @@ if (!token) {
   process.exit(0);
 }
 const COMMAND_PREFIX = "!";
-const INTERVAL = {
-  THRESHOLD: 2, // Ex, 30 seconds interval can go from 15 to 60 with 2 THRESHOLD
-  FACTOR: 1.2, // Multiply/divide by this number each iteration
-  MIN_RATIO: 30, // Maximum ratio to decrease interval
-  MAX_RATIO: 70 // Minimum ratio to increase interval
-};
-
-const sleep = milliseconds => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds));
-};
 
 const client = new Discord.Client({
   autoReconnect: true
@@ -56,9 +48,9 @@ const getDefaultChannel = guild => {
 };
 
 const scanEvents = async () => {
+  logger.info("Notifying new events to all Discord Servers.");
   const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
-  const getEvents = await events.getEvents(allGuildConfigs);
-  const eventsByGuild = getEvents.eventsByGuild;
+  const eventsByGuild = await getEventsByGuild(allGuildConfigs);
 
   for (let guild of client.guilds.array()) {
     guild.config = allGuildConfigs[guild.id];
@@ -74,13 +66,12 @@ const scanEvents = async () => {
       sendGuildMessage(guild, messages.embedEvent(event, guild.config.lang));
     });
   }
-
-  return getEvents.rate;
 };
 
 const scanBattles = async () => {
-  const getBattles = await battles.getBattles(client.guilds.array());
-  const battlesByGuild = getBattles.battlesByGuild;
+  logger.info("Notifying new battles to all Discord Servers.");
+  const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
+  const battlesByGuild = await getBattlesByGuild(allGuildConfigs);
 
   for (let guild of client.guilds.array()) {
     guild.config = await config.getConfig(guild);
@@ -201,7 +192,7 @@ client.on("guildDelete", guild => {
 });
 
 (async () => {
-  config.connect();
+  database.connect();
   await client.login(token);
 
   // Events that fires daily (12:00 pm)
@@ -210,31 +201,21 @@ client.on("guildDelete", guild => {
     if (now.hour() === 12 && now.minute() === 0) {
       scanRanking();
     }
-  }, 60000); // Every minute
+  }, 60000);
 
-  // Interval events
+  // Events that run on an interval
   const runInterval = async (func, baseTime) => {
     let time = baseTime;
 
     const exit = false;
     while (!exit) {
-      const rate = await func();
-
-      // Change interval based on rate
-      if (rate >= INTERVAL.MAX_RATIO)
-        time = Math.round(
-          Math.max(baseTime / INTERVAL.THRESHOLD, time / INTERVAL.FACTOR)
-        );
-      else if (rate <= INTERVAL.MIN_RATIO)
-        time = Math.round(
-          Math.min(baseTime * INTERVAL.THRESHOLD, time * INTERVAL.FACTOR)
-        );
-      logger.debug(`${func.name} - Unread rate: ${rate}%. New time: ${time}ms`);
-
+      await func();
       await sleep(time);
     }
   };
 
-  runInterval(scanEvents, 20000);
-  runInterval(scanBattles, 90000);
+  runInterval(getEvents, 8000);
+  runInterval(scanEvents, 30000);
+  runInterval(getBattles, 100000);
+  runInterval(scanBattles, 60000);
 })();

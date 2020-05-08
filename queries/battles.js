@@ -1,11 +1,12 @@
 const axios = require("axios");
+const moment = require("moment");
 const logger = require("../logger");
-const { getConfig } = require("../config");
+const database = require("../database");
 
 const BATTLES_ENDPOINT =
   "https://gameinfo.albiononline.com/api/gameinfo/battles?offset=0&limit=20&sort=recent";
-
-let lastBattleId = null;
+const BATTLES_COLLECTION = "battles";
+const BATTLES_KEEP_HOURS = 4;
 
 function getNewBattles(battles, config) {
   if (!config) {
@@ -17,14 +18,9 @@ function getNewBattles(battles, config) {
   const allianceIds = (config.trackedAlliances || []).map(t => t.id);
 
   const newBattles = [];
-  battles.every(battle => {
-    if (battle.id <= lastBattleId) {
-      return false;
-    }
+  battles.forEach(battle => {
     // Ignore battles without fame
-    if (battle.totalFame <= 0) {
-      return true;
-    }
+    if (battle.totalFame <= 0) { return; }
 
     // Check for tracked ids in players, guilds and alliances
     // Since we are parsing from newer to older events we need to use a FILO array
@@ -40,41 +36,72 @@ function getNewBattles(battles, config) {
     if (hasTrackedPlayer || hasTrackedGuild || hasTrackedAlliance) {
       newBattles.unshift(battle);
     }
-
-    return true;
   });
-
   return newBattles;
 }
 
-exports.getBattles = async guilds => {
-  logger.debug("Fetching Albion Online battles...");
-  const battlesByGuild = {};
+exports.getBattles = async () => {
+  const collection = database.collection(BATTLES_COLLECTION);
+  if (!collection) {
+    return logger.warn("Not connected to database. Skipping get battles.");
+  }
+
+  let battles;
   try {
     const res = await axios.get(BATTLES_ENDPOINT);
-    // We only want unread battles
-    const battles = res.data.filter(bat => bat.id > lastBattleId);
-
-    for (let guild of guilds) {
-      const config = await getConfig(guild);
-      if (!config) continue;
-      battlesByGuild[guild.id] = getNewBattles(battles, config);
-    }
-
-    // Sometimes the API return old values, se we just want increasing values
-    if (battles.length > 0 && battles[0].id > lastBattleId) {
-      lastBattleId = battles[0].id;
-    }
-
-    return {
-      battlesByGuild,
-      rate: Math.round((battles.length / 20) * 100)
-    };
+    battles = res.data;
   } catch (err) {
-    logger.error(`Unable to fetch battles from API: ${err}`);
-    return {
-      battlesByGuild: {},
-      rate: 100
-    };
+    return logger.error(`Unable to fetch battle data from API [${err}]`);
   }
+
+  // Insert events that aren't in the database yet
+  let ops = [];
+  battles.forEach(async battle => {
+    ops.push({
+      updateOne: {
+        filter: { id: battle.id },
+        update: {
+          $setOnInsert: { ...battle, read: false },
+        },
+        upsert: true
+      }
+    });
+  });
+  const writeResult = await collection.bulkWrite(ops, { ordered: false });
+
+  // Delete older events to free cache space
+  const deleteResult = await collection.deleteMany({ TimeStamp: { $lte: moment().subtract(BATTLES_KEEP_HOURS, "hours").toISOString() }});
+  logger.info(`Fetch success. (New battles inserted: ${writeResult.upsertedCount}, old battles removed: ${deleteResult.deletedCount}).`);
+};
+
+exports.getBattlesByGuild = async guildConfigs => {
+  const collection = database.collection(BATTLES_COLLECTION);
+  if (!collection) {
+    return logger.warn("Not connected to database. Skipping notify battles.");
+  }
+
+  // Get unread battles
+  const battles = await (collection.find({ read: false }).toArray());
+  if (battles.length === 0) {
+    return logger.debug("No new battles to notify.");
+  }
+
+  // Set battles as read before sending to ensure no double battle notification
+  const updateResult = await collection.updateMany({ id: {
+    $in: battles.map(battle => battle.id)
+  }}, {
+    $set: { read: true }
+  });
+  logger.info(`Notify success. (Battles read: ${updateResult.modifiedCount}).`);
+
+  const battlesByGuild = {};
+  for (let guild of Object.keys(guildConfigs)) {
+    const config = guildConfigs[guild];
+    if (!config) {
+      continue;
+    }
+    battlesByGuild[guild] = getNewBattles(battles, config);
+  }
+
+  return battlesByGuild;
 };
