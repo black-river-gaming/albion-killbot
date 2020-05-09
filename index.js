@@ -7,7 +7,7 @@ const messages = require("./messages");
 const commands = require("./commands");
 const logger = require("./logger");
 const database = require("./database");
-const { sleep } = require("./utils");
+const { sleep, fileSizeFormatter } = require("./utils");
 const { getEvents, getEventsByGuild } = require("./queries/events");
 const { getBattles, getBattlesByGuild } = require("./queries/battles");
 const guilds = require("./queries/guilds");
@@ -229,4 +229,7 @@ client.on("guildDelete", guild => {
   runInterval(scanEvents, 60000);
   runInterval(getBattles, 60000);
   runInterval(scanBattles, 60000);
+  runInterval(() => {
+    logger.debug(`Memory usage (approx): ${fileSizeFormatter(process.memoryUsage().heapUsed)}`);
+  }, 10000);
 })();
