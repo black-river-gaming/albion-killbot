@@ -14,7 +14,7 @@ module.exports = {
   args: ["language"],
   description: "HELP.LANGUAGE",
   run: async (client, guild, message, args) => {
-    const l = getI18n(guild);
+    const l = getI18n(guild.config.lang);
 
     if (!args[0]) {
       return message.channel.send(

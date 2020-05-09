@@ -5,7 +5,7 @@ module.exports = {
   aliases: ["list"],
   description: "HELP.LIST",
   run: async (client, guild, message) => {
-    const l = getI18n(guild);
+    const l = getI18n(guild.config.lang);
     message.channel.send(embedList(guild.config));
 
     if (!guild.config.channel) {

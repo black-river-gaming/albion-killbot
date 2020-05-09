@@ -8,7 +8,7 @@ module.exports = {
   args: ["mode"],
   description: "HELP.MODE",
   run: async (client, guild, message, args) => {
-    const l = getI18n(guild);
+    const l = getI18n(guild.config.lang);
 
     if (!args[0]) {
       return message.channel.send(

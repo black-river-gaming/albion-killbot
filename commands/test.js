@@ -4,7 +4,7 @@ module.exports = {
   aliases: ["test"],
   description: "HELP.TEST",
   run: async (client, guild, message) => {
-    const l = getI18n(guild);
+    const l = getI18n(guild.config.lang);
 
     if (!guild.config.channel) {
       message.channel.send(l.__("CHANNEL_NOT_SET"));

@@ -6,7 +6,7 @@ module.exports = {
   args: ["channel"],
   description: "HELP.CHANNEL",
   run: async (client, guild, message) => {
-    const l = getI18n(guild);
+    const l = getI18n(guild.config.lang);
 
     if (!message.mentions.channels || !message.mentions.channels.first()) {
       message.channel.send(l.__("CHANNEL.NO_CHANNEL"));

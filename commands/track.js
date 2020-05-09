@@ -9,7 +9,7 @@ module.exports = {
   args: ["player/guild/alliance", "name"],
   description: "HELP.TRACK",
   run: async (client, guild, message, args) => {
-    const l = getI18n(guild);
+    const l = getI18n(guild.config.lang);
 
     if (!args || !args[0] || !args[1]) {
       message.channel.send(l.__("TRACK.MISSING_PARAMETERS"));

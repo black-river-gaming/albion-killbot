@@ -5,7 +5,7 @@ module.exports = {
   aliases: ["help"],
   description: "HELP.HELP",
   run: (client, guild, message) => {
-    const l = getI18n(guild);
+    const l = getI18n(guild.config.lang);
     let response = "```\n";
 
     if (process.env.npm_package_version) {

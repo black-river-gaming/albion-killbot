@@ -8,7 +8,7 @@ module.exports = {
   args: ["player/guild/alliance", "name"],
   description: "HELP.UNTRACK",
   run: async (client, guild, message, args) => {
-    const l = getI18n(guild);
+    const l = getI18n(guild.config.lang);
 
     if (!args || !args[0] || !args[1]) {
       message.channel.send(l.__("TRACK.MISSING_PARAMETERS"));
@@ -49,24 +49,24 @@ module.exports = {
     };
 
     switch (type) {
-      case "player":
-        return untrack(
-          name,
-          guild.config.trackedPlayers,
-          "TRACK.PLAYER_UNTRACKED"
-        );
-      case "guild":
-        return untrack(
-          name,
-          guild.config.trackedGuilds,
-          "TRACK.GUILD_UNTRACKED"
-        );
-      case "alliance":
-        return untrack(
-          name,
-          guild.config.trackedAlliances,
-          "TRACK.ALLIANCE_UNTRACKED"
-        );
+    case "player":
+      return untrack(
+        name,
+        guild.config.trackedPlayers,
+        "TRACK.PLAYER_UNTRACKED"
+      );
+    case "guild":
+      return untrack(
+        name,
+        guild.config.trackedGuilds,
+        "TRACK.GUILD_UNTRACKED"
+      );
+    case "alliance":
+      return untrack(
+        name,
+        guild.config.trackedAlliances,
+        "TRACK.ALLIANCE_UNTRACKED"
+      );
     }
   }
 };

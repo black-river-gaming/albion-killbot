@@ -170,7 +170,7 @@ client.on("message", async message => {
     guild.config.channel = message.channel.id;
     config.setConfig(guild);
   }
-  const l = messages.getI18n(guild);
+  const l = messages.getI18n(guild.config.lang);
 
   // For now, bot only accepts commands from server admins
   if (!message.member.hasPermission("ADMINISTRATOR")) {
