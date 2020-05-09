@@ -3,8 +3,8 @@ const moment = require("moment");
 const logger = require("../logger");
 const database = require("../database");
 
-const EVENTS_ENDPOINT =
-  "https://gameinfo.albiononline.com/api/gameinfo/events?limit=51&offset=0";
+const EVENTS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/events";
+const EVENTS_LIMIT = 51;
 const EVENTS_COLLECTION = "events";
 const EVENT_KEEP_HOURS = 2;
 
@@ -29,7 +29,9 @@ function getNewEvents(
   const newEvents = [];
   events.forEach(event => {
     // Ignore Arena kills or Duel kills
-    if (event.TotalVictimKillFame <= 0) { return; }
+    if (event.TotalVictimKillFame <= 0) {
+      return;
+    }
 
     // Check for kill in event.Killer / event.Victim for anything tracked
     // Since we are parsing from newer to older events
@@ -55,19 +57,45 @@ exports.getEvents = async () => {
   if (!collection) {
     return logger.warn("Not connected to database. Skipping get events.");
   }
-  logger.info("Fetching Albion Online events from API.");
 
-  let events;
-  try {
-    const res = await axios.get(EVENTS_ENDPOINT, {
-      params: {
-        timestamp: moment().unix()
-      }
-    });
-    events = res.data;
-  } catch (err) {
-    return logger.error(`Unable to fetch event data from API [${err}]`);
-  }
+  // Find latest event
+  const latestEvent = await collection
+    .find({})
+    .sort({ EventId: -1 })
+    .limit(1)
+    .next();
+  logger.info(
+    `Fetching Albion Online events from API up to event ${latestEvent.EventId}.`
+  );
+
+  const fetchEventsTo = async (latestEvent, offset = 0, events = []) => {
+    // Maximum offset reached, just return what we have
+    if (offset >= 1000) return events;
+
+    try {
+      logger.debug(`Fetching events with offset: ${offset}`);
+      const res = await axios.get(EVENTS_ENDPOINT, {
+        params: {
+          offset,
+          limit: EVENTS_LIMIT,
+          timestamp: moment().unix()
+        }
+      });
+      const foundLatest = !res.data.every(evt => {
+        if (evt.EventId <= latestEvent.EventId) return false;
+        events.push(evt);
+        return true;
+      });
+      return foundLatest
+        ? events
+        : fetchEventsTo(latestEvent, offset + EVENTS_LIMIT, events);
+    } catch (err) {
+      logger.error(`Unable to fetch event data from API [${err}].`);
+      return fetchEventsTo(latestEvent, offset, events);
+    }
+  };
+  const events = await fetchEventsTo(latestEvent);
+  if (events.length === 0) return logger.debug("No new events.");
 
   // Insert events that aren't in the database yet
   let ops = [];
@@ -76,7 +104,7 @@ exports.getEvents = async () => {
       updateOne: {
         filter: { EventId: evt.EventId },
         update: {
-          $setOnInsert: { ...evt, read: false },
+          $setOnInsert: { ...evt, read: false }
         },
         upsert: true
       }
@@ -85,8 +113,16 @@ exports.getEvents = async () => {
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
 
   // Delete older events to free cache space
-  const deleteResult = await collection.deleteMany({ TimeStamp: { $lte: moment().subtract(EVENT_KEEP_HOURS, "hours").toISOString() }});
-  logger.info(`Fetch success. (New events inserted: ${writeResult.upsertedCount}, old events removed: ${deleteResult.deletedCount}).`);
+  const deleteResult = await collection.deleteMany({
+    TimeStamp: {
+      $lte: moment()
+        .subtract(EVENT_KEEP_HOURS, "hours")
+        .toISOString()
+    }
+  });
+  logger.info(
+    `Fetch success. (New events inserted: ${writeResult.upsertedCount}, old events removed: ${deleteResult.deletedCount}).`
+  );
 };
 
 exports.getEventsByGuild = async guildConfigs => {
@@ -96,17 +132,22 @@ exports.getEventsByGuild = async guildConfigs => {
   }
 
   // Get unread events
-  const events = await (collection.find({ read: false }).toArray());
+  const events = await collection.find({ read: false }).toArray();
   if (events.length === 0) {
     return logger.debug("No new events to notify.");
   }
 
   // Set events as read before sending to ensure no double events notification
-  const updateResult = await collection.updateMany({ EventId: {
-    $in: events.map(evt => evt.EventId)
-  }}, {
-    $set: { read: true }
-  });
+  const updateResult = await collection.updateMany(
+    {
+      EventId: {
+        $in: events.map(evt => evt.EventId)
+      }
+    },
+    {
+      $set: { read: true }
+    }
+  );
   logger.info(`Notify success. (Events read: ${updateResult.modifiedCount}).`);
 
   const eventsByGuild = {};

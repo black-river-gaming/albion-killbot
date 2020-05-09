@@ -212,8 +212,8 @@ client.on("guildDelete", guild => {
     }
   };
 
-  runInterval(getEvents, 6000);
-  runInterval(scanEvents, 30000);
-  runInterval(getBattles, 100000);
+  runInterval(getEvents, 30000);
+  runInterval(scanEvents, 60000);
+  runInterval(getBattles, 60000);
   runInterval(scanBattles, 60000);
 })();

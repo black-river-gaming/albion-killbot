@@ -4,7 +4,9 @@ const logger = require("../logger");
 const database = require("../database");
 
 const BATTLES_ENDPOINT =
-  "https://gameinfo.albiononline.com/api/gameinfo/battles?offset=0&limit=50&sort=recent";
+  "https://gameinfo.albiononline.com/api/gameinfo/battles";
+const BATTLES_LIMIT = 51;
+const BATTLES_SORT = "recent";
 const BATTLES_COLLECTION = "battles";
 const BATTLES_KEEP_HOURS = 4;
 
@@ -20,7 +22,9 @@ function getNewBattles(battles, config) {
   const newBattles = [];
   battles.forEach(battle => {
     // Ignore battles without fame
-    if (battle.totalFame <= 0) { return; }
+    if (battle.totalFame <= 0) {
+      return;
+    }
 
     // Check for tracked ids in players, guilds and alliances
     // Since we are parsing from newer to older events we need to use a FILO array
@@ -46,26 +50,54 @@ exports.getBattles = async () => {
     return logger.warn("Not connected to database. Skipping get battles.");
   }
 
-  let battles;
-  try {
-    const res = await axios.get(BATTLES_ENDPOINT, {
-      params: {
-        timestamp: moment().unix()
-      }
-    });
-    battles = res.data;
-  } catch (err) {
-    return logger.error(`Unable to fetch battle data from API [${err}]`);
-  }
+  // Find latest event
+  const latestBattle = await collection
+    .find({})
+    .sort({ id: -1 })
+    .limit(1)
+    .next();
+  logger.info(
+    `Fetching Albion Online battles from API up to battle ${latestBattle.id}.`
+  );
 
-  // Insert events that aren't in the database yet
+  const fetchBattlesTo = async (latestBattle, offset = 0, battles = []) => {
+    // Maximum offset reached, just return what we have
+    if (offset >= 1000) return battles;
+
+    try {
+      logger.debug(`Fetching battles with offset: ${offset}`);
+      const res = await axios.get(BATTLES_ENDPOINT, {
+        params: {
+          offset,
+          limit: BATTLES_LIMIT,
+          sort: BATTLES_SORT,
+          timestamp: moment().unix()
+        }
+      });
+      const foundLatest = !res.data.every(battle => {
+        if (battle.id <= latestBattle.id) return false;
+        battles.push(battle);
+        return true;
+      });
+      return foundLatest
+        ? battles
+        : fetchBattlesTo(latestBattle, offset + BATTLES_LIMIT, battles);
+    } catch (err) {
+      logger.error(`Unable to fetch battle data from API [${err}].`);
+      return fetchBattlesTo(latestBattle, offset, battles);
+    }
+  };
+  const battles = await fetchBattlesTo(latestBattle);
+  if (battles.length === 0) return logger.debug("No new battles.");
+
+  // Insert battles that aren't in the database yet
   let ops = [];
   battles.forEach(async battle => {
     ops.push({
       updateOne: {
         filter: { id: battle.id },
         update: {
-          $setOnInsert: { ...battle, read: false },
+          $setOnInsert: { ...battle, read: false }
         },
         upsert: true
       }
@@ -74,8 +106,16 @@ exports.getBattles = async () => {
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
 
   // Delete older events to free cache space
-  const deleteResult = await collection.deleteMany({ TimeStamp: { $lte: moment().subtract(BATTLES_KEEP_HOURS, "hours").toISOString() }});
-  logger.info(`Fetch success. (New battles inserted: ${writeResult.upsertedCount}, old battles removed: ${deleteResult.deletedCount}).`);
+  const deleteResult = await collection.deleteMany({
+    TimeStamp: {
+      $lte: moment()
+        .subtract(BATTLES_KEEP_HOURS, "hours")
+        .toISOString()
+    }
+  });
+  logger.info(
+    `Fetch success. (New battles inserted: ${writeResult.upsertedCount}, old battles removed: ${deleteResult.deletedCount}).`
+  );
 };
 
 exports.getBattlesByGuild = async guildConfigs => {
@@ -85,17 +125,22 @@ exports.getBattlesByGuild = async guildConfigs => {
   }
 
   // Get unread battles
-  const battles = await (collection.find({ read: false }).toArray());
+  const battles = await collection.find({ read: false }).toArray();
   if (battles.length === 0) {
     return logger.debug("No new battles to notify.");
   }
 
   // Set battles as read before sending to ensure no double battle notification
-  const updateResult = await collection.updateMany({ id: {
-    $in: battles.map(battle => battle.id)
-  }}, {
-    $set: { read: true }
-  });
+  const updateResult = await collection.updateMany(
+    {
+      id: {
+        $in: battles.map(battle => battle.id)
+      }
+    },
+    {
+      $set: { read: true }
+    }
+  );
   logger.info(`Notify success. (Battles read: ${updateResult.modifiedCount}).`);
 
   const battlesByGuild = {};
