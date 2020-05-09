@@ -31,6 +31,11 @@ if (!fs.existsSync(TMPDIR)) {
   fs.mkdirSync(TMPDIR);
 }
 
+const IMAGE_MIME = "image/png";
+const IMAGE_OPTIONS = {
+  compressionLevel: 7
+};
+
 const drawImage = async (ctx, src, x, y, sw, sh) => {
   if (!src) return;
   let img;
@@ -102,7 +107,7 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
 };
 
 exports.generateEventImage = async event => {
-  const canvas = createCanvas(1600, 1350);
+  let canvas = createCanvas(1600, 1350);
   const w = canvas.width;
   const ctx = canvas.getContext("2d");
 
@@ -323,11 +328,12 @@ exports.generateEventImage = async event => {
 
   drawAssistBar(event.Participants, 35, 1090, 1530, 100, 25);
 
-  const buffer = canvas.toBuffer();
+  const buffer = canvas.toBuffer(IMAGE_MIME, IMAGE_OPTIONS);
   logger.debug(
     `Created event image. Size: ${fileSizeFormatter(buffer.length)}`
   );
   // TODO: Optimize image size
+  canvas = null;
   return buffer;
 };
 
@@ -342,7 +348,7 @@ exports.generateInventoryImage = async event => {
   const itemsPerRow = Math.floor((WIDTH - PADDING * 2) / BLOCK_SIZE);
   const rows = Math.ceil(inventory.length / itemsPerRow);
 
-  const canvas = createCanvas(WIDTH, rows * BLOCK_SIZE + PADDING * 2);
+  let canvas = createCanvas(WIDTH, rows * BLOCK_SIZE + PADDING * 2);
   const ctx = canvas.getContext("2d");
 
   await drawImage(ctx, "./assets/background.png", 0, 0);
@@ -358,10 +364,11 @@ exports.generateInventoryImage = async event => {
     x += BLOCK_SIZE;
   }
 
-  const buffer = canvas.toBuffer();
+  const buffer = canvas.toBuffer(IMAGE_MIME, IMAGE_OPTIONS);
   logger.debug(
     `Created inventory image. Size: ${fileSizeFormatter(buffer.length)}`
   );
   // TODO: Optimize image size
+  canvas = null;
   return buffer;
 };
