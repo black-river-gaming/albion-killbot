@@ -44,7 +44,8 @@
     "LIST": "Lista os jogadores, guildas e alianças rastreadas.",
     "TRACK": "Rastreia um jogador, guilda ou aliança.",
     "UNTRACK": "Para de rastrear um jogador, guilda ou aliança.",
-    "TEST": "Verifica se o bot possui permissões para enviar mensagens."
+    "TEST": "Verifica se o bot possui permissões para enviar mensagens.",
+    "MODE": "Define o modo de envio de eventos, como texto ou imagem."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",
@@ -74,5 +75,10 @@
     "PLAYER_UNTRACKED": "Parando de rastrear jogador: {{ name }}.",
     "GUILD_UNTRACKED": "Parando de rastrear guilda: {{ name }}.",
     "ALLIANCE_UNTRACKED": "Parando de rastrear aliança: {{ name }}."
+  },
+  "MODE": {
+    "AVAILABLE": "Modos disponíveis: {{ modes }}",
+    "NOT_SUPPORTED": "Este modo não é suportado. Por favor, escolha um destes: {{ modes }}",
+    "SET": "Modo de saida definido para: {{ mode }}"
   }
 }

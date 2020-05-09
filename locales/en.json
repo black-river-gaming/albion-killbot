@@ -44,7 +44,8 @@
     "LIST": "Lists tracked players, guilds and alliances.",
     "TRACK": "Tracks a player, guild or alliance.",
     "UNTRACK": "Stops tracking a player, guild or alliance.",
-    "TEST": "Verify if the bot has permission to send messages."
+    "TEST": "Verify if the bot has permission to send messages.",
+    "MODE": "Sets the output mode, like text or image."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Please input a channel for notifications.",
@@ -74,5 +75,10 @@
     "PLAYER_UNTRACKED": "Untracking player: {{ name }}.",
     "GUILD_UNTRACKED": "Untracking guild: {{ name }}.",
     "ALLIANCE_UNTRACKED": "Untracking alliance: {{ name }}."
+  },
+  "MODE": {
+    "AVAILABLE": "Available modes: {{ modes }}",
+    "NOT_SUPPORTED": "This mode isn't supported. Please pick one of: {{ modes }}",
+    "SET": "Output mode set to: {{ mode }}"
   }
 }
