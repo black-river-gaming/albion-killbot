@@ -68,12 +68,12 @@ const scanEvents = async () => {
       } else {
         await sendGuildMessage(
           guild,
-          messages.embedEventAsImage(event, guild.config.lang)
+          await messages.embedEventAsImage(event, guild.config.lang)
         );
         if (event.Victim.Inventory.filter(i => i != null).length > 0) {
           await sendGuildMessage(
             guild,
-            messages.embedInventoryAsImage(event, guild.config.lang)
+            await messages.embedInventoryAsImage(event, guild.config.lang)
           );
         }
       }
