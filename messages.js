@@ -1,38 +1,16 @@
 const moment = require("moment");
 const i18n = require("i18n");
+const { generateEventImage, generateInventoryImage } = require("./images");
+const { digitsFormatter, humanFormatter } = require("./utils");
 
 const LOCALE_DIR = __dirname + "/locales";
+const KILL_URL = "https://albiononline.com/pt/killboard/kill/";
 const GREEN = 52224;
 const RED = 13369344;
 const BATTLE = 16752981;
 const RANKING_LINE_LENGTH = 23;
 
-// TODO: Move to utils file
-function nFormatter(num, digits) {
-  const si = [
-    { value: 1, symbol: "" },
-    { value: 1e3, symbol: "k" },
-    { value: 1e6, symbol: "m" },
-    { value: 1e9, symbol: "b" },
-    { value: 1e12, symbol: "t" },
-    { value: 1e15, symbol: "q" },
-    { value: 1e18, symbol: "Q" }
-  ];
-  const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-  let i;
-  for (i = si.length - 1; i > 0; i--) {
-    if (num >= si[i].value) {
-      break;
-    }
-  }
-  return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
-}
-
-function dFormatter(num) {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") || 0;
-}
-
-function setLocale(locale = "en") {
+exports.getI18n = (locale = "en") => {
   const l = {};
   i18n.configure({
     directory: LOCALE_DIR,
@@ -42,12 +20,11 @@ function setLocale(locale = "en") {
   });
   l.setLocale(locale);
   return l;
-}
-
-exports.getI18n = guild => setLocale(guild.config.lang);
+};
 
 exports.embedEvent = (event, locale) => {
-  const l = setLocale(locale);
+  const l = exports.getI18n(locale);
+
   const good = event.good;
   const title = l.__("KILL.EVENT", {
     killer: event.Killer.Name,
@@ -98,7 +75,7 @@ exports.embedEvent = (event, locale) => {
     embed: {
       color: good ? GREEN : RED,
       title,
-      url: `https://albiononline.com/pt/killboard/kill/${event.EventId}`,
+      url: `${KILL_URL}${event.EventId}`,
       description,
       thumbnail: {
         url:
@@ -107,7 +84,7 @@ exports.embedEvent = (event, locale) => {
       fields: [
         {
           name: l.__("KILL.FAME"),
-          value: dFormatter(event.TotalVictimKillFame),
+          value: digitsFormatter(event.TotalVictimKillFame),
           inline: false
         },
         {
@@ -145,8 +122,57 @@ exports.embedEvent = (event, locale) => {
   };
 };
 
+exports.embedEventAsImage = async (event, locale) => {
+  const l = exports.getI18n(locale);
+
+  const good = event.good;
+  const title = l.__("KILL.EVENT", {
+    killer: event.Killer.Name,
+    victim: event.Victim.Name
+  });
+  const filename = `${event.EventId}-event.png`;
+
+  return {
+    embed: {
+      color: good ? GREEN : RED,
+      title,
+      url: `${KILL_URL}${event.EventId}`,
+      files: [
+        {
+          attachment: await generateEventImage(event),
+          name: filename
+        }
+      ],
+      image: {
+        url: `attachment://${filename}`
+      }
+    }
+  };
+};
+
+exports.embedInventoryAsImage = async event => {
+  const good = event.good;
+  const filename = `${event.EventId}-inventory.png`;
+
+  return {
+    embed: {
+      color: good ? GREEN : RED,
+      url: `${KILL_URL}${event.EventId}`,
+      files: [
+        {
+          attachment: await generateInventoryImage(event),
+          name: filename
+        }
+      ],
+      image: {
+        url: `attachment://${filename}`
+      }
+    }
+  };
+};
+
 exports.embedBattle = (battle, locale) => {
-  const l = setLocale(locale);
+  const l = exports.getI18n(locale);
 
   const guildCount = Object.keys(battle.guilds || {}).length;
 
@@ -157,7 +183,7 @@ exports.embedBattle = (battle, locale) => {
   const description = l.__("BATTLE.DESCRIPTION", {
     players: Object.keys(battle.players || {}).length,
     kills: battle.totalKills,
-    fame: dFormatter(battle.totalFame),
+    fame: digitsFormatter(battle.totalFame),
     duration
   });
 
@@ -166,7 +192,7 @@ exports.embedBattle = (battle, locale) => {
       name: item.name,
       kills: item.kills,
       deaths: item.deaths,
-      fame: dFormatter(item.killFame)
+      fame: digitsFormatter(item.killFame)
     });
   };
 
@@ -242,7 +268,7 @@ exports.embedBattle = (battle, locale) => {
 };
 
 exports.embedRankings = (trackedGuild, rankings, locale) => {
-  const l = setLocale(locale);
+  const l = exports.getI18n(locale);
 
   const guildId = trackedGuild.id;
   const guildName = trackedGuild.name;
@@ -251,12 +277,12 @@ exports.embedRankings = (trackedGuild, rankings, locale) => {
     let value = "```c";
     ranking.forEach(item => {
       if (pvp) {
-        const fameValue = nFormatter(item.KillFame, 2);
+        const fameValue = humanFormatter(item.KillFame, 2);
         value += `\n${item.Name}${" ".repeat(
           RANKING_LINE_LENGTH - fameValue.length - item.Name.length
         )}${fameValue}`;
       } else {
-        const fameValue = nFormatter(item.Fame, 2);
+        const fameValue = humanFormatter(item.Fame, 2);
         value += `\n${item.Player.Name}${" ".repeat(
           RANKING_LINE_LENGTH - fameValue.length - item.Player.Name.length
         )}${fameValue}`;
@@ -307,7 +333,7 @@ exports.embedRankings = (trackedGuild, rankings, locale) => {
 };
 
 exports.embedList = config => {
-  const l = setLocale(config.lang);
+  const l = exports.getI18n(config.lang);
 
   const configToList = list => {
     if (!list || list.length === 0) return l.__("TRACK.NONE");
