@@ -23,7 +23,7 @@
     "lint": "eslint ."
   },
   "engines": {
-    "node": ">=12.x",
+    "node": "13.3.0",
     "yarn": "1.x"
   },
   "devDependencies": {
