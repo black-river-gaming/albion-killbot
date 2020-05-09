@@ -62,22 +62,28 @@ const scanEvents = async () => {
         `Sending ${newEventsCount} new events to guild "${guild.name}"`
       );
     }
-    eventsByGuild[guild.id].forEach(async event => {
-      if (!guild.config.mode || guild.config.mode === "text") {
-        sendGuildMessage(guild, messages.embedEvent(event, guild.config.lang));
-      } else {
+
+    for (let event of eventsByGuild[guild.id]) {
+      const mode = guild.config.mode;
+      const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
+
+      if (mode === "image") {
+        // Image output
         await sendGuildMessage(
           guild,
           await messages.embedEventAsImage(event, guild.config.lang)
         );
-        if (event.Victim.Inventory.filter(i => i != null).length > 0) {
+        if (hasInventory) {
           await sendGuildMessage(
             guild,
             await messages.embedInventoryAsImage(event, guild.config.lang)
           );
         }
+      } else {
+        // Text output (default)
+        await sendGuildMessage(guild, messages.embedEvent(event, guild.config.lang));
       }
-    });
+    }
   }
 };
 
