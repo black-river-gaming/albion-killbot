@@ -36,7 +36,6 @@ const drawImage = async (ctx, src, x, y, sw, sh) => {
   let img;
   try {
     img = await loadImage(src);
-    logger.debug(`Image loaded: ${src}`);
   } catch (e) {
     logger.error(`Error loading image: ${src} (${e})`);
     img = await loadImage("./assets/notfound.png");
@@ -61,7 +60,6 @@ const getItemFile = async item => {
     if (!cdn.trash && item.Type.includes("_TRASH")) continue;
 
     const url = `${cdn.url}${item.Type}`;
-    logger.debug(`Downloading ${url}`);
     try {
       const response = await axios.get(url, {
         params: {
@@ -326,9 +324,10 @@ exports.generateEventImage = async event => {
   drawAssistBar(event.Participants, 35, 1090, 1530, 100, 25);
 
   const buffer = canvas.toBuffer();
-  logger.info(
-    `Finish writing event image. Size: ${fileSizeFormatter(buffer.length)}`
+  logger.debug(
+    `Created event image. Size: ${fileSizeFormatter(buffer.length)}`
   );
+  // TODO: Optimize image size
   return buffer;
 };
 
@@ -360,8 +359,9 @@ exports.generateInventoryImage = async event => {
   }
 
   const buffer = canvas.toBuffer();
-  logger.info(
-    `Finish writing inventory image. Size: ${fileSizeFormatter(buffer.length)}`
+  logger.debug(
+    `Created inventory image. Size: ${fileSizeFormatter(buffer.length)}`
   );
+  // TODO: Optimize image size
   return buffer;
 };
