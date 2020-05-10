@@ -233,7 +233,7 @@ client.on("guildDelete", guild => {
   };
 
   runInterval(getEvents, 30000);
-  runInterval(scanEvents, 60000);
+  runInterval(scanEvents, 5000);
   runInterval(getBattles, 60000);
   runInterval(scanBattles, 60000);
   runInterval(() => {
