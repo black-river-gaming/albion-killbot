@@ -131,6 +131,7 @@ const sendGuildMessage = async (guild, message) => {
     logger.warn(`Channel not configured for guild ${guild.name}.`);
     channel = getDefaultChannel(guild);
   }
+  if (!channel) return;
   try {
     await channel.send(message);
     msgErrors[guild.id] = 0;
