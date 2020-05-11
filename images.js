@@ -140,12 +140,12 @@ exports.generateEventImage = async event => {
     th = ctx.measureText("M").width;
     ctx.strokeText(name, x + BLOCK_SIZE * 1.5 - tw / 2, y);
     ctx.fillText(name, x + BLOCK_SIZE * 1.5 - tw / 2, y);
-    y += th - 7;
+    y += th - 5;
 
     const ip = `IP: ${Math.round(player.AverageItemPower)}`;
-    ctx.font = "35px Roboto";
+    ctx.font = "33px Roboto";
     ctx.fillStyle = "#AAAAAA";
-    ctx.strokeStyle = "#333333";
+    ctx.strokeStyle = "#000000";
     ctx.lineWidth = 2;
     tw = ctx.measureText(ip).width;
     th = ctx.measureText("M").width;
@@ -195,13 +195,13 @@ exports.generateEventImage = async event => {
       await drawItem(ctx, equipment.Mount, x + BLOCK_SIZE, y + BLOCK_SIZE * 3);
     }
     if (equipment.Potion) {
-      await drawItem(ctx, equipment.Potione, x, y + BLOCK_SIZE * 2);
+      await drawItem(ctx, equipment.Potion, x + BLOCK_SIZE * 2, y + BLOCK_SIZE * 2);
     }
     if (equipment.Food) {
       await drawItem(
         ctx,
         equipment.Food,
-        x + BLOCK_SIZE * 2,
+        x,
         y + BLOCK_SIZE * 2
       );
     }
@@ -292,7 +292,7 @@ exports.generateEventImage = async event => {
     let py = y + height + 25;
     participants.forEach((participant, i) => {
       const color = COLORS[i % COLORS.length];
-      const text = `${participant.Name} (${participant.damagePercent}%)`;
+      const text = `${participant.Name} [${Math.round(participant.AverageItemPower)}]`;
 
       ctx.beginPath();
       ctx.font = "30px Roboto";
