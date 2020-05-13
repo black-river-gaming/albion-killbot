@@ -2,6 +2,7 @@ const axios = require("axios");
 const moment = require("moment");
 const logger = require("../logger");
 const database = require("../database");
+const { sleep } = require("../utils");
 
 const BATTLES_ENDPOINT =
   "https://gameinfo.albiononline.com/api/gameinfo/battles";
@@ -81,6 +82,7 @@ exports.getBattles = async () => {
         : fetchBattlesTo(latestBattle, offset + BATTLES_LIMIT, battles);
     } catch (err) {
       logger.error(`Unable to fetch battle data from API [${err}].`);
+      await sleep(5000);
       return fetchBattlesTo(latestBattle, offset, battles);
     }
   };

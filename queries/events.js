@@ -2,6 +2,7 @@ const axios = require("axios");
 const moment = require("moment");
 const logger = require("../logger");
 const database = require("../database");
+const { sleep } = require("../utils");
 
 const EVENTS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/events";
 const EVENTS_LIMIT = 51;
@@ -88,6 +89,7 @@ exports.getEvents = async () => {
         : fetchEventsTo(latestEvent, offset + EVENTS_LIMIT, events);
     } catch (err) {
       logger.error(`Unable to fetch event data from API [${err}].`);
+      await sleep(5000);
       return fetchEventsTo(latestEvent, offset, events);
     }
   };
