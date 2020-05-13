@@ -51,14 +51,11 @@ exports.getBattles = async () => {
   }
 
   // Find latest event
-  const latestBattle = await collection
+  let latestBattle = await collection
     .find({})
     .sort({ id: -1 })
     .limit(1)
     .next();
-  logger.info(
-    `Fetching Albion Online battles from API up to battle ${latestBattle.id}.`
-  );
 
   const fetchBattlesTo = async (latestBattle, offset = 0, battles = []) => {
     // Maximum offset reached, just return what we have
@@ -87,6 +84,14 @@ exports.getBattles = async () => {
       return fetchBattlesTo(latestBattle, offset, battles);
     }
   };
+
+  if (!latestBattle) {
+    logger.info("No latest battle found. Retrieving first battles.");
+    latestBattle = { id: 0 };
+  }
+  logger.info(
+    `Fetching Albion Online battles from API up to battle ${latestBattle.id}.`
+  );
   const battles = await fetchBattlesTo(latestBattle);
   if (battles.length === 0) return logger.debug("No new battles.");
 

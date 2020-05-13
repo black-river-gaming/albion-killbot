@@ -59,14 +59,11 @@ exports.getEvents = async () => {
   }
 
   // Find latest event
-  const latestEvent = await collection
+  let latestEvent = await collection
     .find({})
     .sort({ EventId: -1 })
     .limit(1)
     .next();
-  logger.info(
-    `Fetching Albion Online events from API up to event ${latestEvent.EventId}.`
-  );
 
   const fetchEventsTo = async (latestEvent, offset = 0, events = []) => {
     // Maximum offset reached, just return what we have
@@ -94,7 +91,17 @@ exports.getEvents = async () => {
       return fetchEventsTo(latestEvent, offset, events);
     }
   };
+
+  if (!latestEvent) {
+    logger.info("No latest event found. Retrieving first events.");
+    latestEvent = { EventId: 0 };
+  } else {
+    logger.info(
+      `Fetching Albion Online events from API up to event ${latestEvent.EventId}.`
+    );
+  }
   const events = await fetchEventsTo(latestEvent);
+
   if (events.length === 0) return logger.debug("No new events.");
 
   // Insert events that aren't in the database yet
