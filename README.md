@@ -39,9 +39,14 @@ cd albion-killbot
 yarn
 ```
 
-3. Create an .env file or set the environment variables that you wish to use
+3. Create an .env file or set the environment variables that you wish to use, following the example
 ```
 cp .env.example .env
+```
+
+4. Run the bot
+```
+yarn start
 ```
 
 # Contributing
