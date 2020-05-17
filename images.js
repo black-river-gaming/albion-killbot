@@ -14,12 +14,17 @@ registerFont(path.join(__dirname, "assets", "fonts", "Roboto-Regular.ttf"), {
 const CDNS = [
   {
     url:
-      "https://albiononline2d.ams3.cdn.digitaloceanspaces.com/thumbnails/orig/",
+      "https://albiononline2d.ams3.cdn.digitaloceanspaces.com/thumbnails/orig/{type}",
     qualitySupport: false,
     trash: false
   },
   {
-    url: "https://gameinfo.albiononline.com/api/gameinfo/items/",
+    url: "http://www.albiononline.site/img/albion/{type}-{quality}.png",
+    qualitySupport: true,
+    trash: false
+  },
+  {
+    url: "https://gameinfo.albiononline.com/api/gameinfo/items/{type}",
     qualitySupport: true,
     trash: true
   }
@@ -64,7 +69,7 @@ const getItemFile = async item => {
     // If trash item is outdated, skip
     if (!cdn.trash && item.Type.includes("_TRASH")) continue;
 
-    const url = `${cdn.url}${item.Type}`;
+    const url = cdn.url.replace("{type}", item.Type).replace("{quality}", item.Quality);
     try {
       const response = await axios.get(url, {
         params: {
@@ -107,7 +112,7 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
 };
 
 exports.generateEventImage = async event => {
-  let canvas = createCanvas(1600, 1350);
+  let canvas = createCanvas(1600, 1300);
   const w = canvas.width;
   const ctx = canvas.getContext("2d");
 
