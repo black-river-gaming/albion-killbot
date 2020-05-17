@@ -19,11 +19,6 @@ const CDNS = [
     trash: false
   },
   {
-    url: "http://www.albiononline.site/img/albion/{type}-{quality}.png",
-    qualitySupport: true,
-    trash: false
-  },
-  {
     url: "https://gameinfo.albiononline.com/api/gameinfo/items/{type}",
     qualitySupport: true,
     trash: true
