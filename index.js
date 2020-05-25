@@ -227,7 +227,11 @@ client.on("guildDelete", guild => {
 
     const exit = false;
     while (!exit) {
-      await func();
+      try {
+        await func();
+      } catch(e) {
+        logger.error("Error in function {func.name}: {e}");
+      }
       await sleep(time);
     }
   };
