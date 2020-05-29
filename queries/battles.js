@@ -70,7 +70,8 @@ exports.getBattles = async () => {
           limit: BATTLES_LIMIT,
           sort: BATTLES_SORT,
           timestamp: moment().unix()
-        }
+        },
+        timeout: 60000,
       });
       const foundLatest = !res.data.every(battle => {
         if (battle.id <= latestBattle.id) return false;

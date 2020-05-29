@@ -77,7 +77,8 @@ exports.getEvents = async () => {
           offset,
           limit: EVENTS_LIMIT,
           timestamp: moment().unix()
-        }
+        },
+        timeout: 60000,
       });
       const foundLatest = !res.data.every(evt => {
         if (evt.EventId <= latestEvent.EventId) return false;

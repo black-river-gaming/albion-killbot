@@ -39,12 +39,13 @@ exports.getGuildRankings = async guildId => {
       reigon: "Total",
       guildId
     };
+    const timeout = 60000;
 
     while (!rankings.pve) {
       logger.debug("Fetching PvE rankings...");
       params.type = "PvE";
       try {
-        const pveRes = await axios.get(STATISTICS_ENDPOINT, { params });
+        const pveRes = await axios.get(STATISTICS_ENDPOINT, { params, timeout });
         rankings.pve = pveRes.data;
       } catch (e) {
         logger.error(`Failed to fetch PvE rankings: ${e}. Trying again...`);
@@ -56,7 +57,7 @@ exports.getGuildRankings = async guildId => {
       logger.debug("Fetching PvP rankings...");
       params.type = "PvP";
       try {
-        const pvpRes = await axios.get(FAME_ENDPOINT, { params });
+        const pvpRes = await axios.get(FAME_ENDPOINT, { params, timeout });
         rankings.pvp = pvpRes.data;
       } catch (e) {
         logger.error(`Failed to fetch PvP rankings: ${e}. Trying again...`);
@@ -69,7 +70,7 @@ exports.getGuildRankings = async guildId => {
       params.type = "Gathering";
       params.subtype = "All";
       try {
-        const gatherRes = await axios.get(STATISTICS_ENDPOINT, { params });
+        const gatherRes = await axios.get(STATISTICS_ENDPOINT, { params, timeout });
         rankings.gathering = gatherRes.data;
       } catch (e) {
         logger.error(
@@ -84,7 +85,7 @@ exports.getGuildRankings = async guildId => {
       params.type = "Crafting";
       delete params.subtype;
       try {
-        const craftRes = await axios.get(STATISTICS_ENDPOINT, { params });
+        const craftRes = await axios.get(STATISTICS_ENDPOINT, { params, timeout });
         rankings.crafting = craftRes.data;
       } catch (e) {
         logger.error(
