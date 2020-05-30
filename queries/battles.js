@@ -63,7 +63,7 @@ exports.getBattles = async () => {
     if (offset >= 1000) return battles;
 
     try {
-      logger.debug(`Fetching battles with offset: ${offset}`);
+      logger.debug(`[getBattles] Fetching battles with offset: ${offset}`);
       const res = await axios.get(BATTLES_ENDPOINT, {
         params: {
           offset,
@@ -82,21 +82,21 @@ exports.getBattles = async () => {
         ? battles
         : fetchBattlesTo(latestBattle, offset + BATTLES_LIMIT, battles);
     } catch (err) {
-      logger.error(`Unable to fetch battle data from API [${err}].`);
+      logger.error(`[getBattles] Unable to fetch battle data from API [${err}].`);
       await sleep(5000);
       return fetchBattlesTo(latestBattle, offset, battles);
     }
   };
 
   if (!latestBattle) {
-    logger.info("No latest battle found. Retrieving first battles.");
+    logger.info("[getBattles] No latest battle found. Retrieving first battles.");
     latestBattle = { id: 0 };
   }
   logger.info(
-    `Fetching Albion Online battles from API up to battle ${latestBattle.id}.`
+    `[getBattles Fetching Albion Online battles from API up to battle ${latestBattle.id}.`
   );
   const battles = await fetchBattlesTo(latestBattle);
-  if (battles.length === 0) return logger.debug("No new battles.");
+  if (battles.length === 0) return logger.debug("[getBattles] No new battles.");
 
   // Insert battles that aren't in the database yet
   let ops = [];
@@ -107,23 +107,29 @@ exports.getBattles = async () => {
         update: {
           $setOnInsert: { ...battle, read: false }
         },
-        upsert: true
+        upsert: true,
+        writeConcern: {
+          wtimeout: 30000
+        }
       }
     });
   });
+  logger.debug(`[getBattles] Performing ${ops.length} write operations in database.`);
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
 
   // Delete older events to free cache space
+  logger.debug("[getBattles] Deleting old events from database.");
   const deleteResult = await collection.deleteMany({
-    TimeStamp: {
+    startTime: {
       $lte: moment()
         .subtract(BATTLES_KEEP_HOURS, "hours")
         .toISOString()
+    },
+    writeConcern: {
+      wtimeout: 30000
     }
   });
-  logger.info(
-    `Fetch success. (New battles inserted: ${writeResult.upsertedCount}, old battles removed: ${deleteResult.deletedCount}).`
-  );
+  logger.info(`[getBattles] Fetch success. (New battles inserted: ${writeResult.upsertedCount}, old battles removed: ${deleteResult.deletedCount}).`);
 };
 
 exports.getBattlesByGuild = async guildConfigs => {
