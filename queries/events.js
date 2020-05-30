@@ -106,6 +106,19 @@ exports.getEvents = async () => {
   const events = await fetchEventsTo(latestEvent);
   if (events.length === 0) return logger.debug("No new events.");
 
+  // Delete older events to free cache space
+  logger.debug("[getEvents] Deleting old events from database.");
+  const deleteResult = await collection.deleteMany({
+    TimeStamp: {
+      $lte: moment()
+        .subtract(EVENT_KEEP_HOURS, "hours")
+        .toISOString()
+    },
+    writeConcern: {
+      wtimeout: 60000
+    }
+  });
+
   // Insert events that aren't in the database yet
   let ops = [];
   events.forEach(async evt => {
@@ -125,18 +138,6 @@ exports.getEvents = async () => {
   logger.debug(`[getEvents] Performing ${ops.length} write operations in database.`);
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
 
-  // Delete older events to free cache space
-  logger.debug("[getEvents] Deleting old events from database.");
-  const deleteResult = await collection.deleteMany({
-    TimeStamp: {
-      $lte: moment()
-        .subtract(EVENT_KEEP_HOURS, "hours")
-        .toISOString()
-    },
-    writeConcern: {
-      wtimeout: 60000
-    }
-  });
   logger.info(`[getEvents] Fetch success. (New events inserted: ${writeResult.upsertedCount}, old events removed: ${deleteResult.deletedCount}).`);
 };
 
