@@ -117,7 +117,7 @@ exports.getEvents = async () => {
         },
         upsert: true,
         writeConcern: {
-          wtimeout: 30000
+          wtimeout: 60000
         }
       }
     });
@@ -134,7 +134,7 @@ exports.getEvents = async () => {
         .toISOString()
     },
     writeConcern: {
-      wtimeout: 30000
+      wtimeout: 60000
     }
   });
   logger.info(`[getEvents] Fetch success. (New events inserted: ${writeResult.upsertedCount}, old events removed: ${deleteResult.deletedCount}).`);

@@ -109,7 +109,7 @@ exports.getBattles = async () => {
         },
         upsert: true,
         writeConcern: {
-          wtimeout: 30000
+          wtimeout: 60000
         }
       }
     });
@@ -126,7 +126,7 @@ exports.getBattles = async () => {
         .toISOString()
     },
     writeConcern: {
-      wtimeout: 30000
+      wtimeout: 60000
     }
   });
   logger.info(`[getBattles] Fetch success. (New battles inserted: ${writeResult.upsertedCount}, old battles removed: ${deleteResult.deletedCount}).`);
