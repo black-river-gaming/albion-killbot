@@ -242,5 +242,5 @@ client.on("guildDelete", guild => {
   runInterval(scanBattles, 60000);
   runInterval(() => {
     logger.debug(`Memory usage (approx): ${fileSizeFormatter(process.memoryUsage().heapUsed)}`);
-  }, 10000);
+  }, 60000);
 })();

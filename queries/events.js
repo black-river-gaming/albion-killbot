@@ -71,7 +71,7 @@ exports.getEvents = async () => {
     if (offset >= 1000) return events;
 
     try {
-      logger.debug(`Fetching events with offset: ${offset}`);
+      logger.debug(`[getEvents] Fetching events with offset: ${offset}`);
       const res = await axios.get(EVENTS_ENDPOINT, {
         params: {
           offset,
@@ -89,22 +89,21 @@ exports.getEvents = async () => {
         ? events
         : fetchEventsTo(latestEvent, offset + EVENTS_LIMIT, events);
     } catch (err) {
-      logger.error(`Unable to fetch event data from API [${err}].`);
+      logger.error(`[getEvents] Unable to fetch event data from API [${err}].`);
       await sleep(5000);
       return fetchEventsTo(latestEvent, offset, events);
     }
   };
 
   if (!latestEvent) {
-    logger.info("No latest event found. Retrieving first events.");
+    logger.info("[getEvents] No latest event found. Retrieving first events.");
     latestEvent = { EventId: 0 };
   } else {
     logger.info(
-      `Fetching Albion Online events from API up to event ${latestEvent.EventId}.`
+      `[getEvents] Fetching Albion Online events from API up to event ${latestEvent.EventId}.`
     );
   }
   const events = await fetchEventsTo(latestEvent);
-
   if (events.length === 0) return logger.debug("No new events.");
 
   // Insert events that aren't in the database yet
@@ -116,23 +115,29 @@ exports.getEvents = async () => {
         update: {
           $setOnInsert: { ...evt, read: false }
         },
-        upsert: true
+        upsert: true,
+        writeConcern: {
+          wtimeout: 30000
+        }
       }
     });
   });
+  logger.debug(`[getEvents] Performing ${ops.length} write operations in database.`);
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
 
   // Delete older events to free cache space
+  logger.debug("[getEvents] Deleting old events from database.");
   const deleteResult = await collection.deleteMany({
     TimeStamp: {
       $lte: moment()
         .subtract(EVENT_KEEP_HOURS, "hours")
         .toISOString()
+    },
+    writeConcern: {
+      wtimeout: 30000
     }
   });
-  logger.info(
-    `Fetch success. (New events inserted: ${writeResult.upsertedCount}, old events removed: ${deleteResult.deletedCount}).`
-  );
+  logger.info(`[getEvents] Fetch success. (New events inserted: ${writeResult.upsertedCount}, old events removed: ${deleteResult.deletedCount}).`);
 };
 
 exports.getEventsByGuild = async guildConfigs => {

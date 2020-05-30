@@ -43,7 +43,6 @@ if (process.env.LOGGLY_KEY) {
     new Loggly({
       token: process.env.LOGGLY_KEY,
       subdomain: "albion-killbot",
-      tags: ["Winston-NodeJS"],
       json: true
     })
   );
