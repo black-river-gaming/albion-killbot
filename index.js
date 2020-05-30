@@ -230,7 +230,7 @@ client.on("guildDelete", guild => {
       try {
         await func();
       } catch(e) {
-        logger.error("Error in function {func.name}: {e}");
+        logger.error(`Error in function ${func.name}: ${e}`);
       }
       await sleep(time);
     }
