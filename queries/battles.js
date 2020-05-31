@@ -140,7 +140,7 @@ exports.getBattlesByGuild = async guildConfigs => {
   }
 
   // Get unread battles
-  const battles = await collection.find({ read: false }).sort({ id: 1 }).limit(500).toArray();
+  const battles = await collection.find({ read: false }).sort({ id: 1 }).limit(1000).toArray();
   if (battles.length === 0) {
     return logger.debug("[scanBattles] No new battles to notify.");
   }

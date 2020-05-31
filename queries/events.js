@@ -148,7 +148,7 @@ exports.getEventsByGuild = async guildConfigs => {
   }
 
   // Get unread events
-  const events = await collection.find({ read: false }).sort({ EventId: 1 }).limit(500).toArray();
+  const events = await collection.find({ read: false }).sort({ EventId: 1 }).limit(1000).toArray();
   if (events.length === 0) {
     return logger.debug("[scanEvents] No new events to notify.");
   }
