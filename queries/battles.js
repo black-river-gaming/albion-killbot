@@ -136,13 +136,13 @@ exports.getBattles = async () => {
 exports.getBattlesByGuild = async guildConfigs => {
   const collection = database.collection(BATTLES_COLLECTION);
   if (!collection) {
-    return logger.warn("Not connected to database. Skipping notify battles.");
+    return logger.warn("[scanBattles] Not connected to database. Skipping notify battles.");
   }
 
   // Get unread battles
-  const battles = await collection.find({ read: false }).toArray();
+  const battles = await collection.find({ read: false }).sort({ id: 1 }).limit(500).toArray();
   if (battles.length === 0) {
-    return logger.debug("No new battles to notify.");
+    return logger.debug("[scanBattles] No new battles to notify.");
   }
 
   // Set battles as read before sending to ensure no double battle notification
@@ -156,7 +156,7 @@ exports.getBattlesByGuild = async guildConfigs => {
       $set: { read: true }
     }
   );
-  logger.info(`Notify success. (Battles read: ${updateResult.modifiedCount}).`);
+  logger.info(`[scanBattles] Notify success. (Battles read: ${updateResult.modifiedCount}).`);
 
   const battlesByGuild = {};
   for (let guild of Object.keys(guildConfigs)) {

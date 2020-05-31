@@ -88,7 +88,7 @@ const scanEvents = async () => {
 };
 
 const scanBattles = async () => {
-  logger.info("Notifying new battles to all Discord Servers.");
+  logger.info("[scanBattles] Notifying new battles to all Discord Servers.");
   const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
   const battlesByGuild = await getBattlesByGuild(allGuildConfigs);
 
@@ -99,7 +99,7 @@ const scanBattles = async () => {
     const newBattlesCount = battlesByGuild[guild.id].length;
     if (newBattlesCount > 0) {
       logger.info(
-        `Sending ${newBattlesCount} new battles to guild "${guild.name}"`
+        `[scanBattles] Sending ${newBattlesCount} new battles to guild "${guild.name}"`
       );
     }
     battlesByGuild[guild.id].forEach(battle =>
