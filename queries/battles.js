@@ -93,7 +93,7 @@ exports.getBattles = async () => {
     latestBattle = { id: 0 };
   }
   logger.info(
-    `[getBattles Fetching Albion Online battles from API up to battle ${latestBattle.id}.`
+    `[getBattles] Fetching Albion Online battles from API up to battle ${latestBattle.id}.`
   );
   const battles = await fetchBattlesTo(latestBattle);
   if (battles.length === 0) return logger.debug("[getBattles] No new battles.");
@@ -129,7 +129,7 @@ exports.getBattles = async () => {
   });
   logger.debug(`[getBattles] Performing ${ops.length} write operations in database.`);
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
-  
+
   logger.info(`[getBattles] Fetch success. (New battles inserted: ${writeResult.upsertedCount}, old battles removed: ${deleteResult.deletedCount}).`);
 };
 

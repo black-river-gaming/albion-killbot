@@ -48,7 +48,7 @@ const getDefaultChannel = guild => {
 };
 
 const scanEvents = async () => {
-  logger.info("Notifying new events to all Discord Servers.");
+  logger.info("[scanEvents] Notifying new events to all Discord Servers.");
   const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
   const eventsByGuild = await getEventsByGuild(allGuildConfigs);
 
@@ -59,7 +59,7 @@ const scanEvents = async () => {
     const newEventsCount = eventsByGuild[guild.id].length;
     if (newEventsCount > 0) {
       logger.info(
-        `Sending ${newEventsCount} new events to guild "${guild.name}"`
+        `[scanEvents] Sending ${newEventsCount} new events to guild "${guild.name}"`
       );
     }
 

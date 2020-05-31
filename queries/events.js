@@ -144,13 +144,13 @@ exports.getEvents = async () => {
 exports.getEventsByGuild = async guildConfigs => {
   const collection = database.collection(EVENTS_COLLECTION);
   if (!collection) {
-    return logger.warn("Not connected to database. Skipping notify events.");
+    return logger.warn("[scanEvents] Not connected to database. Skipping notify events.");
   }
 
   // Get unread events
-  const events = await collection.find({ read: false }).toArray();
+  const events = await collection.find({ read: false }).sort({ EventId: 1 }).limit(500).toArray();
   if (events.length === 0) {
-    return logger.debug("No new events to notify.");
+    return logger.debug("[scanEvents] No new events to notify.");
   }
 
   // Set events as read before sending to ensure no double events notification
@@ -164,7 +164,7 @@ exports.getEventsByGuild = async guildConfigs => {
       $set: { read: true }
     }
   );
-  logger.info(`Notify success. (Events read: ${updateResult.modifiedCount}).`);
+  logger.info(`[scanEvents] Notify success. (Events read: ${updateResult.modifiedCount}).`);
 
   const eventsByGuild = {};
   for (let guild of Object.keys(guildConfigs)) {
