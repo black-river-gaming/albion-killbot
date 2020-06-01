@@ -98,19 +98,6 @@ exports.getBattles = async () => {
   const battles = await fetchBattlesTo(latestBattle);
   if (battles.length === 0) return logger.debug("[getBattles] No new battles.");
 
-  // Delete older events to free cache space
-  logger.debug("[getBattles] Deleting old events from database.");
-  const deleteResult = await collection.deleteMany({
-    startTime: {
-      $lte: moment()
-        .subtract(BATTLES_KEEP_HOURS, "hours")
-        .toISOString()
-    },
-    writeConcern: {
-      wtimeout: 60000
-    }
-  });
-
   // Insert battles that aren't in the database yet
   let ops = [];
   battles.forEach(async battle => {
@@ -127,6 +114,17 @@ exports.getBattles = async () => {
       }
     });
   });
+
+  // Delete older events to free cache space
+  logger.debug("[getBattles] Deleting old events from database.");
+  const deleteResult = await collection.deleteMany({
+    startTime: {
+      $lte: moment()
+        .subtract(BATTLES_KEEP_HOURS, "hours")
+        .toISOString()
+    },
+  });
+
   logger.debug(`[getBattles] Performing ${ops.length} write operations in database.`);
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
 
