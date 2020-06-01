@@ -12,7 +12,9 @@ if (!MONGODB_URL) {
 
 const client = new MongoClient(MONGODB_URL, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  w: 1,
+  wtimeout: 60000,
 });
 let db;
 
