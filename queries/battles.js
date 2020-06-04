@@ -144,17 +144,19 @@ exports.getBattlesByGuild = async guildConfigs => {
   }
 
   // Set battles as read before sending to ensure no double battle notification
-  const updateResult = await collection.updateMany(
-    {
-      id: {
-        $in: battles.map(battle => battle.id)
+  let ops = [];
+  battles.forEach(async battle => {
+    ops.push({
+      updateOne: {
+        filter: { id: battle.id },
+        update: {
+          $set: { read: true }
+        }
       }
-    },
-    {
-      $set: { read: true }
-    }
-  );
-  logger.info(`[scanBattles] Notify success. (Battles read: ${updateResult.modifiedCount}).`);
+    });
+  });
+  const writeResult = await collection.bulkWrite(ops, { ordered: false });
+  logger.info(`[scanEvents] Notify success. (Events read: ${writeResult.modifiedCount}).`);
 
   const battlesByGuild = {};
   for (let guild of Object.keys(guildConfigs)) {

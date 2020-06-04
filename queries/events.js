@@ -135,6 +135,7 @@ exports.getEvents = async () => {
     },
   });
 
+  console.log(writeResult);
   logger.info(`[getEvents] Fetch success. (New events inserted: ${writeResult.upsertedCount}, old events removed: ${deleteResult.deletedCount}).`);
 };
 
@@ -151,17 +152,19 @@ exports.getEventsByGuild = async guildConfigs => {
   }
 
   // Set events as read before sending to ensure no double events notification
-  const updateResult = await collection.updateMany(
-    {
-      EventId: {
-        $in: events.map(evt => evt.EventId)
+  let ops = [];
+  events.forEach(async evt => {
+    ops.push({
+      updateOne: {
+        filter: { EventId: evt.EventId },
+        update: {
+          $set: { read: true }
+        }
       }
-    },
-    {
-      $set: { read: true }
-    }
-  );
-  logger.info(`[scanEvents] Notify success. (Events read: ${updateResult.modifiedCount}).`);
+    });
+  });
+  const writeResult = await collection.bulkWrite(ops, { ordered: false });
+  logger.info(`[scanEvents] Notify success. (Events read: ${writeResult.modifiedCount}).`);
 
   const eventsByGuild = {};
   for (let guild of Object.keys(guildConfigs)) {
