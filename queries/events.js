@@ -104,7 +104,7 @@ exports.getEvents = async () => {
     );
   }
   const events = await fetchEventsTo(latestEvent);
-  if (events.length === 0) return logger.debug("No new events.");
+  if (events.length === 0) return logger.debug("[getEvents] No new events.");
 
   // Insert events that aren't in the database yet
   let ops = [];
