@@ -36,13 +36,24 @@ const IMAGE_OPTIONS = {
   compressionLevel: 7
 };
 
+let S3;
+if (process.env.AWS_ACCESS_KEY && process.env.AWS_SECRET_KEY) {
+  const AWS = require("aws-sdk");
+  S3 = new AWS.S3({
+    apiVersion: "2006-03-01",
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_KEY,
+    region: process.env.AWS_REGION || "us-east-1",
+  });
+}
+
 const drawImage = async (ctx, src, x, y, sw, sh) => {
   if (!src) return;
   let img;
   try {
     img = await loadImage(src);
   } catch (e) {
-    logger.error(`Error loading image: ${src} (${e})`);
+    logger.error(`[images] Error loading image: ${src} (${e})`);
     img = await loadImage("./assets/notfound.png");
   }
   if (sw && sh) ctx.drawImage(img, x, y, sw, sh);
@@ -51,13 +62,33 @@ const drawImage = async (ctx, src, x, y, sw, sh) => {
 
 // Download items from CDN, cache them and return path to cached image
 const getItemFile = async item => {
-  const itemFile = path.join(TMPDIR, `${item.Type}_Q${item.Quality}`);
+  const itemFileName = `${item.Type}_Q${item.Quality}`;
+  const itemFile = path.join(TMPDIR, itemFileName);
   if (fs.existsSync(itemFile)) {
     const stat = fs.statSync(itemFile);
     if (stat.size > 0) return itemFile;
   }
 
   const writer = fs.createWriteStream(itemFile);
+  // Check if file is available on S3 bucket
+  if (S3) {
+    logger.info(`[images] Trying to download file from S3: ${itemFileName}`);
+    try {
+      const data = await S3.getObject({
+        Bucket: process.env.AWS_BUCKET || "albion-killbot",
+        Key: itemFileName,
+      }).promise();
+      writer.write(data.Body);
+      writer.end();
+      return new Promise((resolve, reject) => {
+        writer.on("finish", () => resolve(itemFile));
+        writer.on("error", e => reject(e));
+      });
+    } catch(e) {
+      logger.error(`[images] Unable to download file from S3 (${e})`);
+    }
+  }
+  logger.info(`[images] Downloading new file from CDNs: ${itemFileName}`);
   for (let cdn of CDNS) {
     // If the CDN does not support quality and item has Quality, skip this cdn
     if (!cdn.qualitySupport && item.Quality > 0) continue;
@@ -76,14 +107,26 @@ const getItemFile = async item => {
       response.data.pipe(writer);
       return new Promise((resolve, reject) => {
         writer.on("finish", () => {
+          // If S3 is set, upload to bucket before returning
+          if (S3) {
+            logger.debug(`[images] Uploading new file to S3: ${itemFileName}`);
+            try {
+              S3.putObject({
+                Body: fs.createReadStream(itemFile),
+                Bucket: process.env.AWS_BUCKET || "albion-killbot",
+                Key: itemFileName,
+              }).promise();
+            } catch (e) {
+              logger.error(`[images] Unable to upload file to S3 (${e})`);
+            }
+          }
+
           resolve(itemFile);
         });
-        writer.on("error", e => {
-          reject(e);
-        });
+        writer.on("error", e => reject(e));
       });
     } catch (e) {
-      logger.error(`Unable to download ${url} (${e})`);
+      logger.error(`[images] Unable to download ${url} (${e})`);
     }
   }
   await sleep(5000);
@@ -331,7 +374,7 @@ exports.generateEventImage = async event => {
 
   const buffer = canvas.toBuffer(IMAGE_MIME, IMAGE_OPTIONS);
   logger.debug(
-    `Created event image. Size: ${fileSizeFormatter(buffer.length)}`
+    `[images] Created event image. Size: ${fileSizeFormatter(buffer.length)}`
   );
   // TODO: Optimize image size
   canvas = null;
@@ -367,7 +410,7 @@ exports.generateInventoryImage = async event => {
 
   const buffer = canvas.toBuffer(IMAGE_MIME, IMAGE_OPTIONS);
   logger.debug(
-    `Created inventory image. Size: ${fileSizeFormatter(buffer.length)}`
+    `[images] Created inventory image. Size: ${fileSizeFormatter(buffer.length)}`
   );
   // TODO: Optimize image size
   canvas = null;

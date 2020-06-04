@@ -64,6 +64,9 @@ const scanEvents = async () => {
     }
 
     for (let event of eventsByGuild[guild.id]) {
+      logger.info(
+        `[scanEvents] Sending event ${event.EventId} to guild "${guild.name}"`
+      );
       const mode = guild.config.mode;
       const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
 
