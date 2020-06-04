@@ -70,6 +70,7 @@ const getItemFile = async item => {
         params: {
           quality: item.Quality
         },
+        timeout: 30000,
         responseType: "stream"
       });
       response.data.pipe(writer);
