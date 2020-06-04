@@ -135,7 +135,6 @@ exports.getEvents = async () => {
     },
   });
 
-  console.log(writeResult);
   logger.info(`[getEvents] Fetch success. (New events inserted: ${writeResult.upsertedCount}, old events removed: ${deleteResult.deletedCount}).`);
 };
 
