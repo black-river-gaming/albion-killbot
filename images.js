@@ -44,6 +44,10 @@ if (process.env.AWS_ACCESS_KEY && process.env.AWS_SECRET_KEY) {
     accessKeyId: process.env.AWS_ACCESS_KEY,
     secretAccessKey: process.env.AWS_SECRET_KEY,
     region: process.env.AWS_REGION || "us-east-1",
+    maxRetries: 3,
+    httpOptions: {
+      timeout: 60000
+    }
   });
 }
 
@@ -78,11 +82,10 @@ const getItemFile = async item => {
         Bucket: process.env.AWS_BUCKET || "albion-killbot",
         Key: itemFileName,
       }).promise();
-      writer.write(data.Body);
-      writer.end();
       return new Promise((resolve, reject) => {
         writer.on("finish", () => resolve(itemFile));
         writer.on("error", e => reject(e));
+        writer.end(data.Body);
       });
     } catch(e) {
       logger.error(`[images] Unable to download file from S3 (${e})`);
