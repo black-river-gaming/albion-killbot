@@ -156,7 +156,7 @@ exports.getBattlesByGuild = async guildConfigs => {
     });
   });
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
-  logger.info(`[scanEvents] Notify success. (Events read: ${writeResult.modifiedCount}).`);
+  logger.info(`[scanBattles] Notify success. (Battles read: ${writeResult.modifiedCount}).`);
 
   const battlesByGuild = {};
   for (let guild of Object.keys(guildConfigs)) {
