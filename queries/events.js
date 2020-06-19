@@ -80,6 +80,7 @@ exports.getEvents = async () => {
         },
         timeout: 60000,
       });
+      logger.debug(`[getEvents] Fetched ${res.data.length} events`);
       const foundLatest = !res.data.every(evt => {
         if (evt.EventId <= latestEvent.EventId) return false;
         events.push(evt);
