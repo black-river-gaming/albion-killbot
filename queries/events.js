@@ -13,7 +13,7 @@ function getNewEvents(
   events,
   trackedPlayers = [],
   trackedGuilds = [],
-  trackedAlliances = []
+  trackedAlliances = [],
 ) {
   if (
     trackedPlayers.length === 0 &&
@@ -71,16 +71,16 @@ exports.getEvents = async () => {
     if (offset >= 1000) return events;
 
     try {
+      // TODO: Add manual timeout instead of relying on bugged axios timeout
       logger.debug(`[getEvents] Fetching events with offset: ${offset}`);
       const res = await axios.get(EVENTS_ENDPOINT, {
         params: {
           offset,
           limit: EVENTS_LIMIT,
-          timestamp: moment().unix()
+          timestamp: moment().unix(),
         },
         timeout: 60000,
       });
-      logger.debug(`[getEvents] Fetched ${res.data.length} events`);
       const foundLatest = !res.data.every(evt => {
         if (evt.EventId <= latestEvent.EventId) return false;
         events.push(evt);
@@ -101,7 +101,7 @@ exports.getEvents = async () => {
     latestEvent = { EventId: 0 };
   } else {
     logger.info(
-      `[getEvents] Fetching Albion Online events from API up to event ${latestEvent.EventId}.`
+      `[getEvents] Fetching Albion Online events from API up to event ${latestEvent.EventId}.`,
     );
   }
   const events = await fetchEventsTo(latestEvent);
@@ -114,16 +114,18 @@ exports.getEvents = async () => {
       updateOne: {
         filter: { EventId: evt.EventId },
         update: {
-          $setOnInsert: { ...evt, read: false }
+          $setOnInsert: { ...evt, read: false },
         },
         upsert: true,
         writeConcern: {
-          wtimeout: 60000
-        }
-      }
+          wtimeout: 60000,
+        },
+      },
     });
   });
-  logger.debug(`[getEvents] Performing ${ops.length} write operations in database.`);
+  logger.debug(
+    `[getEvents] Performing ${ops.length} write operations in database.`,
+  );
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
 
   // Delete older events to free cache space
@@ -132,21 +134,29 @@ exports.getEvents = async () => {
     TimeStamp: {
       $lte: moment()
         .subtract(EVENT_KEEP_HOURS, "hours")
-        .toISOString()
+        .toISOString(),
     },
   });
 
-  logger.info(`[getEvents] Fetch success. (New events inserted: ${writeResult.upsertedCount}, old events removed: ${deleteResult.deletedCount}).`);
+  logger.info(
+    `[getEvents] Fetch success. (New events inserted: ${writeResult.upsertedCount}, old events removed: ${deleteResult.deletedCount}).`,
+  );
 };
 
 exports.getEventsByGuild = async guildConfigs => {
   const collection = database.collection(EVENTS_COLLECTION);
   if (!collection) {
-    return logger.warn("[scanEvents] Not connected to database. Skipping notify events.");
+    return logger.warn(
+      "[scanEvents] Not connected to database. Skipping notify events.",
+    );
   }
 
   // Get unread events
-  const events = await collection.find({ read: false }).sort({ EventId: 1 }).limit(1000).toArray();
+  const events = await collection
+    .find({ read: false })
+    .sort({ EventId: 1 })
+    .limit(1000)
+    .toArray();
   if (events.length === 0) {
     return logger.debug("[scanEvents] No new events to notify.");
   }
@@ -158,13 +168,15 @@ exports.getEventsByGuild = async guildConfigs => {
       updateOne: {
         filter: { EventId: evt.EventId },
         update: {
-          $set: { read: true }
-        }
-      }
+          $set: { read: true },
+        },
+      },
     });
   });
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
-  logger.info(`[scanEvents] Notify success. (Events read: ${writeResult.modifiedCount}).`);
+  logger.info(
+    `[scanEvents] Notify success. (Events read: ${writeResult.modifiedCount}).`,
+  );
 
   const eventsByGuild = {};
   for (let guild of Object.keys(guildConfigs)) {
@@ -176,7 +188,7 @@ exports.getEventsByGuild = async guildConfigs => {
       events,
       config.trackedPlayers,
       config.trackedGuilds,
-      config.trackedAlliances
+      config.trackedAlliances,
     );
   }
 

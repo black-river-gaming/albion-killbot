@@ -1,4 +1,5 @@
 const axios = require("axios");
+const moment = require("moment");
 const logger = require("../logger");
 
 // TODO: Export this to a const file
@@ -29,7 +30,7 @@ exports.getGuildRankings = async guildId => {
     pve: null,
     pvp: null,
     gathering: null,
-    crafting: null
+    crafting: null,
   };
   try {
     const params = {
@@ -37,15 +38,19 @@ exports.getGuildRankings = async guildId => {
       limit: 11,
       offset: 0,
       reigon: "Total",
-      guildId
+      guildId,
     };
     const timeout = 60000;
 
     while (!rankings.pve) {
       logger.debug("Fetching PvE rankings...");
       params.type = "PvE";
+      params.timestamp = moment().unix();
       try {
-        const pveRes = await axios.get(STATISTICS_ENDPOINT, { params, timeout });
+        const pveRes = await axios.get(STATISTICS_ENDPOINT, {
+          params,
+          timeout,
+        });
         rankings.pve = pveRes.data;
       } catch (e) {
         logger.error(`Failed to fetch PvE rankings: ${e}. Trying again...`);
@@ -56,6 +61,7 @@ exports.getGuildRankings = async guildId => {
     while (!rankings.pvp) {
       logger.debug("Fetching PvP rankings...");
       params.type = "PvP";
+      params.timestamp = moment().unix();
       try {
         const pvpRes = await axios.get(FAME_ENDPOINT, { params, timeout });
         rankings.pvp = pvpRes.data;
@@ -69,12 +75,16 @@ exports.getGuildRankings = async guildId => {
       logger.debug("Fetching Gathering rankings...");
       params.type = "Gathering";
       params.subtype = "All";
+      params.timestamp = moment().unix();
       try {
-        const gatherRes = await axios.get(STATISTICS_ENDPOINT, { params, timeout });
+        const gatherRes = await axios.get(STATISTICS_ENDPOINT, {
+          params,
+          timeout,
+        });
         rankings.gathering = gatherRes.data;
       } catch (e) {
         logger.error(
-          `Failed to fetch Gathering rankings: ${e}. Trying again...`
+          `Failed to fetch Gathering rankings: ${e}. Trying again...`,
         );
       }
       await sleep(5000);
@@ -83,13 +93,17 @@ exports.getGuildRankings = async guildId => {
     while (!rankings.crafting) {
       logger.debug("Fetching Crafting rankings...");
       params.type = "Crafting";
+      params.timestamp = moment().unix();
       delete params.subtype;
       try {
-        const craftRes = await axios.get(STATISTICS_ENDPOINT, { params, timeout });
+        const craftRes = await axios.get(STATISTICS_ENDPOINT, {
+          params,
+          timeout,
+        });
         rankings.crafting = craftRes.data;
       } catch (e) {
         logger.error(
-          `Failed to fetch Crafting rankings: ${e}. Trying again...`
+          `Failed to fetch Crafting rankings: ${e}. Trying again...`,
         );
       }
       await sleep(5000);
