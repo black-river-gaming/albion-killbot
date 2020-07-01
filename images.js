@@ -8,7 +8,7 @@ const { sleep, digitsFormatter, fileSizeFormatter } = require("./utils");
 
 registerFont(path.join(__dirname, "assets", "fonts", "Roboto-Regular.ttf"), {
   family: "Roboto",
-  weight: "Normal"
+  weight: "Normal",
 });
 
 const CDNS = [
@@ -16,13 +16,13 @@ const CDNS = [
     url:
       "https://albiononline2d.ams3.cdn.digitaloceanspaces.com/thumbnails/orig/{type}",
     qualitySupport: false,
-    trash: false
+    trash: false,
   },
   {
     url: "https://gameinfo.albiononline.com/api/gameinfo/items/{type}",
     qualitySupport: true,
-    trash: true
-  }
+    trash: true,
+  },
 ];
 
 const TMPDIR = path.join(os.tmpdir(), "albion-killbot-cache");
@@ -33,7 +33,7 @@ if (!fs.existsSync(TMPDIR)) {
 
 const IMAGE_MIME = "image/png";
 const IMAGE_OPTIONS = {
-  compressionLevel: 7
+  compressionLevel: 7,
 };
 
 let S3;
@@ -46,8 +46,8 @@ if (process.env.AWS_ACCESS_KEY && process.env.AWS_SECRET_KEY) {
     region: process.env.AWS_REGION || "us-east-1",
     maxRetries: 3,
     httpOptions: {
-      timeout: 60000
-    }
+      timeout: 60000,
+    },
   });
 }
 
@@ -65,7 +65,9 @@ const drawImage = async (ctx, src, x, y, sw, sh) => {
 };
 
 // Download items from CDN, cache them and return path to cached image
-const getItemFile = async item => {
+const getItemFile = async (item, tries = 0) => {
+  // If we already tried 2 times and failed, try without parameters (and don't save to s3)
+  const forceResult = tries > 2;
   const itemFileName = `${item.Type}_Q${item.Quality}`;
   const itemFile = path.join(TMPDIR, itemFileName);
   if (fs.existsSync(itemFile)) {
@@ -87,7 +89,7 @@ const getItemFile = async item => {
         writer.on("error", e => reject(e));
         writer.end(data.Body);
       });
-    } catch(e) {
+    } catch (e) {
       logger.error(`[images] Unable to download file from S3 (${e})`);
     }
   }
@@ -98,20 +100,24 @@ const getItemFile = async item => {
     // If trash item is outdated, skip
     if (!cdn.trash && item.Type.includes("_TRASH")) continue;
 
-    const url = cdn.url.replace("{type}", item.Type).replace("{quality}", item.Quality);
+    const url = cdn.url
+      .replace("{type}", item.Type)
+      .replace("{quality}", item.Quality);
+    const params = {};
+    if (!forceResult) {
+      params.quality = item.Quality;
+    }
     try {
       const response = await axios.get(url, {
-        params: {
-          quality: item.Quality
-        },
+        params,
         timeout: 30000,
-        responseType: "stream"
+        responseType: "stream",
       });
       response.data.pipe(writer);
       return new Promise((resolve, reject) => {
         writer.on("finish", () => {
           // If S3 is set, upload to bucket before returning
-          if (S3) {
+          if (S3 && !forceResult) {
             logger.debug(`[images] Uploading new file to S3: ${itemFileName}`);
             try {
               S3.putObject({
@@ -133,7 +139,7 @@ const getItemFile = async item => {
     }
   }
   await sleep(5000);
-  return getItemFile(item);
+  return forceResult ? null : getItemFile(item, tries + 1);
 };
 
 const drawItem = async (ctx, item, x, y, block_size = 217) => {
@@ -216,7 +222,7 @@ exports.generateEventImage = async event => {
           ctx,
           equipment.MainHand,
           x + BLOCK_SIZE * 2,
-          y + BLOCK_SIZE
+          y + BLOCK_SIZE,
         );
         ctx.globalAlpha = 1;
       }
@@ -226,7 +232,7 @@ exports.generateEventImage = async event => {
         ctx,
         equipment.OffHand,
         x + BLOCK_SIZE * 2,
-        y + BLOCK_SIZE
+        y + BLOCK_SIZE,
       );
     }
     if (equipment.Shoes) {
@@ -242,15 +248,15 @@ exports.generateEventImage = async event => {
       await drawItem(ctx, equipment.Mount, x + BLOCK_SIZE, y + BLOCK_SIZE * 3);
     }
     if (equipment.Potion) {
-      await drawItem(ctx, equipment.Potion, x + BLOCK_SIZE * 2, y + BLOCK_SIZE * 2);
-    }
-    if (equipment.Food) {
       await drawItem(
         ctx,
-        equipment.Food,
-        x,
-        y + BLOCK_SIZE * 2
+        equipment.Potion,
+        x + BLOCK_SIZE * 2,
+        y + BLOCK_SIZE * 2,
       );
+    }
+    if (equipment.Food) {
+      await drawItem(ctx, equipment.Food, x, y + BLOCK_SIZE * 2);
     }
   };
   await drawPlayer(event.Killer, 15, 0);
@@ -269,7 +275,7 @@ exports.generateEventImage = async event => {
     ctx,
     "./assets/fame.png",
     w / 2 - IMG_SIZE / 2,
-    500 - IMG_SIZE / 2
+    500 - IMG_SIZE / 2,
   );
   ctx.strokeText(fame, w / 2 - tw / 2, 600);
   ctx.fillText(fame, w / 2 - tw / 2, 600);
@@ -306,7 +312,7 @@ exports.generateEventImage = async event => {
       "#79902c",
       "#6aad56",
       "#4fc987",
-      "#00e3bf"
+      "#00e3bf",
     ];
 
     const totalDamage = participants.reduce((sum, participant) => {
@@ -314,7 +320,7 @@ exports.generateEventImage = async event => {
     }, 0);
     participants.forEach(participant => {
       const damagePercent = Math.round(
-        (participant.DamageDone / totalDamage) * 100
+        (participant.DamageDone / totalDamage) * 100,
       );
       participant.damagePercent = damagePercent;
     });
@@ -339,7 +345,9 @@ exports.generateEventImage = async event => {
     let py = y + height + 25;
     participants.forEach((participant, i) => {
       const color = COLORS[i % COLORS.length];
-      const text = `${participant.Name} [${Math.round(participant.AverageItemPower)}]`;
+      const text = `${participant.Name} [${Math.round(
+        participant.AverageItemPower,
+      )}]`;
 
       ctx.beginPath();
       ctx.font = "30px Roboto";
@@ -377,7 +385,7 @@ exports.generateEventImage = async event => {
 
   const buffer = canvas.toBuffer(IMAGE_MIME, IMAGE_OPTIONS);
   logger.debug(
-    `[images] Created event image. Size: ${fileSizeFormatter(buffer.length)}`
+    `[images] Created event image. Size: ${fileSizeFormatter(buffer.length)}`,
   );
   // TODO: Optimize image size
   canvas = null;
@@ -413,7 +421,9 @@ exports.generateInventoryImage = async event => {
 
   const buffer = canvas.toBuffer(IMAGE_MIME, IMAGE_OPTIONS);
   logger.debug(
-    `[images] Created inventory image. Size: ${fileSizeFormatter(buffer.length)}`
+    `[images] Created inventory image. Size: ${fileSizeFormatter(
+      buffer.length,
+    )}`,
   );
   // TODO: Optimize image size
   canvas = null;
