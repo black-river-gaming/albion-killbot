@@ -109,3 +109,4 @@ debug/
 
 # Test commands
 commands/testImage.js
+commands/testRanking.js
