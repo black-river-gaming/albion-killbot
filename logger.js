@@ -16,6 +16,7 @@ const levelColors = {
 const isDev = process.env.NODE_ENV === "development";
 
 const tagged = format.printf(log => {
+  if (!isDev) return `${log.level}: ${log.message}`;
   if (!log.tag) return log.message;
   let colorizer = colors[levelColors[log.level]];
   if (!colorizer) colorizer = colors.grey;
@@ -28,6 +29,7 @@ const logger = createLogger({
     new transports.Console({
       format: format.combine(
         format.timestamp(),
+        tagged,
         isDev ? tagged : format.simple(),
       ),
     }),
