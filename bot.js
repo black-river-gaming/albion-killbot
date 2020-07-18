@@ -155,19 +155,19 @@ const sendGuildMessage = async (guild, message) => {
 };
 
 client.on("ready", async () => {
-  logger.info(`[bot] Connected to Discord as ${client.user.tag}`);
+  logger.info(`Connected to Discord as ${client.user.tag}`);
 });
 
 client.on("disconnect", async () => {
-  logger.info("[bot] Disconnected from Discord.");
+  logger.info("Disconnected from Discord.");
 });
 
 client.on("reconnecting", async () => {
-  logger.info("[bot] Trying to reconnect to Discord.");
+  logger.info("Trying to reconnect to Discord.");
 });
 
 client.on("error", async e => {
-  logger.info(`[bot] Discord error: ${e}.`);
+  logger.info(`Discord error: ${e}.`);
 });
 
 client.on("message", async message => {
@@ -249,14 +249,14 @@ exports.run = async token => {
     }
   };
 
-  // runDaily(scanRanking);
-  // runInterval(getEvents, 30000);
+  runDaily(scanRanking);
+  runInterval(getEvents, 30000);
   // runInterval(scanEvents, 5000);
-  // runInterval(getBattles, 60000);
+  runInterval(getBattles, 60000);
   // runInterval(scanBattles, 60000);
   runInterval(() => {
     logger.debug(
-      `[bot] Memory usage (approx): ${fileSizeFormatter(
+      `Memory usage (approx): ${fileSizeFormatter(
         process.memoryUsage().heapUsed,
       )}`,
     );

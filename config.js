@@ -1,4 +1,4 @@
-const logger = require("./logger");
+const logger = require("./logger")("config");
 const database = require("./database");
 
 const SERVER_CONFIG_COLLECTION = "guildConfig";
@@ -6,7 +6,7 @@ const DEFAULT_CONFIG = {
   trackedPlayers: [],
   trackedGuilds: [],
   trackedAlliances: [],
-  lang: "en"
+  lang: "en",
 };
 
 exports.getConfig = async guild => {
@@ -42,7 +42,7 @@ exports.getConfigByGuild = async guildList => {
     return configByGuild;
   } catch (e) {
     logger.error(
-      `Unable to find guildConfig for ${guildList.length} guilds: ${e}`
+      `Unable to find guildConfig for ${guildList.length} guilds: ${e}`,
     );
     return configByGuild;
   }
@@ -58,7 +58,7 @@ exports.setConfig = async guild => {
     const guildConfig = await collection.updateOne(
       { guild: guild.id },
       { $set: guild.config },
-      { upsert: true }
+      { upsert: true },
     );
     return guildConfig;
   } catch (e) {

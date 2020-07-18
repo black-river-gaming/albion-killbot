@@ -1,6 +1,6 @@
 require("dotenv").config();
 const bot = require("./bot");
-const logger = require("./logger");
+const logger = require("./logger")("system");
 
 const token = process.env.TOKEN;
 if (!token) {

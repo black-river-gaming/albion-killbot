@@ -1,6 +1,6 @@
 const axios = require("axios");
 const moment = require("moment");
-const logger = require("../logger");
+const logger = require("../logger")("queries.guilds");
 
 // TODO: Export this to a const file
 const GUILDS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/guilds";

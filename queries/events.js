@@ -1,6 +1,6 @@
 const axios = require("axios");
 const moment = require("moment");
-const logger = require("../logger");
+const logger = require("../logger")("queries.events");
 const database = require("../database");
 const { sleep } = require("../utils");
 

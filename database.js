@@ -1,12 +1,12 @@
 const MongoClient = require("mongodb").MongoClient;
-const logger = require("./logger");
+const logger = require("./logger")("database");
 const { sleep } = require("./utils");
 
 const MONGODB_URL = process.env.MONGODB_URL;
 
 if (!MONGODB_URL) {
   logger.warn(
-    "Please define MONGODB_URL environment variable with the MongoDB location. Server config persistence is disabled."
+    "Please define MONGODB_URL environment variable with the MongoDB location. Server config persistence is disabled.",
   );
 }
 
@@ -40,7 +40,7 @@ exports.connect = async () => {
   }
 };
 exports.db = db;
-exports.collection = (collection) => {
+exports.collection = collection => {
   if (!db) return;
   return db.collection(collection);
 };
