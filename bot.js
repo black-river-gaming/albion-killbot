@@ -251,9 +251,9 @@ exports.run = async token => {
 
   runDaily(scanRanking);
   runInterval(getEvents, 30000);
-  // runInterval(scanEvents, 5000);
+  runInterval(scanEvents, 5000);
   runInterval(getBattles, 60000);
-  // runInterval(scanBattles, 60000);
+  runInterval(scanBattles, 60000);
   runInterval(() => {
     logger.debug(
       `Memory usage (approx): ${fileSizeFormatter(

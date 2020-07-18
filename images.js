@@ -13,10 +13,9 @@ registerFont(path.join(__dirname, "assets", "fonts", "Roboto-Regular.ttf"), {
 
 const CDNS = [
   {
-    url:
-      "https://albiononline2d.ams3.cdn.digitaloceanspaces.com/thumbnails/orig/{type}",
-    qualitySupport: false,
-    trash: false,
+    url: "https://render.albiononline.com/v1/item/{type}.png?quality={quality}",
+    qualitySupport: true,
+    trash: true,
   },
   {
     url: "https://gameinfo.albiononline.com/api/gameinfo/items/{type}",
