@@ -1,27 +1,52 @@
 const { createLogger, format, transports } = require("winston");
+const colors = require("colors/safe");
 const path = require("path");
+
+const levelColors = {
+  emerg: "red",
+  alert: "red",
+  crit: "red",
+  error: "red",
+  warning: "yellow",
+  info: "green",
+  debug: "cyan",
+  silly: "rainbow",
+};
+
+const isDev = process.env.NODE_ENV === "development";
+
+const tagged = format.printf(log => {
+  if (!log.tag) return log.message;
+  let colorizer = colors[levelColors[log.level]];
+  if (!colorizer) colorizer = colors.grey;
+  return `[${colorizer(log.tag)}] ${log.message}`;
+});
 
 const logger = createLogger({
   level: "debug",
   transports: [
     new transports.Console({
-      format: format.combine(format.colorize(), format.simple())
-    })
-  ]
+      format: format.combine(
+        format.timestamp(),
+        isDev ? tagged : format.simple(),
+      ),
+    }),
+  ],
 });
 
 if (process.env.NODE_ENV === "development") {
   logger.add(
     new transports.File({
       filename: path.join("logs", "error.log"),
-      level: "error"
-    })
+      format: format.combine(format.timestamp(), format.json()),
+      level: "error",
+    }),
   );
   logger.add(
     new transports.File({
       filename: path.join("logs", "all.log"),
-      format: format.combine(format.timestamp(), format.json())
-    })
+      format: format.combine(format.timestamp(), format.json()),
+    }),
   );
 }
 
@@ -32,8 +57,8 @@ if (process.env.LOGDNA_KEY) {
       key: process.env.LOGDNA_KEY,
       app: "Albion Killbot",
       env: process.env.NODE_ENV || "unset",
-      index_meta: true
-    })
+      index_meta: true,
+    }),
   );
 }
 
@@ -43,9 +68,11 @@ if (process.env.LOGGLY_KEY) {
     new Loggly({
       token: process.env.LOGGLY_KEY,
       subdomain: "albion-killbot",
-      json: true
-    })
+      json: true,
+    }),
   );
 }
 
-module.exports = logger;
+module.exports = tag => {
+  return logger.child({ tag });
+};

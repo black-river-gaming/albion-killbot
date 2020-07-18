@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
 const { createCanvas, registerFont, loadImage } = require("canvas");
-const logger = require("./logger");
+const logger = require("./logger")("images");
 const { sleep, digitsFormatter, fileSizeFormatter } = require("./utils");
 
 registerFont(path.join(__dirname, "assets", "fonts", "Roboto-Regular.ttf"), {
