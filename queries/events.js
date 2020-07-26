@@ -71,9 +71,14 @@ exports.getEvents = async () => {
     if (offset >= 1000) return events;
 
     try {
-      // TODO: Add manual timeout instead of relying on bugged axios timeout
       logger.debug(`[getEvents] Fetching events with offset: ${offset}`);
+      // Manual timeout is necessary because network timeout isn't triggered by axios
+      const source = axios.CancelToken.source();
+      setTimeout(() => {
+        source.cancel();
+      }, 60000);
       const res = await axios.get(EVENTS_ENDPOINT, {
+        cancelToken: source.token,
         params: {
           offset,
           limit: EVENTS_LIMIT,
