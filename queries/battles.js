@@ -64,13 +64,7 @@ exports.getBattles = async () => {
 
     try {
       logger.debug(`[getBattles] Fetching battles with offset: ${offset}`);
-      // Manual timeout is necessary because network timeout isn't triggered by axios
-      const source = axios.CancelToken.source();
-      setTimeout(() => {
-        source.cancel();
-      }, 60000);
       const res = await axios.get(BATTLES_ENDPOINT, {
-        cancelToken: source.token,
         params: {
           offset,
           limit: BATTLES_LIMIT,

@@ -63,7 +63,10 @@ exports.getGuildRankings = async guildId => {
       params.type = "PvP";
       params.timestamp = moment().unix();
       try {
-        const pvpRes = await axios.get(FAME_ENDPOINT, { params, timeout });
+        const pvpRes = await axios.get(FAME_ENDPOINT, {
+          params,
+          timeout,
+        });
         rankings.pvp = pvpRes.data;
       } catch (e) {
         logger.error(`Failed to fetch PvP rankings: ${e}. Trying again...`);
