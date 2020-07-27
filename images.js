@@ -159,7 +159,7 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
 };
 
 exports.generateEventImage = async event => {
-  let canvas = createCanvas(1600, 1300);
+  let canvas = createCanvas(1600, 1250);
   const w = canvas.width;
   const ctx = canvas.getContext("2d");
 
@@ -177,7 +177,7 @@ exports.generateEventImage = async event => {
     if (player.AllianceName) guild = `[${player.AllianceName}] ${guild}`;
     ctx.font = "35px Roboto";
     ctx.lineWidth = 3;
-    ctx.fillStyle = "#BBB";
+    ctx.fillStyle = "#FFF";
     let tw = ctx.measureText(guild).width;
     let th = ctx.measureText("M").width;
     y += th * 2;
@@ -281,25 +281,40 @@ exports.generateEventImage = async event => {
 
   // assists bar
   const drawAssistBar = (participants, x, y, width, height, radius) => {
-    ctx.save();
+    let px = x;
+    let py = y;
 
+    ctx.font = "40px Roboto";
+    ctx.fillStyle = "#AAAAAA";
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 3;
+    const text = "Damage";
+    const pw = ctx.measureText(text).width;
+    const textX = px + width / 2 - pw / 2;
+    ctx.strokeText(text, textX, py);
+    ctx.fillText(text, textX, py);
+
+    px = x;
+    py += 25;
+
+    ctx.save();
     ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.moveTo(px + radius, py);
+    ctx.lineTo(px + width - radius, py);
+    ctx.quadraticCurveTo(px + width, py, px + width, py + radius);
+    ctx.lineTo(px + width, py + height - radius);
+    ctx.quadraticCurveTo(px + width, py + height, px + width - radius, py + height);
+    ctx.lineTo(px + radius, py + height);
+    ctx.quadraticCurveTo(px, py + height, px, py + height - radius);
+    ctx.lineTo(px, py + radius);
+    ctx.quadraticCurveTo(px, py, px + radius, py);
     ctx.closePath();
 
     ctx.fillStyle = "white";
     ctx.fill();
 
     ctx.strokeStyle = "#111111";
-    ctx.lineWidth = 20;
+    ctx.lineWidth = 15;
     ctx.stroke();
     ctx.clip();
 
@@ -315,25 +330,35 @@ exports.generateEventImage = async event => {
     ];
 
     const totalDamage = participants.reduce((sum, participant) => {
-      return sum + participant.DamageDone;
+      return sum + Math.max(1, participant.DamageDone);
     }, 0);
     participants.forEach(participant => {
-      const damagePercent = Math.round(
-        (participant.DamageDone / totalDamage) * 100,
-      );
+      const damagePercent = (Math.max(1, participant.DamageDone) / totalDamage) * 100;
       participant.damagePercent = damagePercent;
     });
 
     // Draw bars
-    let px = x;
     participants.forEach((participant, i) => {
       const color = COLORS[i % COLORS.length];
       const barWidth = Math.round((participant.damagePercent / 100) * width);
       ctx.beginPath();
-      ctx.rect(px, y, barWidth, height);
+      ctx.rect(px, py, barWidth, height);
       ctx.fillStyle = color;
-      ctx.strokeStyle = "black";
       ctx.fill();
+
+      if (barWidth > 60) {
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 2;
+        ctx.font = "32px Roboto";
+        const text = participant.DamageDone === 0 ? "0%" : Math.round(participant.damagePercent) + "%";
+        const pw = ctx.measureText(text).width;
+        const textX = (px + barWidth / 2) - (pw / 2);
+        const textY = (py + height / 2) + 7;
+        ctx.strokeText(text, textX, textY);
+        ctx.fillText(text, textX, textY);
+      }
+
       px += barWidth;
     });
 
@@ -341,10 +366,10 @@ exports.generateEventImage = async event => {
 
     // Draw caption
     px = x;
-    let py = y + height + 25;
+    py += height + 20;
     participants.forEach((participant, i) => {
       const color = COLORS[i % COLORS.length];
-      const text = `${participant.Name} [${Math.round(
+      const text = `${participant.Name} [IP: ${Math.round(
         participant.AverageItemPower,
       )}]`;
 
@@ -380,7 +405,7 @@ exports.generateEventImage = async event => {
     return height + py;
   };
 
-  drawAssistBar(event.Participants, 35, 1090, 1530, 100, 25);
+  drawAssistBar(event.Participants, 35, 1050, 1530, 80, 40);
 
   const buffer = canvas.toBuffer(IMAGE_MIME, IMAGE_OPTIONS);
   logger.debug(
