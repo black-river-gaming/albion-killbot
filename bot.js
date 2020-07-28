@@ -131,9 +131,7 @@ const sendGuildMessage = async (guild, message) => {
     await channel.send(message);
     msgErrors[guild.id] = 0;
   } catch (e) {
-    logger.error(
-      `Unable to send message to guild ${guild.name}/${channel.name}: ${e}`,
-    );
+    logger.error(`Unable to send message to guild ${guild.name}/${channel.name}: ${e}`);
 
     if (
       e.code === Discord.Constants.APIErrors.UNKNOWN_CHANNEL ||
@@ -144,9 +142,7 @@ const sendGuildMessage = async (guild, message) => {
       msgErrors[guild.id]++;
       // If more than 50 msg errors occur in succession, bot will leave and warn owner
       if (msgErrors[guild.id] > 50) {
-        logger.warn(
-          `Leaving guild ${guild.name} due to excessive message errors. Warning owner.`,
-        );
+        logger.warn(`Leaving guild ${guild.name} due to excessive message errors. Warning owner.`);
         await guild.owner.send(l.__("LEAVE", { guild: guild.name }));
         await guild.leave();
       }
@@ -172,10 +168,10 @@ client.on("error", async e => {
 
 client.on("message", async message => {
   if (message.author.bot) return;
-  if (!message.member) {
-    return message.reply("Sorry, I can only accept commands inside a channel.");
-  }
   if (!message.content || !message.content.startsWith(COMMAND_PREFIX)) return;
+  if (!message.member) return;
+  // For now, bot only accepts commands from server admins
+  if (!message.member.hasPermission("ADMINISTRATOR")) return;
 
   // This is needed to inherit configs to guild object
   const guild = message.guild;
@@ -183,12 +179,6 @@ client.on("message", async message => {
   if (!guild.config.channel) {
     guild.config.channel = message.channel.id;
     config.setConfig(guild);
-  }
-  const l = messages.getI18n(guild.config.lang);
-
-  // For now, bot only accepts commands from server admins
-  if (!message.member.hasPermission("ADMINISTRATOR")) {
-    return message.author.send(l.__("NO_PERMISSION"));
   }
 
   const args = message.content
