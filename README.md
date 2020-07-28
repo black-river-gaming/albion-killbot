@@ -20,9 +20,36 @@ Make sure the bot have the following permissions:
 - Send Messages
 - Embed Links
 
-Type `!help` to see the bot's command. Don't forget to set up the notification channel using `!channel #channel` command.
+# Usage
 
-The bot can track players and guilds. Alliances are disabled for now to avoid bot spam.
+Type `!help` to see the commands available.
+
+> You can set the bot to another languages using `!lang`.
+
+First, you need to set up the notification channel using `!channel #channel` command.
+
+```
+!channel #killboard
+```
+
+The bot can track players and guilds. Alliances are disabled for now to avoid bot spam. Examples:
+
+If you want to track a guild:
+
+```
+!track guild Blue Army
+!track guild Black River
+```
+
+If you want to track a player:
+
+```
+!track player Anjek
+!track player MyPlayer
+```
+
+To list what guilds/players you're currently tracking, type `!list`
+To stop tracking there guilds/players, just swap `!track` for `!untrack`
 
 # Development
 
