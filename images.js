@@ -303,7 +303,12 @@ exports.generateEventImage = async event => {
     ctx.lineTo(px + width - radius, py);
     ctx.quadraticCurveTo(px + width, py, px + width, py + radius);
     ctx.lineTo(px + width, py + height - radius);
-    ctx.quadraticCurveTo(px + width, py + height, px + width - radius, py + height);
+    ctx.quadraticCurveTo(
+      px + width,
+      py + height,
+      px + width - radius,
+      py + height,
+    );
     ctx.lineTo(px + radius, py + height);
     ctx.quadraticCurveTo(px, py + height, px, py + height - radius);
     ctx.lineTo(px, py + radius);
@@ -333,7 +338,8 @@ exports.generateEventImage = async event => {
       return sum + Math.max(1, participant.DamageDone);
     }, 0);
     participants.forEach(participant => {
-      const damagePercent = (Math.max(1, participant.DamageDone) / totalDamage) * 100;
+      const damagePercent =
+        (Math.max(1, participant.DamageDone) / totalDamage) * 100;
       participant.damagePercent = damagePercent;
     });
 
@@ -351,10 +357,13 @@ exports.generateEventImage = async event => {
         ctx.strokeStyle = "black";
         ctx.lineWidth = 2;
         ctx.font = "32px Roboto";
-        const text = participant.DamageDone === 0 ? "0%" : Math.round(participant.damagePercent) + "%";
+        const text =
+          participant.DamageDone === 0
+            ? "0%"
+            : Math.round(participant.damagePercent) + "%";
         const pw = ctx.measureText(text).width;
-        const textX = (px + barWidth / 2) - (pw / 2);
-        const textY = (py + height / 2) + 7;
+        const textX = px + barWidth / 2 - pw / 2;
+        const textY = py + height / 2 + 10;
         ctx.strokeText(text, textX, textY);
         ctx.fillText(text, textX, textY);
       }
