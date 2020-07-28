@@ -11,12 +11,12 @@ module.exports = {
     } else {
       try {
         const channel = client.channels.find(
-          c => c.id === guild.config.channel
+          c => c.id === guild.config.channel,
         );
         await channel.send(l.__("TEST_MSG", { channel }));
       } catch (e) {
         message.channel.send(l.__("TEST_FAIL"));
       }
     }
-  }
+  },
 };

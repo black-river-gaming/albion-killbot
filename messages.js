@@ -16,7 +16,7 @@ exports.getI18n = (locale = "en") => {
     directory: LOCALE_DIR,
     objectNotation: true,
     defaultLocale: "en",
-    register: l
+    register: l,
   });
   l.setLocale(locale);
   return l;
@@ -28,7 +28,7 @@ exports.embedEvent = (event, locale) => {
   const good = event.good;
   const title = l.__("KILL.EVENT", {
     killer: event.Killer.Name,
-    victim: event.Victim.Name
+    victim: event.Victim.Name,
   });
 
   let description;
@@ -45,7 +45,7 @@ exports.embedEvent = (event, locale) => {
         return;
       }
       const damagePercent = Math.round(
-        (participant.DamageDone / totalDamage) * 100
+        (participant.DamageDone / totalDamage) * 100,
       );
       assist.push(`${participant.Name} (${damagePercent}%)`);
     });
@@ -79,46 +79,46 @@ exports.embedEvent = (event, locale) => {
       description,
       thumbnail: {
         url:
-          "https://user-images.githubusercontent.com/13356774/76129825-ee15b580-5fde-11ea-9f77-7ae16bd65368.png"
+          "https://user-images.githubusercontent.com/13356774/76129825-ee15b580-5fde-11ea-9f77-7ae16bd65368.png",
       },
       fields: [
         {
           name: l.__("KILL.FAME"),
           value: digitsFormatter(event.TotalVictimKillFame),
-          inline: false
+          inline: false,
         },
         {
           name: l.__("KILL.KILLER_GUILD"),
           value: killerGuildValue || l.__("KILL.NO_GUILD"),
-          inline: true
+          inline: true,
         },
         {
           name: l.__("KILL.VICTIM_GUILD"),
           value: victimGuildValue || l.__("KILL.NO_GUILD"),
-          inline: true
+          inline: true,
         },
         {
           name: "\u200B",
           value: "\u200B",
-          inline: true
+          inline: true,
         },
         {
           name: l.__("KILL.KILLER_IP"),
           value: Math.round(event.Killer.AverageItemPower),
-          inline: true
+          inline: true,
         },
         {
           name: l.__("KILL.VICTIM_IP"),
           value: Math.round(event.Victim.AverageItemPower),
-          inline: true
+          inline: true,
         },
         {
           name: "\u200B",
           value: "\u200B",
-          inline: true
-        }
-      ]
-    }
+          inline: true,
+        },
+      ],
+    },
   };
 };
 
@@ -128,7 +128,7 @@ exports.embedEventAsImage = async (event, locale) => {
   const good = event.good;
   const title = l.__("KILL.EVENT", {
     killer: event.Killer.Name,
-    victim: event.Victim.Name
+    victim: event.Victim.Name,
   });
   const filename = `${event.EventId}-event.png`;
 
@@ -140,13 +140,13 @@ exports.embedEventAsImage = async (event, locale) => {
       files: [
         {
           attachment: await generateEventImage(event),
-          name: filename
-        }
+          name: filename,
+        },
       ],
       image: {
-        url: `attachment://${filename}`
-      }
-    }
+        url: `attachment://${filename}`,
+      },
+    },
   };
 };
 
@@ -161,13 +161,13 @@ exports.embedInventoryAsImage = async event => {
       files: [
         {
           attachment: await generateInventoryImage(event),
-          name: filename
-        }
+          name: filename,
+        },
       ],
       image: {
-        url: `attachment://${filename}`
-      }
-    }
+        url: `attachment://${filename}`,
+      },
+    },
   };
 };
 
@@ -184,7 +184,7 @@ exports.embedBattle = (battle, locale) => {
     players: Object.keys(battle.players || {}).length,
     kills: battle.totalKills,
     fame: digitsFormatter(battle.totalFame),
-    duration
+    duration,
   });
 
   const line = item => {
@@ -192,7 +192,7 @@ exports.embedBattle = (battle, locale) => {
       name: item.name,
       kills: item.kills,
       deaths: item.deaths,
-      fame: digitsFormatter(item.killFame)
+      fame: digitsFormatter(item.killFame),
     });
   };
 
@@ -211,15 +211,15 @@ exports.embedBattle = (battle, locale) => {
 
     fields.push({
       name,
-      value
+      value,
     });
   });
 
   const guildsWithoutAlliance = Object.values(battle.guilds).filter(
-    guild => !guild.allianceId
+    guild => !guild.allianceId,
   );
   const playersWithoutGuild = Object.values(battle.players).filter(
-    player => !player.guildId
+    player => !player.guildId,
   );
   if (guildsWithoutAlliance.length > 0 || playersWithoutGuild.length > 0) {
     const name = l.__("BATTLE.NO_ALLIANCE");
@@ -235,7 +235,7 @@ exports.embedBattle = (battle, locale) => {
         name: l.__("BATTLE.NO_GUILD"),
         kills: 0,
         deaths: 0,
-        killFame: 0
+        killFame: 0,
       };
       playersWithoutGuild.forEach(player => {
         stats.kills += player.kills;
@@ -248,7 +248,7 @@ exports.embedBattle = (battle, locale) => {
 
     fields.push({
       name,
-      value
+      value,
     });
   }
 
@@ -260,10 +260,10 @@ exports.embedBattle = (battle, locale) => {
       description,
       thumbnail: {
         url:
-          "https://user-images.githubusercontent.com/13356774/76130049-b9eec480-5fdf-11ea-95c0-7de130a705a3.png"
+          "https://user-images.githubusercontent.com/13356774/76130049-b9eec480-5fdf-11ea-95c0-7de130a705a3.png",
       },
-      fields
-    }
+      fields,
+    },
   };
 };
 
@@ -279,12 +279,12 @@ exports.embedRankings = (trackedGuild, rankings, locale) => {
       if (pvp) {
         const fameValue = humanFormatter(item.KillFame, 2);
         value += `\n${item.Name}${" ".repeat(
-          RANKING_LINE_LENGTH - fameValue.length - item.Name.length
+          RANKING_LINE_LENGTH - fameValue.length - item.Name.length,
         )}${fameValue}`;
       } else {
         const fameValue = humanFormatter(item.Fame, 2);
         value += `\n${item.Player.Name}${" ".repeat(
-          RANKING_LINE_LENGTH - fameValue.length - item.Player.Name.length
+          RANKING_LINE_LENGTH - fameValue.length - item.Player.Name.length,
         )}${fameValue}`;
       }
     });
@@ -298,37 +298,37 @@ exports.embedRankings = (trackedGuild, rankings, locale) => {
       url: `https://albiononline.com/pt/killboard/guild/${guildId}`,
       thumbnail: {
         url:
-          "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png"
+          "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
       },
       fields: [
         {
           name: l.__("RANKING.PVE"),
           value: generateRankFieldValue(rankings.pve),
-          inline: true
+          inline: true,
         },
         {
           name: l.__("RANKING.PVP"),
           value: generateRankFieldValue(rankings.pvp, true),
-          inline: true
+          inline: true,
         },
         {
           name: "\u200B",
           value: "\u200B",
-          inline: false
+          inline: false,
         },
         {
           name: l.__("RANKING.GATHERING"),
           value: generateRankFieldValue(rankings.gathering),
-          inline: true
+          inline: true,
         },
         {
           name: l.__("RANKING.CRAFTING"),
           value: generateRankFieldValue(rankings.crafting),
-          inline: true
-        }
+          inline: true,
+        },
       ],
-      timestamp: moment().toISOString()
-    }
+      timestamp: moment().toISOString(),
+    },
   };
 };
 
@@ -347,19 +347,19 @@ exports.embedList = config => {
         {
           name: l.__("TRACK.PLAYERS"),
           value: configToList(config.trackedPlayers),
-          inline: true
+          inline: true,
         },
         {
           name: l.__("TRACK.GUILDS"),
           value: configToList(config.trackedGuilds),
-          inline: true
+          inline: true,
         },
         {
           name: l.__("TRACK.ALLIANCES"),
           value: configToList(config.trackedAlliances),
-          inline: true
-        }
-      ]
-    }
+          inline: true,
+        },
+      ],
+    },
   };
 };

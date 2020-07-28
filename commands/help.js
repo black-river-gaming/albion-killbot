@@ -10,7 +10,7 @@ module.exports = {
 
     if (process.env.npm_package_version) {
       response += l.__("HELP.VERSION", {
-        version: process.env.npm_package_version
+        version: process.env.npm_package_version,
       });
       response += "\n\n";
     }
@@ -38,5 +38,5 @@ module.exports = {
     if (!guild.config.channel) {
       message.channel.send(l.__("CHANNEL_NOT_SET"));
     }
-  }
+  },
 };

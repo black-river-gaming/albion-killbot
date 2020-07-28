@@ -12,14 +12,14 @@ module.exports = {
 
     if (!args[0]) {
       return message.channel.send(
-        l.__("MODE.AVAILABLE", { modes: modes.join(", ") })
+        l.__("MODE.AVAILABLE", { modes: modes.join(", ") }),
       );
     }
 
     const mode = args[0].toLowerCase();
     if (modes.indexOf(mode) < 0) {
       return message.channel.send(
-        l.__("MODE.NOT_SUPPORTED", { modes: modes.join(", ") })
+        l.__("MODE.NOT_SUPPORTED", { modes: modes.join(", ") }),
       );
     }
 
@@ -29,5 +29,5 @@ module.exports = {
     }
 
     message.channel.send(l.__("MODE.SET", { mode }));
-  }
+  },
 };

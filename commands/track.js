@@ -37,7 +37,7 @@ module.exports = {
     const track = async (entityList = [], dest, msg, limit = 5) => {
       let entity = dest.find(
         p =>
-          p.name.localeCompare(name, undefined, { sensitivity: "base" }) === 0
+          p.name.localeCompare(name, undefined, { sensitivity: "base" }) === 0,
       );
       if (entity) {
         message.channel.send(l.__("TRACK.ALREADY_TRACKED"));
@@ -50,7 +50,7 @@ module.exports = {
 
       entity = entityList.find(
         p =>
-          p.Name.localeCompare(name, undefined, { sensitivity: "base" }) === 0
+          p.Name.localeCompare(name, undefined, { sensitivity: "base" }) === 0,
       );
       if (!entity) {
         message.channel.send(l.__("TRACK.NOT_FOUND"));
@@ -74,21 +74,21 @@ module.exports = {
         results.players,
         guild.config.trackedPlayers,
         "TRACK.PLAYER_TRACKED",
-        30
+        30,
       );
     case "guild":
       return track(
         results.guilds,
         guild.config.trackedGuilds,
-        "TRACK.GUILD_TRACKED"
+        "TRACK.GUILD_TRACKED",
       );
     case "alliance":
       return track(
         results.alliances,
         guild.config.trackedAlliances,
         "TRACK.ALLIANCE_TRACKED",
-        1
+        1,
       );
     }
-  }
+  },
 };

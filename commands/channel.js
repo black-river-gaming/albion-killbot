@@ -31,5 +31,5 @@ module.exports = {
     }
 
     message.channel.send(l.__("CHANNEL.SET_CHANNEL", { channel: channel }));
-  }
+  },
 };

@@ -11,5 +11,5 @@ module.exports = {
     if (!guild.config.channel) {
       message.channel.send(l.__("CHANNEL_NOT_SET"));
     }
-  }
+  },
 };
