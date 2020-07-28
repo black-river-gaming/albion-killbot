@@ -16,6 +16,7 @@ module.exports = {
     indent: ["error", 2],
     quotes: ["error", "double"],
     semi: ["error", "always"],
-    "comma-dangle": ["error", "always-multiline"]
+    "comma-dangle": ["error", "always-multiline"],
+    "max-len": ["error", { "code": 120, "ignoreTemplateLiterals": true }]
   }
 };

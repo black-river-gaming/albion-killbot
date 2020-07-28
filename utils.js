@@ -14,7 +14,7 @@ exports.humanFormatter = (num, digits) => {
     { value: 1e9, symbol: "b" },
     { value: 1e12, symbol: "t" },
     { value: 1e15, symbol: "q" },
-    { value: 1e18, symbol: "Q" }
+    { value: 1e18, symbol: "Q" },
   ];
   const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
   let i;

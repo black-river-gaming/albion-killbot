@@ -18,7 +18,7 @@ module.exports = {
 
     if (!args[0]) {
       return message.channel.send(
-        l.__("LANGUAGE.AVAILABLE", { langs: langs.join(", ") })
+        l.__("LANGUAGE.AVAILABLE", { langs: langs.join(", ") }),
       );
     }
 
@@ -34,5 +34,5 @@ module.exports = {
     }
 
     message.channel.send(l.__("LANGUAGE.SET_LANGUAGE", { lang }));
-  }
+  },
 };
