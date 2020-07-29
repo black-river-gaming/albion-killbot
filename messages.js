@@ -363,3 +363,36 @@ exports.embedList = config => {
     },
   };
 };
+
+exports.embedDailyRanking = (config, rankings) => {
+  const l = exports.getI18n(config.lang);
+
+  const generateRankFieldValue = (ranking, name = "name", number = "fame") => {
+    let value = "```c";
+    ranking.forEach(item => {
+      const nameValue = item[name];
+      const numberValue = humanFormatter(item[number], 2);
+      value += `\n${nameValue}${" ".repeat(
+        RANKING_LINE_LENGTH - numberValue.length - nameValue.length,
+      )}${numberValue}`;
+    });
+    value += "```";
+    return value;
+  };
+
+  return {
+    embed: {
+      title: l.__("RANKING.DAILY"),
+      thumbnail: {
+        url: "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
+      },
+      fields: [{
+        name: l.__("RANKING.KILL_FAME"),
+        value: generateRankFieldValue(rankings.killRanking),
+      }, {
+        name: l.__("RANKING.DEATH_FAME"),
+        value: generateRankFieldValue(rankings.deathRanking),
+      }],
+    },
+  };
+};

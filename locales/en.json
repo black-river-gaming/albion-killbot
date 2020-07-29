@@ -1,84 +1,87 @@
 {
-  "JOIN": "Hello everyone! I'm Albion Killbot. If you are an admin, please configure me by typing !help and seeing what I can do.",
-  "LEAVE": "Sadly, I am having trouble sending messages to your server {{ guild }}, so I have to leave now =(\nSee you soon!",
-  "NO_PERMISSION": "Sorry, I only accept commands from server admins.",
-  "CONFIG_NOT_SET": "WARNING: Unable to persist server configuration. They will be reverted upon bot restart.",
-  "CHANNEL_NOT_SET": "WARNING: Channel to send notifications is not set. Please use !channel [channel] to configure it.",
-  "TEST_MSG": "I have permission to send messages to the channel {{{ channel }}}.",
-  "TEST_FAIL": "I DON'T have permissions to send messages to the configured channel.",
-  "KILL": {
-    "EVENT": "{{ killer }} killed {{ victim }}!",
-    "SOLO_0": "Die casual! Solo kill!!!",
-    "SOLO_1": "And it was a solo kill.",
-    "SOLO_2": "A clean solo kill.",
-    "SOLO_3": "No assists needed.",
-    "SOLO_4": "Get rekt! Solo kill.",
-    "SOLO_5": "Solo killed. No questions asked.",
-    "ASSIST": "Assist(s): {{{ assists }}}",
-    "FAME": "Kill Fame",
-    "KILLER_GUILD": "Killer's Guild",
-    "VICTIM_GUILD": "Victim's Guild",
-    "NO_GUILD": "No guild",
-    "KILLER_IP": "Killer's IP",
-    "VICTIM_IP": "Victim's IP"
-  },
-  "BATTLE": {
-    "EVENT": "A battle ocurred between {{ guilds }} guilds!",
-    "DESCRIPTION": "Players: {{ players }} / Kills: {{ kills }} / Fame: {{ fame }}\nDuration: {{ duration }}",
-    "LINE": "{{ name }} ({{ kills }}/{{ deaths }}) - Fame: {{fame}}",
-    "NO_ALLIANCE": "Others",
-    "NO_GUILD": "Players without Guild"
-  },
-  "RANKING": {
-    "MONTHLY": "Monthly Ranking - {{ guild }}",
-    "PVE": "PvE Ranking",
-    "PVP": "PvP Ranking",
-    "GATHERING": "Gathering Ranking",
-    "CRAFTING": "Crafting Ranking"
-  },
-  "HELP": {
-    "VERSION": "Albion Killbot v{{ version }}",
-    "HELP": "Show bot command list.",
-    "CHANNEL": "Sets the channel to send notifications.",
-    "LANGUAGE": "Set bot language.",
-    "LIST": "Lists tracked players, guilds and alliances.",
-    "TRACK": "Tracks a player, guild or alliance.",
-    "UNTRACK": "Stops tracking a player, guild or alliance.",
-    "TEST": "Verify if the bot has permission to send messages.",
-    "MODE": "Sets the output mode, like text or image."
-  },
-  "CHANNEL": {
-    "NO_CHANNEL": "Please input a channel for notifications.",
-    "NOT_FOUND": "Sorry, I can't find the mentioned channel. Please verifiy if I have acess to it and try again.",
-    "SET_CHANNEL": "Channel defined to {{{ channel }}}."
-  },
-  "LANGUAGE": {
-    "AVAILABLE": "Supported languages: {{ langs }}",
-    "NOT_SUPPORTED": "This language is not supported.",
-    "SET_LANGUAGE": "Language set to '{{ lang }}'"
-  },
-  "TRACK": {
-    "LIST": "Tracking list",
-    "NONE": "None",
-    "PLAYERS": "Players",
-    "GUILDS": "Guilds",
-    "ALLIANCES": "Alliances",
-    "MISSING_PARAMETERS": "Please insert all parameters. Type !help to see more.",
-    "UNSUPPORTED_TYPE": "Unsupported type of tracking. Type !help to see more.",
-    "ALLIANCE_DISABLED": "Sorry, tracking of alliances is disabled for now. Please contact bot admin for more information.",
-    "NOT_FOUND": "Sorry, I couldn't find anything with this name.",
-    "ALREADY_TRACKED": "I am already tracking this item.",
-    "LIMIT_REACHED": "You already reached the limit of {{ limit }} items in this list.",
-    "PLAYER_TRACKED": "Tracking player: {{ name }}.",
-    "GUILD_TRACKED": "Tracking guild: {{ name }}.",
-    "ALLIANCE_TRACKED": "Tracking alliance: {{ name }}.",
-    "PLAYER_UNTRACKED": "Untracking player: {{ name }}.",
-    "GUILD_UNTRACKED": "Untracking guild: {{ name }}.",
-    "ALLIANCE_UNTRACKED": "Untracking alliance: {{ name }}."
-  },
-  "MODE": {
-    "AVAILABLE": "Available modes: {{ modes }}",
-    "NOT_SUPPORTED": "This mode isn't supported. Please pick one of: {{ modes }}",
-    "SET": "Output mode set to: {{ mode }}"
-  }
+	"JOIN": "Hello everyone! I'm Albion Killbot. If you are an admin, please configure me by typing !help and seeing what I can do.",
+	"LEAVE": "Sadly, I am having trouble sending messages to your server {{ guild }}, so I have to leave now =(\nSee you soon!",
+	"NO_PERMISSION": "Sorry, I only accept commands from server admins.",
+	"CONFIG_NOT_SET": "WARNING: Unable to persist server configuration. They will be reverted upon bot restart.",
+	"CHANNEL_NOT_SET": "WARNING: Channel to send notifications is not set. Please use !channel [channel] to configure it.",
+	"TEST_MSG": "I have permission to send messages to the channel {{{ channel }}}.",
+	"TEST_FAIL": "I DON'T have permissions to send messages to the configured channel.",
+	"KILL": {
+		"EVENT": "{{ killer }} killed {{ victim }}!",
+		"SOLO_0": "Die casual! Solo kill!!!",
+		"SOLO_1": "And it was a solo kill.",
+		"SOLO_2": "A clean solo kill.",
+		"SOLO_3": "No assists needed.",
+		"SOLO_4": "Get rekt! Solo kill.",
+		"SOLO_5": "Solo killed. No questions asked.",
+		"ASSIST": "Assist(s): {{{ assists }}}",
+		"FAME": "Kill Fame",
+		"KILLER_GUILD": "Killer's Guild",
+		"VICTIM_GUILD": "Victim's Guild",
+		"NO_GUILD": "No guild",
+		"KILLER_IP": "Killer's IP",
+		"VICTIM_IP": "Victim's IP"
+	},
+	"BATTLE": {
+		"EVENT": "A battle ocurred between {{ guilds }} guilds!",
+		"DESCRIPTION": "Players: {{ players }} / Kills: {{ kills }} / Fame: {{ fame }}\nDuration: {{ duration }}",
+		"LINE": "{{ name }} ({{ kills }}/{{ deaths }}) - Fame: {{fame}}",
+		"NO_ALLIANCE": "Others",
+		"NO_GUILD": "Players without Guild"
+	},
+	"RANKING": {
+		"MONTHLY": "Monthly Ranking - {{ guild }}",
+		"PVE": "PvE Ranking",
+		"PVP": "PvP Ranking",
+		"GATHERING": "Gathering Ranking",
+		"CRAFTING": "Crafting Ranking",
+		"DAILY": "Daily PvP Ranking",
+		"KILL_FAME": "Top Kill Fame",
+		"DEATH_FAME": "Top Death Fame"
+	},
+	"HELP": {
+		"VERSION": "Albion Killbot v{{ version }}",
+		"HELP": "Show bot command list.",
+		"CHANNEL": "Sets the channel to send notifications.",
+		"LANGUAGE": "Set bot language.",
+		"LIST": "Lists tracked players, guilds and alliances.",
+		"TRACK": "Tracks a player, guild or alliance.",
+		"UNTRACK": "Stops tracking a player, guild or alliance.",
+		"TEST": "Verify if the bot has permission to send messages.",
+		"MODE": "Sets the output mode, like text or image."
+	},
+	"CHANNEL": {
+		"NO_CHANNEL": "Please input a channel for notifications.",
+		"NOT_FOUND": "Sorry, I can't find the mentioned channel. Please verifiy if I have acess to it and try again.",
+		"SET_CHANNEL": "Channel defined to {{{ channel }}}."
+	},
+	"LANGUAGE": {
+		"AVAILABLE": "Supported languages: {{ langs }}",
+		"NOT_SUPPORTED": "This language is not supported.",
+		"SET_LANGUAGE": "Language set to '{{ lang }}'"
+	},
+	"TRACK": {
+		"LIST": "Tracking list",
+		"NONE": "None",
+		"PLAYERS": "Players",
+		"GUILDS": "Guilds",
+		"ALLIANCES": "Alliances",
+		"MISSING_PARAMETERS": "Please insert all parameters. Type !help to see more.",
+		"UNSUPPORTED_TYPE": "Unsupported type of tracking. Type !help to see more.",
+		"ALLIANCE_DISABLED": "Sorry, tracking of alliances is disabled for now. Please contact bot admin for more information.",
+		"NOT_FOUND": "Sorry, I couldn't find anything with this name.",
+		"ALREADY_TRACKED": "I am already tracking this item.",
+		"LIMIT_REACHED": "You already reached the limit of {{ limit }} items in this list.",
+		"PLAYER_TRACKED": "Tracking player: {{ name }}.",
+		"GUILD_TRACKED": "Tracking guild: {{ name }}.",
+		"ALLIANCE_TRACKED": "Tracking alliance: {{ name }}.",
+		"PLAYER_UNTRACKED": "Untracking player: {{ name }}.",
+		"GUILD_UNTRACKED": "Untracking guild: {{ name }}.",
+		"ALLIANCE_UNTRACKED": "Untracking alliance: {{ name }}."
+	},
+	"MODE": {
+		"AVAILABLE": "Available modes: {{ modes }}",
+		"NOT_SUPPORTED": "This mode isn't supported. Please pick one of: {{ modes }}",
+		"SET": "Output mode set to: {{ mode }}"
+	}
 }
