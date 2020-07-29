@@ -39,7 +39,7 @@ exports.connect = async () => {
     }
   }
 };
-exports.db = db;
+exports.db = () => db;
 exports.collection = collection => {
   if (!db) return;
   return db.collection(collection);

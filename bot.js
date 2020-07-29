@@ -8,6 +8,7 @@ const database = require("./database");
 const { sleep, fileSizeFormatter } = require("./utils");
 const { getEvents, getEventsByGuild } = require("./queries/events");
 const { getBattles, getBattlesByGuild } = require("./queries/battles");
+const dailyRanking = require("./queries/dailyRanking");
 const guilds = require("./queries/guilds");
 
 const COMMAND_PREFIX = "!";
@@ -38,7 +39,7 @@ const getDefaultChannel = guild => {
     .first();
 };
 
-const scanEvents = async () => {
+const scanEvents = async (client) => {
   logger.info("[scanEvents] Notifying new events to all Discord Servers.");
   const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
   const eventsByGuild = await getEventsByGuild(allGuildConfigs);
@@ -55,6 +56,7 @@ const scanEvents = async () => {
     }
 
     for (let event of eventsByGuild[guild.id]) {
+      dailyRanking.add(guild, event, allGuildConfigs[guild.id]);
       const mode = guild.config.mode;
       const hasInventory =
         event.Victim.Inventory.filter(i => i != null).length > 0;
@@ -82,7 +84,7 @@ const scanEvents = async () => {
   }
 };
 
-const scanBattles = async () => {
+const scanBattles = async (client) => {
   logger.info("[scanBattles] Notifying new battles to all Discord Servers.");
   const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
   const battlesByGuild = await getBattlesByGuild(allGuildConfigs);
@@ -103,7 +105,7 @@ const scanBattles = async () => {
   }
 };
 
-const scanRanking = async () => {
+const scanRanking = async (client) => {
   for (let guild of client.guilds.array()) {
     guild.config = await config.getConfig(guild);
     if (!guild.config) continue;
@@ -231,7 +233,7 @@ exports.run = async token => {
     const exit = false;
     while (!exit) {
       try {
-        await func();
+        await func(client);
       } catch (e) {
         logger.error(`Error in function ${func.name}: ${e}`);
       }
@@ -240,6 +242,8 @@ exports.run = async token => {
   };
 
   runDaily(scanRanking);
+  runDaily(dailyRanking.clear, 0, 0);
+  runInterval(dailyRanking.show, 600000);
   runInterval(getEvents, 30000);
   runInterval(scanEvents, 5000);
   runInterval(getBattles, 60000);
