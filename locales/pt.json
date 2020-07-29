@@ -6,6 +6,7 @@
   "CHANNEL_NOT_SET": "AVISO: Canal para enviar notificações não configurado. Por favor, use !channel [channel] to configurá-lo.",
   "TEST_MSG": "Eu tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
   "TEST_FAIL": "Eu NÃO tenho privilégios para enviar mensagens para o canal.",
+	"MODES_AVAILABLE": "Modos disponíveis: {{{ modes }}}",
   "KILL": {
     "EVENT": "{{ killer }} matou {{ victim }}!",
     "SOLO_0": "Solado parça!",
@@ -39,7 +40,8 @@
 		"KILL_FAME": "Top Fama de Abates",
 		"DEATH_FAME": "Top Fama de Mortes",
 		"TOTAL_KILL_FAME": "Fama Total de Abates",
-		"TOTAL_DEATH_FAME": "Fama Total de Mortes"
+		"TOTAL_DEATH_FAME": "Fama Total de Mortes",
+		"DAILY_RANKING_SET": "Mostrar Ranking Diário está agora definido para '{{ mode }}'"
   },
   "HELP": {
     "VERSION": "Albion Killbot v{{ version }}",
@@ -50,7 +52,8 @@
     "TRACK": "Rastreia um jogador, guilda ou aliança.",
     "UNTRACK": "Para de rastrear um jogador, guilda ou aliança.",
     "TEST": "Verifica se o bot possui permissões para enviar mensagens.",
-    "MODE": "Define o modo de envio de eventos, como texto ou imagem."
+    "MODE": "Define o modo de envio de eventos, como texto ou imagem.",
+		"DAILY_RANKING": "Mostrar o Ranking Diário."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",

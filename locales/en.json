@@ -5,7 +5,8 @@
 	"CONFIG_NOT_SET": "WARNING: Unable to persist server configuration. They will be reverted upon bot restart.",
 	"CHANNEL_NOT_SET": "WARNING: Channel to send notifications is not set. Please use !channel [channel] to configure it.",
 	"TEST_MSG": "I have permission to send messages to the channel {{{ channel }}}.",
-	"TEST_FAIL": "I DON'T have permissions to send messages to the configured channel.",
+	"TEST_FAIL": "I DON'T have permissions to send messages to the configured channel.",,
+	"MODES_AVAILABLE": "Modes available for this setting: {{ modes }}",
 	"KILL": {
 		"EVENT": "{{ killer }} killed {{ victim }}!",
 		"SOLO_0": "Die casual! Solo kill!!!",
@@ -39,7 +40,8 @@
 		"KILL_FAME": "Top Kill Fame",
 		"DEATH_FAME": "Top Death Fame",
 		"TOTAL_KILL_FAME": "Total Kill Fame",
-		"TOTAL_DEATH_FAME": "Total Death Fame"
+		"TOTAL_DEATH_FAME": "Total Death Fame",
+		"DAILY_RANKING_SET": "Display Daily Ranking is now set to '{{ mode }}'"
 	},
 	"HELP": {
 		"VERSION": "Albion Killbot v{{ version }}",
@@ -50,7 +52,8 @@
 		"TRACK": "Tracks a player, guild or alliance.",
 		"UNTRACK": "Stops tracking a player, guild or alliance.",
 		"TEST": "Verify if the bot has permission to send messages.",
-		"MODE": "Sets the output mode, like text or image."
+		"MODE": "Sets the output mode, like text or image.",
+		"DAILY_RANKING": "Display Daily Rankings."
 	},
 	"CHANNEL": {
 		"NO_CHANNEL": "Please input a channel for notifications.",

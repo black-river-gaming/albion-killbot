@@ -102,6 +102,7 @@ const scanDailyRanking = async client => {
   const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
   for (const guild of client.guilds.array()) {
     guild.config = allGuildConfigs[guild.id];
+    if (!guild.config.dailyRanking) continue;
     const ranking = await dailyRanking.getRanking(guild);
     if (ranking.killRanking.length === 0 && ranking.deathRanking.length === 0) continue;
     await sendGuildMessage(guild, messages.embedDailyRanking(ranking, guild.config.lang));
