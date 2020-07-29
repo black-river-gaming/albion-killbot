@@ -5,13 +5,13 @@ const modes = ["on", "off"];
 
 module.exports = {
   aliases: ["dailyranking"],
-  args: ["on/off"],
+  args: ["on/off/daily"],
   description: "HELP.DAILY_RANKING",
   run: async (client, guild, message, args) => {
     const l = getI18n(guild.config.lang);
 
     if (!args[0]) {
-      const mode = guild.config.dailyRanking ? "on" : "off";
+      const mode = guild.config.dailyRanking;
       return message.channel.send(l.__("RANKING.DAILY_RANKING_SET", { mode }));
     }
 
@@ -22,7 +22,7 @@ module.exports = {
       );
     }
 
-    guild.config.dailyRanking = mode === "on";
+    guild.config.dailyRanking = mode;
     if (!(await setConfig(guild))) {
       message.channel.send(l.__("CONFIG_NOT_SET"));
     }

@@ -97,12 +97,13 @@ const scanRanking = async client => {
   }
 };
 
-const scanDailyRanking = async client => {
+const scanDailyRanking = async (client, mode) => {
   logger.info("[scanRankings] Sending daily guild rankings to all servers.");
   const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
   for (const guild of client.guilds.array()) {
     guild.config = allGuildConfigs[guild.id];
-    if (!guild.config.dailyRanking) continue;
+    if (mode === "daily" && guild.config.dailyRanking !== "daily") continue;
+    else if (!guild.config.dailyRanking || guild.config.dailyRanking === "off") continue;
     const ranking = await dailyRanking.getRanking(guild);
     if (ranking.killRanking.length === 0 && ranking.deathRanking.length === 0) continue;
     await sendGuildMessage(guild, messages.embedDailyRanking(ranking, guild.config.lang));
@@ -206,6 +207,7 @@ exports.run = async token => {
   const runDaily = async (func, hour = 12, minute = 0) => {
     const exit = false;
     while (!exit) {
+      await sleep(60000);
       const now = moment();
       if (now.hour() === hour && now.minute() === minute) {
         try {
@@ -214,7 +216,6 @@ exports.run = async token => {
           logger.error(`Error in function ${func.name}: ${e}`);
         }
       }
-      await sleep(60000);
     }
   };
 
@@ -222,16 +223,17 @@ exports.run = async token => {
   const runInterval = async (func, interval = 30000) => {
     const exit = false;
     while (!exit) {
+      await sleep(interval);
       try {
         await func(client);
       } catch (e) {
         logger.error(`Error in function ${func.name}: ${e}`);
       }
-      await sleep(interval);
     }
   };
 
   runDaily(scanRanking);
+  runDaily((client) => scanDailyRanking(client, "daily"), 0, 0);
   runDaily(dailyRanking.clear, 0, 0);
   runInterval(scanDailyRanking, 1800000);
   runInterval(getEvents, 30000);
