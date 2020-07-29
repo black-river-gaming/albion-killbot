@@ -78,15 +78,18 @@ exports.getRanking = async (guild, limit = 5) => {
   if (!collection) return logger.warn("Not connected to database. Skipping get ranking.");
 
   try {
-    const killRanking = await collection
+    let killRanking = await collection
       .find({
         guild: guild.id,
         killFame: { $gte: 0 },
       })
       .sort({ killFame: -1 })
-      .limit(limit)
       .toArray();
-    const deathRanking = await collection
+    const totalKillFame = killRanking.reduce((sum, player) => {
+      return sum + Math.max(0, player.killFame);
+    }, 0);
+    killRanking = killRanking.splice(0, limit);
+    let deathRanking = await collection
       .find({
         guild: guild.id,
         deathFame: { $gte: 0 },
@@ -94,9 +97,15 @@ exports.getRanking = async (guild, limit = 5) => {
       .sort({ deathFame: -1 })
       .limit(limit)
       .toArray();
+    const totalDeathFame = deathRanking.reduce((sum, player) => {
+      return sum + Math.max(0, player.deathFame);
+    }, 0);
+    deathRanking = deathRanking.splice(0, limit);
     return {
       killRanking,
+      totalKillFame,
       deathRanking,
+      totalDeathFame,
     };
   } catch (e) {
     logger.error(`Failed to fetch ranking for guild "${guild.name}" (${e})`);

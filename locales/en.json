@@ -37,7 +37,9 @@
 		"CRAFTING": "Crafting Ranking",
 		"DAILY": "Daily PvP Ranking",
 		"KILL_FAME": "Top Kill Fame",
-		"DEATH_FAME": "Top Death Fame"
+		"DEATH_FAME": "Top Death Fame",
+		"TOTAL_KILL_FAME": "Total Kill Fame",
+		"TOTAL_DEATH_FAME": "Total Death Fame"
 	},
 	"HELP": {
 		"VERSION": "Albion Killbot v{{ version }}",

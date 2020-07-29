@@ -372,12 +372,29 @@ exports.embedDailyRanking = (rankings, locale) => {
       },
       fields: [
         {
+          name: l.__("RANKING.TOTAL_KILL_FAME"),
+          value: digitsFormatter(rankings.totalKillFame),
+          inline: true,
+        },
+        {
+          name: l.__("RANKING.TOTAL_DEATH_FAME"),
+          value: digitsFormatter(rankings.totalDeathFame),
+          inline: true,
+        },
+        {
+          name: "\u200B",
+          value: "\u200B",
+          inline: false,
+        },
+        {
           name: l.__("RANKING.KILL_FAME"),
           value: generateRankFieldValue(rankings.killRanking, "name", "killFame"),
+          inline: true,
         },
         {
           name: l.__("RANKING.DEATH_FAME"),
           value: generateRankFieldValue(rankings.deathRanking, "name", "deathFame"),
+          inline: true,
         },
       ],
     },

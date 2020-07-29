@@ -37,7 +37,9 @@
     "CRAFTING": "Ranking de Criação",
 		"DAILY": "Ranking diário de PvP",
 		"KILL_FAME": "Top Fama de Abates",
-		"DEATH_FAME": "Top Fama de Mortes"
+		"DEATH_FAME": "Top Fama de Mortes",
+		"TOTAL_KILL_FAME": "Fama Total de Abates",
+		"TOTAL_DEATH_FAME": "Fama Total de Mortes"
   },
   "HELP": {
     "VERSION": "Albion Killbot v{{ version }}",
