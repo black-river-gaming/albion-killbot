@@ -373,11 +373,11 @@ exports.embedDailyRanking = (rankings, locale) => {
       fields: [
         {
           name: l.__("RANKING.KILL_FAME"),
-          value: generateRankFieldValue(rankings.killRanking),
+          value: generateRankFieldValue(rankings.killRanking, "name", "killFame"),
         },
         {
           name: l.__("RANKING.DEATH_FAME"),
-          value: generateRankFieldValue(rankings.deathRanking),
+          value: generateRankFieldValue(rankings.deathRanking, "name", "deathFame"),
         },
       ],
     },
