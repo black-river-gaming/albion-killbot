@@ -4,16 +4,15 @@ const { getI18n } = require("../messages");
 const modes = ["on", "off"];
 
 module.exports = {
-  aliases: ["dailyRanking"],
-  args: ["on"],
+  aliases: ["dailyranking"],
+  args: ["on/off"],
   description: "HELP.DAILY_RANKING",
   run: async (client, guild, message, args) => {
     const l = getI18n(guild.config.lang);
 
     if (!args[0]) {
-      return message.channel.send(
-        l.__("MODES_AVAILABLE", { modes: modes.join(", ") }),
-      );
+      const mode = guild.config.dailyRanking ? "on" : "off";
+      return message.channel.send(l.__("RANKING.DAILY_RANKING_SET", { mode }));
     }
 
     const mode = args[0].toLowerCase();

@@ -5,7 +5,7 @@
 	"CONFIG_NOT_SET": "WARNING: Unable to persist server configuration. They will be reverted upon bot restart.",
 	"CHANNEL_NOT_SET": "WARNING: Channel to send notifications is not set. Please use !channel [channel] to configure it.",
 	"TEST_MSG": "I have permission to send messages to the channel {{{ channel }}}.",
-	"TEST_FAIL": "I DON'T have permissions to send messages to the configured channel.",,
+	"TEST_FAIL": "I DON'T have permissions to send messages to the configured channel.",
 	"MODES_AVAILABLE": "Modes available for this setting: {{ modes }}",
 	"KILL": {
 		"EVENT": "{{ killer }} killed {{ victim }}!",
