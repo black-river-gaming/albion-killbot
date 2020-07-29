@@ -17,7 +17,6 @@ exports.add = async (guild, event, config) => {
   if (!collection) return logger.warn("Not connected to database. Skipping add events.");
   if (!config) config = await getConfig(guild);
 
-  logger.debug(`Adding event ${event.EventId} to daily ranking of guild ${guild.name}`);
   if (event.good) {
     // Player kill
     for (const player of event.GroupMembers) {

@@ -232,7 +232,7 @@ exports.run = async token => {
 
   runDaily(scanRanking);
   runDaily(dailyRanking.clear, 0, 0);
-  runInterval(scanDailyRanking, 600000);
+  runInterval(scanDailyRanking, 1800000);
   runInterval(getEvents, 30000);
   runInterval(scanEvents, 5000);
   runInterval(getBattles, 60000);
