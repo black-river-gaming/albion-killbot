@@ -21,23 +21,26 @@ exports.add = async (guild, event, config) => {
   if (event.good) {
     // Player kill
     for (const player of event.GroupMembers) {
-      // TODO: Check if this player is tracked
       if (!isTracked(player, config)) continue;
       try {
         const killFame = Math.max(0, player.KillFame);
-        await collection.updateOne({
-          guild: guild.id,
-          player: player.Id,
-        }, {
-          $setOnInsert: {
+        await collection.updateOne(
+          {
             guild: guild.id,
             player: player.Id,
-            name: player.Name,
           },
-          $inc: { killFame },
-        }, {
-          upsert: true,
-        });
+          {
+            $setOnInsert: {
+              guild: guild.id,
+              player: player.Id,
+              name: player.Name,
+            },
+            $inc: { killFame },
+          },
+          {
+            upsert: true,
+          },
+        );
       } catch (e) {
         return logger.error(`Failed to add player "${player.Name}" in ranking for guild "${guild.name}". (${e})"`);
       }
@@ -48,38 +51,50 @@ exports.add = async (guild, event, config) => {
     if (!isTracked(player, config)) return;
     try {
       const deathFame = Math.max(0, event.TotalVictimKillFame);
-      await collection.updateOne({
-        guild: guild.id,
-        player: player.Id,
-      }, {
-        $setOnInsert: {
+      await collection.updateOne(
+        {
           guild: guild.id,
           player: player.Id,
-          name: player.Name,
         },
-        $inc: { deathFame },
-      }, {
-        upsert: true,
-      });
+        {
+          $setOnInsert: {
+            guild: guild.id,
+            player: player.Id,
+            name: player.Name,
+          },
+          $inc: { deathFame },
+        },
+        {
+          upsert: true,
+        },
+      );
     } catch (e) {
       return logger.error(`Failed to add player "${player.Name}" in ranking for guild "${guild.name}". (${e})"`);
     }
   }
 };
 
-exports.getRanking = async (guild, limit = 1) => {
+exports.getRanking = async (guild, limit = 5) => {
   const collection = database.collection(RANKING_COLLECTION);
   if (!collection) return logger.warn("Not connected to database. Skipping get ranking.");
 
   try {
-    const killRanking = await collection.find({
-      guild: guild.id,
-      killFame: { $gte: 0 },
-    }).sort({ killFame: -1 }).limit(limit).toArray();
-    const deathRanking = await collection.find({
-      guild: guild.id,
-      deathFame: { $gte: 0 },
-    }).sort({ deathFame: -1 }).limit(limit).toArray();
+    const killRanking = await collection
+      .find({
+        guild: guild.id,
+        killFame: { $gte: 0 },
+      })
+      .sort({ killFame: -1 })
+      .limit(limit)
+      .toArray();
+    const deathRanking = await collection
+      .find({
+        guild: guild.id,
+        deathFame: { $gte: 0 },
+      })
+      .sort({ deathFame: -1 })
+      .limit(limit)
+      .toArray();
     return {
       killRanking,
       deathRanking,

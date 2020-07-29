@@ -44,9 +44,7 @@ exports.embedEvent = (event, locale) => {
       if (participant.Name === event.Victim.Name) {
         return;
       }
-      const damagePercent = Math.round(
-        (participant.DamageDone / totalDamage) * 100,
-      );
+      const damagePercent = Math.round((participant.DamageDone / totalDamage) * 100);
       assist.push(`${participant.Name} (${damagePercent}%)`);
     });
 
@@ -57,17 +55,13 @@ exports.embedEvent = (event, locale) => {
 
   let killerGuildValue;
   if (event.Killer.GuildName) {
-    killerGuildValue = event.Killer.AllianceName
-      ? `[${event.Killer.AllianceName}] `
-      : "";
+    killerGuildValue = event.Killer.AllianceName ? `[${event.Killer.AllianceName}] ` : "";
     killerGuildValue += event.Killer.GuildName;
   }
 
   let victimGuildValue;
   if (event.Victim.GuildName) {
-    victimGuildValue = event.Victim.AllianceName
-      ? `[${event.Victim.AllianceName}] `
-      : "";
+    victimGuildValue = event.Victim.AllianceName ? `[${event.Victim.AllianceName}] ` : "";
     victimGuildValue += event.Victim.GuildName;
   }
 
@@ -78,8 +72,7 @@ exports.embedEvent = (event, locale) => {
       url: `${KILL_URL}${event.EventId}`,
       description,
       thumbnail: {
-        url:
-          "https://user-images.githubusercontent.com/13356774/76129825-ee15b580-5fde-11ea-9f77-7ae16bd65368.png",
+        url: "https://user-images.githubusercontent.com/13356774/76129825-ee15b580-5fde-11ea-9f77-7ae16bd65368.png",
       },
       fields: [
         {
@@ -215,12 +208,8 @@ exports.embedBattle = (battle, locale) => {
     });
   });
 
-  const guildsWithoutAlliance = Object.values(battle.guilds).filter(
-    guild => !guild.allianceId,
-  );
-  const playersWithoutGuild = Object.values(battle.players).filter(
-    player => !player.guildId,
-  );
+  const guildsWithoutAlliance = Object.values(battle.guilds).filter(guild => !guild.allianceId);
+  const playersWithoutGuild = Object.values(battle.players).filter(player => !player.guildId);
   if (guildsWithoutAlliance.length > 0 || playersWithoutGuild.length > 0) {
     const name = l.__("BATTLE.NO_ALLIANCE");
 
@@ -259,8 +248,7 @@ exports.embedBattle = (battle, locale) => {
       url: `http://www.yaga.sk/killboard/battle.php?id=${battle.id}`,
       description,
       thumbnail: {
-        url:
-          "https://user-images.githubusercontent.com/13356774/76130049-b9eec480-5fdf-11ea-95c0-7de130a705a3.png",
+        url: "https://user-images.githubusercontent.com/13356774/76130049-b9eec480-5fdf-11ea-95c0-7de130a705a3.png",
       },
       fields,
     },
@@ -278,9 +266,7 @@ exports.embedRankings = (trackedGuild, rankings, locale) => {
     ranking.forEach(item => {
       if (pvp) {
         const fameValue = humanFormatter(item.KillFame, 2);
-        value += `\n${item.Name}${" ".repeat(
-          RANKING_LINE_LENGTH - fameValue.length - item.Name.length,
-        )}${fameValue}`;
+        value += `\n${item.Name}${" ".repeat(RANKING_LINE_LENGTH - fameValue.length - item.Name.length)}${fameValue}`;
       } else {
         const fameValue = humanFormatter(item.Fame, 2);
         value += `\n${item.Player.Name}${" ".repeat(
@@ -297,8 +283,7 @@ exports.embedRankings = (trackedGuild, rankings, locale) => {
       title: l.__("RANKING.MONTHLY", { guild: guildName }),
       url: `https://albiononline.com/pt/killboard/guild/${guildId}`,
       thumbnail: {
-        url:
-          "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
+        url: "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
       },
       fields: [
         {
@@ -364,17 +349,16 @@ exports.embedList = config => {
   };
 };
 
-exports.embedDailyRanking = (config, rankings) => {
-  const l = exports.getI18n(config.lang);
+exports.embedDailyRanking = (rankings, locale) => {
+  const l = exports.getI18n(locale);
 
   const generateRankFieldValue = (ranking, name = "name", number = "fame") => {
+    if (ranking.length === 0) return "```-```";
     let value = "```c";
     ranking.forEach(item => {
       const nameValue = item[name];
       const numberValue = humanFormatter(item[number], 2);
-      value += `\n${nameValue}${" ".repeat(
-        RANKING_LINE_LENGTH - numberValue.length - nameValue.length,
-      )}${numberValue}`;
+      value += `\n${nameValue}${" ".repeat(RANKING_LINE_LENGTH - numberValue.length - nameValue.length)}${numberValue}`;
     });
     value += "```";
     return value;
@@ -386,13 +370,16 @@ exports.embedDailyRanking = (config, rankings) => {
       thumbnail: {
         url: "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
       },
-      fields: [{
-        name: l.__("RANKING.KILL_FAME"),
-        value: generateRankFieldValue(rankings.killRanking),
-      }, {
-        name: l.__("RANKING.DEATH_FAME"),
-        value: generateRankFieldValue(rankings.deathRanking),
-      }],
+      fields: [
+        {
+          name: l.__("RANKING.KILL_FAME"),
+          value: generateRankFieldValue(rankings.killRanking),
+        },
+        {
+          name: l.__("RANKING.DEATH_FAME"),
+          value: generateRankFieldValue(rankings.deathRanking),
+        },
+      ],
     },
   };
 };

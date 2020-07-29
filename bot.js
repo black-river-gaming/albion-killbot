@@ -23,23 +23,17 @@ const getDefaultChannel = guild => {
   if (guild.channels.has(guild.id)) return guild.channels.get(guild.id);
 
   // Check for a "general" channel, which is often default chat
-  const generalChannel = guild.channels.find(
-    channel => channel.name === "general",
-  );
+  const generalChannel = guild.channels.find(channel => channel.name === "general");
   if (generalChannel) return generalChannel;
   // Now we get into the heavy stuff: first channel in order where the bot can speak
   // hold on to your hats!
   return guild.channels
-    .filter(
-      c =>
-        c.type === "text" &&
-        c.permissionsFor(guild.client.user).has("SEND_MESSAGES"),
-    )
+    .filter(c => c.type === "text" && c.permissionsFor(guild.client.user).has("SEND_MESSAGES"))
     .sort((a, b) => a.position - b.position)
     .first();
 };
 
-const scanEvents = async (client) => {
+const scanEvents = async client => {
   logger.info("[scanEvents] Notifying new events to all Discord Servers.");
   const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
   const eventsByGuild = await getEventsByGuild(allGuildConfigs);
@@ -50,41 +44,29 @@ const scanEvents = async (client) => {
 
     const newEventsCount = eventsByGuild[guild.id].length;
     if (newEventsCount > 0) {
-      logger.info(
-        `[scanEvents] Sending ${newEventsCount} new events to guild "${guild.name}"`,
-      );
+      logger.info(`[scanEvents] Sending ${newEventsCount} new events to guild "${guild.name}"`);
     }
 
     for (let event of eventsByGuild[guild.id]) {
       dailyRanking.add(guild, event, allGuildConfigs[guild.id]);
       const mode = guild.config.mode;
-      const hasInventory =
-        event.Victim.Inventory.filter(i => i != null).length > 0;
+      const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
 
       if (mode === "image") {
         // Image output
-        await sendGuildMessage(
-          guild,
-          await messages.embedEventAsImage(event, guild.config.lang),
-        );
+        await sendGuildMessage(guild, await messages.embedEventAsImage(event, guild.config.lang));
         if (hasInventory) {
-          await sendGuildMessage(
-            guild,
-            await messages.embedInventoryAsImage(event, guild.config.lang),
-          );
+          await sendGuildMessage(guild, await messages.embedInventoryAsImage(event, guild.config.lang));
         }
       } else {
         // Text output (default)
-        await sendGuildMessage(
-          guild,
-          messages.embedEvent(event, guild.config.lang),
-        );
+        await sendGuildMessage(guild, messages.embedEvent(event, guild.config.lang));
       }
     }
   }
 };
 
-const scanBattles = async (client) => {
+const scanBattles = async client => {
   logger.info("[scanBattles] Notifying new battles to all Discord Servers.");
   const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
   const battlesByGuild = await getBattlesByGuild(allGuildConfigs);
@@ -95,9 +77,7 @@ const scanBattles = async (client) => {
 
     const newBattlesCount = battlesByGuild[guild.id].length;
     if (newBattlesCount > 0) {
-      logger.info(
-        `[scanBattles] Sending ${newBattlesCount} new battles to guild "${guild.name}"`,
-      );
+      logger.info(`[scanBattles] Sending ${newBattlesCount} new battles to guild "${guild.name}"`);
     }
     battlesByGuild[guild.id].forEach(battle =>
       sendGuildMessage(guild, messages.embedBattle(battle, guild.config.lang)),
@@ -105,23 +85,31 @@ const scanBattles = async (client) => {
   }
 };
 
-const scanRanking = async (client) => {
+const scanRanking = async client => {
+  const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
   for (let guild of client.guilds.array()) {
-    guild.config = await config.getConfig(guild);
+    guild.config = allGuildConfigs[guild.id];
     if (!guild.config) continue;
     for (let trackedGuild of guild.config.trackedGuilds) {
       const rankings = await guilds.getGuildRankings(trackedGuild.id);
-      await sendGuildMessage(
-        guild,
-        messages.embedRankings(trackedGuild, rankings, guild.config.lang),
-      );
+      await sendGuildMessage(guild, messages.embedRankings(trackedGuild, rankings, guild.config.lang));
     }
+  }
+};
+
+const scanDailyRanking = async client => {
+  logger.info("[scanRankings] Sending daily guild rankings to all servers.");
+  const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
+  for (const guild of client.guilds.array()) {
+    guild.config = allGuildConfigs[guild.id];
+    const ranking = await dailyRanking.getRanking(guild);
+    await sendGuildMessage(guild, messages.embedDailyRanking(ranking, guild.config.lang));
   }
 };
 
 const msgErrors = {};
 const sendGuildMessage = async (guild, message) => {
-  guild.config = await config.getConfig(guild);
+  if (!guild.config) guild.config = await config.getConfig(guild);
   const l = messages.getI18n(guild);
   let channel = client.channels.find(c => c.id === guild.config.channel);
   if (!channel) {
@@ -243,16 +231,12 @@ exports.run = async token => {
 
   runDaily(scanRanking);
   runDaily(dailyRanking.clear, 0, 0);
-  runInterval(dailyRanking.show, 600000);
+  runInterval(scanDailyRanking, 600000);
   runInterval(getEvents, 30000);
   runInterval(scanEvents, 5000);
   runInterval(getBattles, 60000);
   runInterval(scanBattles, 60000);
   runInterval(() => {
-    logger.debug(
-      `Memory usage (approx): ${fileSizeFormatter(
-        process.memoryUsage().heapUsed,
-      )}`,
-    );
+    logger.debug(`Memory usage (approx): ${fileSizeFormatter(process.memoryUsage().heapUsed)}`);
   }, 60000);
 };
