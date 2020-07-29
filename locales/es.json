@@ -34,7 +34,10 @@
     "PVE": "Ranking de PVE",
     "PVP": "Ranking de PVP",
     "GATHERING": "Ranking de Recoleción",
-    "CRAFTING": "Ranking de Creacion"
+    "CRAFTING": "Ranking de Creacion",
+    "DAILY": "Ranking Diário de PvP",
+    "KILL_FAME": "Top Kill Fama",
+    "DEATH_FAME": "Top Death Fama"
   },
   "HELP": {
     "VERSION": "Albion Killbot v{{ version }}",
