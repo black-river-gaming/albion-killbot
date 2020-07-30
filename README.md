@@ -22,9 +22,8 @@ Make sure the bot have the following permissions:
 
 # Usage
 
-Type `!help` to see the commands available.
-
-> You can set the bot to another languages using `!lang`.
+> For detailed information about the commands available. Please check our [Command List](https://github.com/agnjunio/albion-killbot/wiki/Command-List) page on wiki.
+> Also, in Discord type `!help` to see the commands available.
 
 First, you need to set up the notification channel using `!channel #channel` command.
 
