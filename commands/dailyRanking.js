@@ -1,7 +1,7 @@
 const { setConfig } = require("../config");
 const { getI18n } = require("../messages");
 
-const modes = ["on", "off"];
+const modes = ["on", "off", "daily"];
 
 module.exports = {
   aliases: ["dailyranking"],
@@ -17,9 +17,7 @@ module.exports = {
 
     const mode = args[0].toLowerCase();
     if (modes.indexOf(mode) < 0) {
-      return message.channel.send(
-        l.__("MODES_AVAILABLE", { modes: modes.join(", ") }),
-      );
+      return message.channel.send(l.__("MODES_AVAILABLE", { modes: modes.join(", ") }));
     }
 
     guild.config.dailyRanking = mode;
