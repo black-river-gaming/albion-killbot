@@ -1,4 +1,4 @@
-https://img.shields.io/discord/738365346855256107?label=Discord&logo=Discord&style=social
+![](https://img.shields.io/discord/738365346855256107?label=Discord&logo=Discord&style=social)
 
 # albion-killbot
 
