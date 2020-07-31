@@ -6,7 +6,7 @@ const messages = require("./messages");
 const commands = require("./commands");
 const database = require("./database");
 const { sleep, fileSizeFormatter } = require("./utils");
-const { getEvents, getEventsByGuild } = require("./queries/events");
+const events = require("./queries/events");
 const battles = require("./queries/battles");
 const dailyRanking = require("./queries/dailyRanking");
 const guilds = require("./queries/guilds");
@@ -31,39 +31,6 @@ const getDefaultChannel = guild => {
     .filter(c => c.type === "text" && c.permissionsFor(guild.client.user).has("SEND_MESSAGES"))
     .sort((a, b) => a.position - b.position)
     .first();
-};
-
-const scanEvents = async client => {
-  logger.info("[scanEvents] Notifying new events to all Discord Servers.");
-  const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
-  const eventsByGuild = await getEventsByGuild(allGuildConfigs);
-
-  for (let guild of client.guilds.array()) {
-    guild.config = allGuildConfigs[guild.id];
-    if (!guild.config || !eventsByGuild[guild.id]) continue;
-
-    const newEventsCount = eventsByGuild[guild.id].length;
-    if (newEventsCount > 0) {
-      logger.info(`[scanEvents] Sending ${newEventsCount} new events to guild "${guild.name}"`);
-    }
-
-    for (let event of eventsByGuild[guild.id]) {
-      dailyRanking.add(guild, event, allGuildConfigs[guild.id]);
-      const mode = guild.config.mode;
-      const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
-
-      if (mode === "image") {
-        // Image output
-        await sendGuildMessage(guild, await messages.embedEventAsImage(event, guild.config.lang));
-        if (hasInventory) {
-          await sendGuildMessage(guild, await messages.embedInventoryAsImage(event, guild.config.lang));
-        }
-      } else {
-        // Text output (default)
-        await sendGuildMessage(guild, messages.embedEvent(event, guild.config.lang));
-      }
-    }
-  }
 };
 
 const scanRanking = async client => {
@@ -206,8 +173,8 @@ exports.run = async token => {
   runDaily(dailyRanking.scanDaily, 0, 0);
   runDaily(dailyRanking.clear, 0, 5);
   runInterval(dailyRanking.scan, 3600000);
-  runInterval(getEvents, 30000);
-  runInterval(scanEvents, 5000);
+  runInterval(events.get, 30000);
+  runInterval(events.scan, 5000);
   runInterval(battles.get, 60000);
   runInterval(battles.scan, 60000);
   runInterval(() => {
