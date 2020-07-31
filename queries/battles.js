@@ -3,6 +3,9 @@ const moment = require("moment");
 const logger = require("../logger")("queries.battles");
 const database = require("../database");
 const { sleep } = require("../utils");
+const { getConfigByGuild } = require("../config");
+const { sendGuildMessage } = require("../bot");
+const { embedBattle } = require("../messages");
 
 const BATTLES_ENDPOINT =
   "https://gameinfo.albiononline.com/api/gameinfo/battles";
@@ -45,7 +48,7 @@ function getNewBattles(battles, config) {
   return newBattles;
 }
 
-exports.getBattles = async () => {
+exports.get = async () => {
   const collection = database.collection(BATTLES_COLLECTION);
   if (!collection) {
     return logger.warn("Not connected to database. Skipping get battles.");
@@ -184,4 +187,23 @@ exports.getBattlesByGuild = async guildConfigs => {
   }
 
   return battlesByGuild;
+};
+
+exports.scan = async client => {
+  logger.info("[scanBattles] Notifying new battles to all Discord Servers.");
+  const allGuildConfigs = await getConfigByGuild(client.guilds.array());
+  const battlesByGuild = await exports.getBattlesByGuild(allGuildConfigs);
+
+  for (let guild of client.guilds.array()) {
+    guild.config = allGuildConfigs[guild.id];
+    if (!guild.config || !battlesByGuild[guild.id]) continue;
+
+    const newBattlesCount = battlesByGuild[guild.id].length;
+    if (newBattlesCount > 0) {
+      logger.info(`[scanBattles] Sending ${newBattlesCount} new battles to guild "${guild.name}"`);
+    }
+    battlesByGuild[guild.id].forEach(battle =>
+      sendGuildMessage(guild, embedBattle(battle, guild.config.lang)),
+    );
+  }
 };
