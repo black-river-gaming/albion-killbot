@@ -16,7 +16,7 @@ const levelColors = {
 const isDev = process.env.NODE_ENV === "development";
 
 const consoleFormat = format.printf(log => {
-  if (!isDev) return `${log.level}: ${log.message}`;
+  if (!isDev) return `[${log.level.substring(0, 1).toUpperCase()}] ${log.tag}: ${log.message}`;
   if (!log.tag) return log.message;
   let colorizer = colors[levelColors[log.level]];
   if (!colorizer) colorizer = colors.grey;
