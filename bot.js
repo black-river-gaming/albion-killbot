@@ -234,8 +234,8 @@ exports.run = async token => {
 
   runDaily(scanRanking);
   runDaily(client => scanDailyRanking(client, "daily"), 0, 0);
-  runDaily(dailyRanking.clear, 0, 0);
-  runInterval(scanDailyRanking, 1800000);
+  runDaily(dailyRanking.clear, 0, 5);
+  runInterval(scanDailyRanking, 3600000);
   runInterval(getEvents, 30000);
   runInterval(scanEvents, 5000);
   runInterval(getBattles, 60000);

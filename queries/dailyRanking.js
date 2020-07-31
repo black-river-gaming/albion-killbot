@@ -1,4 +1,4 @@
-const logger = require("../logger")("dailyRanking");
+const logger = require("../logger")("queries.dailyRanking");
 const database = require("../database");
 const { getConfig } = require("../config");
 
