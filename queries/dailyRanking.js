@@ -129,7 +129,7 @@ exports.scan = async (client, mode) => {
     else if (!guild.config.dailyRanking || guild.config.dailyRanking !== "on") continue;
     const ranking = await exports.getRanking(guild);
     if (ranking.killRanking.length === 0 && ranking.deathRanking.length === 0) continue;
-    await sendGuildMessage(guild, embedDailyRanking(ranking, guild.config.lang));
+    await sendGuildMessage(guild, embedDailyRanking(ranking, guild.config.lang), "rankings");
   }
 };
 

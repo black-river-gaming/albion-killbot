@@ -203,7 +203,7 @@ exports.scan = async client => {
       logger.info(`[scanBattles] Sending ${newBattlesCount} new battles to guild "${guild.name}"`);
     }
     battlesByGuild[guild.id].forEach(battle =>
-      sendGuildMessage(guild, embedBattle(battle, guild.config.lang)),
+      sendGuildMessage(guild, embedBattle(battle, guild.config.lang), "battles"),
     );
   }
 };

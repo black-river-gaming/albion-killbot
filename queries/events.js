@@ -219,13 +219,13 @@ exports.scan = async client => {
 
       if (mode === "image") {
         // Image output
-        await sendGuildMessage(guild, await embedEventAsImage(event, guild.config.lang));
+        await sendGuildMessage(guild, await embedEventAsImage(event, guild.config.lang), "events");
         if (hasInventory) {
-          await sendGuildMessage(guild, await embedInventoryAsImage(event, guild.config.lang));
+          await sendGuildMessage(guild, await embedInventoryAsImage(event, guild.config.lang), "events");
         }
       } else {
         // Text output (default)
-        await sendGuildMessage(guild, embedEvent(event, guild.config.lang));
+        await sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events");
       }
     }
   }

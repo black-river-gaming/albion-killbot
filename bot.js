@@ -34,10 +34,16 @@ const getDefaultChannel = guild => {
 };
 
 const msgErrors = {};
-const sendGuildMessage = async (guild, message) => {
+const sendGuildMessage = async (guild, message, type = "general") => {
   if (!guild.config) guild.config = await config.getConfig(guild);
+
+  let channelId = guild.config.channel[type];
+  if (!channelId) channelId = guild.config.channel.general;
+  // Old structure backport
+  if (typeof(guild.config.channel) === "string") channelId = guild.config.channel;
+
   const l = messages.getI18n(guild);
-  let channel = client.channels.find(c => c.id === guild.config.channel);
+  let channel = client.channels.find(c => c.id === channelId);
   if (!channel) {
     logger.warn(`Channel not configured for guild ${guild.name}.`);
     channel = getDefaultChannel(guild);
