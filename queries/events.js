@@ -3,6 +3,10 @@ const moment = require("moment");
 const logger = require("../logger")("queries.events");
 const database = require("../database");
 const { sleep } = require("../utils");
+const { getConfigByGuild } = require("../config");
+const { sendGuildMessage } = require("../bot");
+const { embedEvent, embedEventAsImage, embedInventoryAsImage } = require("../messages");
+const dailyRanking = require("./dailyRanking");
 
 const EVENTS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/events";
 const EVENTS_LIMIT = 51;
@@ -192,4 +196,37 @@ exports.getEventsByGuild = async guildConfigs => {
   }
 
   return eventsByGuild;
+};
+
+exports.scan = async client => {
+  logger.info("[scanEvents] Notifying new events to all Discord Servers.");
+  const allGuildConfigs = await getConfigByGuild(client.guilds.array());
+  const eventsByGuild = await exports.getEventsByGuild(allGuildConfigs);
+
+  for (let guild of client.guilds.array()) {
+    guild.config = allGuildConfigs[guild.id];
+    if (!guild.config || !eventsByGuild[guild.id]) continue;
+
+    const newEventsCount = eventsByGuild[guild.id].length;
+    if (newEventsCount > 0) {
+      logger.info(`[scanEvents] Sending ${newEventsCount} new events to guild "${guild.name}"`);
+    }
+
+    for (let event of eventsByGuild[guild.id]) {
+      dailyRanking.add(guild, event, allGuildConfigs[guild.id]);
+      const mode = guild.config.mode;
+      const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
+
+      if (mode === "image") {
+        // Image output
+        await sendGuildMessage(guild, await embedEventAsImage(event, guild.config.lang));
+        if (hasInventory) {
+          await sendGuildMessage(guild, await embedInventoryAsImage(event, guild.config.lang));
+        }
+      } else {
+        // Text output (default)
+        await sendGuildMessage(guild, embedEvent(event, guild.config.lang));
+      }
+    }
+  }
 };
