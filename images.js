@@ -142,7 +142,7 @@ const getItemFile = async (item, tries = 0) => {
 };
 
 const drawItem = async (ctx, item, x, y, block_size = 217) => {
-  if (!item) return;
+  if (!item) return await drawImage(ctx, "./assets/slot.png", x, y, block_size, block_size);
   const itemImage = await getItemFile(item);
   await drawImage(ctx, itemImage, x, y, block_size, block_size);
 
@@ -206,27 +206,20 @@ exports.generateEventImage = async event => {
     y += th;
 
     const equipment = player.Equipment;
-    if (equipment.Head) {
-      await drawItem(ctx, equipment.Head, x + BLOCK_SIZE, y);
-    }
-    if (equipment.Armor) {
-      await drawItem(ctx, equipment.Armor, x + BLOCK_SIZE, y + BLOCK_SIZE);
-    }
-    if (equipment.MainHand) {
-      await drawItem(ctx, equipment.MainHand, x, y + BLOCK_SIZE);
-      // Two-handed equipment
-      if (equipment.MainHand.Type.split("_")[1] == "2H") {
-        ctx.globalAlpha = 0.2;
-        await drawItem(
-          ctx,
-          equipment.MainHand,
-          x + BLOCK_SIZE * 2,
-          y + BLOCK_SIZE,
-        );
-        ctx.globalAlpha = 1;
-      }
-    }
-    if (equipment.OffHand) {
+    await drawItem(ctx, equipment.Head, x + BLOCK_SIZE, y);
+    await drawItem(ctx, equipment.Armor, x + BLOCK_SIZE, y + BLOCK_SIZE);
+    await drawItem(ctx, equipment.MainHand, x, y + BLOCK_SIZE);
+    // Two-handed equipment
+    if (equipment.MainHand && equipment.MainHand.Type.split("_")[1] == "2H") {
+      ctx.globalAlpha = 0.2;
+      await drawItem(
+        ctx,
+        equipment.MainHand,
+        x + BLOCK_SIZE * 2,
+        y + BLOCK_SIZE,
+      );
+      ctx.globalAlpha = 1;
+    } else {
       await drawItem(
         ctx,
         equipment.OffHand,
@@ -234,29 +227,17 @@ exports.generateEventImage = async event => {
         y + BLOCK_SIZE,
       );
     }
-    if (equipment.Shoes) {
-      await drawItem(ctx, equipment.Shoes, x + BLOCK_SIZE, y + BLOCK_SIZE * 2);
-    }
-    if (equipment.Bag) {
-      await drawItem(ctx, equipment.Bag, x, y);
-    }
-    if (equipment.Cape) {
-      await drawItem(ctx, equipment.Cape, x + BLOCK_SIZE * 2, y);
-    }
-    if (equipment.Mount) {
-      await drawItem(ctx, equipment.Mount, x + BLOCK_SIZE, y + BLOCK_SIZE * 3);
-    }
-    if (equipment.Potion) {
-      await drawItem(
-        ctx,
-        equipment.Potion,
-        x + BLOCK_SIZE * 2,
-        y + BLOCK_SIZE * 2,
-      );
-    }
-    if (equipment.Food) {
-      await drawItem(ctx, equipment.Food, x, y + BLOCK_SIZE * 2);
-    }
+    await drawItem(ctx, equipment.Shoes, x + BLOCK_SIZE, y + BLOCK_SIZE * 2);
+    await drawItem(ctx, equipment.Bag, x, y);
+    await drawItem(ctx, equipment.Cape, x + BLOCK_SIZE * 2, y);
+    await drawItem(ctx, equipment.Mount, x + BLOCK_SIZE, y + BLOCK_SIZE * 3);
+    await drawItem(
+      ctx,
+      equipment.Potion,
+      x + BLOCK_SIZE * 2,
+      y + BLOCK_SIZE * 2,
+    );
+    await drawItem(ctx, equipment.Food, x, y + BLOCK_SIZE * 2);
   };
   await drawPlayer(event.Killer, 15, 0);
   await drawPlayer(event.Victim, 935, 0);
