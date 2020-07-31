@@ -7,7 +7,7 @@ const commands = require("./commands");
 const database = require("./database");
 const { sleep, fileSizeFormatter } = require("./utils");
 const { getEvents, getEventsByGuild } = require("./queries/events");
-const { getBattles, getBattlesByGuild } = require("./queries/battles");
+const battles = require("./queries/battles");
 const dailyRanking = require("./queries/dailyRanking");
 const guilds = require("./queries/guilds");
 
@@ -63,25 +63,6 @@ const scanEvents = async client => {
         await sendGuildMessage(guild, messages.embedEvent(event, guild.config.lang));
       }
     }
-  }
-};
-
-const scanBattles = async client => {
-  logger.info("[scanBattles] Notifying new battles to all Discord Servers.");
-  const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
-  const battlesByGuild = await getBattlesByGuild(allGuildConfigs);
-
-  for (let guild of client.guilds.array()) {
-    guild.config = await config.getConfig(guild);
-    if (!guild.config || !battlesByGuild[guild.id]) continue;
-
-    const newBattlesCount = battlesByGuild[guild.id].length;
-    if (newBattlesCount > 0) {
-      logger.info(`[scanBattles] Sending ${newBattlesCount} new battles to guild "${guild.name}"`);
-    }
-    battlesByGuild[guild.id].forEach(battle =>
-      sendGuildMessage(guild, messages.embedBattle(battle, guild.config.lang)),
-    );
   }
 };
 
@@ -227,8 +208,8 @@ exports.run = async token => {
   runInterval(dailyRanking.scan, 3600000);
   runInterval(getEvents, 30000);
   runInterval(scanEvents, 5000);
-  runInterval(getBattles, 60000);
-  runInterval(scanBattles, 60000);
+  runInterval(battles.get, 60000);
+  runInterval(battles.scan, 60000);
   runInterval(() => {
     logger.debug(`Memory usage (approx): ${fileSizeFormatter(process.memoryUsage().heapUsed)}`);
   }, 60000);
