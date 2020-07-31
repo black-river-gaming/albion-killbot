@@ -6,6 +6,7 @@
   "CHANNEL_NOT_SET": "ADVERTENCIA: el canal para enviar notificaciones no está configurado. Utilice !Channel [Canal] para configurarlo.",
   "TEST_MSG": "Tengo permiso para enviar mensajes al canal. {{{ channel }}}.",
   "TEST_FAIL": "NO tengo permisos para enviar mensajes al canal configurado.",
+	"MODES_AVAILABLE": "Modos disponibles para esta configuración: {{ modes }}",
   "KILL": {
     "EVENT": "{{ killer }} Mató {{ victim }}!",
     "SOLO_0": "Muerte casual! Muerte en solitario!!!",
@@ -39,7 +40,8 @@
     "KILL_FAME": "Top Kill Fama",
     "DEATH_FAME": "Top Death Fama",
 		"TOTAL_KILL_FAME": "Fama Total Kills",
-		"TOTAL_DEATH_FAME": "Fama Total Deaths"
+		"TOTAL_DEATH_FAME": "Fama Total Deaths",
+		"DAILY_RANKING_SET": "Clasificación Diaria ahora está configurado en modo '{{ mode }}'"
   },
   "HELP": {
     "VERSION": "Albion Killbot v{{ version }}",
@@ -79,5 +81,10 @@
     "PLAYER_UNTRACKED": "Dejar de rastrear Jugador: {{ name }}.",
     "GUILD_UNTRACKED": "Dejar de rastrear gremio: {{ name }}.",
     "ALLIANCE_UNTRACKED": "Dejar de rastrear Alianza: {{ name }}."
-  }
+  },
+	"MODE": {
+		"AVAILABLE": "Modos disponibles: {{ modes }}",
+		"NOT_SUPPORTED": "Este modo no es compatible. Por favor, elija uno de estos: {{ modes }}",
+		"SET": "Modo de salida establecido en: {{ mode }}"
+	}
 }
