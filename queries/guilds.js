@@ -132,7 +132,7 @@ exports.showRanking = async client => {
     if (!guild.config) continue;
     for (let trackedGuild of guild.config.trackedGuilds) {
       const rankings = await exports.getGuildRankings(trackedGuild);
-      await sendGuildMessage(guild, embedRankings(trackedGuild, rankings, guild.config.lang));
+      await sendGuildMessage(guild, embedRankings(trackedGuild, rankings, guild.config.lang), "rankings");
     }
   }
 };
