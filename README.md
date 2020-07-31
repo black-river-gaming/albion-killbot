@@ -33,6 +33,22 @@ First, you need to set up the notification channel using `!channel #channel` com
 !channel #killboard
 ```
 
+If you want to send your notifications to different channels, simply set their categories manually.
+
+Categories are:
+
+* **general**: Any message not related to other categories. Default category.
+* **events**: Kills and Deaths of tracked entities.
+* **battles**: Battles between guilds and alliances.
+* **rankings**: Monthly guild rankings and Daily PvP rankings.
+
+```
+!channel #killboard events
+!channel #rankings rankings
+!channel #battles battles
+!channel #announcements general
+```
+
 The bot can track players and guilds. Alliances are disabled for now to avoid bot spam. Examples:
 
 If you want to track a guild:
