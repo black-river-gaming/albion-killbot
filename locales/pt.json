@@ -6,7 +6,7 @@
   "CHANNEL_NOT_SET": "AVISO: Canal para enviar notificações não configurado. Por favor, use !channel [channel] to configurá-lo.",
   "TEST_MSG": "Eu tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
   "TEST_FAIL": "Eu NÃO tenho privilégios para enviar mensagens para o canal.",
-	"MODES_AVAILABLE": "Modos disponíveis: {{{ modes }}}",
+  "MODES_AVAILABLE": "Modos disponíveis: {{{ modes }}}",
   "KILL": {
     "EVENT": "{{ killer }} matou {{ victim }}!",
     "SOLO_0": "Solado parça!",
@@ -36,12 +36,12 @@
     "PVP": "Ranking PvP",
     "GATHERING": "Ranking de Coleta",
     "CRAFTING": "Ranking de Criação",
-		"DAILY": "Ranking diário de PvP",
-		"KILL_FAME": "Top Fama de Abates",
-		"DEATH_FAME": "Top Fama de Mortes",
-		"TOTAL_KILL_FAME": "Fama Total de Abates",
-		"TOTAL_DEATH_FAME": "Fama Total de Mortes",
-		"DAILY_RANKING_SET": "Mostrar Ranking Diário está agora definido para '{{ mode }}'"
+    "DAILY": "Ranking diário de PvP",
+    "KILL_FAME": "Top Fama de Abates",
+    "DEATH_FAME": "Top Fama de Mortes",
+    "TOTAL_KILL_FAME": "Fama Total de Abates",
+    "TOTAL_DEATH_FAME": "Fama Total de Mortes",
+    "DAILY_RANKING_SET": "Mostrar Ranking Diário está agora definido para '{{ mode }}'"
   },
   "HELP": {
     "VERSION": "Albion Killbot v{{ version }}",
@@ -53,12 +53,13 @@
     "UNTRACK": "Para de rastrear um jogador, guilda ou aliança.",
     "TEST": "Verifica se o bot possui permissões para enviar mensagens.",
     "MODE": "Define o modo de envio de eventos, como texto ou imagem.",
-		"DAILY_RANKING": "Mostrar o Ranking Diário."
+    "DAILY_RANKING": "Mostrar o Ranking Diário."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",
     "NOT_FOUND": "Desculpe, não consigo encontrar o canal mencionado. Verifique se eu possuo acesso a ele e tente novamente.",
-    "SET_CHANNEL": "Canal definido para {{{ channel }}}."
+    "SET_CHANNEL": "Canal para a categoria '{{ category }}' definido para {{{ channel }}}.",
+    "CATEGORIES_AVAILABLE": "Categoria inválida. Por favor, escolha uma destas: {{ categories }}"
   },
   "LANGUAGE": {
     "AVAILABLE": "Idiomas suportados: {{ langs }}",

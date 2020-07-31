@@ -6,7 +6,7 @@
   "CHANNEL_NOT_SET": "ATTENTION: Le channel d'envoi des messages du bot n'est pas défini. Veuillez utiliser !channel [channel] Pour le configurer.",
   "TEST_MSG": "J'ai la permission d'envoyer des messages dans le channel {{{ channel }}}.",
   "TEST_FAIL": "Je n'ai pas la permission d'envoyer des messages au channel configuré.",
-	"MODES_AVAILABLE": "Modes disponibles pour ce paramètre: {{ modes }}",
+  "MODES_AVAILABLE": "Modes disponibles pour ce paramètre: {{ modes }}",
   "KILL": {
     "EVENT": "{{ killer }} a tué {{ victim }}!",
     "SOLO_0": "Facile! Solo kill!!!",
@@ -56,7 +56,8 @@
   "CHANNEL": {
     "NO_CHANNEL": "Veuillez sélectionner un channel dans le quel les notifications seront envoyées.",
     "NOT_FOUND": "Désoler, je ne trouve pas le channel spécifié. Verifiez que j'ai les permissions d'y acceder.",
-    "SET_CHANNEL": "Channel sélectionné {{{ channel }}}."
+    "SET_CHANNEL": "Channel pour la catégorie '{{ category }}' sélectionné {{{ channel }}}.",
+    "CATEGORIES_AVAILABLE": "Catégorie de chaîne non valide. Veuillez en sélectionner une: {{ categories }}"
   },
   "LANGUAGE": {
     "AVAILABLE": "Languge disponnible: {{ langs }}",
@@ -82,9 +83,9 @@
     "GUILD_UNTRACKED": "Désactivation de la suivie de la guilde: {{ name }}.",
     "ALLIANCE_UNTRACKED": "Désactivation de la suivie de l'alliance: {{ name }}."
   },
-	"MODE": {
-		"AVAILABLE": "Modes disponibles: {{ modes }}",
-		"NOT_SUPPORTED": "Ce mode n'est pas pris en charge. Veuillez choisir l'un des: {{ modes }}",
-		"SET": "Mode de sortie défini sur: {{ mode }}"
-	}
+  "MODE": {
+    "AVAILABLE": "Modes disponibles: {{ modes }}",
+    "NOT_SUPPORTED": "Ce mode n'est pas pris en charge. Veuillez choisir l'un des: {{ modes }}",
+    "SET": "Mode de sortie défini sur: {{ mode }}"
+  }
 }
