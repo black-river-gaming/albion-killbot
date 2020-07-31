@@ -6,6 +6,7 @@
 	"CHANNEL_NOT_SET": "Внимание: канал для отправки уведомлений не установлен. Пожалуйста используйте !channel [канал] настроить его.",
 	"TEST_MSG": "У меня есть разрешение отправлять сообщения в канал {{{ channel }}}.",
 	"TEST_FAIL": "У меня нет прав на отправку сообщений в настроенный канал.",
+	"MODES_AVAILABLE": "Modes available for this setting: {{ modes }}",
 	"KILL": {
 		"EVENT": "{{ killer }} убил {{ victim }}!",
 		"SOLO_0": "Умер случайно! Одинокая смерть!!!",
@@ -35,9 +36,12 @@
 		"PVP": "Рейтинг PvP",
 		"GATHERING": "Рейтинг сборки",
 		"CRAFTING": "Рейтинг крафта",
-		"DAILY": "RANKING.DAILY",
-		"KILL_FAME": "RANKING.KILL_FAME",
-		"DEATH_FAME": "RANKING.DEATH_FAME"
+		"DAILY": "Daily PvP Ranking",
+		"KILL_FAME": "Top Kill Fame",
+		"DEATH_FAME": "Top Death Fame",
+		"TOTAL_KILL_FAME": "Total Kill Fame",
+		"TOTAL_DEATH_FAME": "Total Death Fame",
+		"DAILY_RANKING_SET": "Display Daily Ranking is now set to '{{ mode }}'"
 	},
 	"HELP": {
 		"VERSION": "Анонсер версии {{ version }}",
