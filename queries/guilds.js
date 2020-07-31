@@ -1,6 +1,9 @@
 const axios = require("axios");
 const moment = require("moment");
 const logger = require("../logger")("queries.guilds");
+const { getConfigByGuild } = require("../config");
+const { sendGuildMessage } = require("../bot");
+const { embedRankings } = require("../messages");
 
 // TODO: Export this to a const file
 const GUILDS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/guilds";
@@ -24,8 +27,9 @@ exports.getGuild = async guildId => {
   }
 };
 
-exports.getGuildRankings = async guildId => {
-  logger.debug(`Fetching guild ${guildId} rankings...`);
+exports.getGuildRankings = async (trackedGuild) => {
+  logger.debug(`Fetching guild ${trackedGuild.name} rankings...`);
+  const guildId = trackedGuild.id;
   const rankings = {
     pve: null,
     pvp: null,
@@ -117,5 +121,18 @@ exports.getGuildRankings = async guildId => {
   } catch (err) {
     logger.error(`Unable to fetch data from API: ${err}`);
     return rankings;
+  }
+};
+
+exports.showRanking = async client => {
+  logger.info("Sending monthly guild rankings to all servers.");
+  const allGuildConfigs = await getConfigByGuild(client.guilds.array());
+  for (let guild of client.guilds.array()) {
+    guild.config = allGuildConfigs[guild.id];
+    if (!guild.config) continue;
+    for (let trackedGuild of guild.config.trackedGuilds) {
+      const rankings = await exports.getGuildRankings(trackedGuild);
+      await sendGuildMessage(guild, embedRankings(trackedGuild, rankings, guild.config.lang));
+    }
   }
 };

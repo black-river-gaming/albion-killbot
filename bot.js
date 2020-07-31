@@ -33,18 +33,6 @@ const getDefaultChannel = guild => {
     .first();
 };
 
-const scanRanking = async client => {
-  const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
-  for (let guild of client.guilds.array()) {
-    guild.config = allGuildConfigs[guild.id];
-    if (!guild.config) continue;
-    for (let trackedGuild of guild.config.trackedGuilds) {
-      const rankings = await guilds.getGuildRankings(trackedGuild.id);
-      await sendGuildMessage(guild, messages.embedRankings(trackedGuild, rankings, guild.config.lang));
-    }
-  }
-};
-
 const msgErrors = {};
 const sendGuildMessage = async (guild, message) => {
   if (!guild.config) guild.config = await config.getConfig(guild);
@@ -169,7 +157,7 @@ exports.run = async token => {
     }
   };
 
-  runDaily(scanRanking);
+  runDaily(guilds.showRanking);
   runDaily(dailyRanking.scanDaily, 0, 0);
   runDaily(dailyRanking.clear, 0, 5);
   runInterval(dailyRanking.scan, 3600000);
