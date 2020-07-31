@@ -97,19 +97,6 @@ const scanRanking = async client => {
   }
 };
 
-const scanDailyRanking = async (client, mode) => {
-  logger.info("[scanRankings] Sending daily guild rankings to all servers.");
-  const allGuildConfigs = await config.getConfigByGuild(client.guilds.array());
-  for (const guild of client.guilds.array()) {
-    guild.config = allGuildConfigs[guild.id];
-    if (mode === "daily" && guild.config.dailyRanking !== "daily") continue;
-    else if (!guild.config.dailyRanking || guild.config.dailyRanking !== "on") continue;
-    const ranking = await dailyRanking.getRanking(guild);
-    if (ranking.killRanking.length === 0 && ranking.deathRanking.length === 0) continue;
-    await sendGuildMessage(guild, messages.embedDailyRanking(ranking, guild.config.lang));
-  }
-};
-
 const msgErrors = {};
 const sendGuildMessage = async (guild, message) => {
   if (!guild.config) guild.config = await config.getConfig(guild);
@@ -199,6 +186,8 @@ client.on("guildDelete", guild => {
   config.deleteConfig(guild);
 });
 
+exports.sendGuildMessage = sendGuildMessage;
+
 exports.run = async token => {
   database.connect();
   await client.login(token);
@@ -233,9 +222,9 @@ exports.run = async token => {
   };
 
   runDaily(scanRanking);
-  runDaily(client => scanDailyRanking(client, "daily"), 0, 0);
+  runDaily(dailyRanking.scanDaily, 0, 0);
   runDaily(dailyRanking.clear, 0, 5);
-  runInterval(scanDailyRanking, 3600000);
+  runInterval(dailyRanking.scan, 3600000);
   runInterval(getEvents, 30000);
   runInterval(scanEvents, 5000);
   runInterval(getBattles, 60000);
