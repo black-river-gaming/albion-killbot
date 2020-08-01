@@ -135,7 +135,7 @@ exports.run = async token => {
   await client.login(token);
 
   // Events that fires daily (Default: 12:00 pm)
-  const runDaily = async (func, hour = 12, minute = 0) => {
+  const runDaily = async (func, name, hour = 12, minute = 0) => {
     if (!func) return logger.warn("There is an undefined function. Please check your settings.");
     const exit = false;
     while (!exit) {
@@ -145,14 +145,14 @@ exports.run = async token => {
         try {
           await func(exports);
         } catch (e) {
-          logger.error(`Error in function ${func.name}: ${e}`);
+          logger.error(`Error in function ${name}: ${e}`);
         }
       }
     }
   };
 
   // Events that run on an interval (Default: 30 seconds)
-  const runInterval = async (func, interval = 30000) => {
+  const runInterval = async (func, name, interval = 30000) => {
     if (!func) return logger.warn("There is an undefined function. Please check your settings.");
     const exit = false;
     while (!exit) {
@@ -160,19 +160,19 @@ exports.run = async token => {
       try {
         await func(exports);
       } catch (e) {
-        logger.error(`Error in function ${func.name}: ${e}`);
+        logger.error(`Error in function ${name}: ${e}`);
       }
     }
   };
 
-  runDaily(guilds.showRanking);
-  runDaily(dailyRanking.scanDaily, 0, 0);
-  runDaily(dailyRanking.clear, 0, 5);
-  runInterval(dailyRanking.scan, 3600000);
-  runInterval(events.get, 30000);
-  runInterval(events.scan, 5000);
-  runInterval(battles.get, 60000);
-  runInterval(battles.scan, 60000);
+  runDaily(guilds.showRanking, "Show Monthly Ranking");
+  runDaily(dailyRanking.scanDaily, "Show PvP Ranking (daily)", 0, 0);
+  runDaily(dailyRanking.clear, "Clear PvP Ranking", 0, 5);
+  runInterval(dailyRanking.scan, "Show PvP Ranking", 3600000);
+  runInterval(events.get, "Get Events", 30000);
+  runInterval(events.scan, "Show Events", 5000);
+  runInterval(battles.get, "Get Battles", 60000);
+  runInterval(battles.scan, "Show Battles", 60000);
   runInterval(() => {
     logger.debug(`Memory usage (approx): ${fileSizeFormatter(process.memoryUsage().heapUsed)}`);
   }, 60000);
