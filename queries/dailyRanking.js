@@ -125,12 +125,15 @@ exports.scan = async (client, mode) => {
   const allGuildConfigs = await getConfigByGuild(client.guilds.array());
   for (const guild of client.guilds.array()) {
     guild.config = allGuildConfigs[guild.id];
-    if (mode === "daily" && guild.config.dailyRanking !== "daily") continue;
-    else if (!guild.config.dailyRanking || guild.config.dailyRanking !== "on") continue;
+    if (mode === "daily") {
+      if (guild.config.dailyRanking !== "daily") continue;
+    } else {
+      if (!guild.config.dailyRanking || guild.config.dailyRanking !== "on") continue;
+    }
     const ranking = await exports.getRanking(guild);
     if (ranking.killRanking.length === 0 && ranking.deathRanking.length === 0) continue;
     await sendGuildMessage(guild, embedDailyRanking(ranking, guild.config.lang), "rankings");
   }
 };
 
-exports.scanDaily = async (client) => exports.scan(client, "daily");
+exports.scanDaily = async client => exports.scan(client, "daily");
