@@ -5,7 +5,7 @@
   "CONFIG_NOT_SET": "AVISO: Não foi possível persistir a configuração do servidor. Ela será revertida quando o bot reiniciar.",
   "CHANNEL_NOT_SET": "AVISO: Canal para enviar notificações não configurado. Por favor, use !channel [channel] to configurá-lo.",
   "TEST_MSG": "Eu tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
-  "TEST_FAIL": "Eu NÃO tenho privilégios para enviar mensagens para o canal.",
+  "TEST_FAIL": "Eu NÃO tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
   "MODES_AVAILABLE": "Modos disponíveis: {{{ modes }}}",
   "KILL": {
     "EVENT": "{{ killer }} matou {{ victim }}!",
