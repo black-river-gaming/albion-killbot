@@ -10,7 +10,7 @@ module.exports = {
   run: async (client, guild, message, args) => {
     const l = getI18n(guild.config.lang);
 
-    if (!guild.config.channel.general) {
+    if (!guild.config.channel || typeof guild.config.channel === "string") {
       guild.config.channel = {};
     }
 
@@ -44,7 +44,7 @@ module.exports = {
     }
 
     // Validate category
-    const category = args[1].toLowerCase() || "general";
+    const category = (args[1] || "general").toLowerCase();
     if (categories.indexOf(category) < 0) {
       return message.channel.send(l.__("CHANNEL.CATEGORIES_AVAILABLE", { categories: categories.join(", ") }));
     }

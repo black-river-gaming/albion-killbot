@@ -96,7 +96,7 @@ exports.sendGuildMessage = async (guild, message, type = "general") => {
   let channelId = guild.config.channel[type];
   if (!channelId) channelId = guild.config.channel.general;
   // Old structure backport
-  if (typeof(guild.config.channel) === "string") channelId = guild.config.channel;
+  if (typeof guild.config.channel === "string") channelId = guild.config.channel;
 
   const l = messages.getI18n(guild);
   let channel = client.channels.find(c => c.id === channelId);
@@ -128,19 +128,22 @@ exports.sendGuildMessage = async (guild, message, type = "general") => {
   }
 };
 
+exports.client = client;
+
 exports.run = async token => {
   database.connect();
   await client.login(token);
 
   // Events that fires daily (Default: 12:00 pm)
   const runDaily = async (func, hour = 12, minute = 0) => {
+    if (!func) return logger.warn("There is an undefined function. Please check your settings.");
     const exit = false;
     while (!exit) {
       await sleep(60000);
       const now = moment();
       if (now.hour() === hour && now.minute() === minute) {
         try {
-          await func();
+          await func(exports);
         } catch (e) {
           logger.error(`Error in function ${func.name}: ${e}`);
         }
@@ -150,11 +153,12 @@ exports.run = async token => {
 
   // Events that run on an interval (Default: 30 seconds)
   const runInterval = async (func, interval = 30000) => {
+    if (!func) return logger.warn("There is an undefined function. Please check your settings.");
     const exit = false;
     while (!exit) {
       await sleep(interval);
       try {
-        await func(client);
+        await func(exports);
       } catch (e) {
         logger.error(`Error in function ${func.name}: ${e}`);
       }

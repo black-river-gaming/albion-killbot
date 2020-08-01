@@ -2,15 +2,12 @@ const axios = require("axios");
 const moment = require("moment");
 const logger = require("../logger")("queries.guilds");
 const { getConfigByGuild } = require("../config");
-const { sendGuildMessage } = require("../bot");
 const { embedRankings } = require("../messages");
 
 // TODO: Export this to a const file
 const GUILDS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/guilds";
-const STATISTICS_ENDPOINT =
-  "https://gameinfo.albiononline.com/api/gameinfo/players/statistics";
-const FAME_ENDPOINT =
-  "https://gameinfo.albiononline.com/api/gameinfo/events/playerfame";
+const STATISTICS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/players/statistics";
+const FAME_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/events/playerfame";
 
 const sleep = milliseconds => {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
@@ -27,8 +24,8 @@ exports.getGuild = async guildId => {
   }
 };
 
-exports.getGuildRankings = async (trackedGuild) => {
-  logger.debug(`Fetching guild ${trackedGuild.name} rankings...`);
+exports.getGuildRankings = async trackedGuild => {
+  logger.debug(`Fetching guild "${trackedGuild.name}" rankings...`);
   const guildId = trackedGuild.id;
   const rankings = {
     pve: null,
@@ -90,9 +87,7 @@ exports.getGuildRankings = async (trackedGuild) => {
         });
         rankings.gathering = gatherRes.data;
       } catch (e) {
-        logger.error(
-          `Failed to fetch Gathering rankings: ${e}. Trying again...`,
-        );
+        logger.error(`Failed to fetch Gathering rankings: ${e}. Trying again...`);
       }
       await sleep(5000);
     }
@@ -109,9 +104,7 @@ exports.getGuildRankings = async (trackedGuild) => {
         });
         rankings.crafting = craftRes.data;
       } catch (e) {
-        logger.error(
-          `Failed to fetch Crafting rankings: ${e}. Trying again...`,
-        );
+        logger.error(`Failed to fetch Crafting rankings: ${e}. Trying again...`);
       }
       await sleep(5000);
     }
@@ -124,7 +117,7 @@ exports.getGuildRankings = async (trackedGuild) => {
   }
 };
 
-exports.showRanking = async client => {
+exports.showRanking = async ({ client, sendGuildMessage }) => {
   logger.info("Sending monthly guild rankings to all servers.");
   const allGuildConfigs = await getConfigByGuild(client.guilds.array());
   for (let guild of client.guilds.array()) {

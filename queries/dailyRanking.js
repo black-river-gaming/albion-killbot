@@ -1,7 +1,6 @@
 const logger = require("../logger")("queries.dailyRanking");
 const database = require("../database");
 const { getConfig, getConfigByGuild } = require("../config");
-const { sendGuildMessage } = require("../bot");
 const { embedDailyRanking } = require("../messages");
 
 const RANKING_COLLECTION = "dailyRanking";
@@ -120,8 +119,8 @@ exports.clear = async () => {
   logger.info("Daily pvp ranking cleared!");
 };
 
-exports.scan = async (client, mode) => {
-  logger.info("Sending daily guild rankings to all servers.");
+exports.scan = async ({ client, sendGuildMessage }, mode) => {
+  logger.info(`Sending ${mode === "daily" ? "daily" : "hourly"} guild rankings to all servers.`);
   const allGuildConfigs = await getConfigByGuild(client.guilds.array());
   for (const guild of client.guilds.array()) {
     guild.config = allGuildConfigs[guild.id];
@@ -136,4 +135,4 @@ exports.scan = async (client, mode) => {
   }
 };
 
-exports.scanDaily = async client => exports.scan(client, "daily");
+exports.scanDaily = async bot => exports.scan(bot, "daily");

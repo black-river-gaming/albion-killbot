@@ -4,11 +4,9 @@ const logger = require("../logger")("queries.battles");
 const database = require("../database");
 const { sleep } = require("../utils");
 const { getConfigByGuild } = require("../config");
-const { sendGuildMessage } = require("../bot");
 const { embedBattle } = require("../messages");
 
-const BATTLES_ENDPOINT =
-  "https://gameinfo.albiononline.com/api/gameinfo/battles";
+const BATTLES_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/battles";
 const BATTLES_LIMIT = 51;
 const BATTLES_SORT = "recent";
 const BATTLES_COLLECTION = "battles";
@@ -32,15 +30,9 @@ function getNewBattles(battles, config) {
 
     // Check for tracked ids in players, guilds and alliances
     // Since we are parsing from newer to older events we need to use a FILO array
-    const hasTrackedPlayer = Object.keys(battle.players || {}).some(
-      id => playerIds.indexOf(id) >= 0,
-    );
-    const hasTrackedGuild = Object.keys(battle.guilds || {}).some(
-      id => guildIds.indexOf(id) >= 0,
-    );
-    const hasTrackedAlliance = Object.keys(battle.alliances || {}).some(
-      id => allianceIds.indexOf(id) >= 0,
-    );
+    const hasTrackedPlayer = Object.keys(battle.players || {}).some(id => playerIds.indexOf(id) >= 0);
+    const hasTrackedGuild = Object.keys(battle.guilds || {}).some(id => guildIds.indexOf(id) >= 0);
+    const hasTrackedAlliance = Object.keys(battle.alliances || {}).some(id => allianceIds.indexOf(id) >= 0);
     if (hasTrackedPlayer || hasTrackedGuild || hasTrackedAlliance) {
       newBattles.unshift(battle);
     }
@@ -81,27 +73,19 @@ exports.get = async () => {
         battles.push(battle);
         return true;
       });
-      return foundLatest
-        ? battles
-        : fetchBattlesTo(latestBattle, offset + BATTLES_LIMIT, battles);
+      return foundLatest ? battles : fetchBattlesTo(latestBattle, offset + BATTLES_LIMIT, battles);
     } catch (err) {
-      logger.error(
-        `[getBattles] Unable to fetch battle data from API [${err}].`,
-      );
+      logger.error(`[getBattles] Unable to fetch battle data from API [${err}].`);
       await sleep(5000);
       return fetchBattlesTo(latestBattle, offset, battles);
     }
   };
 
   if (!latestBattle) {
-    logger.info(
-      "[getBattles] No latest battle found. Retrieving first battles.",
-    );
+    logger.info("[getBattles] No latest battle found. Retrieving first battles.");
     latestBattle = { id: 0 };
   }
-  logger.info(
-    `[getBattles] Fetching Albion Online battles from API up to battle ${latestBattle.id}.`,
-  );
+  logger.info(`[getBattles] Fetching Albion Online battles from API up to battle ${latestBattle.id}.`);
   const battles = await fetchBattlesTo(latestBattle);
   if (battles.length === 0) return logger.debug("[getBattles] No new battles.");
 
@@ -132,9 +116,7 @@ exports.get = async () => {
     },
   });
 
-  logger.debug(
-    `[getBattles] Performing ${ops.length} write operations in database.`,
-  );
+  logger.debug(`[getBattles] Performing ${ops.length} write operations in database.`);
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
 
   logger.info(
@@ -145,9 +127,7 @@ exports.get = async () => {
 exports.getBattlesByGuild = async guildConfigs => {
   const collection = database.collection(BATTLES_COLLECTION);
   if (!collection) {
-    return logger.warn(
-      "[scanBattles] Not connected to database. Skipping notify battles.",
-    );
+    return logger.warn("[scanBattles] Not connected to database. Skipping notify battles.");
   }
 
   // Get unread battles
@@ -173,9 +153,7 @@ exports.getBattlesByGuild = async guildConfigs => {
     });
   });
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
-  logger.info(
-    `[scanBattles] Notify success. (Battles read: ${writeResult.modifiedCount}).`,
-  );
+  logger.info(`[scanBattles] Notify success. (Battles read: ${writeResult.modifiedCount}).`);
 
   const battlesByGuild = {};
   for (let guild of Object.keys(guildConfigs)) {
@@ -189,7 +167,7 @@ exports.getBattlesByGuild = async guildConfigs => {
   return battlesByGuild;
 };
 
-exports.scan = async client => {
+exports.scan = async ({ client, sendGuildMessage }) => {
   logger.info("[scanBattles] Notifying new battles to all Discord Servers.");
   const allGuildConfigs = await getConfigByGuild(client.guilds.array());
   const battlesByGuild = await exports.getBattlesByGuild(allGuildConfigs);

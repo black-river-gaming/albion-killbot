@@ -4,7 +4,6 @@ const logger = require("../logger")("queries.events");
 const database = require("../database");
 const { sleep } = require("../utils");
 const { getConfigByGuild } = require("../config");
-const { sendGuildMessage } = require("../bot");
 const { embedEvent, embedEventAsImage, embedInventoryAsImage } = require("../messages");
 const dailyRanking = require("./dailyRanking");
 
@@ -13,17 +12,8 @@ const EVENTS_LIMIT = 51;
 const EVENTS_COLLECTION = "events";
 const EVENT_KEEP_HOURS = 2;
 
-function getNewEvents(
-  events,
-  trackedPlayers = [],
-  trackedGuilds = [],
-  trackedAlliances = [],
-) {
-  if (
-    trackedPlayers.length === 0 &&
-    trackedGuilds.length === 0 &&
-    trackedAlliances.length === 0
-  ) {
+function getNewEvents(events, trackedPlayers = [], trackedGuilds = [], trackedAlliances = []) {
+  if (trackedPlayers.length === 0 && trackedGuilds.length === 0 && trackedAlliances.length === 0) {
     return [];
   }
 
@@ -57,7 +47,7 @@ function getNewEvents(
   return newEvents;
 }
 
-exports.getEvents = async () => {
+exports.get = async () => {
   const collection = database.collection(EVENTS_COLLECTION);
   if (!collection) {
     return logger.warn("Not connected to database. Skipping get events.");
@@ -89,9 +79,7 @@ exports.getEvents = async () => {
         events.push(evt);
         return true;
       });
-      return foundLatest
-        ? events
-        : fetchEventsTo(latestEvent, offset + EVENTS_LIMIT, events);
+      return foundLatest ? events : fetchEventsTo(latestEvent, offset + EVENTS_LIMIT, events);
     } catch (err) {
       logger.error(`[getEvents] Unable to fetch event data from API [${err}].`);
       await sleep(5000);
@@ -103,9 +91,7 @@ exports.getEvents = async () => {
     logger.info("[getEvents] No latest event found. Retrieving first events.");
     latestEvent = { EventId: 0 };
   } else {
-    logger.info(
-      `[getEvents] Fetching Albion Online events from API up to event ${latestEvent.EventId}.`,
-    );
+    logger.info(`[getEvents] Fetching Albion Online events from API up to event ${latestEvent.EventId}.`);
   }
   const events = await fetchEventsTo(latestEvent);
   if (events.length === 0) return logger.debug("[getEvents] No new events.");
@@ -126,9 +112,7 @@ exports.getEvents = async () => {
       },
     });
   });
-  logger.debug(
-    `[getEvents] Performing ${ops.length} write operations in database.`,
-  );
+  logger.debug(`[getEvents] Performing ${ops.length} write operations in database.`);
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
 
   // Delete older events to free cache space
@@ -149,9 +133,7 @@ exports.getEvents = async () => {
 exports.getEventsByGuild = async guildConfigs => {
   const collection = database.collection(EVENTS_COLLECTION);
   if (!collection) {
-    return logger.warn(
-      "[scanEvents] Not connected to database. Skipping notify events.",
-    );
+    return logger.warn("[scanEvents] Not connected to database. Skipping notify events.");
   }
 
   // Get unread events
@@ -177,9 +159,7 @@ exports.getEventsByGuild = async guildConfigs => {
     });
   });
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
-  logger.info(
-    `[scanEvents] Notify success. (Events read: ${writeResult.modifiedCount}).`,
-  );
+  logger.info(`[scanEvents] Notify success. (Events read: ${writeResult.modifiedCount}).`);
 
   const eventsByGuild = {};
   for (let guild of Object.keys(guildConfigs)) {
@@ -187,18 +167,13 @@ exports.getEventsByGuild = async guildConfigs => {
     if (!config) {
       continue;
     }
-    eventsByGuild[guild] = getNewEvents(
-      events,
-      config.trackedPlayers,
-      config.trackedGuilds,
-      config.trackedAlliances,
-    );
+    eventsByGuild[guild] = getNewEvents(events, config.trackedPlayers, config.trackedGuilds, config.trackedAlliances);
   }
 
   return eventsByGuild;
 };
 
-exports.scan = async client => {
+exports.scan = async ({ client, sendGuildMessage }) => {
   logger.info("[scanEvents] Notifying new events to all Discord Servers.");
   const allGuildConfigs = await getConfigByGuild(client.guilds.array());
   const eventsByGuild = await exports.getEventsByGuild(allGuildConfigs);
