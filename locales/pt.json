@@ -1,4 +1,5 @@
 {
+  "KILL_URL_LANG": "pt",
   "JOIN": "Olá todo mundo! Sou Albion Killbot. Se você é um admin, por favor me configure usando !help para ver o que sei fazer.",
   "LEAVE": "Infelizmente, eu estou tendo problemas em enviar mensagens para o seu servidor {{ guild }}, entãõ tenho que sair agora =(\nVejo você em breve!",
   "NO_PERMISSION": "Desulpe, mas só aceito comandos de administradores.",
