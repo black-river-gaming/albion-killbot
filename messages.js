@@ -4,7 +4,7 @@ const { generateEventImage, generateInventoryImage } = require("./images");
 const { digitsFormatter, humanFormatter } = require("./utils");
 
 const LOCALE_DIR = __dirname + "/locales";
-const KILL_URL = "https://albiononline.com/pt/killboard/kill/{kill}";
+const KILL_URL = "https://albiononline.com/{lang}/killboard/kill/{kill}";
 const GREEN = 52224;
 const RED = 13369344;
 const BATTLE = 16752981;
@@ -69,7 +69,7 @@ exports.embedEvent = (event, locale) => {
     embed: {
       color: good ? GREEN : RED,
       title,
-      url: KILL_URL.replace("{kill}", event.EventId),
+      url: KILL_URL.replace("{lang}", l.getLocale()).replace("{kill}", event.EventId),
       description,
       thumbnail: {
         url: "https://user-images.githubusercontent.com/13356774/76129825-ee15b580-5fde-11ea-9f77-7ae16bd65368.png",
@@ -129,7 +129,7 @@ exports.embedEventAsImage = async (event, locale) => {
     embed: {
       color: good ? GREEN : RED,
       title,
-      url: KILL_URL.replace("{kill}", event.EventId),
+      url: KILL_URL.replace("{lang}", l.getLocale()).replace("{kill}", event.EventId),
       files: [
         {
           attachment: await generateEventImage(event),
@@ -143,14 +143,15 @@ exports.embedEventAsImage = async (event, locale) => {
   };
 };
 
-exports.embedInventoryAsImage = async event => {
+exports.embedInventoryAsImage = async (event, locale) => {
+  const l = exports.getI18n(locale);
   const good = event.good;
   const filename = `${event.EventId}-inventory.png`;
 
   return {
     embed: {
       color: good ? GREEN : RED,
-      url: KILL_URL.replace("{kill}", event.EventId),
+      url: KILL_URL.replace("{lang}", l.getLocale()).replace("{kill}", event.EventId),
       files: [
         {
           attachment: await generateInventoryImage(event),
