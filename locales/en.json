@@ -7,6 +7,10 @@
   "TEST_MSG": "I have permission to send messages to the channel {{{ channel }}}.",
   "TEST_FAIL": "I DON'T have permissions to send messages to channel {{{ channel }}}.",
   "MODES_AVAILABLE": "Modes available for this setting: {{ modes }}",
+  "GENERAL": {
+    "ENABLED": "enabled",
+    "DISABLED": "disabled"
+  },
   "KILL": {
     "EVENT": "{{ killer }} killed {{ victim }}!",
     "SOLO_0": "Die casual! Solo kill!!!",
@@ -53,7 +57,8 @@
     "UNTRACK": "Stops tracking a player, guild or alliance.",
     "TEST": "Verify if the bot has permission to send messages.",
     "MODE": "Sets the output mode, like text or image.",
-    "DAILY_RANKING": "Display Daily Rankings."
+    "DAILY_RANKING": "Display Daily Rankings.",
+    "CATEGORY": "Enable/disable bot notifications for each category"
   },
   "CHANNEL": {
     "NO_CHANNEL": "Please input a channel for notifications.",
@@ -89,5 +94,10 @@
     "AVAILABLE": "Available modes: {{ modes }}",
     "NOT_SUPPORTED": "This mode isn't supported. Please pick one of: {{ modes }}",
     "SET": "Output mode set to: {{ mode }}"
+  },
+  "CATEGORY": {
+    "MISSING_PARAMETERS": "Please insert all parameters. Syntax: `!category [category] <on/off>`",
+    "AVAILABLE": "Invalid category. Please input one of: {{ categories }}",
+    "SET": "Notifications for category `{{ category }}` are `{{ option }}`"
   }
 }

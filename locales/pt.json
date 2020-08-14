@@ -7,6 +7,10 @@
   "TEST_MSG": "Eu tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
   "TEST_FAIL": "Eu NÃO tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
   "MODES_AVAILABLE": "Modos disponíveis: {{{ modes }}}",
+  "GENERAL": {
+    "ENABLED": "ativado",
+    "DISABLED": "desativado"
+  },
   "KILL": {
     "EVENT": "{{ killer }} matou {{ victim }}!",
     "SOLO_0": "Solado parça!",
@@ -53,7 +57,8 @@
     "UNTRACK": "Para de rastrear um jogador, guilda ou aliança.",
     "TEST": "Verifica se o bot possui permissões para enviar mensagens.",
     "MODE": "Define o modo de envio de eventos, como texto ou imagem.",
-    "DAILY_RANKING": "Mostrar o Ranking Diário."
+    "DAILY_RANKING": "Mostrar o Ranking Diário.",
+    "CATEGORY": "Ativa/desativa notificações de cada categoria."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",
@@ -89,5 +94,10 @@
     "AVAILABLE": "Modos disponíveis: {{ modes }}",
     "NOT_SUPPORTED": "Este modo não é suportado. Por favor, escolha um destes: {{ modes }}",
     "SET": "Modo de saida definido para: {{ mode }}"
+  },
+  "CATEGORY": {
+    "MISSING_PARAMETERS": "Parametros faltando. Sintaxe: `!category [categoria] <on/off>`",
+    "AVAILABLE": "Categoria invalida. Escolha um destes: {{ categories }}",
+    "SET": "Notificações da categoria `{{ category }}` estão `{{ option }}s`"
   }
 }

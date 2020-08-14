@@ -7,6 +7,10 @@
   "TEST_MSG": "J'ai la permission d'envoyer des messages dans le channel {{{ channel }}}.",
   "TEST_FAIL": "Je n'ai pas la permission d'envoyer des messages au channel {{{ channel }}}.",
   "MODES_AVAILABLE": "Modes disponibles pour ce paramètre: {{ modes }}",
+  "GENERAL": {
+    "ENABLED": "enabled",
+    "DISABLED": "disabled"
+  },
   "KILL": {
     "EVENT": "{{ killer }} a tué {{ victim }}!",
     "SOLO_0": "Facile! Solo kill!!!",
@@ -51,7 +55,10 @@
     "LIST": "Liste des joueurs, guildes et alliances suivis.",
     "TRACK": "Suivre un joueur, une guilde ou une alliance.",
     "UNTRACK": "Arrêter de suivre un joueur, une alliance ou une guilde.",
-    "TEST": "Verifiez si le bot a les permissions pour envoyer des messages."
+    "TEST": "Verifiez si le bot a les permissions pour envoyer des messages.",
+    "MODE": "Sets the output mode, like text or image.",
+    "DAILY_RANKING": "Display Daily Rankings.",
+    "CATEGORY": "Enable/disable bot notifications for each category"
   },
   "CHANNEL": {
     "NO_CHANNEL": "Veuillez sélectionner un channel dans le quel les notifications seront envoyées.",
@@ -87,5 +94,10 @@
     "AVAILABLE": "Modes disponibles: {{ modes }}",
     "NOT_SUPPORTED": "Ce mode n'est pas pris en charge. Veuillez choisir l'un des: {{ modes }}",
     "SET": "Mode de sortie défini sur: {{ mode }}"
+  },
+  "CATEGORY": {
+    "MISSING_PARAMETERS": "Please insert all parameters. Syntax: `!category [category] <on/off>`",
+    "AVAILABLE": "Invalid category. Please input one of: {{ categories }}",
+    "SET": "Notifications for category `{{ category }}` are `{{ option }}`"
   }
 }

@@ -7,6 +7,10 @@
   "TEST_MSG": "У меня есть разрешение отправлять сообщения в канал {{{ channel }}}.",
   "TEST_FAIL": "У меня нет прав на отправку сообщений в настроенный канал {{{ channel }}}.",
   "MODES_AVAILABLE": "Modes available for this setting: {{ modes }}",
+  "GENERAL": {
+    "ENABLED": "enabled",
+    "DISABLED": "disabled"
+  },
   "KILL": {
     "EVENT": "{{ killer }} убил {{ victim }}!",
     "SOLO_0": "Умер случайно! Одинокая смерть!!!",
@@ -52,7 +56,9 @@
     "TRACK": "Отслеживает игрока, гильдию или альянс.",
     "UNTRACK": "Перестает отслеживать игрока, гильдию или альянс.",
     "TEST": "Проверьте, есть ли у бота разрешение на отправку сообщений.",
-    "MODE": "Задает режим вывода, например текст или изображение."
+    "MODE": "Задает режим вывода, например текст или изображение.",
+    "DAILY_RANKING": "Display Daily Rankings.",
+    "CATEGORY": "Enable/disable bot notifications for each category"
   },
   "CHANNEL": {
     "NO_CHANNEL": "Пожалуйста, введите канал для уведомлений.",
@@ -88,5 +94,10 @@
     "AVAILABLE": "Доступный режим: {{ modes }}",
     "NOT_SUPPORTED": "Этот режим не поддерживается. Пожалуйста, выберите один из этих: {{ modes }}",
     "SET": "Режим установлен на: {{ mode }}"
+  },
+  "CATEGORY": {
+    "MISSING_PARAMETERS": "Please insert all parameters. Syntax: `!category [category] <on/off>`",
+    "AVAILABLE": "Invalid category. Please input one of: {{ categories }}",
+    "SET": "Notifications for category `{{ category }}` are `{{ option }}`"
   }
 }

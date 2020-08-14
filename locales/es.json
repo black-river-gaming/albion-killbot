@@ -7,6 +7,10 @@
   "TEST_MSG": "Tengo permiso para enviar mensajes al canal {{{ channel }}}.",
   "TEST_FAIL": "NO tengo permisos para enviar mensajes al canal {{{ channel }}}.",
   "MODES_AVAILABLE": "Modos disponibles para esta configuración: {{ modes }}",
+  "GENERAL": {
+    "ENABLED": "enabled",
+    "DISABLED": "disabled"
+  },
   "KILL": {
     "EVENT": "{{ killer }} Mató {{ victim }}!",
     "SOLO_0": "Muerte casual! Muerte en solitario!!!",
@@ -51,7 +55,10 @@
     "LIST": "Lista de jugadores,gremios y alianzas rastreadas.",
     "TRACK": "Rastrea a un jugador, gremio o alianza.",
     "UNTRACK": "Dejar de seguir a un jugador, gremio o alianza.",
-    "TEST": "Verificar si el bot tiene permisos para enviar mensajes."
+    "TEST": "Verificar si el bot tiene permisos para enviar mensajes.",
+    "MODE": "Sets the output mode, like text or image.",
+    "DAILY_RANKING": "Display Daily Rankings.",
+    "CATEGORY": "Enable/disable bot notifications for each category"
   },
   "CHANNEL": {
     "NO_CHANNEL": "Ingrese un canal para las notificaciones",
@@ -87,5 +94,10 @@
     "AVAILABLE": "Modos disponibles: {{ modes }}",
     "NOT_SUPPORTED": "Este modo no es compatible. Por favor, elija uno de estos: {{ modes }}",
     "SET": "Modo de salida establecido en: {{ mode }}"
+  },
+  "CATEGORY": {
+    "MISSING_PARAMETERS": "Please insert all parameters. Syntax: `!category [category] <on/off>`",
+    "AVAILABLE": "Invalid category. Please input one of: {{ categories }}",
+    "SET": "Notifications for category `{{ category }}` are `{{ option }}`"
   }
 }

@@ -89,11 +89,15 @@ exports.getDefaultChannel = guild => {
     .first();
 };
 
-const msgErrors = {};
-exports.sendGuildMessage = async (guild, message, type = "general") => {
-  if (!guild.config) guild.config = await config.getConfig(guild);
+exports.categories = ["general", "events", "battles", "rankings"];
 
-  let channelId = guild.config.channel[type];
+const msgErrors = {};
+exports.sendGuildMessage = async (guild, message, category = "general") => {
+  if (!guild.config) guild.config = await config.getConfig(guild);
+  if (!guild.config.categories) guild.config.categories = {};
+  if (guild.config.categories[category] === false) return;
+
+  let channelId = guild.config.channel[category];
   if (!channelId) channelId = guild.config.channel.general;
   // Old structure backport
   if (typeof guild.config.channel === "string") channelId = guild.config.channel;

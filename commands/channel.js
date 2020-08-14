@@ -1,7 +1,6 @@
 const { setConfig } = require("../config");
 const { getI18n } = require("../messages");
-
-const categories = ["general", "events", "battles", "rankings"];
+const { categories } = require("../bot");
 
 module.exports = {
   aliases: ["channel"],
