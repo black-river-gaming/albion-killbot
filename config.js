@@ -6,6 +6,13 @@ const DEFAULT_CONFIG = {
   trackedPlayers: [],
   trackedGuilds: [],
   trackedAlliances: [],
+  dailyRanking: "daily",
+  categories: {
+    general: true,
+    events: true,
+    battles: true,
+    rankings: true,
+  },
   lang: "en",
 };
 
