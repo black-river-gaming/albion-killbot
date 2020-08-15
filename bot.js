@@ -127,6 +127,7 @@ exports.sendGuildMessage = async (guild, message, category = "general") => {
         logger.warn(`Leaving guild ${guild.name} due to excessive message errors. Warning owner.`);
         await guild.owner.send(l.__("LEAVE", { guild: guild.name }));
         await guild.leave();
+        msgErrors[guild.id] = 0;
       }
     }
   }
