@@ -1,18 +1,17 @@
-const { setConfig } = require("../config");
+const { categories, setConfig } = require("../config");
 const { getI18n } = require("../messages");
-const { categories } = require("../bot");
 
 const options = ["on", "off", "enable", "disable"];
 const enabled = [options[0], options[2]];
 
 module.exports = {
-  aliases: ["channel"],
+  aliases: ["category"],
   args: ["category", "on/off"],
   description: "HELP.CATEGORY",
   run: async (client, guild, message, args) => {
     const l = getI18n(guild.config.lang);
 
-    if (!guild.config.caltegories) {
+    if (!guild.config.categories) {
       guild.config.categories = {};
     }
 

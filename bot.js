@@ -89,8 +89,6 @@ exports.getDefaultChannel = guild => {
     .first();
 };
 
-exports.categories = ["general", "events", "battles", "rankings"];
-
 const msgErrors = {};
 exports.sendGuildMessage = async (guild, message, category = "general") => {
   if (!guild.config) guild.config = await config.getConfig(guild);
