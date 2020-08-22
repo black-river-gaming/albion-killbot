@@ -8,7 +8,7 @@ It keeps tracks of events using the gameinfo API and displays tracked events for
 
 Also, when you are tracking a guild, the bot will display the monthly ranking every day at 12pm (bot time).
 
-Other feature suggestions are welcome in the issues section of the github.
+Other feature suggestions are welcome in the issues section of the github. Please join our Discord server for further questions: https://discord.gg/56AExWh
 
 # How to install
 
