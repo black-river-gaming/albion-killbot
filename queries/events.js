@@ -185,42 +185,44 @@ exports.scan = async ({ client, sendGuildMessage }) => {
   if (!eventsByGuild) return logger.debug("No new events to notify.");
 
   const notifiedGuildIds = Object.keys(eventsByGuild);
-  Array(NOTIFY_JOBS)
-    .fill()
-    .map((_, i) => {
-      const chunk_size = notifiedGuildIds.length / NOTIFY_JOBS;
-      return notifiedGuildIds.slice(i * chunk_size, (i + 1) * chunk_size);
-    })
-    .forEach(async (guildIds, i) => {
-      if (guildIds.length == 0) return;
-      logger.debug(`Running notify job #${i} with ${guildIds.length} guilds.`);
-      for (let guildId of guildIds) {
-        const guild = client.guilds.get(guildId);
-        guild.config = allGuildConfigs[guild.id];
-        if (!guild.config || !eventsByGuild[guild.id]) continue;
+  await Promise.all(
+    Array(NOTIFY_JOBS)
+      .fill()
+      .map((_, i) => {
+        const chunk_size = notifiedGuildIds.length / NOTIFY_JOBS;
+        return notifiedGuildIds.slice(i * chunk_size, (i + 1) * chunk_size);
+      })
+      .map(async (guildIds, i) => {
+        if (guildIds.length == 0) return;
+        logger.debug(`Running notify job #${i} with ${guildIds.length} guilds.`);
+        for (let guildId of guildIds) {
+          const guild = client.guilds.get(guildId);
+          guild.config = allGuildConfigs[guild.id];
+          if (!guild.config || !eventsByGuild[guild.id]) continue;
 
-        const newEventsCount = eventsByGuild[guild.id].length;
-        if (newEventsCount > 0) {
-          logger.info(`[Job #${i}] Sending ${newEventsCount} new events to guild "${guild.name}"`);
-        }
+          const newEventsCount = eventsByGuild[guild.id].length;
+          if (newEventsCount > 0) {
+            logger.info(`[Job #${i}] Sending ${newEventsCount} new events to guild "${guild.name}"`);
+          }
 
-        for (let event of eventsByGuild[guild.id]) {
-          dailyRanking.add(guild, event, allGuildConfigs[guild.id]);
-          const mode = guild.config.mode;
-          const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
+          for (let event of eventsByGuild[guild.id]) {
+            dailyRanking.add(guild, event, allGuildConfigs[guild.id]);
+            const mode = guild.config.mode;
+            const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
 
-          if (mode === "image") {
-            // Image output
-            await sendGuildMessage(guild, await embedEventAsImage(event, guild.config.lang), "events");
-            if (hasInventory) {
-              await sendGuildMessage(guild, await embedInventoryAsImage(event, guild.config.lang), "events");
+            if (mode === "image") {
+              // Image output
+              await sendGuildMessage(guild, await embedEventAsImage(event, guild.config.lang), "events");
+              if (hasInventory) {
+                await sendGuildMessage(guild, await embedInventoryAsImage(event, guild.config.lang), "events");
+              }
+            } else {
+              // Text output (default)
+              await sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events");
             }
-          } else {
-            // Text output (default)
-            await sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events");
           }
         }
-      }
-      logger.debug(`Notify job #${i} done.`);
-    });
+        logger.debug(`Notify job #${i} done.`);
+      }),
+  );
 };
