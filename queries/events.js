@@ -6,7 +6,6 @@ const { sleep } = require("../utils");
 const { getConfigByGuild } = require("../config");
 const { embedEvent, embedEventAsImage, embedInventoryAsImage } = require("../messages");
 const dailyRanking = require("./dailyRanking");
-const _ = require("lodash");
 
 const EVENTS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/events";
 const EVENTS_LIMIT = 51;
@@ -135,7 +134,8 @@ exports.get = async () => {
 exports.getEventsByGuild = async guildConfigs => {
   const collection = database.collection(EVENTS_COLLECTION);
   if (!collection) {
-    return logger.warn("[scanEvents] Not connected to database. Skipping notify events.");
+    logger.warn("Not connected to database. Skipping notify events.");
+    return null;
   }
 
   // Get unread events
@@ -145,7 +145,7 @@ exports.getEventsByGuild = async guildConfigs => {
     .limit(1000)
     .toArray();
   if (events.length === 0) {
-    return logger.debug("[scanEvents] No new events to notify.");
+    return null;
   }
 
   // Set events as read before sending to ensure no double events notification
@@ -161,7 +161,7 @@ exports.getEventsByGuild = async guildConfigs => {
     });
   });
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
-  logger.info(`[scanEvents] Notify success. (Events read: ${writeResult.modifiedCount}).`);
+  logger.info(`Notify success. (Events read: ${writeResult.modifiedCount}).`);
 
   const eventsByGuild = {};
   for (let guild of Object.keys(guildConfigs)) {
@@ -169,26 +169,33 @@ exports.getEventsByGuild = async guildConfigs => {
     if (!config) {
       continue;
     }
-    eventsByGuild[guild] = getNewEvents(events, config.trackedPlayers, config.trackedGuilds, config.trackedAlliances);
+    const guildEvents = getNewEvents(events, config.trackedPlayers, config.trackedGuilds, config.trackedAlliances);
+    if (guildEvents.length > 0) {
+      eventsByGuild[guild] = guildEvents;
+    }
   }
 
   return eventsByGuild;
 };
 
 exports.scan = async ({ client, sendGuildMessage }) => {
-  logger.info("[scanEvents] Notifying new events to all Discord Servers.");
+  logger.info("Notifying new events to all Discord Servers.");
   const allGuildConfigs = await getConfigByGuild(client.guilds.array());
   const eventsByGuild = await exports.getEventsByGuild(allGuildConfigs);
+  if (!eventsByGuild) return logger.debug("No new events to notify.");
 
+  const notifiedGuildIds = Object.keys(eventsByGuild);
   Array(NOTIFY_JOBS)
     .fill()
     .map((_, i) => {
-      const chunk_size = client.guilds.array().length / NOTIFY_JOBS;
-      return client.guilds.array().slice(i * chunk_size, (i + 1) * chunk_size);
+      const chunk_size = notifiedGuildIds.length / NOTIFY_JOBS;
+      return notifiedGuildIds.slice(i * chunk_size, (i + 1) * chunk_size);
     })
-    .forEach(async (guilds, i) => {
-      logger.debug(`Running notify job #${i} with ${guilds.length} guilds.`);
-      for (let guild of guilds) {
+    .forEach(async (guildIds, i) => {
+      if (guildIds.length == 0) return;
+      logger.debug(`Running notify job #${i} with ${guildIds.length} guilds.`);
+      for (let guildId of guildIds) {
+        const guild = client.guilds.get(guildId);
         guild.config = allGuildConfigs[guild.id];
         if (!guild.config || !eventsByGuild[guild.id]) continue;
 
@@ -214,5 +221,6 @@ exports.scan = async ({ client, sendGuildMessage }) => {
           }
         }
       }
+      logger.debug(`Notify job #${i} done.`);
     });
 };
