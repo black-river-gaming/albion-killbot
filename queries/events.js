@@ -180,33 +180,39 @@ exports.scan = async ({ client, sendGuildMessage }) => {
   const allGuildConfigs = await getConfigByGuild(client.guilds.array());
   const eventsByGuild = await exports.getEventsByGuild(allGuildConfigs);
 
-  _.chunk(client.guilds.array(), NOTIFY_JOBS).forEach(async (chunk, i) => {
-    logger.debug(`Running notify chunk ${i} with ${chunk.length} guilds.`);
-    for (let guild of chunk) {
-      guild.config = allGuildConfigs[guild.id];
-      if (!guild.config || !eventsByGuild[guild.id]) continue;
+  Array(NOTIFY_JOBS)
+    .fill()
+    .map((_, i) => {
+      const chunk_size = client.guilds.array().length / NOTIFY_JOBS;
+      return client.guilds.array().slice(i * chunk_size, (i + 1) * chunk_size);
+    })
+    .forEach(async (chunk, i) => {
+      logger.debug(`Running notify chunk ${i} with ${chunk.length} guilds.`);
+      for (let guild of chunk) {
+        guild.config = allGuildConfigs[guild.id];
+        if (!guild.config || !eventsByGuild[guild.id]) continue;
 
-      const newEventsCount = eventsByGuild[guild.id].length;
-      if (newEventsCount > 0) {
-        logger.info(`[scanEvents] Sending ${newEventsCount} new events to guild "${guild.name}"`);
-      }
+        const newEventsCount = eventsByGuild[guild.id].length;
+        if (newEventsCount > 0) {
+          logger.info(`[scanEvents] Sending ${newEventsCount} new events to guild "${guild.name}"`);
+        }
 
-      for (let event of eventsByGuild[guild.id]) {
-        dailyRanking.add(guild, event, allGuildConfigs[guild.id]);
-        const mode = guild.config.mode;
-        const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
+        for (let event of eventsByGuild[guild.id]) {
+          dailyRanking.add(guild, event, allGuildConfigs[guild.id]);
+          const mode = guild.config.mode;
+          const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
 
-        if (mode === "image") {
-          // Image output
-          await sendGuildMessage(guild, await embedEventAsImage(event, guild.config.lang), "events");
-          if (hasInventory) {
-            await sendGuildMessage(guild, await embedInventoryAsImage(event, guild.config.lang), "events");
+          if (mode === "image") {
+            // Image output
+            await sendGuildMessage(guild, await embedEventAsImage(event, guild.config.lang), "events");
+            if (hasInventory) {
+              await sendGuildMessage(guild, await embedInventoryAsImage(event, guild.config.lang), "events");
+            }
+          } else {
+            // Text output (default)
+            await sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events");
           }
-        } else {
-          // Text output (default)
-          await sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events");
         }
       }
-    }
-  });
+    });
 };
