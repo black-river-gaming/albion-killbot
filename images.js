@@ -355,7 +355,9 @@ exports.generateEventImage = async event => {
   drawAssistBar(event.Participants, 35, 1050, 1530, 80, 40);
 
   const buffer = canvas.toBuffer(IMAGE_MIME, IMAGE_OPTIONS);
-  logger.debug(`[images] Created event image. Size: ${fileSizeFormatter(buffer.length)}`);
+  if (buffer.length > 2 * 1048576) {
+    logger.warn(`Event image bigger than usual. Size: ${fileSizeFormatter(buffer.length)}`);
+  }
   // TODO: Optimize image size
   canvas = null;
   return buffer;
@@ -389,7 +391,9 @@ exports.generateInventoryImage = async event => {
   }
 
   const buffer = canvas.toBuffer(IMAGE_MIME, IMAGE_OPTIONS);
-  logger.debug(`[images] Created inventory image. Size: ${fileSizeFormatter(buffer.length)}`);
+  if (buffer.length > 1048576) {
+    logger.warn(`Inventory image bigger than usual. Size: ${fileSizeFormatter(buffer.length)}`);
+  }
   // TODO: Optimize image size
   canvas = null;
   return buffer;
