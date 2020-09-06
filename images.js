@@ -77,7 +77,6 @@ const getItemFile = async (item, tries = 0) => {
   const writer = fs.createWriteStream(itemFile);
   // Check if file is available on S3 bucket
   if (S3) {
-    logger.info(`[images] Trying to download file from S3: ${itemFileName}`);
     try {
       const data = await S3.getObject({
         Bucket: process.env.AWS_BUCKET || "albion-killbot",
@@ -92,16 +91,14 @@ const getItemFile = async (item, tries = 0) => {
       logger.error(`[images] Unable to download file from S3 (${e})`);
     }
   }
-  logger.info(`[images] Downloading new file from CDNs: ${itemFileName}`);
+  logger.debug(`[images] Downloading new file from CDNs: ${itemFileName}`);
   for (let cdn of CDNS) {
     // If the CDN does not support quality and item has Quality, skip this cdn
     if (!cdn.qualitySupport && item.Quality > 0) continue;
     // If trash item is outdated, skip
     if (!cdn.trash && item.Type.includes("_TRASH")) continue;
 
-    const url = cdn.url
-      .replace("{type}", item.Type)
-      .replace("{quality}", item.Quality);
+    const url = cdn.url.replace("{type}", item.Type).replace("{quality}", item.Quality);
     const params = {};
     if (!forceResult) {
       params.quality = item.Quality;
@@ -212,31 +209,16 @@ exports.generateEventImage = async event => {
     // Two-handed equipment
     if (equipment.MainHand && equipment.MainHand.Type.split("_")[1] == "2H") {
       ctx.globalAlpha = 0.2;
-      await drawItem(
-        ctx,
-        equipment.MainHand,
-        x + BLOCK_SIZE * 2,
-        y + BLOCK_SIZE,
-      );
+      await drawItem(ctx, equipment.MainHand, x + BLOCK_SIZE * 2, y + BLOCK_SIZE);
       ctx.globalAlpha = 1;
     } else {
-      await drawItem(
-        ctx,
-        equipment.OffHand,
-        x + BLOCK_SIZE * 2,
-        y + BLOCK_SIZE,
-      );
+      await drawItem(ctx, equipment.OffHand, x + BLOCK_SIZE * 2, y + BLOCK_SIZE);
     }
     await drawItem(ctx, equipment.Shoes, x + BLOCK_SIZE, y + BLOCK_SIZE * 2);
     await drawItem(ctx, equipment.Bag, x, y);
     await drawItem(ctx, equipment.Cape, x + BLOCK_SIZE * 2, y);
     await drawItem(ctx, equipment.Mount, x + BLOCK_SIZE, y + BLOCK_SIZE * 3);
-    await drawItem(
-      ctx,
-      equipment.Potion,
-      x + BLOCK_SIZE * 2,
-      y + BLOCK_SIZE * 2,
-    );
+    await drawItem(ctx, equipment.Potion, x + BLOCK_SIZE * 2, y + BLOCK_SIZE * 2);
     await drawItem(ctx, equipment.Food, x, y + BLOCK_SIZE * 2);
   };
   await drawPlayer(event.Killer, 15, 0);
@@ -251,12 +233,7 @@ exports.generateEventImage = async event => {
   const fame = digitsFormatter(event.TotalVictimKillFame);
   let tw = ctx.measureText(fame).width;
   const IMG_SIZE = 100;
-  await drawImage(
-    ctx,
-    "./assets/fame.png",
-    w / 2 - IMG_SIZE / 2,
-    500 - IMG_SIZE / 2,
-  );
+  await drawImage(ctx, "./assets/fame.png", w / 2 - IMG_SIZE / 2, 500 - IMG_SIZE / 2);
   ctx.strokeText(fame, w / 2 - tw / 2, 600);
   ctx.fillText(fame, w / 2 - tw / 2, 600);
 
@@ -284,12 +261,7 @@ exports.generateEventImage = async event => {
     ctx.lineTo(px + width - radius, py);
     ctx.quadraticCurveTo(px + width, py, px + width, py + radius);
     ctx.lineTo(px + width, py + height - radius);
-    ctx.quadraticCurveTo(
-      px + width,
-      py + height,
-      px + width - radius,
-      py + height,
-    );
+    ctx.quadraticCurveTo(px + width, py + height, px + width - radius, py + height);
     ctx.lineTo(px + radius, py + height);
     ctx.quadraticCurveTo(px, py + height, px, py + height - radius);
     ctx.lineTo(px, py + radius);
@@ -304,23 +276,13 @@ exports.generateEventImage = async event => {
     ctx.stroke();
     ctx.clip();
 
-    const COLORS = [
-      "#730b0b",
-      "#7e3400",
-      "#835400",
-      "#817306",
-      "#79902c",
-      "#6aad56",
-      "#4fc987",
-      "#00e3bf",
-    ];
+    const COLORS = ["#730b0b", "#7e3400", "#835400", "#817306", "#79902c", "#6aad56", "#4fc987", "#00e3bf"];
 
     const totalDamage = participants.reduce((sum, participant) => {
       return sum + Math.max(1, participant.DamageDone);
     }, 0);
     participants.forEach(participant => {
-      const damagePercent =
-        (Math.max(1, participant.DamageDone) / totalDamage) * 100;
+      const damagePercent = (Math.max(1, participant.DamageDone) / totalDamage) * 100;
       participant.damagePercent = damagePercent;
     });
 
@@ -338,10 +300,7 @@ exports.generateEventImage = async event => {
         ctx.strokeStyle = "black";
         ctx.lineWidth = 2;
         ctx.font = "32px Roboto";
-        const text =
-          participant.DamageDone === 0
-            ? "0%"
-            : Math.round(participant.damagePercent) + "%";
+        const text = participant.DamageDone === 0 ? "0%" : Math.round(participant.damagePercent) + "%";
         const pw = ctx.measureText(text).width;
         const textX = px + barWidth / 2 - pw / 2;
         const textY = py + height / 2 + 10;
@@ -359,9 +318,7 @@ exports.generateEventImage = async event => {
     py += height + 20;
     participants.forEach((participant, i) => {
       const color = COLORS[i % COLORS.length];
-      const text = `${participant.Name} [IP: ${Math.round(
-        participant.AverageItemPower,
-      )}]`;
+      const text = `${participant.Name} [IP: ${Math.round(participant.AverageItemPower)}]`;
 
       ctx.beginPath();
       ctx.font = "30px Roboto";
@@ -398,9 +355,7 @@ exports.generateEventImage = async event => {
   drawAssistBar(event.Participants, 35, 1050, 1530, 80, 40);
 
   const buffer = canvas.toBuffer(IMAGE_MIME, IMAGE_OPTIONS);
-  logger.debug(
-    `[images] Created event image. Size: ${fileSizeFormatter(buffer.length)}`,
-  );
+  logger.debug(`[images] Created event image. Size: ${fileSizeFormatter(buffer.length)}`);
   // TODO: Optimize image size
   canvas = null;
   return buffer;
@@ -434,11 +389,7 @@ exports.generateInventoryImage = async event => {
   }
 
   const buffer = canvas.toBuffer(IMAGE_MIME, IMAGE_OPTIONS);
-  logger.debug(
-    `[images] Created inventory image. Size: ${fileSizeFormatter(
-      buffer.length,
-    )}`,
-  );
+  logger.debug(`[images] Created inventory image. Size: ${fileSizeFormatter(buffer.length)}`);
   // TODO: Optimize image size
   canvas = null;
   return buffer;
