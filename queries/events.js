@@ -186,7 +186,7 @@ exports.scan = async ({ client, sendGuildMessage }) => {
 
   const notifiedGuildIds = Object.keys(eventsByGuild);
   await Promise.all(
-    Array(NOTIFY_JOBS)
+    Array(Math.min(notifiedGuildIds.length, NOTIFY_JOBS))
       .fill()
       .map(async (_, i) => {
         while (notifiedGuildIds.length > 0) {
@@ -217,7 +217,8 @@ exports.scan = async ({ client, sendGuildMessage }) => {
             }
           }
         }
+        logger.debug(`Job #${i} finished.`);
       }),
   );
-  logger.info("Scan Events finished.");
+  logger.info("All jobs finished for Scan Events.");
 };
