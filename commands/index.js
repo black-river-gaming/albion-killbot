@@ -10,7 +10,6 @@ cmdFiles.forEach(cmdFile => {
     const command = require(`./${cmdFile}`);
     commands[command.aliases[0]] = command;
   } catch (e) {
-    console.log(logger());
     logger.error(`Error loading command ${cmdFile}: ${e}`);
   }
 });
