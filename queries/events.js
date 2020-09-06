@@ -186,15 +186,15 @@ exports.scan = async ({ client, sendGuildMessage }) => {
       const chunk_size = client.guilds.array().length / NOTIFY_JOBS;
       return client.guilds.array().slice(i * chunk_size, (i + 1) * chunk_size);
     })
-    .forEach(async (chunk, i) => {
-      logger.debug(`Running notify chunk ${i} with ${chunk.length} guilds.`);
-      for (let guild of chunk) {
+    .forEach(async (guilds, i) => {
+      logger.debug(`Running notify job #${i} with ${guilds.length} guilds.`);
+      for (let guild of guilds) {
         guild.config = allGuildConfigs[guild.id];
         if (!guild.config || !eventsByGuild[guild.id]) continue;
 
         const newEventsCount = eventsByGuild[guild.id].length;
         if (newEventsCount > 0) {
-          logger.info(`[scanEvents] Sending ${newEventsCount} new events to guild "${guild.name}"`);
+          logger.info(`[Job #${i}] Sending ${newEventsCount} new events to guild "${guild.name}"`);
         }
 
         for (let event of eventsByGuild[guild.id]) {
