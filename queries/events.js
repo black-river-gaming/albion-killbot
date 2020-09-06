@@ -195,7 +195,9 @@ exports.scan = async ({ client, sendGuildMessage }) => {
           if (!guild.config || !eventsByGuild[guild.id]) continue;
           const newEventsCount = eventsByGuild[guild.id].length;
           if (newEventsCount > 0) {
-            logger.info(`[Job #${i}] Sending ${newEventsCount} new events to guild "${guild.name}"`);
+            logger.info(
+              `[Job #${i}] Sending ${newEventsCount} new events to guild "${guild.name}". ${notifiedGuildIds.length} guilds remaining.`,
+            );
           } else continue;
 
           for (let event of eventsByGuild[guild.id]) {
@@ -214,7 +216,6 @@ exports.scan = async ({ client, sendGuildMessage }) => {
               await sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events");
             }
           }
-          logger.debug(`#${notifiedGuildIds.length} guilds remaining to notify.`);
         }
       }),
   );
