@@ -105,19 +105,34 @@ exports.get = async () => {
       },
     });
   });
-
-  // Delete older events to free cache space
-  logger.debug("[getBattles] Deleting old events from database.");
-  const deleteResult = await collection.deleteMany({
-    startTime: {
-      $lte: moment()
-        .subtract(BATTLES_KEEP_HOURS, "hours")
-        .toISOString(),
-    },
-  });
-
   logger.debug(`[getBattles] Performing ${ops.length} write operations in database.`);
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
+
+  // Find latest read battle
+  let latestReadBattle = await collection
+    .find({ read: true })
+    .sort({ id: -1 })
+    .limit(1)
+    .next();
+  logger.debug("[getBattles] Deleting old battles from database.");
+  let deleteResult;
+  if (latestReadBattle) {
+    // Delete older events to free cache space if there are read battles
+    deleteResult = await collection.deleteMany({
+      id: {
+        $lt: latestReadBattle.id,
+      },
+    });
+  } else {
+    // Or by time, so we don't overflow our collection either
+    deleteResult = await collection.deleteMany({
+      startTime: {
+        $lte: moment()
+          .subtract(BATTLES_KEEP_HOURS, "hours")
+          .toISOString(),
+      },
+    });
+  }
 
   logger.info(
     `[getBattles] Fetch success. (New battles inserted: ${writeResult.upsertedCount}, old battles removed: ${deleteResult.deletedCount}).`,

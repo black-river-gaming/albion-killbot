@@ -116,15 +116,31 @@ exports.get = async () => {
   logger.debug(`[getEvents] Performing ${ops.length} write operations in database.`);
   const writeResult = await collection.bulkWrite(ops, { ordered: false });
 
-  // Delete older events to free cache space
+  // Find latest read event
+  let latestReadEvent = await collection
+    .find({ read: true })
+    .sort({ EventId: -1 })
+    .limit(1)
+    .next();
   logger.debug("[getEvents] Deleting old events from database.");
-  const deleteResult = await collection.deleteMany({
-    TimeStamp: {
-      $lte: moment()
-        .subtract(EVENT_KEEP_HOURS, "hours")
-        .toISOString(),
-    },
-  });
+  let deleteResult;
+  if (latestReadEvent) {
+    // Delete older events to free cache space if there are read events
+    deleteResult = await collection.deleteMany({
+      EventId: {
+        $lt: latestReadEvent.EventId,
+      },
+    });
+  } else {
+    // Or by time, so we don't overflow our collection either
+    deleteResult = await collection.deleteMany({
+      TimeStamp: {
+        $lte: moment()
+          .subtract(EVENT_KEEP_HOURS, "hours")
+          .toISOString(),
+      },
+    });
+  }
 
   logger.info(
     `[getEvents] Fetch success. (New events inserted: ${writeResult.upsertedCount}, old events removed: ${deleteResult.deletedCount}).`,
