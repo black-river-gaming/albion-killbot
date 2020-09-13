@@ -259,6 +259,7 @@ exports.embedBattle = (battle, locale) => {
         url: "https://user-images.githubusercontent.com/13356774/76130049-b9eec480-5fdf-11ea-95c0-7de130a705a3.png",
       },
       fields,
+      timestamp: moment(battle.endTime).toISOString(),
     },
   };
 };
