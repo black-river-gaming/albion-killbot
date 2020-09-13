@@ -63,6 +63,7 @@ const drawImage = async (ctx, src, x, y, sw, sh) => {
   else ctx.drawImage(img, x, y);
 };
 
+const locks = {};
 // Download items from CDN, cache them and return path to cached image
 const getItemFile = async (item, tries = 0) => {
   // If we already tried 2 times and failed, try without parameters (and don't save to s3)
@@ -74,7 +75,17 @@ const getItemFile = async (item, tries = 0) => {
     if (stat.size > 0) return itemFile;
   }
 
+  // Lock the file while the Write Stream is open
+  if (locks[itemFile]) {
+    logger.warn(`${itemFile} is locked. Traying again...`);
+    await sleep(5000);
+    return getItemFile(item, tries + 1);
+  }
+  locks[itemFile] = true;
   const writer = fs.createWriteStream(itemFile);
+  writer.on("finish", () => {
+    locks[itemFile] = false;
+  });
   // Check if file is available on S3 bucket
   if (S3) {
     try {
