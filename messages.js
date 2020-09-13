@@ -184,6 +184,7 @@ exports.embedBattle = (battle, locale) => {
   const line = item => {
     return l.__("BATTLE.LINE", {
       name: item.name,
+      total: item.total,
       kills: item.kills,
       deaths: item.deaths,
       fame: digitsFormatter(item.killFame),
@@ -191,14 +192,17 @@ exports.embedBattle = (battle, locale) => {
   };
 
   const fields = [];
+  const players = Object.keys(battle.players).map(id => battle.players[id]);
   Object.keys(battle.alliances).forEach(id => {
     const alliance = battle.alliances[id];
+    alliance.total = players.reduce((sum, player) => sum + Number(player.allianceId === alliance.id), 0);
     const name = line(alliance);
 
     let value = "";
     Object.values(battle.guilds)
       .filter(guild => guild.allianceId === id)
       .forEach(guild => {
+        guild.total =players.reduce((sum, player) => sum + Number(player.guildId === guild.id), 0);
         value += line(guild);
         value += "\n";
       });
@@ -216,6 +220,7 @@ exports.embedBattle = (battle, locale) => {
 
     let value = "";
     guildsWithoutAlliance.forEach(guild => {
+      guild.total = players.reduce((sum, player) => sum + Number(player.guildId === guild.id), 0);
       value += line(guild);
       value += "\n";
     });
@@ -223,11 +228,13 @@ exports.embedBattle = (battle, locale) => {
     if (playersWithoutGuild.length > 0) {
       const stats = {
         name: l.__("BATTLE.NO_GUILD"),
+        total: 0,
         kills: 0,
         deaths: 0,
         killFame: 0,
       };
       playersWithoutGuild.forEach(player => {
+        stats.total += 1;
         stats.kills += player.kills;
         stats.deaths += player.deaths;
         stats.killFame += player.killFame;

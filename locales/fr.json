@@ -30,7 +30,7 @@
   "BATTLE": {
     "EVENT": "Une bataille a éclaté entre {{ guilds }} guildes!",
     "DESCRIPTION": "Joueurs: {{ players }} / Tués: {{ kills }} / Fame: {{ fame }}\nDurée: {{ duration }}",
-    "LINE": "{{ name }} ({{ kills }}/{{ deaths }}) - Fame: {{fame}}",
+    "LINE": "{{ name }} [{{ total }}] ({{ kills }}/{{ deaths }}) - Fame: {{fame}}",
     "NO_ALLIANCE": "Autres",
     "NO_GUILD": "Joueur sans Guilde"
   },

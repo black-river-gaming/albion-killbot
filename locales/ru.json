@@ -30,7 +30,7 @@
   "BATTLE": {
     "EVENT": "Битва произошла между {{ guilds }} гильдиями!",
     "DESCRIPTION": "Игроков: {{ players }} / Умерло: {{ kills }} / Славы получено: {{ fame }}\nПродолжительность: {{ duration }}",
-    "LINE": "{{ name }} ({{ kills }}/{{ deaths }}) - Слава: {{fame}}",
+    "LINE": "{{ name }} [{{ total }}] ({{ kills }}/{{ deaths }}) - Слава: {{fame}}",
     "NO_ALLIANCE": "Другие",
     "NO_GUILD": "Игроки без гильдии"
   },
