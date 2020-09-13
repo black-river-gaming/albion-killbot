@@ -205,11 +205,21 @@ exports.scan = async ({ client, sendGuildMessage }) => {
     Array(Math.min(notifiedGuildIds.length, NOTIFY_JOBS))
       .fill()
       .map(async (_, i) => {
+        let stage = "starting";
+        const startTime = moment();
+        const timeoutIntervalId = setInterval(() => {
+          if (notifiedGuildIds.length == 0) {
+            const runTime = moment().diff(startTime, "seconds");
+            logger.warn(`[Job #${i}] is taking too long to finish (Run time: ${runTime}s / Stage: ${stage})`);
+          }
+        }, 30000);
+
         while (notifiedGuildIds.length > 0) {
           const guild = client.guilds.get(notifiedGuildIds.pop());
           guild.config = allGuildConfigs[guild.id];
           if (!guild.config || !eventsByGuild[guild.id]) continue;
           const newEventsCount = eventsByGuild[guild.id].length;
+          stage = `Getting events for guild ${guild.name}`;
           if (newEventsCount > 0) {
             logger.info(
               `[Job #${i}] Sending ${newEventsCount} new events to guild "${guild.name}". ${notifiedGuildIds.length} guilds remaining.`,
@@ -223,16 +233,24 @@ exports.scan = async ({ client, sendGuildMessage }) => {
 
             if (mode === "image") {
               // Image output
-              await sendGuildMessage(guild, await embedEventAsImage(event, guild.config.lang), "events");
+              stage = "Generating Kill Image";
+              const killImage = await embedEventAsImage(event, guild.config.lang);
+              stage = "Sending Kill Image";
+              await sendGuildMessage(guild, killImage, "events");
               if (hasInventory) {
-                await sendGuildMessage(guild, await embedInventoryAsImage(event, guild.config.lang), "events");
+                stage = "Generating Inventory Image";
+                const inventoryImage = await embedInventoryAsImage(event, guild.config.lang);
+                stage = "Sending Inventory Image";
+                await sendGuildMessage(guild, inventoryImage, "events");
               }
             } else {
               // Text output (default)
+              stage = "Sendo Kill Text";
               await sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events");
             }
           }
         }
+        clearInterval(timeoutIntervalId);
         logger.debug(`Job #${i} finished.`);
       }),
   );
