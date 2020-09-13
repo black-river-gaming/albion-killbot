@@ -64,12 +64,15 @@ const drawImage = async (ctx, src, x, y, sw, sh) => {
 };
 
 const locks = {};
+const missings = {};
 // Download items from CDN, cache them and return path to cached image
 const getItemFile = async (item, tries = 0) => {
   // If we already tried 2 times and failed, try without parameters (and don't save to s3)
-  const forceResult = tries > 2;
+  const forceResult = tries > 3;
   const itemFileName = `${item.Type}_Q${item.Quality}`;
   const itemFile = path.join(TMPDIR, itemFileName);
+  if (forceResult) missings[itemFile] = true;
+  if (missings[itemFile]) return null;
   if (fs.existsSync(itemFile)) {
     const stat = fs.statSync(itemFile);
     if (stat.size > 0) return itemFile;
@@ -77,9 +80,9 @@ const getItemFile = async (item, tries = 0) => {
 
   // Lock the file while the Write Stream is open
   if (locks[itemFile]) {
-    logger.warn(`${itemFile} is locked. Traying again...`);
-    await sleep(5000);
-    return getItemFile(item, tries + 1);
+    logger.warn(`${itemFile} is locked. Trying again...`);
+    await sleep(10000);
+    return getItemFile(item, tries);
   }
   locks[itemFile] = true;
   const writer = fs.createWriteStream(itemFile);
@@ -143,10 +146,11 @@ const getItemFile = async (item, tries = 0) => {
       });
     } catch (e) {
       logger.error(`[images] Unable to download ${url} (${e})`);
+      locks[itemFile] = false;
     }
   }
   await sleep(5000);
-  return forceResult ? null : getItemFile(item, tries + 1);
+  return getItemFile(item, tries + 1);
 };
 
 const drawItem = async (ctx, item, x, y, block_size = 217) => {
