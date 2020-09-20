@@ -2,6 +2,17 @@ exports.sleep = milliseconds => {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
 };
 
+exports.timeout = (fn, milliseconds) => {
+  const timeout = new Promise((resolve, reject) => {
+    const id = setTimeout(() => {
+      clearTimeout(id);
+      reject(`Operation timeout (${milliseconds} ms)`);
+    }, milliseconds);
+  });
+
+  return Promise.race([fn, timeout]);
+};
+
 exports.digitsFormatter = num => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") || 0;
 };
