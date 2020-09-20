@@ -233,7 +233,7 @@ exports.scan = async ({ client, sendGuildMessage }) => {
 
             try {
               if (mode === "image") {
-              // Image output
+                // Image output
                 stage = "Generating Kill Image";
                 const killImage = await embedEventAsImage(event, guild.config.lang);
                 stage = "Sending Kill Image";
@@ -245,11 +245,11 @@ exports.scan = async ({ client, sendGuildMessage }) => {
                   await timeout(sendGuildMessage(guild, inventoryImage, "events"), 10000);
                 }
               } else {
-              // Text output (default)
+                // Text output (default)
                 stage = "Send Kill Text";
-                await timeout(sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events"), 5000);
+                await timeout(sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events"), 10000);
               }
-            } catch(e) {
+            } catch (e) {
               logger.error(`[Job #${i}] Error while sending event ${event.EventId} [${e}]`);
             }
           }
