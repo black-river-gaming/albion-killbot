@@ -2,7 +2,7 @@ const axios = require("axios");
 const moment = require("moment");
 const logger = require("../logger")("queries.events");
 const database = require("../database");
-const { sleep } = require("../utils");
+const { sleep, timeout } = require("../utils");
 const { getConfigByGuild } = require("../config");
 const { embedEvent, embedEventAsImage, embedInventoryAsImage } = require("../messages");
 const dailyRanking = require("./dailyRanking");
@@ -231,22 +231,26 @@ exports.scan = async ({ client, sendGuildMessage }) => {
             const mode = guild.config.mode;
             const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
 
-            if (mode === "image") {
+            try {
+              if (mode === "image") {
               // Image output
-              stage = "Generating Kill Image";
-              const killImage = await embedEventAsImage(event, guild.config.lang);
-              stage = "Sending Kill Image";
-              await sendGuildMessage(guild, killImage, "events");
-              if (hasInventory) {
-                stage = "Generating Inventory Image";
-                const inventoryImage = await embedInventoryAsImage(event, guild.config.lang);
-                stage = "Sending Inventory Image";
-                await sendGuildMessage(guild, inventoryImage, "events");
-              }
-            } else {
+                stage = "Generating Kill Image";
+                const killImage = await embedEventAsImage(event, guild.config.lang);
+                stage = "Sending Kill Image";
+                await timeout(sendGuildMessage(guild, killImage, "events"), 10000);
+                if (hasInventory) {
+                  stage = "Generating Inventory Image";
+                  const inventoryImage = await embedInventoryAsImage(event, guild.config.lang);
+                  stage = "Sending Inventory Image";
+                  await timeout(sendGuildMessage(guild, inventoryImage, "events"), 10000);
+                }
+              } else {
               // Text output (default)
-              stage = "Sendo Kill Text";
-              await sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events");
+                stage = "Send Kill Text";
+                await timeout(sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events"), 5000);
+              }
+            } catch(e) {
+              logger.error(`[Job #${i}] Error while sending event ${event.EventId} [${e}]`);
             }
           }
         }
