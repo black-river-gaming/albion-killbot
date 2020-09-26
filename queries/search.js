@@ -12,10 +12,6 @@ exports.search = async q => {
     return res.data;
   } catch (e) {
     logger.error(`Failed to search entities in API: ${e}`);
-    return {
-      players: [],
-      guilds: [],
-      alliances: [],
-    };
+    return null;
   }
 };

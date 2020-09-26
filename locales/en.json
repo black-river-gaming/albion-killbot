@@ -80,6 +80,7 @@
     "MISSING_PARAMETERS": "Please insert all parameters. Type !help to see more.",
     "UNSUPPORTED_TYPE": "Unsupported type of tracking. Type !help to see more.",
     "ALLIANCE_DISABLED": "Sorry, tracking of alliances is disabled for now. Please contact bot admin for more information.",
+    "SEARCH_FAILED": "Failed to fetch data from game servers. Please try again.",
     "NOT_FOUND": "Sorry, I couldn't find anything with this name.",
     "ALREADY_TRACKED": "I am already tracking this item.",
     "LIMIT_REACHED": "You already reached the limit of {{ limit }} items in this list.",

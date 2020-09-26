@@ -35,10 +35,7 @@ module.exports = {
 
     // TODO: Constantize limits
     const track = async (entityList = [], dest, msg, limit = 5) => {
-      let entity = dest.find(
-        p =>
-          p.name.localeCompare(name, undefined, { sensitivity: "base" }) === 0,
-      );
+      let entity = dest.find(p => p.name.localeCompare(name, undefined, { sensitivity: "base" }) === 0);
       if (entity) {
         message.channel.send(l.__("TRACK.ALREADY_TRACKED"));
         return;
@@ -48,10 +45,7 @@ module.exports = {
         return;
       }
 
-      entity = entityList.find(
-        p =>
-          p.Name.localeCompare(name, undefined, { sensitivity: "base" }) === 0,
-      );
+      entity = entityList.find(p => p.Name.localeCompare(name, undefined, { sensitivity: "base" }) === 0);
       if (!entity) {
         message.channel.send(l.__("TRACK.NOT_FOUND"));
         return;
@@ -68,27 +62,17 @@ module.exports = {
     };
 
     const results = await search(name);
+    if (!results) {
+      return message.channel.send(l.__("TRACK.SEARCH_FAILED"));
+    }
+
     switch (type) {
     case "player":
-      return track(
-        results.players,
-        guild.config.trackedPlayers,
-        "TRACK.PLAYER_TRACKED",
-        30,
-      );
+      return track(results.players, guild.config.trackedPlayers, "TRACK.PLAYER_TRACKED", 30);
     case "guild":
-      return track(
-        results.guilds,
-        guild.config.trackedGuilds,
-        "TRACK.GUILD_TRACKED",
-      );
+      return track(results.guilds, guild.config.trackedGuilds, "TRACK.GUILD_TRACKED");
     case "alliance":
-      return track(
-        results.alliances,
-        guild.config.trackedAlliances,
-        "TRACK.ALLIANCE_TRACKED",
-        1,
-      );
+      return track(results.alliances, guild.config.trackedAlliances, "TRACK.ALLIANCE_TRACKED", 1);
     }
   },
 };

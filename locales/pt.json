@@ -80,6 +80,7 @@
     "MISSING_PARAMETERS": "Por favor, insira todos os parametros. Digite !help para ver mais",
     "UNSUPPORTED_TYPE": "Tipo de rastreamento não suportado. Digite !help para ver mais.",
     "ALLIANCE_DISABLED": "Desculpe, rastreamento de alianças está desabilitado por enquanto. Consulte o administrador do bot para mais informações.",
+    "SEARCH_FAILED": "Falha ao buscar dados nos servidores do jogo. Por favor, tente novamente.",
     "NOT_FOUND": "Desculpe, não consegui encontrar nada com este nome.",
     "ALREADY_TRACKED": "Já estou rastreando este item.",
     "LIMIT_REACHED": "Você atingiu o limite de {{ limit }} itens nesta lista.",
