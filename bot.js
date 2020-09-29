@@ -10,6 +10,7 @@ const events = require("./queries/events");
 const battles = require("./queries/battles");
 const dailyRanking = require("./queries/dailyRanking");
 const guilds = require("./queries/guilds");
+const { hasSubscription } = require("./subscriptions");
 
 const COMMAND_PREFIX = "!";
 
@@ -44,10 +45,7 @@ client.on("message", async message => {
   // This is needed to inherit configs to guild object
   const guild = message.guild;
   guild.config = await config.getConfig(guild);
-  if (!guild.config.channel) {
-    guild.config.channel = message.channel.id;
-    config.setConfig(guild);
-  }
+  if (!hasSubscription(guild.config)) return;
 
   const args = message.content
     .slice(COMMAND_PREFIX.length)
