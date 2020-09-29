@@ -1,5 +1,6 @@
 const logger = require("./logger")("config");
 const database = require("./database");
+const { hasSubscription } = require("./subscriptions");
 
 exports.categories = ["general", "events", "battles", "rankings"];
 
@@ -24,8 +25,7 @@ exports.getConfig = async guild => {
     return DEFAULT_CONFIG;
   }
   try {
-    const guildConfig = (await collection.findOne({ guild: guild.id })) || DEFAULT_CONFIG;
-    return guildConfig;
+    return (await collection.findOne({ guild: guild.id })) || DEFAULT_CONFIG;
   } catch (e) {
     logger.error(`Unable to find guildConfig for guild ${guild}: ${e}`);
     return DEFAULT_CONFIG;
@@ -42,8 +42,9 @@ exports.getConfigByGuild = async guildList => {
   if (!collection) return configByGuild;
   try {
     const results = await collection.find({ guild: { $in: guildList.map(g => g.id) } }).toArray();
-    results.forEach(result => {
-      configByGuild[result.guild] = result;
+    results.forEach(config => {
+      if (!hasSubscription(config)) return;
+      configByGuild[config.guild] = config;
     });
     return configByGuild;
   } catch (e) {
