@@ -68,11 +68,26 @@ module.exports = {
 
     switch (type) {
     case "player":
-      return track(results.players, guild.config.trackedPlayers, "TRACK.PLAYER_TRACKED", 30);
+      return track(
+        results.players,
+        guild.config.trackedPlayers,
+        "TRACK.PLAYER_TRACKED",
+        Number(process.env.MAX_PLAYERS) || 30,
+      );
     case "guild":
-      return track(results.guilds, guild.config.trackedGuilds, "TRACK.GUILD_TRACKED");
+      return track(
+        results.guilds,
+        guild.config.trackedGuilds,
+        "TRACK.GUILD_TRACKED",
+        Number(process.env.MAX_GUILDS) || 5,
+      );
     case "alliance":
-      return track(results.alliances, guild.config.trackedAlliances, "TRACK.ALLIANCE_TRACKED", 1);
+      return track(
+        results.alliances,
+        guild.config.trackedAlliances,
+        "TRACK.ALLIANCE_TRACKED",
+        Number(process.env.MAX_ALLIANCES) || 1,
+      );
     }
   },
 };
