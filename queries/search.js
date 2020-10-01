@@ -15,3 +15,17 @@ exports.search = async q => {
     return null;
   }
 };
+
+// TODO: Move this to a queries.alliances once it exists
+const ALLIANCE_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/alliances";
+
+exports.getAllianceById = async id => {
+  try {
+    logger.debug(`Getting alliance info in Albion Online server: ${id}`);
+    const res = await axios.get(`${ALLIANCE_ENDPOINT}/${id}`);
+    return res.data;
+  } catch (e) {
+    logger.error(`Failed to fetch Alliance in API: ${e}`);
+    return null;
+  }
+};

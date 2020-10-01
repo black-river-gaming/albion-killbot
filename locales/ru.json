@@ -79,7 +79,7 @@
     "ALLIANCES": "Альянсы",
     "MISSING_PARAMETERS": "Пожалуйста, введите все параметры. Введите !help чтобы увидеть больше.",
     "UNSUPPORTED_TYPE": "Неподдерживаемый тип. Введите !help чтобы увидеть больше",
-    "ALLIANCE_DISABLED": "К сожалению, отслеживание альянсов пока отключено. Пожалуйста, свяжитесь с администратором бота для получения дополнительной информации.",
+    "TRACKING_DISABLED": "Sorry, tracking of {{ type }} is disabled for now. Please contact bot admin for more information.",
     "SEARCH_FAILED": "Failed to fetch data from Albion Servers. Please try again.",
     "NOT_FOUND": "К сожалению, я не смог найти ничего с таким именем.",
     "ALREADY_TRACKED": "Я уже отслеживаю это.",

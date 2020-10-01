@@ -1,6 +1,7 @@
-const { search } = require("../queries/search");
+const { search, getAllianceById } = require("../queries/search");
 const { setConfig } = require("../config");
 const { getI18n } = require("../messages");
+const { getNumber } = require("../utils");
 
 const SUPPORTED_TYPES = ["player", "guild", "alliance"];
 
@@ -21,73 +22,79 @@ module.exports = {
     if (!guild.config.trackedAlliances) guild.config.trackedAlliances = [];
 
     const type = args.shift().toLowerCase();
-    const name = args.join(" ").trim();
-
-    if (type === "alliance") {
-      message.channel.send(l.__("TRACK.ALLIANCE_DISABLED"));
-      return;
-    }
+    const q = args.join(" ").trim();
 
     if (!SUPPORTED_TYPES.includes(type)) {
-      message.channel.send(l.__("TRACK.UNSUPPORTED_TYPE"));
-      return;
+      return message.channel.send(l.__("TRACK.UNSUPPORTED_TYPE"));
     }
 
-    // TODO: Constantize limits
-    const track = async (entityList = [], dest, msg, limit = 5) => {
-      let entity = dest.find(p => p.name.localeCompare(name, undefined, { sensitivity: "base" }) === 0);
-      if (entity) {
-        message.channel.send(l.__("TRACK.ALREADY_TRACKED"));
-        return;
+    if (type == "alliance") {
+      // For alliances, tracking is done via id only
+      const limit = getNumber(process.env.MAX_ALLIANCES, 1);
+      if (limit == 0) {
+        const trackType = l.__(`TRACK.${type.toUpperCase()}S`).toLowerCase();
+        return message.channel.send(l.__("TRACK.TRACKING_DISABLED", { type: trackType }));
       }
-      if (dest.length >= limit) {
-        message.channel.send(l.__("TRACK.LIMIT_REACHED", { limit }));
-        return;
-      }
+      if (guild.config.trackedAlliances.length >= limit)
+        return message.channel.send(l.__("TRACK.LIMIT_REACHED", { limit }));
+      if (guild.config.trackedAlliances.some(a => a.id === q))
+        return message.channel.send(l.__("TRACK.ALREADY_TRACKED"));
 
-      entity = entityList.find(p => p.Name.localeCompare(name, undefined, { sensitivity: "base" }) === 0);
-      if (!entity) {
-        message.channel.send(l.__("TRACK.NOT_FOUND"));
-        return;
-      }
-      dest.push({ id: entity.Id, name: entity.Name });
+      const alliance = await getAllianceById(q);
+      if (!alliance) return message.channel.send(l.__("TRACK.NOT_FOUND"));
+      guild.config.trackedAlliances.push({
+        id: alliance.AllianceId,
+        name: alliance.AllianceTag,
+      });
       if (!(await setConfig(guild))) {
-        message.channel.send(l.__("CONFIG_NOT_SET"));
+        return message.channel.send(l.__("CONFIG_NOT_SET"));
       }
-      message.channel.send(l.__(msg, { name: entity.Name }));
+      return message.channel.send(l.__("TRACK.ALLIANCE_TRACKED", { name: alliance.AllianceTag }));
+    } else {
+      // For players and guilds, we can use the default search method
+      const track = async (dest, msg, limit = 5) => {
+        if (limit == 0) {
+          const trackType = l.__(`TRACK.${type.toUpperCase()}S`).toLowerCase();
+          return message.channel.send(l.__("TRACK.TRACKING_DISABLED", { type: trackType }));
+        }
 
-      if (!guild.config.channel) {
-        message.channel.send(l.__("CHANNEL_NOT_SET"));
+        let entity = dest.find(p => p.name.localeCompare(q, undefined, { sensitivity: "base" }) === 0);
+        if (entity) {
+          message.channel.send(l.__("TRACK.ALREADY_TRACKED"));
+          return;
+        }
+        if (dest.length >= limit) {
+          message.channel.send(l.__("TRACK.LIMIT_REACHED", { limit }));
+          return;
+        }
+
+        const results = await search(q);
+        if (!results) {
+          return message.channel.send(l.__("TRACK.SEARCH_FAILED"));
+        }
+
+        entity = results[`${type}s`].find(p => p.Name.localeCompare(q, undefined, { sensitivity: "base" }) === 0);
+        if (!entity) {
+          message.channel.send(l.__("TRACK.NOT_FOUND"));
+          return;
+        }
+        dest.push({ id: entity.Id, name: entity.Name });
+        if (!(await setConfig(guild))) {
+          message.channel.send(l.__("CONFIG_NOT_SET"));
+        }
+        message.channel.send(l.__(msg, { name: entity.Name }));
+
+        if (!guild.config.channel) {
+          message.channel.send(l.__("CHANNEL_NOT_SET"));
+        }
+      };
+
+      switch (type) {
+      case "player":
+        return track(guild.config.trackedPlayers, "TRACK.PLAYER_TRACKED", getNumber(process.env.MAX_PLAYERS, 30));
+      case "guild":
+        return track(guild.config.trackedGuilds, "TRACK.GUILD_TRACKED", getNumber(process.env.MAX_GUILDS, 5));
       }
-    };
-
-    const results = await search(name);
-    if (!results) {
-      return message.channel.send(l.__("TRACK.SEARCH_FAILED"));
-    }
-
-    switch (type) {
-    case "player":
-      return track(
-        results.players,
-        guild.config.trackedPlayers,
-        "TRACK.PLAYER_TRACKED",
-        Number(process.env.MAX_PLAYERS) || 30,
-      );
-    case "guild":
-      return track(
-        results.guilds,
-        guild.config.trackedGuilds,
-        "TRACK.GUILD_TRACKED",
-        Number(process.env.MAX_GUILDS) || 5,
-      );
-    case "alliance":
-      return track(
-        results.alliances,
-        guild.config.trackedAlliances,
-        "TRACK.ALLIANCE_TRACKED",
-        Number(process.env.MAX_ALLIANCES) || 1,
-      );
     }
   },
 };

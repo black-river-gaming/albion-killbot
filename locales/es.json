@@ -79,7 +79,7 @@
     "ALLIANCES": "Alianzas",
     "MISSING_PARAMETERS": "Por favor inserte todos los parámetros. Escriba !Help para ver más..",
     "UNSUPPORTED_TYPE": "Tipo de seguimiento no compatible. Escriba !Help para ver más.",
-    "ALLIANCE_DISABLED": "Lo sentimos, el seguimiento de las alianzas está deshabilitado por ahora. Póngase en contacto con el administrador de bot para obtener más información.",
+    "TRACKING_DISABLED": "Lo sentimos, el seguimiento de {{ type }} está deshabilitado por ahora. Póngase en contacto con el administrador de bot para obtener más información.",
     "SEARCH_FAILED": "Failed to fetch data from Albion Servers. Please try again.",
     "NOT_FOUND": "Lo siento, no pude encontrar nada con este nombre.",
     "ALREADY_TRACKED": "Ya estoy rastreando este artículo.",

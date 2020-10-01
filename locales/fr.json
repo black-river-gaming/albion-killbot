@@ -79,7 +79,7 @@
     "ALLIANCES": "Alliances",
     "MISSING_PARAMETERS": "Veuillez renseigner tout les paramètres. Ecrivez !help pour connaître les commandes.",
     "UNSUPPORTED_TYPE": "Je ne peux pas suivre ceci. Ecrivez !help pour en savoir plus.",
-    "ALLIANCE_DISABLED": "Désoler, le suivi d'alliance est désactivé. Contacter l'administrateur pour plus d'informations.",
+    "TRACKING_DISABLED": "Désoler, le suivi d'{{ type }} est désactivé. Contacter l'administrateur pour plus d'informations.",
     "SEARCH_FAILED": "Failed to fetch data from Albion Servers. Please try again.",
     "NOT_FOUND": "Désoler, je ne  trouve rien portant ce nom",
     "ALREADY_TRACKED": "Je suis déja ceci.",
