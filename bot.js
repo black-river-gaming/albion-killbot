@@ -74,14 +74,14 @@ client.on("guildDelete", guild => {
 
 exports.getDefaultChannel = guild => {
   // get "original" default channel
-  if (guild.channels.has(guild.id)) return guild.channels.get(guild.id);
+  if (guild.channels.cache.has(guild.id)) return guild.channels.cache.get(guild.id);
 
   // Check for a "general" channel, which is often default chat
-  const generalChannel = guild.channels.find(channel => channel.name === "general");
+  const generalChannel = guild.channels.cache.find(channel => channel.name === "general");
   if (generalChannel) return generalChannel;
   // Now we get into the heavy stuff: first channel in order where the bot can speak
   // hold on to your hats!
-  return guild.channels
+  return guild.channels.cache
     .filter(c => c.type === "text" && c.permissionsFor(guild.client.user).has("SEND_MESSAGES"))
     .sort((a, b) => a.position - b.position)
     .first();

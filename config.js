@@ -74,7 +74,7 @@ exports.deleteConfig = async guild => {
     return false;
   }
   try {
-    return await collection.remove({ guild: guild.id }, true);
+    return await collection.deleteOne({ guild: guild.id });
   } catch (e) {
     logger.error(`Unable to delete guildConfig for guild ${guild}: ${e}`);
   }
