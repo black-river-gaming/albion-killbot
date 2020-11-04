@@ -48,18 +48,6 @@ if (isDev) {
   );
 }
 
-if (process.env.LOGDNA_KEY) {
-  const logdna = require("logdna-winston");
-  logger.add(
-    new logdna({
-      key: process.env.LOGDNA_KEY,
-      app: "Albion Killbot",
-      env: process.env.NODE_ENV || "unset",
-      index_meta: true,
-    }),
-  );
-}
-
 if (process.env.LOGGLY_KEY) {
   const { Loggly } = require("winston-loggly-bulk");
   logger.add(
