@@ -10,7 +10,6 @@ const dailyRanking = require("./dailyRanking");
 const EVENTS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/events";
 const EVENTS_LIMIT = 51;
 const EVENTS_COLLECTION = "events";
-const EVENT_KEEP_HOURS = 2;
 const NOTIFY_JOBS = Number(process.env.NOTIFY_JOBS) || 4;
 
 function getNewEvents(events, trackedPlayers = [], trackedGuilds = [], trackedAlliances = []) {
@@ -129,15 +128,6 @@ exports.get = async () => {
     deleteResult = await collection.deleteMany({
       EventId: {
         $lt: latestReadEvent.EventId,
-      },
-    });
-  } else {
-    // Or by time, so we don't overflow our collection either
-    deleteResult = await collection.deleteMany({
-      TimeStamp: {
-        $lte: moment()
-          .subtract(EVENT_KEEP_HOURS, "hours")
-          .toISOString(),
       },
     });
   }

@@ -10,7 +10,6 @@ const BATTLES_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/battles
 const BATTLES_LIMIT = 51;
 const BATTLES_SORT = "recent";
 const BATTLES_COLLECTION = "battles";
-const BATTLES_KEEP_HOURS = 4;
 
 function getNewBattles(battles, config) {
   if (!config) {
@@ -121,15 +120,6 @@ exports.get = async () => {
     deleteResult = await collection.deleteMany({
       id: {
         $lt: latestReadBattle.id,
-      },
-    });
-  } else {
-    // Or by time, so we don't overflow our collection either
-    deleteResult = await collection.deleteMany({
-      startTime: {
-        $lte: moment()
-          .subtract(BATTLES_KEEP_HOURS, "hours")
-          .toISOString(),
       },
     });
   }
