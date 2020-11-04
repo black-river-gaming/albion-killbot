@@ -113,7 +113,16 @@ exports.get = async () => {
     });
   });
   logger.debug(`[getEvents] Performing ${ops.length} write operations in database.`);
-  const writeResult = await collection.bulkWrite(ops, { ordered: false });
+
+  let writeResult;
+  try {
+    writeResult = await collection.bulkWrite(ops, { ordered: false });
+  } catch (e) {
+    logger.error(`Unable to write new events [${e}]`);
+    writeResult = {
+      upsertedCount: 0,
+    };
+  }
 
   // Find latest read event
   let latestReadEvent = await collection
@@ -121,15 +130,22 @@ exports.get = async () => {
     .sort({ EventId: -1 })
     .limit(1)
     .next();
-  logger.debug("[getEvents] Deleting old events from database.");
+  // Delete older events to free cache space if there are read events
   let deleteResult;
   if (latestReadEvent) {
-    // Delete older events to free cache space if there are read events
-    deleteResult = await collection.deleteMany({
-      EventId: {
-        $lt: latestReadEvent.EventId,
-      },
-    });
+    try {
+      logger.debug("[getEvents] Deleting old events from database.");
+      deleteResult = await collection.deleteMany({
+        EventId: {
+          $lt: latestReadEvent.EventId,
+        },
+      });
+    } catch (e) {
+      logger.error(`Unable to delete old events [${e}]`);
+      deleteResult = {
+        deletedCount: 0,
+      };
+    }
   }
 
   logger.info(

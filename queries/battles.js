@@ -105,7 +105,15 @@ exports.get = async () => {
     });
   });
   logger.debug(`[getBattles] Performing ${ops.length} write operations in database.`);
-  const writeResult = await collection.bulkWrite(ops, { ordered: false });
+  let writeResult;
+  try {
+    writeResult = await collection.bulkWrite(ops, { ordered: false });
+  } catch (e) {
+    logger.error(`Unable to write new battles [${e}]`);
+    writeResult = {
+      upsertedCount: 0,
+    };
+  }
 
   // Find latest read battle
   let latestReadBattle = await collection
@@ -113,15 +121,22 @@ exports.get = async () => {
     .sort({ id: -1 })
     .limit(1)
     .next();
-  logger.debug("[getBattles] Deleting old battles from database.");
+  // Delete older events to free cache space if there are read battles
   let deleteResult;
   if (latestReadBattle) {
-    // Delete older events to free cache space if there are read battles
-    deleteResult = await collection.deleteMany({
-      id: {
-        $lt: latestReadBattle.id,
-      },
-    });
+    try {
+      logger.debug("[getBattles] Deleting old battles from database.");
+      deleteResult = await collection.deleteMany({
+        id: {
+          $lt: latestReadBattle.id,
+        },
+      });
+    } catch (e) {
+      logger.error(`Unable to delete old battles [${e}]`);
+      deleteResult = {
+        deletedCount: 0,
+      };
+    }
   }
 
   logger.info(
