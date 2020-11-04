@@ -186,7 +186,7 @@ exports.getEventsByGuild = async guildConfigs => {
 
 exports.scan = async ({ client, sendGuildMessage }) => {
   logger.info("Notifying new events to all Discord Servers.");
-  const allGuildConfigs = await getConfigByGuild(client.guilds.array());
+  const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
   const eventsByGuild = await exports.getEventsByGuild(allGuildConfigs);
   if (!eventsByGuild) return logger.debug("No new events to notify.");
 
@@ -205,7 +205,7 @@ exports.scan = async ({ client, sendGuildMessage }) => {
         }, 30000);
 
         while (notifiedGuildIds.length > 0) {
-          const guild = client.guilds.get(notifiedGuildIds.pop());
+          const guild = client.guilds.cache.get(notifiedGuildIds.pop());
           guild.config = allGuildConfigs[guild.id];
           if (!guild.config || !eventsByGuild[guild.id]) continue;
           const newEventsCount = eventsByGuild[guild.id].length;

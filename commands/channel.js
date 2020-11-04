@@ -17,8 +17,8 @@ module.exports = {
       const categories = Object.keys(guild.config.channel);
       if (categories.length === 0) return message.channel.send(l.__("CHANNEL_NOT_SET"));
       for (let category of categories) {
-        const channel = client.channels.find(c => c.id === guild.config.channel[category]);
-        await message.channel.send(l.__("CHANNEL.SET_CHANNEL", { category, channel }));
+        const channel = client.channels.cache.find(c => c.id === guild.config.channel[category]);
+        await message.channel.send(l.__("CHANNEL.SET_CHANNEL", { category, channel: `${channel}` }));
       }
       return;
     }
@@ -36,7 +36,7 @@ module.exports = {
     }
 
     // Check if client can see channel
-    if (!client.channels.some(c => c.id === channel.id)) {
+    if (!client.channels.cache.some(c => c.id === channel.id)) {
       message.channel.send(l.__("CHANNEL.NOT_FOUND"));
       return;
     }
@@ -52,6 +52,6 @@ module.exports = {
       message.channel.send(l.__("CONFIG_NOT_SET"));
     }
 
-    message.channel.send(l.__("CHANNEL.SET_CHANNEL", { category, channel }));
+    message.channel.send(l.__("CHANNEL.SET_CHANNEL", { category, channel: `${channel}` }));
   },
 };

@@ -119,8 +119,8 @@ exports.getGuildRankings = async trackedGuild => {
 
 exports.showRanking = async ({ client, sendGuildMessage }) => {
   logger.info("Sending monthly guild rankings to all servers.");
-  const allGuildConfigs = await getConfigByGuild(client.guilds.array());
-  for (let guild of client.guilds.array()) {
+  const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
+  for (let guild of client.guilds.cache.array()) {
     guild.config = allGuildConfigs[guild.id];
     if (!guild.config) continue;
     for (let trackedGuild of guild.config.trackedGuilds) {

@@ -174,10 +174,10 @@ exports.getBattlesByGuild = async guildConfigs => {
 
 exports.scan = async ({ client, sendGuildMessage }) => {
   logger.info("[scanBattles] Notifying new battles to all Discord Servers.");
-  const allGuildConfigs = await getConfigByGuild(client.guilds.array());
+  const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
   const battlesByGuild = await exports.getBattlesByGuild(allGuildConfigs);
 
-  for (let guild of client.guilds.array()) {
+  for (let guild of client.guilds.cache.array()) {
     guild.config = allGuildConfigs[guild.id];
     if (!guild.config || !battlesByGuild[guild.id]) continue;
 

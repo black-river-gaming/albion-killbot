@@ -121,8 +121,8 @@ exports.clear = async () => {
 
 exports.scan = async ({ client, sendGuildMessage }, mode) => {
   logger.info(`Sending ${mode === "daily" ? "daily" : "hourly"} guild rankings to all servers.`);
-  const allGuildConfigs = await getConfigByGuild(client.guilds.array());
-  for (const guild of client.guilds.array()) {
+  const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
+  for (const guild of client.guilds.cache.array()) {
     guild.config = allGuildConfigs[guild.id];
     if (mode === "daily") {
       if (guild.config.dailyRanking !== "daily") continue;

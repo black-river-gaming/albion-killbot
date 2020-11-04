@@ -99,7 +99,7 @@ exports.sendGuildMessage = async (guild, message, category = "general") => {
   if (typeof guild.config.channel === "string") channelId = guild.config.channel;
 
   const l = messages.getI18n(guild);
-  let channel = client.channels.find(c => c.id === channelId);
+  let channel = client.channels.cache.find(c => c.id === channelId);
   if (!channel) {
     logger.warn(`Channel not configured for guild ${guild.name}.`);
     channel = exports.getDefaultChannel(guild);

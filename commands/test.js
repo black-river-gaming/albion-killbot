@@ -16,11 +16,11 @@ module.exports = {
       const categories = Object.keys(guild.config.channel);
       if (categories.length === 0) return message.channel.send(l.__("CHANNEL_NOT_SET"));
       for (let category of categories) {
-        const channel = client.channels.find(c => c.id === guild.config.channel[category]);
+        const channel = client.channels.cache.find(c => c.id === guild.config.channel[category]);
         try {
-          await channel.send(l.__("TEST_MSG", { channel }));
+          await channel.send(l.__("TEST_MSG", { channel: `${channel}` }));
         } catch (e) {
-          message.channel.send(l.__("TEST_FAIL", { channel }));
+          message.channel.send(l.__("TEST_FAIL", { channel: `${channel}` }));
         }
       }
     }
