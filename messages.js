@@ -44,7 +44,7 @@ exports.embedEvent = (event, locale) => {
       if (participant.Name === event.Victim.Name) {
         return;
       }
-      const damagePercent = Math.round((participant.DamageDone / totalDamage) * 100);
+      const damagePercent = Math.round((participant.DamageDone / Math.max(1, totalDamage)) * 100);
       assist.push(`${participant.Name} (${damagePercent}%)`);
     });
 
@@ -111,6 +111,7 @@ exports.embedEvent = (event, locale) => {
           inline: true,
         },
       ],
+      timestamp: event.TimeStamp,
     },
   };
 };
