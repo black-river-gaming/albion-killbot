@@ -2,6 +2,7 @@ const os = require("os");
 const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
+const moment = require("moment");
 const { createCanvas, registerFont, loadImage } = require("canvas");
 const logger = require("./logger")("images");
 const { sleep, digitsFormatter, fileSizeFormatter } = require("./utils");
@@ -172,6 +173,7 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
 
 exports.generateEventImage = async event => {
   let canvas = createCanvas(1600, 1250);
+  let tw, th;
   const w = canvas.width;
   const ctx = canvas.getContext("2d");
 
@@ -239,6 +241,18 @@ exports.generateEventImage = async event => {
   await drawPlayer(event.Killer, 15, 0);
   await drawPlayer(event.Victim, 935, 0);
 
+  // timestamp
+  ctx.beginPath();
+  ctx.font = "35px Roboto";
+  ctx.fillStyle = "#FFF";
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 4;
+  const timestamp = moment.utc(event.TimeStamp).format("YYYY.MM.DD HH:mm");
+  tw = ctx.measureText(timestamp).width;
+  th = ctx.measureText("M").width;
+  ctx.strokeText(timestamp, w / 2 - tw / 2, th * 4);
+  ctx.fillText(timestamp, w/ 2 - tw / 2, th * 4);
+
   // fame
   ctx.beginPath();
   ctx.font = "40px Roboto";
@@ -246,7 +260,7 @@ exports.generateEventImage = async event => {
   ctx.strokeStyle = "#000";
   ctx.lineWidth = 4;
   const fame = digitsFormatter(event.TotalVictimKillFame);
-  let tw = ctx.measureText(fame).width;
+  tw = ctx.measureText(fame).width;
   const IMG_SIZE = 100;
   await drawImage(ctx, "./assets/fame.png", w / 2 - IMG_SIZE / 2, 500 - IMG_SIZE / 2);
   ctx.strokeText(fame, w / 2 - tw / 2, 600);
