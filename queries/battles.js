@@ -2,7 +2,7 @@ const axios = require("axios");
 const moment = require("moment");
 const logger = require("../logger")("queries.battles");
 const database = require("../database");
-const { sleep } = require("../utils");
+const { sleep, timeout } = require("../utils");
 const { getConfigByGuild } = require("../config");
 const { embedBattle } = require("../messages");
 
@@ -183,7 +183,7 @@ exports.getBattlesByGuild = async guildConfigs => {
     }
     const guildBattles = getNewBattles(battles, config);
     if (guildBattles.length > 0) {
-      battlesByGuild[guild] = guildBattles; 
+      battlesByGuild[guild] = guildBattles;
     }
   }
 
@@ -208,7 +208,11 @@ exports.scan = async ({ client, sendGuildMessage }) => {
     } else continue;
 
     for (const battle of battles) {
-      await sendGuildMessage(guild, embedBattle(battle, guild.config.lang), "battles");
+      try {
+        await timeout(sendGuildMessage(guild, embedBattle(battle, guild.config.lang), "battles"), 7000);
+      } catch(e) {
+        logger.error(`Error while sending battle ${battle.id} [${e}]`);
+      }
     }
   }
 };
