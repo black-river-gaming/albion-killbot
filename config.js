@@ -41,10 +41,12 @@ exports.getConfigByGuild = async guildList => {
   const collection = database.collection(SERVER_CONFIG_COLLECTION);
   if (!collection) return configByGuild;
   try {
-    const results = await collection.find({ guild: { $in: guildList.map(g => g.id) } }).toArray();
+    const results = await collection.find({}).toArray();
     results.forEach(config => {
       if (!hasSubscription(config)) return;
-      configByGuild[config.guild] = config;
+      if (configByGuild[config.guild]) {
+        configByGuild[config.guild] = config;
+      }
     });
     return configByGuild;
   } catch (e) {
