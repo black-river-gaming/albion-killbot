@@ -6,6 +6,9 @@ const moment = require("moment");
 const { createCanvas, registerFont, loadImage } = require("canvas");
 const logger = require("./logger")("images");
 const { sleep, digitsFormatter, fileSizeFormatter } = require("./utils");
+const Jimp = require("jimp");
+
+const SMALL_IMAGES = Boolean(process.env.SMALL_IMAGES);
 
 registerFont(path.join(__dirname, "assets", "fonts", "Roboto-Regular.ttf"), {
   family: "Roboto",
@@ -30,11 +33,6 @@ const TMPDIR = path.join(os.tmpdir(), "albion-killbot-cache");
 if (!fs.existsSync(TMPDIR)) {
   fs.mkdirSync(TMPDIR);
 }
-
-const IMAGE_MIME = "image/png";
-const IMAGE_OPTIONS = {
-  compressionLevel: 7,
-};
 
 let S3;
 if (process.env.AWS_ACCESS_KEY && process.env.AWS_SECRET_KEY) {
@@ -169,6 +167,17 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
   ctx.strokeText(item.Count, x + block_size * 0.76, y + block_size * 0.73);
   ctx.fillText(item.Count, x + block_size * 0.76, y + block_size * 0.73);
   ctx.restore();
+};
+
+const optimizeImage = async(buffer) => {
+  const image = await Jimp.read(buffer);
+
+  image.deflateLevel(9);
+  image.deflateStrategy(1);
+  if (SMALL_IMAGES) {
+    image.resize(Jimp.AUTO, 500);
+  }
+  return await image.getBufferAsync(Jimp.MIME_PNG);
 };
 
 exports.generateEventImage = async event => {
@@ -383,12 +392,12 @@ exports.generateEventImage = async event => {
 
   drawAssistBar(event.Participants, 35, 1050, 1530, 80, 40);
 
-  const buffer = canvas.toBuffer(IMAGE_MIME, IMAGE_OPTIONS);
+  const buffer = optimizeImage(canvas.toBuffer());
+  canvas = null;
+
   if (buffer.length > 2 * 1048576) {
     logger.warn(`Event image bigger than usual. Size: ${fileSizeFormatter(buffer.length)}`);
   }
-  // TODO: Optimize image size
-  canvas = null;
   return buffer;
 };
 
@@ -419,11 +428,11 @@ exports.generateInventoryImage = async event => {
     x += BLOCK_SIZE;
   }
 
-  const buffer = canvas.toBuffer(IMAGE_MIME, IMAGE_OPTIONS);
-  if (buffer.length > 1048576) {
-    logger.warn(`Inventory image bigger than usual. Size: ${fileSizeFormatter(buffer.length)}`);
-  }
-  // TODO: Optimize image size
+  const buffer = optimizeImage(canvas.toBuffer());
   canvas = null;
+
+  if (buffer.length > 1048576) {
+    logger.warn(`Event image bigger than usual. Size: ${fileSizeFormatter(buffer.length)}`);
+  }
   return buffer;
 };
