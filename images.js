@@ -169,13 +169,13 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
   ctx.restore();
 };
 
-const optimizeImage = async(buffer) => {
+const optimizeImage = async(buffer, w = 640) => {
   const image = await Jimp.read(buffer);
 
   image.deflateLevel(9);
   image.deflateStrategy(1);
   if (SMALL_IMAGES) {
-    image.resize(Jimp.AUTO, 500);
+    image.resize(w, Jimp.AUTO);
   }
   return await image.getBufferAsync(Jimp.MIME_PNG);
 };
@@ -428,7 +428,7 @@ exports.generateInventoryImage = async event => {
     x += BLOCK_SIZE;
   }
 
-  const buffer = optimizeImage(canvas.toBuffer());
+  const buffer = optimizeImage(canvas.toBuffer(), 800);
   canvas = null;
 
   if (buffer.length > 1048576) {
