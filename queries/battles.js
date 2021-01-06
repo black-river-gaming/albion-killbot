@@ -188,20 +188,24 @@ exports.getBattlesByGuild = async guildConfigs => {
 };
 
 exports.scan = async ({ client, sendGuildMessage }) => {
-  logger.info("[scanBattles] Notifying new battles to all Discord Servers.");
+  logger.info("Notifying new battles to all Discord Servers.");
   const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
   const battlesByGuild = await exports.getBattlesByGuild(allGuildConfigs);
+  if (!battlesByGuild) return logger.info("No new battles to notify.");
 
-  for (let guild of client.guilds.cache.array()) {
+  const notifiedGuildIds = Object.keys(battlesByGuild);
+  while (notifiedGuildIds.length > 0) {
+    const guild = client.guilds.cache.get(notifiedGuildIds.pop());
     guild.config = allGuildConfigs[guild.id];
     if (!guild.config || !battlesByGuild[guild.id]) continue;
 
-    const newBattlesCount = battlesByGuild[guild.id].length;
-    if (newBattlesCount > 0) {
-      logger.info(`[scanBattles] Sending ${newBattlesCount} new battles to guild "${guild.name}"`);
+    const battles = battlesByGuild[guild.id];
+    if (battles.length > 0) {
+      logger.info(`Sending ${battles.length} new battles to guild "${guild.name}". ${notifiedGuildIds.length} guilds remaining.`);
+    } else continue;
+
+    for (const battle of battles) {
+      await sendGuildMessage(guild, embedBattle(battle, guild.config.lang), "battles");
     }
-    battlesByGuild[guild.id].forEach(battle =>
-      sendGuildMessage(guild, embedBattle(battle, guild.config.lang), "battles"),
-    );
   }
 };

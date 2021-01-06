@@ -10,6 +10,18 @@ const RED = 13369344;
 const BATTLE = 16752981;
 const RANKING_LINE_LENGTH = 23;
 
+const MAXLEN = {
+  TITLE: 256,
+  DESCRIPTION: 2048,
+  FIELD: {
+    NAME: 256,
+    VALUE: 1024,
+    COUNT: 25,
+  },
+  FOOTER: 2048,
+  AUTHOR: 256,
+};
+
 exports.getI18n = (locale = "en") => {
   const l = {};
   i18n.configure({
@@ -210,7 +222,7 @@ exports.embedBattle = (battle, locale) => {
 
     fields.push({
       name,
-      value,
+      value: value.substr(0, MAXLEN.FIELD.VALUE),
     });
   });
 
@@ -246,7 +258,7 @@ exports.embedBattle = (battle, locale) => {
 
     fields.push({
       name,
-      value,
+      value: value.substr(0, MAXLEN.FIELD.VALUE),
     });
   }
 
@@ -259,7 +271,7 @@ exports.embedBattle = (battle, locale) => {
       thumbnail: {
         url: "https://user-images.githubusercontent.com/13356774/76130049-b9eec480-5fdf-11ea-95c0-7de130a705a3.png",
       },
-      fields,
+      fields: fields.slice(0, MAXLEN.FIELD.COUNT),
       timestamp: moment(battle.endTime).toISOString(),
     },
   };
