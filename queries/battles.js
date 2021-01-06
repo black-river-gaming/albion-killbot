@@ -181,7 +181,10 @@ exports.getBattlesByGuild = async guildConfigs => {
     if (!config) {
       continue;
     }
-    battlesByGuild[guild] = getNewBattles(battles, config);
+    const guildBattles = getNewBattles(battles, config);
+    if (guildBattles.length > 0) {
+      battlesByGuild[guild] = guildBattles; 
+    }
   }
 
   return battlesByGuild;
