@@ -12,17 +12,15 @@ Other feature suggestions are welcome in the issues section of the github. Pleas
 
 # How to install
 
-Invite it to your server:
+> Since we are quite overloaded, the Free Version of the bot isn't accepting new tracking queries. If you wish to join our Premium server, please contact us in the Discord server.
 
-[![Invite](https://dabuttonfactory.com/button.png?t=INVITE+ALBION+KILLBOT&f=Roboto-Bold&ts=14&tc=fff&w=250&h=50&c=4&bgt=unicolored&bgc=7289da)](https://discordapp.com/oauth2/authorize?client_id=677603531028693042&scope=bot)
+# Usage
 
 Make sure the bot have the following permissions:
 
 - Read Texts
 - Send Messages
 - Embed Links
-
-# Usage
 
 > For detailed information about the commands available. Please check our [Command List](https://github.com/agnjunio/albion-killbot/wiki/Command-List) page on wiki.
 > Also, in Discord type `!help` to see the commands available.
