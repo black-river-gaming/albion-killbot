@@ -8,6 +8,7 @@ if (!MONGODB_URL) {
   logger.warn(
     "Please define MONGODB_URL environment variable with the MongoDB location. Server config persistence is disabled.",
   );
+  process.exit(1);
 }
 
 const client = new MongoClient(MONGODB_URL, {

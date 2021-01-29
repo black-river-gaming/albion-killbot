@@ -1,3 +1,6 @@
+const logger = require("./logger")("bot.utils");
+const moment = require("moment");
+
 exports.sleep = milliseconds => {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
 };
@@ -45,4 +48,35 @@ exports.fileSizeFormatter = size => {
 exports.getNumber = (v, def) => {
   const n = Number(v);
   return isNaN(n) ? def : n;
+};
+
+// Events that fires daily (Default: 12:00 pm) until process stops
+exports.runDaily = async (func, name, options = {}, hour = 12, minute = 0) => {
+  if (!func) return logger.warn("There is an undefined function. Please check your settings.");
+  const exit = false;
+  while (!exit) {
+    await exports.sleep(60000);
+    const now = moment();
+    if (now.hour() === hour && now.minute() === minute) {
+      try {
+        await func(options);
+      } catch (e) {
+        logger.error(`Error in function ${name}: ${e}`);
+      }
+    }
+  }
+};
+
+// Events that run on an interval (Default: 30 seconds) until process stops
+exports.runInterval = async (func, name, options = {}, interval = 30000) => {
+  if (!func) return logger.warn("There is an undefined function. Please check your settings.");
+  const exit = false;
+  while (!exit) {
+    await exports.sleep(interval);
+    try {
+      await func(options);
+    } catch (e) {
+      logger.error(`Error in function ${name}: ${e}`);
+    }
+  }
 };

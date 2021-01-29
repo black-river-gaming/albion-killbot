@@ -1,16 +1,15 @@
 const Discord = require("discord.js");
-const moment = require("moment");
 const logger = require("./logger")("bot");
 const config = require("./config");
 const messages = require("./messages");
 const commands = require("./commands");
-const database = require("./database");
-const { sleep, fileSizeFormatter } = require("./utils");
+const { runDaily, runInterval } = require("./utils");
 const events = require("./queries/events");
 const battles = require("./queries/battles");
 const dailyRanking = require("./queries/dailyRanking");
 const guilds = require("./queries/guilds");
 const { hasSubscription } = require("./subscriptions");
+const database = require("./database");
 
 const COMMAND_PREFIX = "!";
 
@@ -19,16 +18,16 @@ const client = new Discord.Client({
 });
 client.commands = commands;
 
-client.on("ready", async () => {
-  logger.info(`Connected to Discord as ${client.user.tag}`);
+client.on("shardReady", async id => {
+  logger.info(`[#${id}] Shard ready as ${client.user.tag}. Guild count: ${client.guilds.cache.size}`);
 });
 
-client.on("disconnect", async () => {
-  logger.info("Disconnected from Discord.");
+client.on("shardDisconnect", async (ev, id) => {
+  logger.info(`[#${id}] Disconnected from Discord: [${ev.code}] ${ev.reason}`);
 });
 
-client.on("reconnecting", async () => {
-  logger.info("Trying to reconnect to Discord.");
+client.on("shardReconnecting", async id => {
+  logger.info(`[#${id}] Trying to reconnect to Discord.`);
 });
 
 client.on("error", async e => {
@@ -73,7 +72,7 @@ client.on("guildDelete", guild => {
 });
 
 exports.getDefaultChannel = guild => {
-  // get "original" default channel
+  // Get "original" default channel
   if (guild.channels.cache.has(guild.id)) return guild.channels.cache.get(guild.id);
 
   // Check for a "general" channel, which is often default chat
@@ -131,50 +130,13 @@ exports.sendGuildMessage = async (guild, message, category = "general") => {
 
 exports.client = client;
 
-exports.run = async token => {
+(async () => {
   database.connect();
-  await client.login(token);
+  await client.login();
 
-  // Events that fires daily (Default: 12:00 pm)
-  const runDaily = async (func, name, hour = 12, minute = 0) => {
-    if (!func) return logger.warn("There is an undefined function. Please check your settings.");
-    const exit = false;
-    while (!exit) {
-      await sleep(60000);
-      const now = moment();
-      if (now.hour() === hour && now.minute() === minute) {
-        try {
-          await func(exports);
-        } catch (e) {
-          logger.error(`Error in function ${name}: ${e}`);
-        }
-      }
-    }
-  };
-
-  // Events that run on an interval (Default: 30 seconds)
-  const runInterval = async (func, name, interval = 30000) => {
-    if (!func) return logger.warn("There is an undefined function. Please check your settings.");
-    const exit = false;
-    while (!exit) {
-      await sleep(interval);
-      try {
-        await func(exports);
-      } catch (e) {
-        logger.error(`Error in function ${name}: ${e}`);
-      }
-    }
-  };
-
-  runDaily(guilds.showRanking, "Show Monthly Ranking");
-  runDaily(dailyRanking.scanDaily, "Show PvP Ranking (daily)", 0, 0);
-  runDaily(dailyRanking.clear, "Clear PvP Ranking", 0, 5);
-  runInterval(dailyRanking.scan, "Show PvP Ranking", 3600000);
-  runInterval(events.get, "Get Events", 30000);
-  runInterval(events.scan, "Show Events", 5000);
-  runInterval(battles.get, "Get Battles", 60000);
-  runInterval(battles.scan, "Show Battles", 60000);
-  runInterval(() => {
-    logger.debug(`Memory usage (approx): ${fileSizeFormatter(process.memoryUsage().heapUsed)}`);
-  }, 60000);
-};
+  runDaily(guilds.showRanking, "Show Monthly Ranking", exports);
+  runDaily(dailyRanking.scanDaily, "Show PvP Ranking (daily)", exports, 0, 0);
+  runInterval(dailyRanking.scan, "Show PvP Ranking", exports, 3600000);
+  runInterval(events.scan, "Show Events", exports, 5000);
+  runInterval(battles.scan, "Show Battles", exports, 60000);
+})();
