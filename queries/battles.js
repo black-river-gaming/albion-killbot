@@ -9,7 +9,8 @@ const { embedBattle } = require("../messages");
 const BATTLES_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/battles";
 const BATTLES_LIMIT = 51;
 const BATTLES_SORT = "recent";
-const BATTLES_EXCHANGE = "battles";
+const EXCHANGE = "battles";
+const PREFETCH_COUNT = Number(process.env.PREFETCH_COUNT) || 5;
 
 let latestBattle;
 let pubChannel;
@@ -64,12 +65,12 @@ exports.get = async () => {
   latestBattle = battles[0];
 
   // Publish new battles, from oldest to newest
-  pubChannel.assertExchange(BATTLES_EXCHANGE, "fanout", {
+  pubChannel.assertExchange(EXCHANGE, "fanout", {
     durable: false,
   });
 
   for (const battle of battles.reverse()) {
-    await pubChannel.publish(BATTLES_EXCHANGE, "", Buffer.from(JSON.stringify(battle)));
+    await pubChannel.publish(EXCHANGE, "", Buffer.from(JSON.stringify(battle)));
   }
 };
 
@@ -100,8 +101,8 @@ const getTrackedBattle = (battle, { trackedPlayers, trackedGuilds, trackedAllian
 
 exports.subscribe = async ({ client, sendGuildMessage }) => {
   const subChannel = await queue.createChannel();
-  subChannel.prefetch(1);
-  subChannel.assertExchange(BATTLES_EXCHANGE, "fanout", {
+  subChannel.prefetch(PREFETCH_COUNT);
+  subChannel.assertExchange(EXCHANGE, "fanout", {
     durable: false,
   });
 
@@ -134,12 +135,12 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
   };
 
   // Consume events as they come
-  const q = await subChannel.assertQueue("", {
+  const q = await subChannel.assertQueue(`${EXCHANGE}-${client.shardId}`, {
     exclusive: true,
     durable: false,
     "x-queue-type": "classic",
   });
-  await subChannel.bindQueue(q.queue, BATTLES_EXCHANGE, "");
+  await subChannel.bindQueue(q.queue, EXCHANGE, "");
   logger.info("Subscribe to battle queue");
   await subChannel.consume(q.queue, cb);
 };

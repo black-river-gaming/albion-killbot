@@ -9,7 +9,8 @@ const dailyRanking = require("./dailyRanking");
 
 const EVENTS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/events";
 const EVENTS_LIMIT = 51;
-const EVENTS_EXCHANGE = "events";
+const EXCHANGE = "events";
+const PREFETCH_COUNT = Number(process.env.PREFETCH_COUNT) || 5;
 
 let latestEvent;
 let pubChannel;
@@ -63,12 +64,12 @@ exports.get = async () => {
   latestEvent = events[0];
 
   // Publish new events, from oldest to newest
-  await pubChannel.assertExchange(EVENTS_EXCHANGE, "fanout", {
+  await pubChannel.assertExchange(EXCHANGE, "fanout", {
     durable: false,
   });
 
   for (const evt of events.reverse()) {
-    await pubChannel.publish(EVENTS_EXCHANGE, "", Buffer.from(JSON.stringify(evt)));
+    await pubChannel.publish(EXCHANGE, "", Buffer.from(JSON.stringify(evt)));
   }
 };
 
@@ -106,8 +107,8 @@ const getTrackedEvent = (event, { trackedPlayers, trackedGuilds, trackedAlliance
 
 exports.subscribe = async ({ client, sendGuildMessage }) => {
   const subChannel = await queue.createChannel();
-  subChannel.prefetch(1);
-  subChannel.assertExchange(EVENTS_EXCHANGE, "fanout", {
+  subChannel.prefetch(PREFETCH_COUNT);
+  subChannel.assertExchange(EXCHANGE, "fanout", {
     durable: false,
   });
 
@@ -152,12 +153,12 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
   };
 
   // Consume events as they come
-  const q = await subChannel.assertQueue("", {
+  const q = await subChannel.assertQueue(`${EXCHANGE}-${client.shardId}`, {
     exclusive: true,
     durable: false,
     "x-queue-type": "classic",
   });
-  await subChannel.bindQueue(q.queue, EVENTS_EXCHANGE, "");
+  await subChannel.bindQueue(q.queue, EXCHANGE, "");
   logger.info("Subscribe to event queue");
   await subChannel.consume(q.queue, cb);
 };
