@@ -1,7 +1,6 @@
 const axios = require("axios");
 const moment = require("moment");
 const logger = require("../logger")("queries.events");
-const database = require("../database");
 const queue = require("../queue");
 const { sleep, timeout } = require("../utils");
 const { getConfigByGuild } = require("../config");
@@ -10,43 +9,37 @@ const dailyRanking = require("./dailyRanking");
 
 const EVENTS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/events";
 const EVENTS_LIMIT = 51;
-const EVENTS_COLLECTION = "events";
 const EVENTS_EXCHANGE = "events";
-const NOTIFY_JOBS = Number(process.env.NOTIFY_JOBS) || 4;
 
-function getNewEvents(events, trackedPlayers = [], trackedGuilds = [], trackedAlliances = []) {
+function getTrackedEvent(event, { trackedPlayers, trackedGuilds, trackedAlliances }) {
   if (trackedPlayers.length === 0 && trackedGuilds.length === 0 && trackedAlliances.length === 0) {
-    return [];
+    return false;
   }
 
   const playerIds = trackedPlayers.map(t => t.id);
   const guildIds = trackedGuilds.map(t => t.id);
   const allianceIds = trackedAlliances.map(t => t.id);
 
-  const newEvents = [];
-  events.forEach(event => {
-    // Ignore Arena kills or Duel kills
-    if (event.TotalVictimKillFame <= 0) {
-      return;
-    }
+  // Ignore Arena kills or Duel kills
+  if (event.TotalVictimKillFame <= 0) {
+    return;
+  }
 
-    // Check for kill in event.Killer / event.Victim for anything tracked
-    // Since we are parsing from newer to older events
-    // we need to use FILO array
-    const goodEvent =
+  // Check for kill in event.Killer / event.Victim for anything tracked
+  // Since we are parsing from newer to older events
+  // we need to use FILO array
+  const goodEvent =
       allianceIds.indexOf(event.Killer.AllianceId) >= 0 ||
       guildIds.indexOf(event.Killer.GuildId) >= 0 ||
       playerIds.indexOf(event.Killer.Id) >= 0;
-    const badEvent =
+  const badEvent =
       allianceIds.indexOf(event.Victim.AllianceId) >= 0 ||
       guildIds.indexOf(event.Victim.GuildId) >= 0 ||
       playerIds.indexOf(event.Victim.Id) >= 0;
-    if (goodEvent || badEvent) {
-      // We need to create a new object here for every guild
-      newEvents.unshift(Object.assign({}, event, { good: goodEvent }));
-    }
-  });
-  return newEvents;
+  if (goodEvent || badEvent) {
+    // We need to create a new object here for every guild
+    return Object.assign({}, event, { good: goodEvent });
+  }
 }
 
 let latestEvent;
@@ -100,126 +93,58 @@ exports.get = async () => {
   latestEvent = events[0];
 
   // Publish new events, from oldest to newest
-  pubChannel.assertExchange(EVENTS_EXCHANGE, "fanout", {
+  await pubChannel.assertExchange(EVENTS_EXCHANGE, "fanout", {
     durable: false,
   });
 
   for (const evt of events.reverse()) {
-    logger.debug(`Publishing event: ${evt.EventId}`);
     await pubChannel.publish(EVENTS_EXCHANGE, "", Buffer.from(JSON.stringify(evt)));
   }
 };
 
-exports.getEventsByGuild = async guildConfigs => {
-  const collection = database.collection(EVENTS_COLLECTION);
-  if (!collection) {
-    logger.warn("Not connected to database. Skipping notify events.");
-    return null;
-  }
-
-  // Get unread events
-  const events = await collection
-    .find({ read: false })
-    .sort({ EventId: 1 })
-    .limit(1000)
-    .toArray();
-  if (events.length === 0) {
-    return null;
-  }
-
-  // Set events as read before sending to ensure no double events notification
-  let ops = [];
-  events.forEach(async evt => {
-    ops.push({
-      updateOne: {
-        filter: { EventId: evt.EventId },
-        update: {
-          $set: { read: true },
-        },
-      },
-    });
+exports.subscribe = async ({ client, sendGuildMessage }) => {
+  const subChannel = await queue.createChannel();
+  subChannel.prefetch(1);
+  subChannel.assertExchange(EVENTS_EXCHANGE, "fanout", {
+    durable: false,
   });
-  const writeResult = await collection.bulkWrite(ops, { ordered: false });
-  logger.info(`Notify success. (Events read: ${writeResult.modifiedCount}).`);
 
-  const eventsByGuild = {};
-  for (let guild of Object.keys(guildConfigs)) {
-    const config = guildConfigs[guild];
-    if (!config) {
-      continue;
-    }
-    const guildEvents = getNewEvents(events, config.trackedPlayers, config.trackedGuilds, config.trackedAlliances);
-    if (guildEvents.length > 0) {
-      eventsByGuild[guild] = guildEvents;
-    }
-  }
+  // Set consume callback
+  const cb = async (msg) => {
+    const evt = JSON.parse(msg.content.toString());
 
-  return eventsByGuild;
-};
+    const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
+    for (const guild of client.guilds.cache.array()) {
+      guild.config = allGuildConfigs[guild.id];
+      const event = getTrackedEvent(evt, guild.config);
+      if (!event) continue;
 
-exports.scan = async ({ client, sendGuildMessage }) => {
-  logger.info("Notifying new events to all Discord Servers.");
-  const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
-  const eventsByGuild = await exports.getEventsByGuild(allGuildConfigs);
-  if (!eventsByGuild) return logger.debug("No new events to notify.");
+      logger.info(`[Shard #${client.shardId}] Sending event ${event.EventId} to guild "${guild.name}".`);
+      dailyRanking.add(guild, event, guild.config);
+      const mode = guild.config.mode;
+      const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
 
-  const notifiedGuildIds = Object.keys(eventsByGuild);
-  await Promise.all(
-    Array(Math.min(notifiedGuildIds.length, NOTIFY_JOBS))
-      .fill()
-      .map(async (_, i) => {
-        let stage = "starting";
-        const startTime = moment();
-        const timeoutIntervalId = setInterval(() => {
-          if (notifiedGuildIds.length == 0) {
-            const runTime = moment().diff(startTime, "seconds");
-            logger.warn(`[Job #${i}] is taking too long to finish (Run time: ${runTime}s / Stage: ${stage})`);
+      try {
+        if (mode === "image") {
+          const killImage = await embedEventAsImage(event, guild.config.lang);
+          await timeout(sendGuildMessage(guild, killImage, "events"), 10000);
+          if (hasInventory) {
+            const inventoryImage = await embedInventoryAsImage(event, guild.config.lang);
+            await timeout(sendGuildMessage(guild, inventoryImage, "events"), 10000);
           }
-        }, 30000);
-
-        while (notifiedGuildIds.length > 0) {
-          const guild = client.guilds.cache.get(notifiedGuildIds.pop());
-          guild.config = allGuildConfigs[guild.id];
-          if (!guild.config || !eventsByGuild[guild.id]) continue;
-          const newEventsCount = eventsByGuild[guild.id].length;
-          stage = `Getting events for guild ${guild.name}`;
-          if (newEventsCount > 0) {
-            logger.info(
-              `[Job #${i}] Sending ${newEventsCount} new events to guild "${guild.name}". ${notifiedGuildIds.length} guilds remaining.`,
-            );
-          } else continue;
-
-          for (let event of eventsByGuild[guild.id]) {
-            dailyRanking.add(guild, event, allGuildConfigs[guild.id]);
-            const mode = guild.config.mode;
-            const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
-
-            try {
-              if (mode === "image") {
-                // Image output
-                stage = "Generating Kill Image";
-                const killImage = await embedEventAsImage(event, guild.config.lang);
-                stage = "Sending Kill Image";
-                await timeout(sendGuildMessage(guild, killImage, "events"), 10000);
-                if (hasInventory) {
-                  stage = "Generating Inventory Image";
-                  const inventoryImage = await embedInventoryAsImage(event, guild.config.lang);
-                  stage = "Sending Inventory Image";
-                  await timeout(sendGuildMessage(guild, inventoryImage, "events"), 10000);
-                }
-              } else {
-                // Text output (default)
-                stage = "Send Kill Text";
-                await timeout(sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events"), 10000);
-              }
-            } catch (e) {
-              logger.error(`[Job #${i}] Error while sending event ${event.EventId} [${e}]`);
-            }
-          }
+        } else {
+          await timeout(sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events"), 10000);
         }
-        clearInterval(timeoutIntervalId);
-        logger.debug(`Job #${i} finished.`);
-      }),
-  );
-  logger.info("All jobs finished for Scan Events.");
+      } catch (e) {
+        logger.error(`[Shard #${client.shardId}] Error while sending event ${event.EventId} [${e}]`);
+      }
+    }
+
+    subChannel.ack(msg);
+  };
+
+  // Consume events as they come
+  const q = await subChannel.assertQueue("");
+  await subChannel.bindQueue(q.queue, EVENTS_EXCHANGE, "");
+  await subChannel.consume(q.queue, cb);
 };

@@ -19,6 +19,7 @@ const client = new Discord.Client({
 client.commands = commands;
 
 client.on("shardReady", async id => {
+  client.shardId = id;
   logger.info(`[#${id}] Shard ready as ${client.user.tag}. Guild count: ${client.guilds.cache.size}`);
 });
 
@@ -130,9 +131,10 @@ exports.client = client;
   database.connect();
   await client.login();
 
+  events.subscribe(exports);
+
   runDaily(guilds.showRanking, "Show Monthly Ranking", exports);
   runDaily(dailyRanking.scanDaily, "Show PvP Ranking (daily)", exports, 0, 0);
   runInterval(dailyRanking.scan, "Show PvP Ranking", exports, 3600000);
-  runInterval(events.scan, "Show Events", exports, 5000);
-  runInterval(battles.scan, "Show Battles", exports, 60000);
+  // runInterval(battles.scan, "Show Battles", exports, 60000);
 })();
