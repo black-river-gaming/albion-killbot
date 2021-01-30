@@ -2,6 +2,7 @@ const axios = require("axios");
 const moment = require("moment");
 const logger = require("../logger")("queries.events");
 const database = require("../database");
+const queue = require("../queue");
 const { sleep, timeout } = require("../utils");
 const { getConfigByGuild } = require("../config");
 const { embedEvent, embedEventAsImage, embedInventoryAsImage } = require("../messages");
@@ -10,6 +11,7 @@ const dailyRanking = require("./dailyRanking");
 const EVENTS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/events";
 const EVENTS_LIMIT = 51;
 const EVENTS_COLLECTION = "events";
+const EVENTS_EXCHANGE = "events";
 const NOTIFY_JOBS = Number(process.env.NOTIFY_JOBS) || 4;
 
 function getNewEvents(events, trackedPlayers = [], trackedGuilds = [], trackedAlliances = []) {
@@ -47,25 +49,23 @@ function getNewEvents(events, trackedPlayers = [], trackedGuilds = [], trackedAl
   return newEvents;
 }
 
+let latestEvent;
+let pubChannel;
+
 exports.get = async () => {
-  const collection = database.collection(EVENTS_COLLECTION);
-  if (!collection) {
-    return logger.warn("Not connected to database. Skipping get events.");
+  const logger = require("../logger")("queries.events.get");
+  if (!pubChannel) {
+    pubChannel = await queue.createChannel();
   }
 
-  // Find latest event
-  let latestEvent = await collection
-    .find({})
-    .sort({ EventId: -1 })
-    .limit(1)
-    .next();
-
   const fetchEventsTo = async (latestEvent, offset = 0, events = []) => {
+    // First time loading, fast return so we start recording from now
+    if (latestEvent.EventId === 0 && events.length > 0) return events;
     // Maximum offset reached, just return what we have
     if (offset >= 1000) return events;
 
     try {
-      logger.debug(`[getEvents] Fetching events with offset: ${offset}`);
+      logger.debug(`Fetching events with offset: ${offset}`);
       const res = await axios.get(EVENTS_ENDPOINT, {
         params: {
           offset,
@@ -81,76 +81,33 @@ exports.get = async () => {
       });
       return foundLatest ? events : fetchEventsTo(latestEvent, offset + EVENTS_LIMIT, events);
     } catch (err) {
-      logger.error(`[getEvents] Unable to fetch event data from API [${err}].`);
+      logger.error(`Unable to fetch event data from API [${err}].`);
       await sleep(5000);
       return fetchEventsTo(latestEvent, offset, events);
     }
   };
 
   if (!latestEvent) {
-    logger.info("[getEvents] No latest event found. Retrieving first events.");
+    logger.info("No latest event found. Retrieving first events.");
     latestEvent = { EventId: 0 };
   } else {
-    logger.info(`[getEvents] Fetching Albion Online events from API up to event ${latestEvent.EventId}.`);
+    logger.info(`Fetching Albion Online events from API up to event ${latestEvent.EventId}.`);
   }
+
+  // Fetch new events
   const events = await fetchEventsTo(latestEvent);
-  if (events.length === 0) return logger.debug("[getEvents] No new events.");
+  if (events.length === 0) return logger.debug("No new events.");
+  latestEvent = events[0];
 
-  // Insert events that aren't in the database yet
-  let ops = [];
-  events.forEach(async evt => {
-    ops.push({
-      updateOne: {
-        filter: { EventId: evt.EventId },
-        update: {
-          $setOnInsert: { ...evt, read: false },
-        },
-        upsert: true,
-        writeConcern: {
-          wtimeout: 60000,
-        },
-      },
-    });
+  // Publish new events, from oldest to newest
+  pubChannel.assertExchange(EVENTS_EXCHANGE, "fanout", {
+    durable: false,
   });
-  logger.debug(`[getEvents] Performing ${ops.length} write operations in database.`);
 
-  let writeResult;
-  try {
-    writeResult = await collection.bulkWrite(ops, { ordered: false });
-  } catch (e) {
-    logger.error(`Unable to write new events [${e}]`);
-    writeResult = {
-      upsertedCount: 0,
-    };
+  for (const evt of events.reverse()) {
+    logger.debug(`Publishing event: ${evt.EventId}`);
+    await pubChannel.publish(EVENTS_EXCHANGE, "", Buffer.from(JSON.stringify(evt)));
   }
-
-  // Find latest read event
-  let latestReadEvent = await collection
-    .find({ read: true })
-    .sort({ EventId: -1 })
-    .limit(1)
-    .next();
-  // Delete older events to free cache space if there are read events
-  let deleteResult;
-  if (latestReadEvent) {
-    try {
-      logger.debug("[getEvents] Deleting old events from database.");
-      deleteResult = await collection.deleteMany({
-        EventId: {
-          $lt: latestReadEvent.EventId,
-        },
-      });
-    } catch (e) {
-      logger.error(`Unable to delete old events [${e}]`);
-      deleteResult = {
-        deletedCount: 0,
-      };
-    }
-  }
-
-  logger.info(
-    `[getEvents] Fetch success. (New events inserted: ${writeResult.upsertedCount}, old events removed: ${deleteResult.deletedCount}).`,
-  );
 };
 
 exports.getEventsByGuild = async guildConfigs => {

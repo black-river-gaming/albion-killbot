@@ -2,6 +2,7 @@ const axios = require("axios");
 const moment = require("moment");
 const logger = require("../logger")("queries.battles");
 const database = require("../database");
+const queue = require("../queue");
 const { sleep, timeout } = require("../utils");
 const { getConfigByGuild } = require("../config");
 const { embedBattle } = require("../messages");
@@ -10,6 +11,7 @@ const BATTLES_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/battles
 const BATTLES_LIMIT = 51;
 const BATTLES_SORT = "recent";
 const BATTLES_COLLECTION = "battles";
+const BATTLES_EXCHANGE = "battles";
 
 function getNewBattles(battles, config) {
   if (!config) {
@@ -39,25 +41,23 @@ function getNewBattles(battles, config) {
   return newBattles;
 }
 
+let latestBattle;
+let pubChannel;
+
 exports.get = async () => {
-  const collection = database.collection(BATTLES_COLLECTION);
-  if (!collection) {
-    return logger.warn("Not connected to database. Skipping get battles.");
+  const logger = require("../logger")("queries.batltes.get");
+  if (!pubChannel) {
+    pubChannel = await queue.createChannel();
   }
 
-  // Find latest event
-  let latestBattle = await collection
-    .find({})
-    .sort({ id: -1 })
-    .limit(1)
-    .next();
-
   const fetchBattlesTo = async (latestBattle, offset = 0, battles = []) => {
+    // First time loading, fast return so we start recording from now
+    if (latestBattle.id === 0 && battles.length > 0) return battles;
     // Maximum offset reached, just return what we have
     if (offset >= 1000) return battles;
 
     try {
-      logger.debug(`[getBattles] Fetching battles with offset: ${offset}`);
+      logger.debug(`Fetching battles with offset: ${offset}`);
       const res = await axios.get(BATTLES_ENDPOINT, {
         params: {
           offset,
@@ -74,74 +74,32 @@ exports.get = async () => {
       });
       return foundLatest ? battles : fetchBattlesTo(latestBattle, offset + BATTLES_LIMIT, battles);
     } catch (err) {
-      logger.error(`[getBattles] Unable to fetch battle data from API [${err}].`);
+      logger.error(`Unable to fetch battle data from API [${err}].`);
       await sleep(5000);
       return fetchBattlesTo(latestBattle, offset, battles);
     }
   };
 
   if (!latestBattle) {
-    logger.info("[getBattles] No latest battle found. Retrieving first battles.");
+    logger.info("No latest battle found. Retrieving first battles.");
     latestBattle = { id: 0 };
+  } else {
+    logger.info(`Fetching Albion Online battles from API up to battle ${latestBattle.id}.`);
   }
-  logger.info(`[getBattles] Fetching Albion Online battles from API up to battle ${latestBattle.id}.`);
+
+  // Fetch new battles
   const battles = await fetchBattlesTo(latestBattle);
   if (battles.length === 0) return logger.debug("[getBattles] No new battles.");
+  latestBattle = battles[0];
 
-  // Insert battles that aren't in the database yet
-  let ops = [];
-  battles.forEach(async battle => {
-    ops.push({
-      updateOne: {
-        filter: { id: battle.id },
-        update: {
-          $setOnInsert: { ...battle, read: false },
-        },
-        upsert: true,
-        writeConcern: {
-          wtimeout: 60000,
-        },
-      },
-    });
+  // Publish new battles, from oldest to newest
+  pubChannel.assertExchange(BATTLES_EXCHANGE, "fanout", {
+    durable: false,
   });
-  logger.debug(`[getBattles] Performing ${ops.length} write operations in database.`);
-  let writeResult;
-  try {
-    writeResult = await collection.bulkWrite(ops, { ordered: false });
-  } catch (e) {
-    logger.error(`Unable to write new battles [${e}]`);
-    writeResult = {
-      upsertedCount: 0,
-    };
-  }
 
-  // Find latest read battle
-  let latestReadBattle = await collection
-    .find({ read: true })
-    .sort({ id: -1 })
-    .limit(1)
-    .next();
-  // Delete older events to free cache space if there are read battles
-  let deleteResult;
-  if (latestReadBattle) {
-    try {
-      logger.debug("[getBattles] Deleting old battles from database.");
-      deleteResult = await collection.deleteMany({
-        id: {
-          $lt: latestReadBattle.id,
-        },
-      });
-    } catch (e) {
-      logger.error(`Unable to delete old battles [${e}]`);
-      deleteResult = {
-        deletedCount: 0,
-      };
-    }
+  for (const battle of battles.reverse()) {
+    await pubChannel.publish(BATTLES_EXCHANGE, "", Buffer.from(JSON.stringify(battle)));
   }
-
-  logger.info(
-    `[getBattles] Fetch success. (New battles inserted: ${writeResult.upsertedCount}, old battles removed: ${deleteResult.deletedCount}).`,
-  );
 };
 
 exports.getBattlesByGuild = async guildConfigs => {
