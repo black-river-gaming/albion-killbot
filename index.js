@@ -24,7 +24,10 @@ if (!token) {
   process.exit(1);
 }
 
-const manager = new ShardingManager("./bot.js", { token });
+const manager = new ShardingManager("./bot.js", {
+  token,
+  totalShards: Number(process.env.TOTAL_SHARDS) || "auto",
+});
 
 manager.on("shardCreate", shard => {
   logger.info(`Launched shard #${shard.id}`);
