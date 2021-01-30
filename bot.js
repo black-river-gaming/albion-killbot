@@ -22,6 +22,13 @@ client.commands = commands;
 client.on("shardReady", async id => {
   client.shardId = id;
   logger.info(`[#${id}] Shard ready as ${client.user.tag}. Guild count: ${client.guilds.cache.size}`);
+
+  events.subscribe(exports);
+  battles.subscribe(exports);
+
+  runDaily(guilds.showRanking, "Show Monthly Ranking", exports);
+  runDaily(dailyRanking.scanDaily, "Show PvP Ranking (daily)", exports, 0, 0);
+  runInterval(dailyRanking.scan, "Show PvP Ranking", exports, 3600000);
 });
 
 client.on("shardDisconnect", async (ev, id) => {
@@ -132,11 +139,4 @@ exports.client = client;
   database.connect();
   await queue.connect();
   await client.login();
-
-  events.subscribe(exports);
-  battles.subscribe(exports);
-
-  runDaily(guilds.showRanking, "Show Monthly Ranking", exports);
-  runDaily(dailyRanking.scanDaily, "Show PvP Ranking (daily)", exports, 0, 0);
-  runInterval(dailyRanking.scan, "Show PvP Ranking", exports, 3600000);
 })();
