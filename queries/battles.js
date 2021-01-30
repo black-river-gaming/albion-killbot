@@ -11,6 +11,7 @@ const BATTLES_LIMIT = 51;
 const BATTLES_SORT = "recent";
 const EXCHANGE = "battles";
 const PREFETCH_COUNT = Number(process.env.PREFETCH_COUNT) || 5;
+const QUEUE_MAX_LENGTH  = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
 
 let latestBattle;
 let pubChannel;
@@ -139,6 +140,7 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
     exclusive: true,
     durable: false,
     "x-queue-type": "classic",
+    maxLength: QUEUE_MAX_LENGTH,
   });
   await subChannel.bindQueue(q.queue, EXCHANGE, "");
   logger.info("Subscribe to battle queue");

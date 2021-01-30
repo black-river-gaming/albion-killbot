@@ -10,7 +10,8 @@ const dailyRanking = require("./dailyRanking");
 const EVENTS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/events";
 const EVENTS_LIMIT = 51;
 const EXCHANGE = "events";
-const PREFETCH_COUNT = Number(process.env.PREFETCH_COUNT) || 5;
+const PREFETCH_COUNT = Number(process.env.AMQP_PREFETCH_COUNT) || 5;
+const QUEUE_MAX_LENGTH  = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
 
 let latestEvent;
 let pubChannel;
@@ -157,6 +158,7 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
     exclusive: true,
     durable: false,
     "x-queue-type": "classic",
+    maxLength: QUEUE_MAX_LENGTH,
   });
   await subChannel.bindQueue(q.queue, EXCHANGE, "");
   logger.info("Subscribe to event queue");
