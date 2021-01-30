@@ -108,20 +108,26 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
   // Set consume callback
   const cb = async (msg) => {
     const btl = JSON.parse(msg.content.toString());
+    if (!btl) { return; }
 
-    const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
-    for (const guild of client.guilds.cache.array()) {
-      guild.config = allGuildConfigs[guild.id];
-      const battle = getTrackedBattle(btl, guild.config);
-      if (!battle) continue;
+    try {
+      const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
+      for (const guild of client.guilds.cache.array()) {
+        guild.config = allGuildConfigs[guild.id];
+        if (!guild.config) continue;
+        const battle = getTrackedBattle(btl, guild.config);
+        if (!battle) continue;
 
-      logger.info(`[Shard #${client.shardId}] Sending battle ${battle.id} to guild "${guild.name}".`);
+        logger.info(`[Shard #${client.shardId}] Sending battle ${battle.id} to guild "${guild.name}".`);
 
-      try {
-        await timeout(sendGuildMessage(guild, embedBattle(battle, guild.config.lang), "battles"), 7000);
-      } catch (e) {
-        logger.error(`[Shard #${client.shardId}] Error while sending battle ${battle.id} [${e}]`);
+        try {
+          await timeout(sendGuildMessage(guild, embedBattle(battle, guild.config.lang), "battles"), 7000);
+        } catch (e) {
+          logger.error(`[Shard #${client.shardId}] Error while sending battle ${battle.id} [${e}]`);
+        }
       }
+    } catch (e) {
+      logger.error(`[Shard #${client.shardId}] Error while processing battle ${btl.id} [${e}]`);
     }
 
     subChannel.ack(msg);

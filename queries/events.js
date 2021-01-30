@@ -114,32 +114,38 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
   // Set consume callback
   const cb = async (msg) => {
     const evt = JSON.parse(msg.content.toString());
+    if (!evt) { return; }
 
-    const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
-    for (const guild of client.guilds.cache.array()) {
-      guild.config = allGuildConfigs[guild.id];
-      const event = getTrackedEvent(evt, guild.config);
-      if (!event) continue;
+    try {
+      const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
+      for (const guild of client.guilds.cache.array()) {
+        guild.config = allGuildConfigs[guild.id];
+        if (!guild.config) continue;
+        const event = getTrackedEvent(evt, guild.config);
+        if (!event) continue;
 
-      logger.info(`[Shard #${client.shardId}] Sending event ${event.EventId} to guild "${guild.name}".`);
-      dailyRanking.add(guild, event, guild.config);
-      const mode = guild.config.mode;
-      const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
+        logger.info(`[Shard #${client.shardId}] Sending event ${event.EventId} to guild "${guild.name}".`);
+        dailyRanking.add(guild, event, guild.config);
+        const mode = guild.config.mode;
+        const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
 
-      try {
-        if (mode === "image") {
-          const killImage = await embedEventAsImage(event, guild.config.lang);
-          await timeout(sendGuildMessage(guild, killImage, "events"), 10000);
-          if (hasInventory) {
-            const inventoryImage = await embedInventoryAsImage(event, guild.config.lang);
-            await timeout(sendGuildMessage(guild, inventoryImage, "events"), 10000);
+        try {
+          if (mode === "image") {
+            const killImage = await embedEventAsImage(event, guild.config.lang);
+            await timeout(sendGuildMessage(guild, killImage, "events"), 10000);
+            if (hasInventory) {
+              const inventoryImage = await embedInventoryAsImage(event, guild.config.lang);
+              await timeout(sendGuildMessage(guild, inventoryImage, "events"), 10000);
+            }
+          } else {
+            await timeout(sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events"), 10000);
           }
-        } else {
-          await timeout(sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events"), 10000);
+        } catch (e) {
+          logger.error(`[Shard #${client.shardId}] Error while sending event ${event.EventId} [${e}]`);
         }
-      } catch (e) {
-        logger.error(`[Shard #${client.shardId}] Error while sending event ${event.EventId} [${e}]`);
       }
+    } catch (e) {
+      logger.error(`[Shard #${client.shardId}] Error processing event ${evt.EventId} [${e}]`);
     }
 
     subChannel.ack(msg);
