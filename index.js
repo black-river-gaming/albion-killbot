@@ -39,7 +39,7 @@ manager.spawn();
 
 runDaily(dailyRanking.clear, "Clear PvP Ranking", 0, 5);
 runInterval(events.get, "Fetch events from Albion API", 5000);
-runInterval(battles.get, "Fetch battles from Albion API", 5000);
+runInterval(battles.get, "Fetch battles from Albion API", 30000);
 runInterval(() => {
   logger.debug(`Memory usage (approx): ${fileSizeFormatter(process.memoryUsage().heapUsed)}`);
 }, 60000);
