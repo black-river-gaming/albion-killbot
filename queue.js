@@ -19,8 +19,5 @@ exports.connect = async () => {
 };
 
 exports.createChannel = async () => {
-  if (!client) {
-    await exports.connect();
-  }
   return await client.createChannel();
 };

@@ -134,7 +134,11 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
   };
 
   // Consume events as they come
-  const q = await subChannel.assertQueue("");
+  const q = await subChannel.assertQueue("", {
+    exclusive: true,
+    durable: false,
+    "x-queue-type": "classic",
+  });
   await subChannel.bindQueue(q.queue, BATTLES_EXCHANGE, "");
   logger.info("Subscribe to battle queue");
   await subChannel.consume(q.queue, cb);

@@ -10,6 +10,7 @@ const dailyRanking = require("./queries/dailyRanking");
 const guilds = require("./queries/guilds");
 const { hasSubscription } = require("./subscriptions");
 const database = require("./database");
+const queue = require("./queue");
 
 const COMMAND_PREFIX = "!";
 
@@ -129,6 +130,7 @@ exports.client = client;
 
 (async () => {
   database.connect();
+  await queue.connect();
   await client.login();
 
   events.subscribe(exports);
