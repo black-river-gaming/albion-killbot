@@ -1,7 +1,6 @@
 const axios = require("axios");
 const moment = require("moment");
 const logger = require("../logger")("queries.battles");
-const database = require("../database");
 const queue = require("../queue");
 const { sleep, timeout } = require("../utils");
 const { getConfigByGuild } = require("../config");
@@ -10,49 +9,21 @@ const { embedBattle } = require("../messages");
 const BATTLES_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/battles";
 const BATTLES_LIMIT = 51;
 const BATTLES_SORT = "recent";
-const BATTLES_COLLECTION = "battles";
 const BATTLES_EXCHANGE = "battles";
-
-function getNewBattles(battles, config) {
-  if (!config) {
-    return [];
-  }
-
-  const playerIds = (config.trackedPlayers || []).map(t => t.id);
-  const guildIds = (config.trackedGuilds || []).map(t => t.id);
-  const allianceIds = (config.trackedAlliances || []).map(t => t.id);
-
-  const newBattles = [];
-  battles.forEach(battle => {
-    // Ignore battles without fame
-    if (battle.totalFame <= 0) {
-      return;
-    }
-
-    // Check for tracked ids in players, guilds and alliances
-    // Since we are parsing from newer to older events we need to use a FILO array
-    const hasTrackedPlayer = Object.keys(battle.players || {}).some(id => playerIds.indexOf(id) >= 0);
-    const hasTrackedGuild = Object.keys(battle.guilds || {}).some(id => guildIds.indexOf(id) >= 0);
-    const hasTrackedAlliance = Object.keys(battle.alliances || {}).some(id => allianceIds.indexOf(id) >= 0);
-    if (hasTrackedPlayer || hasTrackedGuild || hasTrackedAlliance) {
-      newBattles.unshift(battle);
-    }
-  });
-  return newBattles;
-}
 
 let latestBattle;
 let pubChannel;
 
 exports.get = async () => {
-  const logger = require("../logger")("queries.batltes.get");
+  const logger = require("../logger")("queries.battles.get");
   if (!pubChannel) {
     pubChannel = await queue.createChannel();
   }
 
+  const isFirstBattle = !latestBattle;
   const fetchBattlesTo = async (latestBattle, offset = 0, battles = []) => {
     // First time loading, fast return so we start recording from now
-    if (latestBattle.id === 0 && battles.length > 0) return battles;
+    if (isFirstBattle && battles.length > 0) return battles;
     // Maximum offset reached, just return what we have
     if (offset >= 1000) return battles;
 
@@ -61,7 +32,7 @@ exports.get = async () => {
       const res = await axios.get(BATTLES_ENDPOINT, {
         params: {
           offset,
-          limit: BATTLES_LIMIT,
+          limit: isFirstBattle ? 1 : BATTLES_LIMIT,
           sort: BATTLES_SORT,
           timestamp: moment().unix(),
         },
@@ -102,75 +73,63 @@ exports.get = async () => {
   }
 };
 
-exports.getBattlesByGuild = async guildConfigs => {
-  const collection = database.collection(BATTLES_COLLECTION);
-  if (!collection) {
-    return logger.warn("[scanBattles] Not connected to database. Skipping notify battles.");
+const getTrackedBattle = (battle, { trackedPlayers, trackedGuilds, trackedAlliances }) => {
+  if (trackedPlayers.length === 0 && trackedGuilds.length === 0 && trackedAlliances.length === 0) {
+    return null;
   }
 
-  // Get unread battles
-  const battles = await collection
-    .find({ read: false })
-    .sort({ id: 1 })
-    .limit(1000)
-    .toArray();
-  if (battles.length === 0) {
-    return logger.debug("[scanBattles] No new battles to notify.");
+  const playerIds = trackedPlayers.map(t => t.id);
+  const guildIds = trackedGuilds.map(t => t.id);
+  const allianceIds = trackedAlliances.map(t => t.id);
+
+  // Ignore battles without fame
+  if (battle.totalFame <= 0) {
+    return;
   }
 
-  // Set battles as read before sending to ensure no double battle notification
-  let ops = [];
-  battles.forEach(async battle => {
-    ops.push({
-      updateOne: {
-        filter: { id: battle.id },
-        update: {
-          $set: { read: true },
-        },
-      },
-    });
-  });
-  const writeResult = await collection.bulkWrite(ops, { ordered: false });
-  logger.info(`[scanBattles] Notify success. (Battles read: ${writeResult.modifiedCount}).`);
-
-  const battlesByGuild = {};
-  for (let guild of Object.keys(guildConfigs)) {
-    const config = guildConfigs[guild];
-    if (!config) {
-      continue;
-    }
-    const guildBattles = getNewBattles(battles, config);
-    if (guildBattles.length > 0) {
-      battlesByGuild[guild] = guildBattles;
-    }
+  // Check for tracked ids in players, guilds and alliances
+  // Since we are parsing from newer to older events we need to use a FILO array
+  const hasTrackedPlayer = Object.keys(battle.players || {}).some(id => playerIds.indexOf(id) >= 0);
+  const hasTrackedGuild = Object.keys(battle.guilds || {}).some(id => guildIds.indexOf(id) >= 0);
+  const hasTrackedAlliance = Object.keys(battle.alliances || {}).some(id => allianceIds.indexOf(id) >= 0);
+  if (hasTrackedPlayer || hasTrackedGuild || hasTrackedAlliance) {
+    return battle;
   }
-
-  return battlesByGuild;
+  return null;
 };
 
-exports.scan = async ({ client, sendGuildMessage }) => {
-  logger.info("Notifying new battles to all Discord Servers.");
-  const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
-  const battlesByGuild = await exports.getBattlesByGuild(allGuildConfigs);
-  if (!battlesByGuild) return logger.info("No new battles to notify.");
+exports.subscribe = async ({ client, sendGuildMessage }) => {
+  const subChannel = await queue.createChannel();
+  subChannel.prefetch(1);
+  subChannel.assertExchange(BATTLES_EXCHANGE, "fanout", {
+    durable: false,
+  });
 
-  const notifiedGuildIds = Object.keys(battlesByGuild);
-  while (notifiedGuildIds.length > 0) {
-    const guild = client.guilds.cache.get(notifiedGuildIds.pop());
-    guild.config = allGuildConfigs[guild.id];
-    if (!guild.config || !battlesByGuild[guild.id]) continue;
+  // Set consume callback
+  const cb = async (msg) => {
+    const btl = JSON.parse(msg.content.toString());
 
-    const battles = battlesByGuild[guild.id];
-    if (battles.length > 0) {
-      logger.info(`Sending ${battles.length} new battles to guild "${guild.name}". ${notifiedGuildIds.length} guilds remaining.`);
-    } else continue;
+    const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
+    for (const guild of client.guilds.cache.array()) {
+      guild.config = allGuildConfigs[guild.id];
+      const battle = getTrackedBattle(btl, guild.config);
+      if (!battle) continue;
 
-    for (const battle of battles) {
+      logger.info(`[Shard #${client.shardId}] Sending battle ${battle.id} to guild "${guild.name}".`);
+
       try {
         await timeout(sendGuildMessage(guild, embedBattle(battle, guild.config.lang), "battles"), 7000);
-      } catch(e) {
-        logger.error(`Error while sending battle ${battle.id} [${e}]`);
+      } catch (e) {
+        logger.error(`[Shard #${client.shardId}] Error while sending battle ${battle.id} [${e}]`);
       }
     }
-  }
+
+    subChannel.ack(msg);
+  };
+
+  // Consume events as they come
+  const q = await subChannel.assertQueue("");
+  await subChannel.bindQueue(q.queue, BATTLES_EXCHANGE, "");
+  logger.info("Subscribe to battle queue");
+  await subChannel.consume(q.queue, cb);
 };

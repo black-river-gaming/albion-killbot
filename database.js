@@ -28,7 +28,7 @@ exports.connect = async () => {
   while (!exit) {
     try {
       if (!isConnected()) {
-        logger.info("Connecting to database...");
+        logger.debug("Connecting to database...");
         await client.connect();
         logger.info("Connection to database stabilished.");
         db = client.db();

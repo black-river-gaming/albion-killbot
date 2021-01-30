@@ -132,9 +132,9 @@ exports.client = client;
   await client.login();
 
   events.subscribe(exports);
+  battles.subscribe(exports);
 
   runDaily(guilds.showRanking, "Show Monthly Ranking", exports);
   runDaily(dailyRanking.scanDaily, "Show PvP Ranking (daily)", exports, 0, 0);
   runInterval(dailyRanking.scan, "Show PvP Ranking", exports, 3600000);
-  // runInterval(battles.scan, "Show Battles", exports, 60000);
 })();

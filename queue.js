@@ -13,7 +13,7 @@ if (!RABBITMQ_URI) {
 let client;
 
 exports.connect = async () => {
-  logger.info("Connecting to message broker...");
+  logger.debug("Connecting to message broker...");
   client = await amqp.connect(RABBITMQ_URI);
   logger.info("Connection to message broker stabilished.");
 };

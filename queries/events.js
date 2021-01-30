@@ -11,37 +11,6 @@ const EVENTS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/events";
 const EVENTS_LIMIT = 51;
 const EVENTS_EXCHANGE = "events";
 
-function getTrackedEvent(event, { trackedPlayers, trackedGuilds, trackedAlliances }) {
-  if (trackedPlayers.length === 0 && trackedGuilds.length === 0 && trackedAlliances.length === 0) {
-    return false;
-  }
-
-  const playerIds = trackedPlayers.map(t => t.id);
-  const guildIds = trackedGuilds.map(t => t.id);
-  const allianceIds = trackedAlliances.map(t => t.id);
-
-  // Ignore Arena kills or Duel kills
-  if (event.TotalVictimKillFame <= 0) {
-    return;
-  }
-
-  // Check for kill in event.Killer / event.Victim for anything tracked
-  // Since we are parsing from newer to older events
-  // we need to use FILO array
-  const goodEvent =
-      allianceIds.indexOf(event.Killer.AllianceId) >= 0 ||
-      guildIds.indexOf(event.Killer.GuildId) >= 0 ||
-      playerIds.indexOf(event.Killer.Id) >= 0;
-  const badEvent =
-      allianceIds.indexOf(event.Victim.AllianceId) >= 0 ||
-      guildIds.indexOf(event.Victim.GuildId) >= 0 ||
-      playerIds.indexOf(event.Victim.Id) >= 0;
-  if (goodEvent || badEvent) {
-    // We need to create a new object here for every guild
-    return Object.assign({}, event, { good: goodEvent });
-  }
-}
-
 let latestEvent;
 let pubChannel;
 
@@ -51,9 +20,10 @@ exports.get = async () => {
     pubChannel = await queue.createChannel();
   }
 
+  const isFirstEvent = !latestEvent;
   const fetchEventsTo = async (latestEvent, offset = 0, events = []) => {
     // First time loading, fast return so we start recording from now
-    if (latestEvent.EventId === 0 && events.length > 0) return events;
+    if (isFirstEvent && events.length > 0) return events;
     // Maximum offset reached, just return what we have
     if (offset >= 1000) return events;
 
@@ -62,7 +32,7 @@ exports.get = async () => {
       const res = await axios.get(EVENTS_ENDPOINT, {
         params: {
           offset,
-          limit: EVENTS_LIMIT,
+          limit: isFirstEvent ? 1 : EVENTS_LIMIT,
           timestamp: moment().unix(),
         },
         timeout: 60000,
@@ -100,6 +70,38 @@ exports.get = async () => {
   for (const evt of events.reverse()) {
     await pubChannel.publish(EVENTS_EXCHANGE, "", Buffer.from(JSON.stringify(evt)));
   }
+};
+
+const getTrackedEvent = (event, { trackedPlayers, trackedGuilds, trackedAlliances }) => {
+  if (trackedPlayers.length === 0 && trackedGuilds.length === 0 && trackedAlliances.length === 0) {
+    return null;
+  }
+
+  const playerIds = trackedPlayers.map(t => t.id);
+  const guildIds = trackedGuilds.map(t => t.id);
+  const allianceIds = trackedAlliances.map(t => t.id);
+
+  // Ignore Arena kills or Duel kills
+  if (event.TotalVictimKillFame <= 0) {
+    return;
+  }
+
+  // Check for kill in event.Killer / event.Victim for anything tracked
+  // Since we are parsing from newer to older events
+  // we need to use FILO array
+  const goodEvent =
+      allianceIds.indexOf(event.Killer.AllianceId) >= 0 ||
+      guildIds.indexOf(event.Killer.GuildId) >= 0 ||
+      playerIds.indexOf(event.Killer.Id) >= 0;
+  const badEvent =
+      allianceIds.indexOf(event.Victim.AllianceId) >= 0 ||
+      guildIds.indexOf(event.Victim.GuildId) >= 0 ||
+      playerIds.indexOf(event.Victim.Id) >= 0;
+  if (goodEvent || badEvent) {
+    // We need to create a new object here for every guild
+    return Object.assign({}, event, { good: goodEvent });
+  }
+  return null;
 };
 
 exports.subscribe = async ({ client, sendGuildMessage }) => {
@@ -146,5 +148,6 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
   // Consume events as they come
   const q = await subChannel.assertQueue("");
   await subChannel.bindQueue(q.queue, EVENTS_EXCHANGE, "");
+  logger.info("Subscribe to event queue");
   await subChannel.consume(q.queue, cb);
 };
