@@ -10,7 +10,7 @@ const BATTLES_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/battles
 const BATTLES_LIMIT = 51;
 const BATTLES_SORT = "recent";
 const EXCHANGE = "battles";
-const PREFETCH_COUNT = Number(process.env.PREFETCH_COUNT) || 5;
+const PREFETCH_COUNT = Number(process.env.AMQP_PREFETCH_COUNT) || 5;
 const QUEUE_MAX_LENGTH  = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
 
 let latestBattle;
