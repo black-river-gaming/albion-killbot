@@ -13,7 +13,7 @@ jobs:
         name: Docker meta
         uses: crazy-max/ghaction-docker-meta@v1
         with:
-          images: albion-killbot
+          images: ${{ github.repository }}
           tag-sha: false
 
       - name: Login to DockerHub
