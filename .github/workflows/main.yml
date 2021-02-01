@@ -1,0 +1,17 @@
+name: Main
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ v* ]
+  pull_request:
+    branches: [ main ]   
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Publish Docker Image
+    steps:
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v2.2.2
+  
