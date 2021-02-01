@@ -1,11 +1,11 @@
 const amqp = require("amqplib");
 const logger = require("./logger")("queue");
 
-const RABBITMQ_URI = process.env.RABBITMQ_URI;
+const RABBITMQ_URL = process.env.RABBITMQ_URL;
 
-if (!RABBITMQ_URI) {
+if (!RABBITMQ_URL) {
   logger.warn(
-    "Please set RABBITMQ_URI environment variable with the RabbitMQ location with the following format: amqp://host",
+    "Please set RABBITMQ_URL environment variable with the RabbitMQ location with the following format: amqp://host",
   );
   process.exit(1);
 }
@@ -14,7 +14,7 @@ let client;
 
 exports.connect = async () => {
   logger.debug("Connecting to message broker...");
-  client = await amqp.connect(RABBITMQ_URI);
+  client = await amqp.connect(RABBITMQ_URL);
   logger.info("Connection to message broker stabilished.");
 };
 
