@@ -14,13 +14,9 @@ const PREFETCH_COUNT = Number(process.env.PREFETCH_COUNT) || 5;
 const QUEUE_MAX_LENGTH  = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
 
 let latestBattle;
-let pubChannel;
 
 exports.get = async () => {
   const logger = require("../logger")("queries.battles.get");
-  if (!pubChannel) {
-    pubChannel = await queue.createChannel();
-  }
 
   const isFirstBattle = !latestBattle;
   const fetchBattlesTo = async (latestBattle, offset = 0, battles = []) => {
@@ -62,16 +58,11 @@ exports.get = async () => {
 
   // Fetch new battles
   const battles = await fetchBattlesTo(latestBattle);
-  if (battles.length === 0) return logger.debug("[getBattles] No new battles.");
-  latestBattle = battles[0];
-
-  // Publish new battles, from oldest to newest
-  pubChannel.assertExchange(EXCHANGE, "fanout", {
-    durable: false,
-  });
+  if (battles.length === 0) return logger.debug("No new battles.");
 
   for (const battle of battles.reverse()) {
-    await pubChannel.publish(EXCHANGE, "", Buffer.from(JSON.stringify(battle)));
+    await queue.publish(EXCHANGE, "", battle);
+    latestBattle = battle;
   }
 };
 
@@ -101,11 +92,7 @@ const getTrackedBattle = (battle, { trackedPlayers, trackedGuilds, trackedAllian
 };
 
 exports.subscribe = async ({ client, sendGuildMessage }) => {
-  const subChannel = await queue.createChannel();
-  subChannel.prefetch(PREFETCH_COUNT);
-  subChannel.assertExchange(EXCHANGE, "fanout", {
-    durable: false,
-  });
+  const subChannel = await queue.assertChannel("subscribe", PREFETCH_COUNT);
 
   // Set consume callback
   const cb = async (msg) => {
@@ -135,7 +122,12 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
     subChannel.ack(msg);
   };
 
-  // Consume events as they come
+  // Assert exchange
+  await subChannel.assertExchange(EXCHANGE, "fanout", {
+    durable: false,
+  });
+
+  // Consume battles as they come
   const q = await subChannel.assertQueue(`${EXCHANGE}-${client.shardId}`, {
     exclusive: true,
     durable: false,
@@ -143,6 +135,6 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
     maxLength: QUEUE_MAX_LENGTH,
   });
   await subChannel.bindQueue(q.queue, EXCHANGE, "");
-  logger.info("Subscribe to battle queue");
+  logger.info(`[#${client.shardId}] Subscribed to battle queue.`);
   await subChannel.consume(q.queue, cb);
 };

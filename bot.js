@@ -23,8 +23,8 @@ client.on("shardReady", async id => {
   client.shardId = id;
   logger.info(`[#${id}] Shard ready as ${client.user.tag}. Guild count: ${client.guilds.cache.size}`);
 
-  events.subscribe(exports);
-  battles.subscribe(exports);
+  queue.subscribe(events.subscribe, exports);
+  queue.subscribe(battles.subscribe, exports);
 
   runDaily(guilds.showRanking, "Show Monthly Ranking", exports);
   runDaily(dailyRanking.scanDaily, "Show PvP Ranking (daily)", exports, 0, 0);

@@ -14,13 +14,9 @@ const PREFETCH_COUNT = Number(process.env.AMQP_PREFETCH_COUNT) || 5;
 const QUEUE_MAX_LENGTH  = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
 
 let latestEvent;
-let pubChannel;
 
 exports.get = async () => {
   const logger = require("../logger")("queries.events.get");
-  if (!pubChannel) {
-    pubChannel = await queue.createChannel();
-  }
 
   const isFirstEvent = !latestEvent;
   const fetchEventsTo = async (latestEvent, offset = 0, events = []) => {
@@ -62,15 +58,11 @@ exports.get = async () => {
   // Fetch new events
   const events = await fetchEventsTo(latestEvent);
   if (events.length === 0) return logger.debug("No new events.");
-  latestEvent = events[0];
 
   // Publish new events, from oldest to newest
-  await pubChannel.assertExchange(EXCHANGE, "fanout", {
-    durable: false,
-  });
-
   for (const evt of events.reverse()) {
-    await pubChannel.publish(EXCHANGE, "", Buffer.from(JSON.stringify(evt)));
+    await queue.publish(EXCHANGE, "", evt);
+    latestEvent = evt;
   }
 };
 
@@ -107,11 +99,7 @@ const getTrackedEvent = (event, { trackedPlayers, trackedGuilds, trackedAlliance
 };
 
 exports.subscribe = async ({ client, sendGuildMessage }) => {
-  const subChannel = await queue.createChannel();
-  subChannel.prefetch(PREFETCH_COUNT);
-  subChannel.assertExchange(EXCHANGE, "fanout", {
-    durable: false,
-  });
+  const subChannel = await queue.assertChannel("subscribe", PREFETCH_COUNT);
 
   // Set consume callback
   const cb = async (msg) => {
@@ -153,6 +141,11 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
     subChannel.ack(msg);
   };
 
+  // Assert exchange
+  await subChannel.assertExchange(EXCHANGE, "fanout", {
+    durable: false,
+  });
+
   // Consume events as they come
   const q = await subChannel.assertQueue(`${EXCHANGE}-${client.shardId}`, {
     exclusive: true,
@@ -161,6 +154,6 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
     maxLength: QUEUE_MAX_LENGTH,
   });
   await subChannel.bindQueue(q.queue, EXCHANGE, "");
-  logger.info("Subscribe to event queue");
+  logger.info(`[#${client.shardId}] Subscribed to event queue.`);
   await subChannel.consume(q.queue, cb);
 };
