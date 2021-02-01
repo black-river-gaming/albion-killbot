@@ -42,4 +42,4 @@ runInterval(events.get, "Fetch events from Albion API", {}, 10000);
 runInterval(battles.get, "Fetch battles from Albion API", {}, 60000);
 runInterval(() => {
   logger.debug(`Memory usage (approx): ${fileSizeFormatter(process.memoryUsage().heapUsed)}`);
-}, 60000);
+}, {}, 60000);
