@@ -58,6 +58,10 @@ exports.subscribe = async(fn, params) => {
   fn(params);
 };
 
+exports.unsubscribeAll = () => {
+  subscriptions = [];
+};
+
 exports.assertChannel = async(id, prefetch = 0) => {
   if (!channels[id]) {
     channels[id] = await client.createChannel();

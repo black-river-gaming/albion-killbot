@@ -33,6 +33,8 @@ client.on("shardReady", async id => {
 
 client.on("shardDisconnect", async (ev, id) => {
   logger.info(`[#${id}] Disconnected from Discord: [${ev.code}] ${ev.reason}`);
+
+  queue.unsubscribeAll();
 });
 
 client.on("shardReconnecting", async id => {
