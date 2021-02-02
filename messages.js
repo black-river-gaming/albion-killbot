@@ -284,6 +284,7 @@ exports.embedRankings = (trackedGuild, rankings, locale) => {
   const guildName = trackedGuild.name;
 
   const generateRankFieldValue = (ranking, pvp = false) => {
+    if (ranking.length === 0) return "```-```";
     let value = "```c";
     ranking.forEach(item => {
       if (pvp) {
