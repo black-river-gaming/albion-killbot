@@ -29,7 +29,7 @@ client.on("shardReady", async id => {
 
   runDaily(guilds.showRanking, "Display Guild Rankings", exports);
   runDaily(dailyRanking.scanDaily, "Display Player Ranking (daily)", exports, 0, 0);
-  runInterval(guilds.update, "Get Guild Data", exports, FREQ_DAILY, true);
+  runInterval(guilds.update, "Get Guild Data", exports, FREQ_DAILY / 4, true);
   runInterval(dailyRanking.scan, "Display Player Ranking", exports, FREQ_DAILY);
 });
 

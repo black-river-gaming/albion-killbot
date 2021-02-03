@@ -277,11 +277,8 @@ exports.embedBattle = (battle, locale) => {
   };
 };
 
-exports.embedRankings = (trackedGuild, rankings, locale) => {
+exports.embedRankings = (guild, locale) => {
   const l = exports.getI18n(locale);
-
-  const guildId = trackedGuild.id;
-  const guildName = trackedGuild.name;
 
   const generateRankFieldValue = (ranking, pvp = false) => {
     if (ranking.length === 0) return "```-```";
@@ -303,20 +300,20 @@ exports.embedRankings = (trackedGuild, rankings, locale) => {
 
   return {
     embed: {
-      title: l.__("RANKING.MONTHLY", { guild: guildName }),
-      url: `https://albiononline.com/pt/killboard/guild/${guildId}`,
+      title: l.__("RANKING.MONTHLY", { guild: guild.Name }),
+      url: `https://albiononline.com/pt/killboard/guild/${guild._id}`,
       thumbnail: {
         url: "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
       },
       fields: [
         {
           name: l.__("RANKING.PVE"),
-          value: generateRankFieldValue(rankings.pve),
+          value: generateRankFieldValue(guild.rankings.pve),
           inline: true,
         },
         {
           name: l.__("RANKING.PVP"),
-          value: generateRankFieldValue(rankings.pvp, true),
+          value: generateRankFieldValue(guild.rankings.pvp, true),
           inline: true,
         },
         {
@@ -326,12 +323,12 @@ exports.embedRankings = (trackedGuild, rankings, locale) => {
         },
         {
           name: l.__("RANKING.GATHERING"),
-          value: generateRankFieldValue(rankings.gathering),
+          value: generateRankFieldValue(guild.rankings.gathering),
           inline: true,
         },
         {
           name: l.__("RANKING.CRAFTING"),
-          value: generateRankFieldValue(rankings.crafting),
+          value: generateRankFieldValue(guild.rankings.crafting),
           inline: true,
         },
       ],

@@ -183,7 +183,7 @@ exports.showRanking = async ({ client, sendGuildMessage }) => {
         logger.debug(`[#${client.shardId}] No data available for guild "${trackedGuild.name}".`);
         continue;
       }
-      await sendGuildMessage(guild, embedRankings(trackedGuild, guildData.rankings, guild.config.lang), "rankings");
+      await sendGuildMessage(guild, embedRankings(guildData, guild.config.lang), "rankings");
     }
   }
 };
