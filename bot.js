@@ -105,10 +105,12 @@ exports.sendGuildMessage = async (guild, message, category = "general") => {
   if (!guild.config.categories) guild.config.categories = {};
   if (guild.config.categories[category] === false) return;
 
-  let channelId = guild.config.channel[category];
-  if (!channelId) channelId = guild.config.channel.general;
+  let channelId;
   // Old structure backport
-  if (typeof guild.config.channel === "string") channelId = guild.config.channel;
+  if (guild.config.channel) {
+    if (typeof guild.config.channel === "string") channelId = guild.config.channel;
+    else channelId = guild.config.channel[category] || guild.config.channel.general;
+  }
 
   const l = messages.getI18n(guild);
   let channel = client.channels.cache.find(c => c.id === channelId) || exports.getDefaultChannel(guild);
