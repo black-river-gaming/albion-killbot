@@ -45,7 +45,8 @@
     "DEATH_FAME": "Top Fama de Mortes",
     "TOTAL_KILL_FAME": "Fama Total de Abates",
     "TOTAL_DEATH_FAME": "Fama Total de Mortes",
-    "DAILY_RANKING_SET": "Mostrar Ranking Diário está agora definido para '{{ mode }}'"
+    "DAILY_RANKING_SET": "Mostrar Ranking Diário está agora definido para '{{ mode }}'",
+		"NO_DATA": "Sem dados disponíveis para a guilda '{{{ guild }}}'. Aguarde um dia e tente novamente."
   },
   "HELP": {
     "VERSION": "Albion Killbot v{{ version }}",
@@ -58,7 +59,8 @@
     "TEST": "Verifica se o bot possui permissões para enviar mensagens.",
     "MODE": "Define o modo de envio de eventos, como texto ou imagem.",
     "DAILY_RANKING": "Mostrar o Ranking Diário.",
-    "CATEGORY": "Ativa/desativa notificações de cada categoria."
+    "CATEGORY": "Ativa/desativa notificações de cada categoria.",
+		"RANKING": "Mostra os rankings de cada guilda rastreada."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",

@@ -45,7 +45,8 @@
     "DEATH_FAME": "Top Death Fame",
     "TOTAL_KILL_FAME": "Total Kill Fame",
     "TOTAL_DEATH_FAME": "Total Death Fame",
-    "DAILY_RANKING_SET": "Display Daily Ranking is now set to '{{ mode }}'"
+    "DAILY_RANKING_SET": "Display Daily Ranking is now set to '{{ mode }}'",
+		"NO_DATA": "No data available for guild '{{{ guild }}}'. Give the bot a day to fetch data and try again."
   },
   "HELP": {
     "VERSION": "Анонсер версии {{ version }}",
@@ -58,7 +59,8 @@
     "TEST": "Проверьте, есть ли у бота разрешение на отправку сообщений.",
     "MODE": "Задает режим вывода, например текст или изображение.",
     "DAILY_RANKING": "Display Daily Rankings.",
-    "CATEGORY": "Enable/disable bot notifications for each category"
+    "CATEGORY": "Enable/disable bot notifications for each category.",
+		"RANKING": "Display rankings for tracked guilds."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Пожалуйста, введите канал для уведомлений.",

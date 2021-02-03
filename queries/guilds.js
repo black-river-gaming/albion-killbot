@@ -16,7 +16,7 @@ const sleep = milliseconds => {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
 };
 
-const getGuildData = async (guildConfigs) => {
+exports.getGuildData = async (guildConfigs) => {
   const guildIds = Object.keys(guildConfigs).reduce((guildIds, gid) => {
     const config = guildConfigs[gid];
     if (!config || config.trackedGuilds.length === 0) return guildIds;
@@ -47,7 +47,7 @@ const getGuildData = async (guildConfigs) => {
 
 exports.update = async ({ client }) => {
   const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
-  const guildData = await getGuildData(allGuildConfigs);
+  const guildData = await exports.getGuildData(allGuildConfigs);
 
   for (const id of Object.keys(guildData)) {
     const guild = guildData[id];
@@ -171,7 +171,7 @@ exports.showRanking = async ({ client, sendGuildMessage }) => {
   logger.info(`[#${client.shardId}] Displaying guild rankings to all servers.`);
 
   const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
-  const allGuildData = await getGuildData(allGuildConfigs);
+  const allGuildData = await exports.getGuildData(allGuildConfigs);
 
   for (const guild of client.guilds.cache.array()) {
     guild.config = allGuildConfigs[guild.id];

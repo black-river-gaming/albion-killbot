@@ -45,7 +45,8 @@
     "DEATH_FAME": "Top Death Fame",
     "TOTAL_KILL_FAME": "Total Kill Fame",
     "TOTAL_DEATH_FAME": "Total Death Fame",
-    "DAILY_RANKING_SET": "Afficher le Classement Quetidien est désormais définir sur '{{ mode }}'"
+    "DAILY_RANKING_SET": "Afficher le Classement Quetidien est désormais définir sur '{{ mode }}'",
+		"NO_DATA": "No data available for guild '{{{ guild }}}'. Give the bot a day to fetch data and try again."
   },
   "HELP": {
     "VERSION": "Albion Killbot v{{ version }}",
@@ -58,7 +59,8 @@
     "TEST": "Verifiez si le bot a les permissions pour envoyer des messages.",
     "MODE": "Sets the output mode, like text or image.",
     "DAILY_RANKING": "Display Daily Rankings.",
-    "CATEGORY": "Enable/disable bot notifications for each category"
+    "CATEGORY": "Enable/disable bot notifications for each category.",
+		"RANKING": "Display rankings for tracked guilds."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Veuillez sélectionner un channel dans le quel les notifications seront envoyées.",
