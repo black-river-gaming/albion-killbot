@@ -281,8 +281,11 @@ exports.embedRankings = (guild, locale) => {
   const l = exports.getI18n(locale);
 
   const generateRankFieldValue = (ranking, pvp = false) => {
-    if (ranking.length === 0) return "```-```";
     let value = "```c";
+    if (ranking.length === 0) {
+      const nodata = l.__("RANKING.NO_DATA_SHORT");
+      value += `\n${nodata}${" ".repeat(RANKING_LINE_LENGTH - nodata.length)}`;
+    }
     ranking.forEach(item => {
       if (pvp) {
         const fameValue = humanFormatter(item.KillFame, 2);
@@ -373,8 +376,11 @@ exports.embedDailyRanking = (rankings, locale) => {
   const l = exports.getI18n(locale);
 
   const generateRankFieldValue = (ranking, name = "name", number = "fame") => {
-    if (ranking.length === 0) return "```-```";
     let value = "```c";
+    if (ranking.length === 0) {
+      const nodata = l.__("RANKING.NO_DATA_SHORT");
+      value += `\n${nodata}${" ".repeat(RANKING_LINE_LENGTH - nodata.length)}`;
+    }
     ranking.forEach(item => {
       const nameValue = item[name];
       const numberValue = humanFormatter(item[number], 2);
