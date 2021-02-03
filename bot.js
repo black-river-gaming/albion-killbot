@@ -113,7 +113,7 @@ exports.sendGuildMessage = async (guild, message, category = "general") => {
   }
 
   const l = messages.getI18n(guild);
-  let channel = client.channels.cache.find(c => c.id === channelId) || exports.getDefaultChannel(guild);
+  const channel = client.channels.cache.find(c => c.id === channelId) || exports.getDefaultChannel(guild);
   if (!channel) return;
   try {
     await channel.send(message);
