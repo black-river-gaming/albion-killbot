@@ -37,7 +37,7 @@ database.connect();
 queue.connect();
 manager.spawn();
 
-runDaily(dailyRanking.clear, "Clear PvP Ranking", 0, 5);
+runDaily(dailyRanking.clear, "Clear PvP Ranking", 0, 10);
 runInterval(events.get, "Fetch events from Albion API", {}, 10000);
 runInterval(battles.get, "Fetch battles from Albion API", {}, 60000);
 runInterval(() => {

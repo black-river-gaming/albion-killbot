@@ -68,8 +68,11 @@ exports.runDaily = async (func, name, options = {}, hour = 12, minute = 0) => {
 };
 
 // Events that run on an interval (Default: 30 seconds) until process stops
-exports.runInterval = async (func, name, options = {}, interval = 30000) => {
+exports.runInterval = async (func, name, options = {}, interval = 30000, runOnStart = false) => {
   if (!func) return logger.warn("There is an undefined function. Please check your settings.");
+  if (runOnStart) {
+    await func(options);
+  }
   const exit = false;
   while (!exit) {
     await exports.sleep(interval);
