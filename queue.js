@@ -3,6 +3,8 @@ const logger = require("./logger")("queue");
 const { sleep } = require("./utils");
 
 const RABBITMQ_URL = process.env.RABBITMQ_URL;
+const QUEUE_MAX_LENGTH  = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
+const QUEUE_MESSAGE_TTL = 1000 * 60 * 60 * 4; // 4 hours
 
 if (!RABBITMQ_URL) {
   logger.warn(
@@ -20,7 +22,7 @@ exports.connect = async () => {
     logger.debug("Connecting to message broker...");
     client = await amqp.connect(RABBITMQ_URL);
     channels = {};
-    subscriptions.forEach((fn => fn()));
+    subscriptions.forEach(fn => fn());
 
     logger.info("Connection to message broker stabilished.");
   } catch (e) {
@@ -51,14 +53,46 @@ exports.publish = async (exchange, routingKey, content) => {
 };
 
 // This will ensure that subscriptions will be restored when the connection resumes
-// fn = subscription function to be called
-// params = options for the subscription function
-exports.subscribe = async(fn, params) => {
-  subscriptions.push(() => fn(params));
-  fn(params);
+// It wraps the subscription function so it can be recalled on server reconnections
+exports.subscribe = async(exchange, queue, cb, { prefetch }) => {
+  const subFn = async () => {
+    // Create channel
+    const channel = await client.createChannel();
+    if (prefetch) {
+      channel.prefetch(prefetch);
+    }
+
+    // Assert exchange
+    await channel.assertExchange(exchange, "fanout", {
+      durable: false,
+    });
+
+    // Assert Queue
+    const q = await channel.assertQueue(queue, {
+      exclusive: true,
+      durable: false,
+      "x-queue-type": "classic",
+      maxLength: QUEUE_MAX_LENGTH,
+      messageTtl: QUEUE_MESSAGE_TTL,
+    });
+
+    // Bind Queue
+    await channel.bindQueue(q.queue, exchange, "");
+
+    // Consume queue callback
+    await channel.consume(q.queue, async (msg) => {
+      if (await cb(msg)) channel.ack(msg);
+      else channel.nack(msg);
+    }, {
+      exclusive: true,
+    });
+  };
+
+  await subFn();
+  subscriptions.push(subFn);
 };
 
-exports.unsubscribeAll = () => {
+exports.unsubscribeAll = async () => {
   subscriptions = [];
 };
 

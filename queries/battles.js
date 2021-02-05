@@ -12,6 +12,7 @@ const BATTLES_SORT = "recent";
 const EXCHANGE = "battles";
 const PREFETCH_COUNT = Number(process.env.AMQP_PREFETCH_COUNT) || 5;
 const QUEUE_MAX_LENGTH  = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
+const QUEUE_MESSAGE_TTL = 1000 * 60 * 60 * 4; // 4 hours
 
 let latestBattle;
 
@@ -92,8 +93,6 @@ const getTrackedBattle = (battle, { trackedPlayers, trackedGuilds, trackedAllian
 };
 
 exports.subscribe = async ({ client, sendGuildMessage }) => {
-  const subChannel = await queue.assertChannel("subscribe", PREFETCH_COUNT);
-
   // Set consume callback
   const cb = async (msg) => {
     const btl = JSON.parse(msg.content.toString());
@@ -119,22 +118,11 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
       logger.error(`[Shard #${client.shardId}] Error while processing battle ${btl.id} [${e}]`);
     }
 
-    subChannel.ack(msg);
+    return true;
   };
 
-  // Assert exchange
-  await subChannel.assertExchange(EXCHANGE, "fanout", {
-    durable: false,
+  await queue.subscribe(EXCHANGE, `${EXCHANGE}-${client.shardId}`, cb, {
+    prefetch: PREFETCH_COUNT,
   });
-
-  // Consume battles as they come
-  const q = await subChannel.assertQueue(`${EXCHANGE}-${client.shardId}`, {
-    exclusive: true,
-    durable: false,
-    "x-queue-type": "classic",
-    maxLength: QUEUE_MAX_LENGTH,
-  });
-  await subChannel.bindQueue(q.queue, EXCHANGE, "");
-  logger.info(`[#${client.shardId}] Subscribed to battle queue.`);
-  await subChannel.consume(q.queue, cb);
+  logger.info(`[#${client.shardId}] Subscribed to battles queue.`);
 };

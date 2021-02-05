@@ -11,7 +11,6 @@ const EVENTS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/events";
 const EVENTS_LIMIT = 51;
 const EXCHANGE = "events";
 const PREFETCH_COUNT = Number(process.env.AMQP_PREFETCH_COUNT) || 5;
-const QUEUE_MAX_LENGTH  = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
 
 let latestEvent;
 
@@ -99,8 +98,6 @@ const getTrackedEvent = (event, { trackedPlayers, trackedGuilds, trackedAlliance
 };
 
 exports.subscribe = async ({ client, sendGuildMessage }) => {
-  const subChannel = await queue.assertChannel("subscribe", PREFETCH_COUNT);
-
   // Set consume callback
   const cb = async (msg) => {
     const evt = JSON.parse(msg.content.toString());
@@ -138,22 +135,11 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
       logger.error(`[Shard #${client.shardId}] Error processing event ${evt.EventId} [${e}]`);
     }
 
-    subChannel.ack(msg);
+    return true;
   };
 
-  // Assert exchange
-  await subChannel.assertExchange(EXCHANGE, "fanout", {
-    durable: false,
+  await queue.subscribe(EXCHANGE, `${EXCHANGE}-${client.shardId}`, cb, {
+    prefetch: PREFETCH_COUNT,
   });
-
-  // Consume events as they come
-  const q = await subChannel.assertQueue(`${EXCHANGE}-${client.shardId}`, {
-    exclusive: true,
-    durable: false,
-    "x-queue-type": "classic",
-    maxLength: QUEUE_MAX_LENGTH,
-  });
-  await subChannel.bindQueue(q.queue, EXCHANGE, "");
-  logger.info(`[#${client.shardId}] Subscribed to event queue.`);
-  await subChannel.consume(q.queue, cb);
+  logger.info(`[#${client.shardId}] Subscribed to events queue.`);
 };
