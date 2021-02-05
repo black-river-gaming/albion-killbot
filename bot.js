@@ -41,6 +41,8 @@ client.on("shardDisconnect", async (ev, id) => {
 
 client.on("shardReconnecting", async id => {
   logger.info(`[#${id}] Trying to reconnect to Discord.`);
+
+  queue.unsubscribeAll();
 });
 
 client.on("error", async e => {
