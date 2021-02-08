@@ -13,7 +13,8 @@ const database = require("./database");
 const queue = require("./queue");
 
 const COMMAND_PREFIX = "!";
-const FREQ_DAILY = 1000 * 60 * 60 * 24;
+const FREQ_HOUR = 1000 * 60 * 60;
+const FREQ_DAY = FREQ_HOUR * 24;
 
 const client = new Discord.Client({
   autoReconnect: true,
@@ -29,8 +30,8 @@ client.on("shardReady", async id => {
 
   runDaily(guilds.showRanking, "Display Guild Rankings", exports);
   runDaily(dailyRanking.scanDaily, "Display Player Ranking (daily)", exports, 0, 0);
-  runInterval(guilds.update, "Get Guild Data", exports, FREQ_DAILY / 4, true);
-  runInterval(dailyRanking.scan, "Display Player Ranking", exports, FREQ_DAILY);
+  runInterval(guilds.update, "Get Guild Data", exports, FREQ_DAY / 4, true);
+  runInterval(dailyRanking.scan, "Display Player Ranking", exports, FREQ_HOUR / 24);
 });
 
 client.on("shardDisconnect", async (ev, id) => {
