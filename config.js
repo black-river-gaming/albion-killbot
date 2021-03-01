@@ -16,6 +16,7 @@ const DEFAULT_CONFIG = {
     battles: true,
     rankings: true,
   },
+  mode: "image",
   lang: "en",
 };
 
@@ -25,10 +26,10 @@ exports.getConfig = async guild => {
     return DEFAULT_CONFIG;
   }
   try {
-    return (await collection.findOne({ guild: guild.id })) || DEFAULT_CONFIG;
+    return await collection.findOne({ guild: guild.id });
   } catch (e) {
     logger.error(`Unable to find guildConfig for guild ${guild}: ${e}`);
-    return DEFAULT_CONFIG;
+    return null;
   }
 };
 
