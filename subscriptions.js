@@ -204,4 +204,5 @@ exports.refresh = async ({ client }) => {
     guild.config.subscription.expires = expires.toDate();
     await setConfig(guild);
   }
+  logger.info(`[#${client.shardId}] Refresh subscriptions finished.`);
 };

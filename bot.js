@@ -30,8 +30,6 @@ client.on("shardReady", async (id) => {
   events.subscribe(exports);
   battles.subscribe(exports);
 
-  subscriptions.refresh(exports);
-  runDaily(subscriptions.refresh, "Refresh subscriptions", exports);
   runDaily(guilds.showRanking, "Display Guild Rankings", exports);
   runDaily(
     dailyRanking.scanDaily,
@@ -40,13 +38,15 @@ client.on("shardReady", async (id) => {
     0,
     0
   );
-  runInterval(guilds.update, "Get Guild Data", exports, FREQ_DAY / 4, true);
   runInterval(
-    dailyRanking.scan,
-    "Display Player Ranking",
+    subscriptions.refresh,
+    "Refresh subscriptions",
     exports,
-    FREQ_HOUR / 24
+    FREQ_DAY,
+    true
   );
+  runInterval(guilds.update, "Get Guild Data", exports, FREQ_DAY / 4, true);
+  runInterval(dailyRanking.scan, "Display Player Ranking", exports, FREQ_HOUR);
 });
 
 client.on("shardDisconnect", async (ev, id) => {
