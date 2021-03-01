@@ -46,8 +46,8 @@
     "TOTAL_KILL_FAME": "Total Kill Fame",
     "TOTAL_DEATH_FAME": "Total Death Fame",
     "DAILY_RANKING_SET": "Afficher le Classement Quetidien est désormais définir sur '{{ mode }}'",
-		"NO_DATA": "No data available for guild '{{{ guild }}}'. Give the bot a day to fetch data and try again.",
-		"NO_DATA_SHORT": "No data available"
+    "NO_DATA": "No data available for guild '{{{ guild }}}'. Give the bot a day to fetch data and try again.",
+    "NO_DATA_SHORT": "No data available"
   },
   "HELP": {
     "VERSION": "Albion Killbot v{{ version }}",
@@ -61,7 +61,8 @@
     "MODE": "Sets the output mode, like text or image.",
     "DAILY_RANKING": "Display Daily Rankings.",
     "CATEGORY": "Enable/disable bot notifications for each category.",
-		"RANKING": "Display rankings for tracked guilds."
+    "RANKING": "Display rankings for tracked guilds.",
+    "SUBSCRIPTION": "Check or activate your subscription."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Veuillez sélectionner un channel dans le quel les notifications seront envoyées.",
@@ -103,5 +104,22 @@
     "MISSING_PARAMETERS": "Please insert all parameters. Syntax: `!category [category] <on/off>`",
     "AVAILABLE": "Invalid category. Please input one of: {{ categories }}",
     "SET": "Notifications for category `{{ category }}` are `{{ option }}`"
+  },
+  "SUBSCRIPTION": {
+    "STATUS": {
+      "DAYS_REMAINING": "Your subscription has {{{ days }}} day(s) remaining",
+      "INACTIVE": "Your subscription isn't activated yet. Please check with bot adminstrator.",
+      "EXPIRED": "Your subscription has expired."
+    },
+    "ERROR": {
+      "FETCH_FAIL": "Failed to fetch subscriber list. Please try again later.",
+      "MAIL_NOT_FOUND": "Couldn't find your e-mail in subscriber list.",
+      "PATREON_DISCORD_NOT_FOUND": "Couldn't find your account subscriber list. Please link your Discord account with patreon account and try again."
+    },
+    "ALREADY_SUBSCRIBED": "Sorry, you have a subscription in another server. Please deactivate there and try again.",
+    "ACTIONS": "Invalid action, please select one of: {{ actions }}.",
+    "CANCELLED": "Your subscription has been cancelled.",
+    "CONFIRMED": "Your subscription is now confirmed. You can now start using the bot.",
+    "FAILED": "Failed to validate subscription: {{ reason }}"
   }
 }

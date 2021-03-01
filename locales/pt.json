@@ -46,8 +46,8 @@
     "TOTAL_KILL_FAME": "Fama Total de Abates",
     "TOTAL_DEATH_FAME": "Fama Total de Mortes",
     "DAILY_RANKING_SET": "Mostrar Ranking Diário está agora definido para '{{ mode }}'",
-		"NO_DATA": "Sem dados disponíveis para a guilda '{{{ guild }}}'. Aguarde um dia e tente novamente.",
-		"NO_DATA_SHORT": "Sem dados"
+    "NO_DATA": "Sem dados disponíveis para a guilda '{{{ guild }}}'. Aguarde um dia e tente novamente.",
+    "NO_DATA_SHORT": "Sem dados"
   },
   "HELP": {
     "VERSION": "Albion Killbot v{{ version }}",
@@ -61,7 +61,8 @@
     "MODE": "Define o modo de envio de eventos, como texto ou imagem.",
     "DAILY_RANKING": "Mostrar o Ranking Diário.",
     "CATEGORY": "Ativa/desativa notificações de cada categoria.",
-		"RANKING": "Mostra os rankings de cada guilda rastreada."
+    "RANKING": "Mostra os rankings de cada guilda rastreada.",
+    "SUBSCRIPTION": "Verifica ou ativa sua assinatura."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",
@@ -103,5 +104,22 @@
     "MISSING_PARAMETERS": "Parametros faltando. Sintaxe: `!category [categoria] <on/off>`",
     "AVAILABLE": "Categoria invalida. Escolha um destes: {{ categories }}",
     "SET": "Notificações da categoria `{{ category }}` estão `{{ option }}s`"
+  },
+  "SUBSCRIPTION": {
+    "STATUS": {
+      "DAYS_REMAINING": "Sua assinatura possui {{{ days }}} dia(s) restando",
+      "INACTIVE": "Sua assinatura ainda não foi ativada. Por favor contate o administrador do bot.",
+      "EXPIRED": "Sua assinatura expirou."
+    },
+    "ERROR": {
+      "FETCH_FAIL": "Falha ao buscar lista de assinantes. Tente novamente mais tarde.",
+      "MAIL_NOT_FOUND": "Não fui capaz de encontrar seu e-mail na lista de assinantes.",
+      "PATREON_DISCORD_NOT_FOUND": "Não encontrei sua conta na lista de assinantes. Por favor, vincule sua conta Discord com a conta Patreon e tente novamente."
+    },
+    "ALREADY_SUBSCRIBED": "Sorry, you have a subscription in another server. Please deactivate there and try again.",
+    "ACTIONS": "Ação inválida, use um destes: {{ actions }}.",
+    "CANCELLED": "Sua assinatura foi cancelada.",
+    "CONFIRMED": "Sua assinatura foi confirmada com sucesso. Aproveite o bot :)",
+    "FAILED": "Não foi possível validar assinatura: {{ reason }}"
   }
 }

@@ -4,6 +4,7 @@ const LINE_LENGTH = 70;
 module.exports = {
   aliases: ["help"],
   description: "HELP.HELP",
+  public: true,
   run: (client, guild, message) => {
     const l = getI18n(guild.config.lang);
     let response = "```\n";
@@ -15,11 +16,11 @@ module.exports = {
       response += "\n\n";
     }
 
-    Object.keys(client.commands).forEach(key => {
+    Object.keys(client.commands).forEach((key) => {
       const command = client.commands[key];
       let commandKey = `!${command.aliases[0]}`;
       if (command.args && command.args.length > 0) {
-        command.args.forEach(arg => {
+        command.args.forEach((arg) => {
           commandKey += ` [${arg}]`;
           ("");
         });

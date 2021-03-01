@@ -1,6 +1,6 @@
 const logger = require("./logger")("config");
 const database = require("./database");
-const { hasSubscription } = require("./subscriptions");
+const { hasSubscription, getConfigBySubscription } = require("./subscriptions");
 
 exports.categories = ["general", "events", "battles", "rankings"];
 
@@ -20,7 +20,7 @@ const DEFAULT_CONFIG = {
   lang: "en",
 };
 
-exports.getConfig = async guild => {
+exports.getConfig = async (guild) => {
   const collection = database.collection(SERVER_CONFIG_COLLECTION);
   if (!collection) {
     return DEFAULT_CONFIG;
@@ -33,9 +33,22 @@ exports.getConfig = async guild => {
   }
 };
 
-exports.getConfigByGuild = async guildList => {
+exports.getConfigBySubscription = async (userId) => {
+  const collection = database.collection(SERVER_CONFIG_COLLECTION);
+  if (!collection) {
+    return null;
+  }
+  try {
+    return await collection.findOne({ "subscription.owner": userId });
+  } catch (e) {
+    logger.error(`Unable to find guildConfig for guild ${guild}: ${e}`);
+    return null;
+  }
+};
+
+exports.getConfigByGuild = async (guildList) => {
   const configByGuild = {};
-  guildList.forEach(guild => {
+  guildList.forEach((guild) => {
     configByGuild[guild.id] = DEFAULT_CONFIG;
   });
 
@@ -43,7 +56,7 @@ exports.getConfigByGuild = async guildList => {
   if (!collection) return configByGuild;
   try {
     const results = await collection.find({}).toArray();
-    results.forEach(config => {
+    results.forEach((config) => {
       if (!hasSubscription(config)) return;
       if (configByGuild[config.guild]) {
         configByGuild[config.guild] = config;
@@ -51,19 +64,25 @@ exports.getConfigByGuild = async guildList => {
     });
     return configByGuild;
   } catch (e) {
-    logger.error(`Unable to find guildConfig for ${guildList.length} guilds: ${e}`);
+    logger.error(
+      `Unable to find guildConfig for ${guildList.length} guilds: ${e}`
+    );
     return configByGuild;
   }
 };
 
-exports.setConfig = async guild => {
+exports.setConfig = async (guild) => {
   const collection = database.collection(SERVER_CONFIG_COLLECTION);
   if (!collection) {
     return false;
   }
   try {
     guild.config.name = guild.name;
-    const guildConfig = await collection.updateOne({ guild: guild.id }, { $set: guild.config }, { upsert: true });
+    const guildConfig = await collection.updateOne(
+      { guild: guild.id },
+      { $set: guild.config },
+      { upsert: true }
+    );
     return guildConfig;
   } catch (e) {
     logger.error(`Unable to write guildConfig for guild ${guild}: ${e}`);
@@ -71,7 +90,7 @@ exports.setConfig = async guild => {
   }
 };
 
-exports.deleteConfig = async guild => {
+exports.deleteConfig = async (guild) => {
   const collection = database.collection(SERVER_CONFIG_COLLECTION);
   if (!collection) {
     return false;
