@@ -32,6 +32,58 @@ exports.hasSubscription = (config) => {
 };
 
 let campaigns;
+const fetchPatreonPledges = async () => {
+  if (!PATREON_ACCESS_TOKEN) return null;
+  logger.debug("Fetching patreon pledges...");
+
+  const patreon = axios.create({
+    baseURL: PATREON_API,
+    headers: {
+      Authorization: `Bearer ${PATREON_ACCESS_TOKEN}`,
+    },
+    paramsSerializer: (params) =>
+      Object.keys(params)
+        .map((k) => `${encodeURI(k)}=${params[k]}`)
+        .join("&"),
+  });
+
+  let pledges = [];
+  let users = [];
+  try {
+    campaigns = campaigns || (await patreon.get("/campaigns")).data.data;
+    for (let campaign of campaigns) {
+      const campaignPledges = (
+        await patreon.get(`/campaigns/${campaign.id}/members`, {
+          params: {
+            include: "user",
+            ["fields[user]"]: "url,social_connections",
+            ["fields[member]"]: "patron_status,next_charge_date",
+            ["page[count]"]: 100,
+          },
+        })
+      ).data;
+
+      pledges = pledges.concat(campaignPledges.data);
+      users = users.concat(
+        campaignPledges.included.filter((i) => i.type === "user")
+      );
+    }
+  } catch (e) {
+    logger.error(`Failed to fetch pledge list [${e}]`);
+    throw new Error("FETCH_FAIL");
+  }
+
+  // TODO: Users apply unique
+  // TODO: Pagination via cursor
+  logger.debug(
+    `Fetch complete. Pledge: ${pledges.length} / Users: ${users.length}`
+  );
+  return {
+    pledges,
+    users,
+  };
+};
+
 exports.setSubscription = async (config, userId) => {
   if (!config) {
     logger.warn(
@@ -51,47 +103,9 @@ exports.setSubscription = async (config, userId) => {
     };
   }
 
-  const patreon = axios.create({
-    baseURL: PATREON_API,
-    headers: {
-      Authorization: `Bearer ${PATREON_ACCESS_TOKEN}`,
-    },
-    paramsSerializer: (params) =>
-      Object.keys(params)
-        .map((k) => `${encodeURI(k)}=${params[k]}`)
-        .join("&"),
-  });
-
   // Patreon subscription
-  logger.debug("Fetching patreon pledges.");
-  let pledges = [];
-  let users = [];
-  try {
-    campaigns = campaigns || (await patreon.get("/campaigns")).data.data;
-    for (let campaign of campaigns) {
-      const campaignPledges = (
-        await patreon.get(`/campaigns/${campaign.id}/members`, {
-          params: {
-            include: "user",
-            ["fields[user]"]: "url,social_connections",
-            ["fields[member]"]: "patron_status,next_charge_date",
-          },
-        })
-      ).data;
+  const { pledges, users } = await fetchPatreonPledges();
 
-      pledges = pledges.concat(campaignPledges.data);
-      users = users.concat(
-        campaignPledges.included.filter((i) => i.type === "user")
-      );
-    }
-  } catch (e) {
-    logger.error(`Failed to fetch pledge list [${e}]`);
-    throw new Error("FETCH_FAIL");
-  }
-
-  // TODO: Users apply unique
-
-  logger.debug(`${pledges.length} pledges found for ${users.length} users.`);
   for (let pledge of pledges) {
     const user = users.find((u) => u.id === pledge.relationships.user.data.id);
     if (!user) continue;
@@ -101,7 +115,7 @@ exports.setSubscription = async (config, userId) => {
     // Check if user has linked Discord account
     if (userId.toString() === discordUser.user_id) {
       // Check if the pledge is still active
-      if (patron_status !== "active_patron") {
+      if (pledge.attributes.patron_status !== "active_patron") {
         throw new Error("PLEDGE_CANCELLED");
       }
 
@@ -120,7 +134,7 @@ exports.setSubscription = async (config, userId) => {
         ...config,
         subscription: {
           owner: userId,
-          patreon: user.attributes.url,
+          patreon: user.id,
           expires: subscription.toDate(),
         },
       };
@@ -143,8 +157,51 @@ exports.cancelSubscription = (config) => {
   return config;
 };
 
-exports.refresh = ({ client }) => {
+exports.refresh = async ({ client }) => {
   if (!SUBSCRIPTIONS_ONLY) return;
+  if (!PATREON_ACCESS_TOKEN) return;
 
-  const { getConfigByGuild } = require("./config");
+  logger.info(`[#${client.shardId}] Refreshing subscriptions.`);
+  const { getConfigByGuild, setConfig } = require("./config");
+  const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
+
+  // Fetch patreon subscriptions and users
+  const { pledges } = await fetchPatreonPledges();
+
+  for (const guild of client.guilds.cache.array()) {
+    guild.config = allGuildConfigs[guild.id];
+    if (!guild.config) continue;
+    const subscription = exports.getSubscription(guild.config);
+    if (!subscription || !subscription.patreon) continue;
+    const pledge = pledges.find(
+      (p) => p.relationships.user.data.id === subscription.patreon
+    );
+
+    if (!pledge) {
+      logger.debug(
+        `[#${client.shardId}] Couldn't find pledge for ${guild.name}. Skip renew subscription.`
+      );
+      continue;
+    }
+
+    if (pledge.attributes.patron_status !== "active_patron") {
+      logger.debug(
+        `[#${client.shardId}] [${guild.name}] Pledge is cancelled. Skip renew subscription.`
+      );
+      continue;
+    }
+
+    const expires = moment(pledge.attributes.next_charge_date);
+    while (expires.diff(moment(), "days") < 1) {
+      expires.add(1, "months");
+    }
+
+    logger.debug(
+      `[${client.shardId}] [${
+        guild.name
+      }] Subscription extended until ${expires.toString()}`
+    );
+    guild.config.subscription.expires = expires.toDate();
+    await setConfig(guild);
+  }
 };

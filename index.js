@@ -9,7 +9,7 @@ const dailyRanking = require("./queries/dailyRanking");
 const database = require("./database");
 const queue = require("./queue");
 
-axios.interceptors.request.use(config => {
+axios.interceptors.request.use((config) => {
   const source = axios.CancelToken.source();
   setTimeout(() => {
     source.cancel("Client timeout");
@@ -20,7 +20,9 @@ axios.interceptors.request.use(config => {
 
 const token = process.env.DISCORD_TOKEN;
 if (!token) {
-  logger.error("Please define DISCORD_TOKEN environment variable with the discord token.");
+  logger.error(
+    "Please define DISCORD_TOKEN environment variable with the discord token."
+  );
   process.exit(1);
 }
 
@@ -29,7 +31,7 @@ const manager = new ShardingManager("./bot.js", {
   totalShards: Number(process.env.TOTAL_SHARDS) || "auto",
 });
 
-manager.on("shardCreate", shard => {
+manager.on("shardCreate", (shard) => {
   logger.info(`Launched shard #${shard.id}`);
 });
 
@@ -40,6 +42,14 @@ manager.spawn();
 runDaily(dailyRanking.clear, "Clear PvP Ranking", 0, 10);
 runInterval(events.get, "Fetch events from Albion API", {}, 10000);
 runInterval(battles.get, "Fetch battles from Albion API", {}, 60000);
-runInterval(() => {
-  logger.debug(`Memory usage (approx): ${fileSizeFormatter(process.memoryUsage().heapUsed)}`);
-}, {}, 60000);
+runInterval(
+  () => {
+    logger.debug(
+      `Memory usage (approx): ${fileSizeFormatter(
+        process.memoryUsage().heapUsed
+      )}`
+    );
+  },
+  {},
+  60000
+);

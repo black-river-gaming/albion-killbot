@@ -1,6 +1,6 @@
 const logger = require("./logger")("config");
 const database = require("./database");
-const { hasSubscription, getConfigBySubscription } = require("./subscriptions");
+const { hasSubscription } = require("./subscriptions");
 
 exports.categories = ["general", "events", "battles", "rankings"];
 

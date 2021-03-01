@@ -8,7 +8,7 @@ const events = require("./queries/events");
 const battles = require("./queries/battles");
 const dailyRanking = require("./queries/dailyRanking");
 const guilds = require("./queries/guilds");
-const { hasSubscription } = require("./subscriptions");
+const subscriptions = require("./subscriptions");
 const database = require("./database");
 const queue = require("./queue");
 
@@ -30,6 +30,8 @@ client.on("shardReady", async (id) => {
   events.subscribe(exports);
   battles.subscribe(exports);
 
+  subscriptions.refresh(exports);
+  runDaily(subscriptions.refresh, "Refresh subscriptions", exports);
   runDaily(guilds.showRanking, "Display Guild Rankings", exports);
   runDaily(
     dailyRanking.scanDaily,
@@ -77,7 +79,7 @@ client.on("message", async (message) => {
   const args = message.content.slice(COMMAND_PREFIX.length).trim().split(/ +/g);
   const command = commands[args.shift().toLowerCase()];
   if (!command) return;
-  if (!hasSubscription(guild.config) && !command.public) return;
+  if (!subscriptions.hasSubscription(guild.config) && !command.public) return;
 
   command.run(client, guild, message, args);
 });
