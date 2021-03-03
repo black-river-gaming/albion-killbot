@@ -65,7 +65,7 @@ exports.getConfigByGuild = async (guildList) => {
     return configByGuild;
   } catch (e) {
     logger.error(
-      `Unable to find guildConfig for ${guildList.length} guilds: ${e}`
+      `Unable to find guildConfig for ${guildList.length} guilds: ${e}`,
     );
     return configByGuild;
   }
@@ -77,11 +77,14 @@ exports.setConfig = async (guild) => {
     return false;
   }
   try {
+    if (!guild.config) {
+      guild.config = DEFAULT_CONFIG;
+    }
     guild.config.name = guild.name;
     const guildConfig = await collection.updateOne(
       { guild: guild.id },
       { $set: guild.config },
-      { upsert: true }
+      { upsert: true },
     );
     return guildConfig;
   } catch (e) {
