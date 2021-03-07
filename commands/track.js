@@ -52,18 +52,21 @@ module.exports = {
       return message.channel.send(l.__("TRACK.ALLIANCE_TRACKED", { name: alliance.AllianceTag }));
     } else {
       // For players and guilds, we can use the default search method
-      const track = async (dest, msg, limit = 5) => {
+      const track = async (tracked, msg, limit = 5) => {
         if (limit == 0) {
           const trackType = l.__(`TRACK.${type.toUpperCase()}S`).toLowerCase();
           return message.channel.send(l.__("TRACK.TRACKING_DISABLED", { type: trackType }));
         }
+        if (!guild.config[tracked]) {
+          guild.config[tracked] = [];
+        }
 
-        let entity = dest.find(p => p.name.localeCompare(q, undefined, { sensitivity: "base" }) === 0);
+        let entity = guild.config[tracked].find(p => p.name.localeCompare(q, undefined, { sensitivity: "base" }) === 0);
         if (entity) {
           message.channel.send(l.__("TRACK.ALREADY_TRACKED"));
           return;
         }
-        if (dest.length >= limit) {
+        if (guild.config[tracked].length >= limit) {
           message.channel.send(l.__("TRACK.LIMIT_REACHED", { limit }));
           return;
         }
@@ -78,7 +81,7 @@ module.exports = {
           message.channel.send(l.__("TRACK.NOT_FOUND"));
           return;
         }
-        dest.push({ id: entity.Id, name: entity.Name });
+        guild.config[tracked].push({ id: entity.Id, name: entity.Name });
         if (!(await setConfig(guild))) {
           message.channel.send(l.__("CONFIG_NOT_SET"));
         }
@@ -91,9 +94,9 @@ module.exports = {
 
       switch (type) {
       case "player":
-        return track(guild.config.trackedPlayers, "TRACK.PLAYER_TRACKED", getNumber(process.env.MAX_PLAYERS, 30));
+        return track("trackedPlayers", "TRACK.PLAYER_TRACKED", getNumber(process.env.MAX_PLAYERS, 30));
       case "guild":
-        return track(guild.config.trackedGuilds, "TRACK.GUILD_TRACKED", getNumber(process.env.MAX_GUILDS, 5));
+        return track("trackedGuilds", "TRACK.GUILD_TRACKED", getNumber(process.env.MAX_GUILDS, 5));
       }
     }
   },
