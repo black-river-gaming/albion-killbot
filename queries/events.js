@@ -10,7 +10,7 @@ const dailyRanking = require("./dailyRanking");
 const EVENTS_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/events";
 const EVENTS_LIMIT = 51;
 const EXCHANGE = "events";
-const PREFETCH_COUNT = Number(process.env.AMQP_PREFETCH_COUNT) || 5;
+const PREFETCH_COUNT = 1;
 
 let latestEvent;
 

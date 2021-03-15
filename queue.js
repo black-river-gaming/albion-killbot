@@ -59,7 +59,7 @@ exports.subscribe = async(exchange, queue, cb, { prefetch }) => {
     // Create channel
     const channel = await client.createChannel();
     if (prefetch) {
-      channel.prefetch(prefetch);
+      channel.prefetch(prefetch, false);
     }
 
     // Assert exchange
