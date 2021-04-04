@@ -72,9 +72,13 @@ client.on("message", async (message) => {
   // For now, bot only accepts commands from server admins
   if (!message.member.hasPermission("ADMINISTRATOR")) return;
 
-  // This is needed to inherit configs to guild object
+  // Fetch guild config and create default if not config is found
   const guild = message.guild;
   guild.config = await config.getConfig(guild);
+  if (!guild.config) {
+    logger.info(`Guild "${guild.name}" has no configuration. Creating default settings.`);
+    guild.config = await config.setConfig(guild);
+  }
 
   const args = message.content.slice(COMMAND_PREFIX.length).trim().split(/ +/g);
   const command = commands[args.shift().toLowerCase()];
@@ -170,7 +174,7 @@ exports.sendGuildMessage = async (guild, message, category = "general") => {
 exports.client = client;
 
 (async () => {
-  database.connect();
+  await database.connect();
   await queue.connect();
   await client.login();
 })();

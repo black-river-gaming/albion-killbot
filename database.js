@@ -19,11 +19,11 @@ const client = new MongoClient(MONGODB_URL, {
 });
 let db;
 
-exports.connect = async () => {
-  const isConnected = () => {
-    return !!client && !!client.topology && client.topology.isConnected();
-  };
+const isConnected = () => {
+  return !!client && !!client.topology && client.topology.isConnected();
+};
 
+const checkConnection = async () => {
   const exit = false;
   while (!exit) {
     try {
@@ -34,6 +34,22 @@ exports.connect = async () => {
         db = client.db();
       }
       await sleep(60000);
+    } catch (e) {
+      logger.error(`Unable to connect to database: ${e}`);
+      await sleep(5000);
+    }
+  }
+};
+
+exports.connect = async () => {
+  while (!isConnected()) {
+    try {
+      logger.debug("Connecting to database...");
+      await client.connect();
+      logger.info("Connection to database stabilished.");
+      db = client.db();
+      checkConnection();
+      return db;
     } catch (e) {
       logger.error(`Unable to connect to database: ${e}`);
       await sleep(5000);

@@ -11,7 +11,7 @@ exports.getSubscription = (config) => {
   if (!SUBSCRIPTIONS_ONLY) return null;
   if (!config) {
     logger.warn(
-      "Do not call hasSubscription method for guilds that have not fetched config."
+      "Do not call hasSubscription method for guilds that have not fetched config.",
     );
     return false;
   }
@@ -23,7 +23,7 @@ exports.hasSubscription = (config) => {
   if (!SUBSCRIPTIONS_ONLY) return true;
   if (!config) {
     logger.warn(
-      "Do not call hasSubscription method for guilds that have not fetched config."
+      "Do not call hasSubscription method for guilds that have not fetched config.",
     );
     return false;
   }
@@ -65,7 +65,7 @@ const fetchPatreonPledges = async () => {
 
       pledges = pledges.concat(campaignPledges.data);
       users = users.concat(
-        campaignPledges.included.filter((i) => i.type === "user")
+        campaignPledges.included.filter((i) => i.type === "user"),
       );
     }
   } catch (e) {
@@ -76,7 +76,7 @@ const fetchPatreonPledges = async () => {
   // TODO: Users apply unique
   // TODO: Pagination via cursor
   logger.debug(
-    `Fetch complete. Pledge: ${pledges.length} / Users: ${users.length}`
+    `Fetch complete. Pledge: ${pledges.length} / Users: ${users.length}`,
   );
   return {
     pledges,
@@ -87,7 +87,7 @@ const fetchPatreonPledges = async () => {
 exports.setSubscription = async (config, userId) => {
   if (!config) {
     logger.warn(
-      "Do not call hasSubscription method for guilds that have not fetched config."
+      "Do not call hasSubscription method for guilds that have not fetched config.",
     );
     return null;
   }
@@ -128,7 +128,7 @@ exports.setSubscription = async (config, userId) => {
       logger.debug(
         `[${config.name}] Subscription validated for Patreon user ${
           user.attributes.url
-        }. Subscription until ${subscription.toString()}`
+        }. Subscription until ${subscription.toString()}`,
       );
       return {
         ...config,
@@ -147,7 +147,7 @@ exports.setSubscription = async (config, userId) => {
 exports.cancelSubscription = (config) => {
   if (!config) {
     logger.warn(
-      "Do not call hasSubscription method for guilds that have not fetched config."
+      "Do not call hasSubscription method for guilds that have not fetched config.",
     );
     return null;
   }
@@ -174,19 +174,19 @@ exports.refresh = async ({ client }) => {
     const subscription = exports.getSubscription(guild.config);
     if (!subscription || !subscription.patreon) continue;
     const pledge = pledges.find(
-      (p) => p.relationships.user.data.id === subscription.patreon
+      (p) => p.relationships.user.data.id === subscription.patreon,
     );
 
     if (!pledge) {
       logger.debug(
-        `[#${client.shardId}] Couldn't find pledge for ${guild.name}. Skip renew subscription.`
+        `[#${client.shardId}] Couldn't find pledge for ${guild.name}. Skip renew subscription.`,
       );
       continue;
     }
 
     if (pledge.attributes.patron_status !== "active_patron") {
       logger.debug(
-        `[#${client.shardId}] [${guild.name}] Pledge is cancelled. Skip renew subscription.`
+        `[#${client.shardId}] [${guild.name}] Pledge is cancelled. Skip renew subscription.`,
       );
       continue;
     }
@@ -199,7 +199,7 @@ exports.refresh = async ({ client }) => {
     logger.debug(
       `[${client.shardId}] [${
         guild.name
-      }] Subscription extended until ${expires.toString()}`
+      }] Subscription extended until ${expires.toString()}`,
     );
     guild.config.subscription.expires = expires.toDate();
     await setConfig(guild);

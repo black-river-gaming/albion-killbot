@@ -21,7 +21,7 @@ axios.interceptors.request.use((config) => {
 const token = process.env.DISCORD_TOKEN;
 if (!token) {
   logger.error(
-    "Please define DISCORD_TOKEN environment variable with the discord token."
+    "Please define DISCORD_TOKEN environment variable with the discord token.",
   );
   process.exit(1);
 }
@@ -46,10 +46,10 @@ runInterval(
   () => {
     logger.debug(
       `Memory usage (approx): ${fileSizeFormatter(
-        process.memoryUsage().heapUsed
-      )}`
+        process.memoryUsage().heapUsed,
+      )}`,
     );
   },
   {},
-  60000
+  60000,
 );
