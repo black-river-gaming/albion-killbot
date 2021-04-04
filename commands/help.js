@@ -5,7 +5,7 @@ module.exports = {
   aliases: ["help"],
   description: "HELP.HELP",
   public: true,
-  run: (client, guild, message) => {
+  run: async (client, guild, message) => {
     const l = getI18n(guild.config.lang);
     let response = "```\n";
 
@@ -34,10 +34,6 @@ module.exports = {
     });
 
     response += "```";
-    message.channel.send(response);
-
-    if (!guild.config.channel) {
-      message.channel.send(l.__("CHANNEL_NOT_SET"));
-    }
+    await message.channel.send(response);
   },
 };

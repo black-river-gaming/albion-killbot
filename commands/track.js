@@ -85,11 +85,7 @@ module.exports = {
         if (!(await setConfig(guild))) {
           message.channel.send(l.__("CONFIG_NOT_SET"));
         }
-        message.channel.send(l.__(msg, { name: entity.Name }));
-
-        if (!guild.config.channel) {
-          message.channel.send(l.__("CHANNEL_NOT_SET"));
-        }
+        await message.channel.send(l.__(msg, { name: entity.Name }));
       };
 
       switch (type) {

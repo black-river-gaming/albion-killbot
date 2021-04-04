@@ -85,7 +85,12 @@ client.on("message", async (message) => {
   if (!command) return;
   if (!subscriptions.hasSubscription(guild.config) && !command.public) return;
 
-  command.run(client, guild, message, args);
+  await command.run(client, guild, message, args);
+
+  if (!guild.config.channel) {
+    const l = messages.getI18n(guild);
+    message.channel.send(l.__("CHANNEL_NOT_SET"));
+  }
 });
 
 client.on("guildCreate", async (guild) => {

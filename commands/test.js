@@ -20,7 +20,7 @@ module.exports = {
         try {
           await channel.send(l.__("TEST_MSG", { channel: `${channel}` }));
         } catch (e) {
-          message.channel.send(l.__("TEST_FAIL", { channel: `${channel}` }));
+          await message.channel.send(l.__("TEST_FAIL", { channel: `${channel}` }));
         }
       }
     }

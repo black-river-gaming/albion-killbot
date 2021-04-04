@@ -28,6 +28,6 @@ module.exports = {
       message.channel.send(l.__("CONFIG_NOT_SET"));
     }
 
-    message.channel.send(l.__("MODE.SET", { mode }));
+    await message.channel.send(l.__("MODE.SET", { mode }));
   },
 };

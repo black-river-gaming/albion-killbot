@@ -37,6 +37,6 @@ module.exports = {
     }
 
     option = option ? l.__("GENERAL.ENABLED") : l.__("GENERAL.DISABLED");
-    message.channel.send(l.__("CATEGORY.SET", { category, option }));
+    await message.channel.send(l.__("CATEGORY.SET", { category, option }));
   },
 };
