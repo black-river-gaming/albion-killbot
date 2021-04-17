@@ -1,11 +1,23 @@
-FROM node:14-stretch
-
+FROM node:14-stretch AS build
 WORKDIR /app
 
-COPY package.json .
-COPY yarn.lock .
-RUN yarn install --production --frozen-lockfile && yarn cache clean
+# RUN apk update && apk add yarn curl bash python g++ make && rm -rf /var/cache/apk/*
+# Install node-prune (https://github.com/tj/node-prune)
+RUN curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash -s -- -b /usr/local/bin
 
+# Install project dependencies and prune unecessary files
+COPY package*.json ./
+RUN yarn install --production --frozen-lockfile && yarn cache clean
+RUN /usr/local/bin/node-prune
+
+# Copy all files except those listed in .dockerignore
 COPY . .
 
-CMD ["yarn", "start"]
+FROM node:14-stretch
+WORKDIR /app
+
+# Copy artifacts from build stage to reduce image size
+COPY --from=build /app .
+
+# Default environment and command to be overriden in each environment
+CMD [ "yarn", "start" ]
