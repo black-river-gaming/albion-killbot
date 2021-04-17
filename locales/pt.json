@@ -121,5 +121,8 @@
     "CANCELLED": "Sua assinatura foi cancelada.",
     "CONFIRMED": "Sua assinatura foi confirmada com sucesso. Aproveite o bot :)",
     "FAILED": "Não foi possível validar assinatura: {{ reason }}"
+  },
+  "PREFIX": {
+    "SET_PREFIX": "O prefixo foi definido para '{{ prefix }}'. Seus comandos serão chamado usando {{prefix}}commando a partir de agora."
   }
 }

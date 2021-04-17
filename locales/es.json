@@ -121,5 +121,8 @@
     "CANCELLED": "Your subscription has been cancelled.",
     "CONFIRMED": "Your subscription is now confirmed. You can now start using the bot.",
     "FAILED": "Failed to validate subscription: {{ reason }}"
+  },
+  "PREFIX": {
+    "SET_PREFIX": "The bot prefix is not set to '{{ prefix }}'. Your commands will be called using {{prefix}}command now."
   }
 }
