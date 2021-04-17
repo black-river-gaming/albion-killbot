@@ -62,7 +62,8 @@
     "DAILY_RANKING": "Display Daily Rankings.",
     "CATEGORY": "Enable/disable bot notifications for each category.",
     "RANKING": "Display rankings for tracked guilds.",
-    "SUBSCRIPTION": "Check or activate your subscription."
+    "SUBSCRIPTION": "Check or activate your subscription.",
+    "PREFIX": "Change bot prefix."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Пожалуйста, введите канал для уведомлений.",

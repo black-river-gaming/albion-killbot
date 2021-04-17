@@ -62,7 +62,8 @@
     "DAILY_RANKING": "Mostrar o Ranking Diário.",
     "CATEGORY": "Ativa/desativa notificações de cada categoria.",
     "RANKING": "Mostra os rankings de cada guilda rastreada.",
-    "SUBSCRIPTION": "Verifica ou ativa sua assinatura."
+    "SUBSCRIPTION": "Verifica ou ativa sua assinatura.",
+    "PREFIX": "Muda o prefixo do bot."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",
