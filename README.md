@@ -35,10 +35,10 @@ If you want to send your notifications to different channels, simply set their c
 
 Categories are:
 
-* **general**: Any message not related to other categories. Default category.
-* **events**: Kills and Deaths of tracked entities.
-* **battles**: Battles between guilds and alliances.
-* **rankings**: Monthly guild rankings and Daily PvP rankings.
+- **general**: Any message not related to other categories. Default category.
+- **events**: Kills and Deaths of tracked entities.
+- **battles**: Battles between guilds and alliances.
+- **rankings**: Monthly guild rankings and Daily PvP rankings.
 
 ```
 !channel #killboard events
@@ -71,22 +71,26 @@ To stop tracking there guilds/players, just swap `!track` for `!untrack`
 To set up the bot in a self-hosted way:
 
 1. Clone the repository
+
 ```
 git clone git@github.com:agnjunio/albion-killbot.git
 cd albion-killbot
 ```
 
 2. Run yarn to install dependencies
+
 ```
 yarn
 ```
 
 3. Create an .env file or set the environment variables that you wish to use, following the example
+
 ```
 cp .env.example .env
 ```
 
 4. Run the bot
+
 ```
 yarn start
 ```

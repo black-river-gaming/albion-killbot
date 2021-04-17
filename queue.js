@@ -3,7 +3,7 @@ const logger = require("./logger")("queue");
 const { sleep } = require("./utils");
 
 const RABBITMQ_URL = process.env.RABBITMQ_URL;
-const QUEUE_MAX_LENGTH  = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
+const QUEUE_MAX_LENGTH = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
 const QUEUE_MESSAGE_TTL = 1000 * 60 * 60 * 4; // 4 hours
 
 if (!RABBITMQ_URL) {
@@ -22,7 +22,7 @@ exports.connect = async () => {
     logger.debug("Connecting to message broker...");
     client = await amqp.connect(RABBITMQ_URL);
     channels = {};
-    subscriptions.forEach(fn => fn());
+    subscriptions.forEach((fn) => fn());
 
     logger.info("Connection to message broker stabilished.");
   } catch (e) {
@@ -31,7 +31,7 @@ exports.connect = async () => {
     return exports.connect();
   }
 
-  client.on("err", err => logger.error(`Message broker connection error: ${err}`));
+  client.on("err", (err) => logger.error(`Message broker connection error: ${err}`));
 
   client.on("close", async () => {
     logger.error("Message broker connection closed. Trying to reconnect...");
@@ -54,7 +54,7 @@ exports.publish = async (exchange, routingKey, content) => {
 
 // This will ensure that subscriptions will be restored when the connection resumes
 // It wraps the subscription function so it can be recalled on server reconnections
-exports.subscribe = async(exchange, queue, cb, { prefetch }) => {
+exports.subscribe = async (exchange, queue, cb, { prefetch }) => {
   const subFn = async () => {
     // Create channel
     const channel = await client.createChannel();
@@ -80,12 +80,16 @@ exports.subscribe = async(exchange, queue, cb, { prefetch }) => {
     await channel.bindQueue(q.queue, exchange, "");
 
     // Consume queue callback
-    await channel.consume(q.queue, async (msg) => {
-      if (await cb(msg)) channel.ack(msg);
-      else channel.nack(msg);
-    }, {
-      exclusive: true,
-    });
+    await channel.consume(
+      q.queue,
+      async (msg) => {
+        if (await cb(msg)) channel.ack(msg);
+        else channel.nack(msg);
+      },
+      {
+        exclusive: true,
+      },
+    );
   };
 
   await subFn();
@@ -96,7 +100,7 @@ exports.unsubscribeAll = async () => {
   subscriptions = [];
 };
 
-exports.assertChannel = async(id, prefetch = 0) => {
+exports.assertChannel = async (id, prefetch = 0) => {
   if (!channels[id]) {
     channels[id] = await client.createChannel();
     if (prefetch) {

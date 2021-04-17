@@ -34,7 +34,7 @@ exports.get = async () => {
         },
         timeout: 60000,
       });
-      const foundLatest = !res.data.every(evt => {
+      const foundLatest = !res.data.every((evt) => {
         if (evt.EventId <= latestEvent.EventId) return false;
         events.push(evt);
         return true;
@@ -70,9 +70,9 @@ const getTrackedEvent = (event, { trackedPlayers, trackedGuilds, trackedAlliance
     return null;
   }
 
-  const playerIds = trackedPlayers.map(t => t.id);
-  const guildIds = trackedGuilds.map(t => t.id);
-  const allianceIds = trackedAlliances.map(t => t.id);
+  const playerIds = trackedPlayers.map((t) => t.id);
+  const guildIds = trackedGuilds.map((t) => t.id);
+  const allianceIds = trackedAlliances.map((t) => t.id);
 
   // Ignore Arena kills or Duel kills
   if (event.TotalVictimKillFame <= 0) {
@@ -83,13 +83,13 @@ const getTrackedEvent = (event, { trackedPlayers, trackedGuilds, trackedAlliance
   // Since we are parsing from newer to older events
   // we need to use FILO array
   const goodEvent =
-      allianceIds.indexOf(event.Killer.AllianceId) >= 0 ||
-      guildIds.indexOf(event.Killer.GuildId) >= 0 ||
-      playerIds.indexOf(event.Killer.Id) >= 0;
+    allianceIds.indexOf(event.Killer.AllianceId) >= 0 ||
+    guildIds.indexOf(event.Killer.GuildId) >= 0 ||
+    playerIds.indexOf(event.Killer.Id) >= 0;
   const badEvent =
-      allianceIds.indexOf(event.Victim.AllianceId) >= 0 ||
-      guildIds.indexOf(event.Victim.GuildId) >= 0 ||
-      playerIds.indexOf(event.Victim.Id) >= 0;
+    allianceIds.indexOf(event.Victim.AllianceId) >= 0 ||
+    guildIds.indexOf(event.Victim.GuildId) >= 0 ||
+    playerIds.indexOf(event.Victim.Id) >= 0;
   if (goodEvent || badEvent) {
     // We need to create a new object here for every guild
     return Object.assign({}, event, { good: goodEvent });
@@ -101,7 +101,9 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
   // Set consume callback
   const cb = async (msg) => {
     const evt = JSON.parse(msg.content.toString());
-    if (!evt) { return; }
+    if (!evt) {
+      return;
+    }
 
     try {
       const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
@@ -114,7 +116,7 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
         logger.info(`[Shard #${client.shardId}] Sending event ${event.EventId} to guild "${guild.name}".`);
         dailyRanking.add(guild, event, guild.config);
         const mode = guild.config.mode;
-        const hasInventory = event.Victim.Inventory.filter(i => i != null).length > 0;
+        const hasInventory = event.Victim.Inventory.filter((i) => i != null).length > 0;
 
         try {
           if (mode === "image") {

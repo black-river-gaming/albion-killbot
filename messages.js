@@ -51,7 +51,7 @@ exports.embedEvent = (event, locale) => {
       return sum + participant.DamageDone;
     }, 0);
     const assist = [];
-    event.Participants.forEach(participant => {
+    event.Participants.forEach((participant) => {
       // Self-damage isn't assist :P
       if (participant.Name === event.Victim.Name) {
         return;
@@ -194,7 +194,7 @@ exports.embedBattle = (battle, locale) => {
     duration,
   });
 
-  const line = item => {
+  const line = (item) => {
     return l.__("BATTLE.LINE", {
       name: item.name,
       total: item.total,
@@ -205,17 +205,17 @@ exports.embedBattle = (battle, locale) => {
   };
 
   const fields = [];
-  const players = Object.keys(battle.players).map(id => battle.players[id]);
-  Object.keys(battle.alliances).forEach(id => {
+  const players = Object.keys(battle.players).map((id) => battle.players[id]);
+  Object.keys(battle.alliances).forEach((id) => {
     const alliance = battle.alliances[id];
     alliance.total = players.reduce((sum, player) => sum + Number(player.allianceId === alliance.id), 0);
     const name = line(alliance);
 
     let value = "";
     Object.values(battle.guilds)
-      .filter(guild => guild.allianceId === id)
-      .forEach(guild => {
-        guild.total =players.reduce((sum, player) => sum + Number(player.guildId === guild.id), 0);
+      .filter((guild) => guild.allianceId === id)
+      .forEach((guild) => {
+        guild.total = players.reduce((sum, player) => sum + Number(player.guildId === guild.id), 0);
         value += line(guild);
         value += "\n";
       });
@@ -226,13 +226,13 @@ exports.embedBattle = (battle, locale) => {
     });
   });
 
-  const guildsWithoutAlliance = Object.values(battle.guilds).filter(guild => !guild.allianceId);
-  const playersWithoutGuild = Object.values(battle.players).filter(player => !player.guildId);
+  const guildsWithoutAlliance = Object.values(battle.guilds).filter((guild) => !guild.allianceId);
+  const playersWithoutGuild = Object.values(battle.players).filter((player) => !player.guildId);
   if (guildsWithoutAlliance.length > 0 || playersWithoutGuild.length > 0) {
     const name = l.__("BATTLE.NO_ALLIANCE");
 
     let value = "";
-    guildsWithoutAlliance.forEach(guild => {
+    guildsWithoutAlliance.forEach((guild) => {
       guild.total = players.reduce((sum, player) => sum + Number(player.guildId === guild.id), 0);
       value += line(guild);
       value += "\n";
@@ -246,7 +246,7 @@ exports.embedBattle = (battle, locale) => {
         deaths: 0,
         killFame: 0,
       };
-      playersWithoutGuild.forEach(player => {
+      playersWithoutGuild.forEach((player) => {
         stats.total += 1;
         stats.kills += player.kills;
         stats.deaths += player.deaths;
@@ -286,7 +286,7 @@ exports.embedRankings = (guild, locale) => {
       const nodata = l.__("RANKING.NO_DATA_SHORT");
       value += `\n${nodata}${" ".repeat(RANKING_LINE_LENGTH - nodata.length)}`;
     }
-    ranking.forEach(item => {
+    ranking.forEach((item) => {
       if (pvp) {
         const fameValue = humanFormatter(item.KillFame, 2);
         value += `\n${item.Name}${" ".repeat(RANKING_LINE_LENGTH - fameValue.length - item.Name.length)}${fameValue}`;
@@ -340,12 +340,12 @@ exports.embedRankings = (guild, locale) => {
   };
 };
 
-exports.embedList = config => {
+exports.embedList = (config) => {
   const l = exports.getI18n(config.lang);
 
-  const configToList = list => {
+  const configToList = (list) => {
     if (!list || list.length === 0) return l.__("TRACK.NONE");
-    return list.map(item => item.name).join("\n");
+    return list.map((item) => item.name).join("\n");
   };
 
   return {
@@ -381,7 +381,7 @@ exports.embedDailyRanking = (rankings, locale) => {
       const nodata = l.__("RANKING.NO_DATA_SHORT");
       value += `\n${nodata}${" ".repeat(RANKING_LINE_LENGTH - nodata.length)}`;
     }
-    ranking.forEach(item => {
+    ranking.forEach((item) => {
       const nameValue = item[name];
       const numberValue = humanFormatter(item[number], 2);
       value += `\n${nameValue}${" ".repeat(RANKING_LINE_LENGTH - numberValue.length - nameValue.length)}${numberValue}`;

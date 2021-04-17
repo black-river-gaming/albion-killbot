@@ -23,7 +23,10 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon .",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "prettier": "prettier -c .",
+    "prettier:fix": "prettier --write ."
   },
   "engines": {
     "node": "14.x",
@@ -31,6 +34,8 @@
   },
   "devDependencies": {
     "eslint": "^6.8.0",
-    "nodemon": "^2.0.2"
+    "eslint-config-prettier": "^8.2.0",
+    "nodemon": "^2.0.2",
+    "prettier": "^2.2.1"
   }
 }

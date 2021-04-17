@@ -2,21 +2,17 @@ module.exports = {
   env: {
     commonjs: true,
     es6: true,
-    node: true
+    node: true,
   },
-  extends: "eslint:recommended",
+  extends: ["eslint:recommended", "prettier"],
   globals: {
     Atomics: "readonly",
-    SharedArrayBuffer: "readonly"
+    SharedArrayBuffer: "readonly",
   },
   parserOptions: {
-    ecmaVersion: 2018
+    ecmaVersion: 2018,
   },
   rules: {
-    indent: ["error", 2],
-    quotes: ["error", "double"],
-    semi: ["error", "always"],
-    "comma-dangle": ["error", "always-multiline"],
-    "max-len": ["error", { "code": 120, "ignoreTemplateLiterals": true }]
-  }
+    "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+  },
 };

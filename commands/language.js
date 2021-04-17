@@ -5,7 +5,7 @@ const { getI18n } = require("../messages");
 
 const langs = [];
 const langFiles = readdirSync(path.join(__dirname, "..", "locales"));
-langFiles.forEach(langFile => {
+langFiles.forEach((langFile) => {
   langs.push(path.parse(langFile).name);
 });
 
@@ -17,9 +17,7 @@ module.exports = {
     const l = getI18n(guild.config.lang);
 
     if (!args[0]) {
-      return message.channel.send(
-        l.__("LANGUAGE.AVAILABLE", { langs: langs.join(", ") }),
-      );
+      return message.channel.send(l.__("LANGUAGE.AVAILABLE", { langs: langs.join(", ") }));
     }
 
     const lang = args[0].toLowerCase();

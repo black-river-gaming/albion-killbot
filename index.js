@@ -20,9 +20,7 @@ axios.interceptors.request.use((config) => {
 
 const token = process.env.DISCORD_TOKEN;
 if (!token) {
-  logger.error(
-    "Please define DISCORD_TOKEN environment variable with the discord token.",
-  );
+  logger.error("Please define DISCORD_TOKEN environment variable with the discord token.");
   process.exit(1);
 }
 
@@ -44,11 +42,7 @@ runInterval(events.get, "Fetch events from Albion API", {}, 10000);
 runInterval(battles.get, "Fetch battles from Albion API", {}, 60000);
 runInterval(
   () => {
-    logger.debug(
-      `Memory usage (approx): ${fileSizeFormatter(
-        process.memoryUsage().heapUsed,
-      )}`,
-    );
+    logger.debug(`Memory usage (approx): ${fileSizeFormatter(process.memoryUsage().heapUsed)}`);
   },
   {},
   60000,

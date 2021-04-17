@@ -7,9 +7,9 @@ const RANKING_COLLECTION = "dailyRanking";
 
 const isTracked = (player, config) => {
   return (
-    config.trackedPlayers.some(t => t.id === player.Id) ||
-    config.trackedGuilds.some(t => t.id === player.GuildId) ||
-    config.trackedAlliances.some(t => t.id === player.AllianceId)
+    config.trackedPlayers.some((t) => t.id === player.Id) ||
+    config.trackedGuilds.some((t) => t.id === player.GuildId) ||
+    config.trackedAlliances.some((t) => t.id === player.AllianceId)
   );
 };
 
@@ -135,4 +135,4 @@ exports.scan = async ({ client, sendGuildMessage }, mode) => {
   }
 };
 
-exports.scanDaily = async bot => exports.scan(bot, "daily");
+exports.scanDaily = async (bot) => exports.scan(bot, "daily");

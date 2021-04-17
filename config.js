@@ -41,7 +41,7 @@ exports.getConfigBySubscription = async (userId) => {
   try {
     return await collection.findOne({ "subscription.owner": userId });
   } catch (e) {
-    logger.error(`Unable to find guildConfig for guild ${guild}: ${e}`);
+    logger.error(`Unable to find guildConfig for discord user ${userId}: ${e}`);
     return null;
   }
 };
@@ -64,9 +64,7 @@ exports.getConfigByGuild = async (guildList) => {
     });
     return configByGuild;
   } catch (e) {
-    logger.error(
-      `Unable to find guildConfig for ${guildList.length} guilds: ${e}`,
-    );
+    logger.error(`Unable to find guildConfig for ${guildList.length} guilds: ${e}`);
     return configByGuild;
   }
 };
@@ -81,11 +79,7 @@ exports.setConfig = async (guild) => {
       guild.config = DEFAULT_CONFIG;
     }
     guild.config.name = guild.name;
-    const guildConfig = await collection.updateOne(
-      { guild: guild.id },
-      { $set: guild.config },
-      { upsert: true },
-    );
+    const guildConfig = await collection.updateOne({ guild: guild.id }, { $set: guild.config }, { upsert: true });
     return guildConfig;
   } catch (e) {
     logger.error(`Unable to write guildConfig for guild ${guild}: ${e}`);

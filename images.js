@@ -97,7 +97,7 @@ const getItemFile = async (item, tries = 0) => {
       }).promise();
       return new Promise((resolve, reject) => {
         writer.on("finish", () => resolve(itemFile));
-        writer.on("error", e => reject(e));
+        writer.on("error", (e) => reject(e));
         writer.end(data.Body);
       });
     } catch (e) {
@@ -141,7 +141,7 @@ const getItemFile = async (item, tries = 0) => {
 
           resolve(itemFile);
         });
-        writer.on("error", e => reject(e));
+        writer.on("error", (e) => reject(e));
       });
     } catch (e) {
       logger.error(`[images] Unable to download ${url} (${e})`);
@@ -169,7 +169,7 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
   ctx.restore();
 };
 
-const optimizeImage = async(buffer, w = 640) => {
+const optimizeImage = async (buffer, w = 640) => {
   const image = await Jimp.read(buffer);
 
   image.deflateLevel(9);
@@ -180,7 +180,7 @@ const optimizeImage = async(buffer, w = 640) => {
   return await image.getBufferAsync(Jimp.MIME_PNG);
 };
 
-exports.generateEventImage = async event => {
+exports.generateEventImage = async (event) => {
   let canvas = createCanvas(1600, 1250);
   let tw, th;
   const w = canvas.width;
@@ -260,7 +260,7 @@ exports.generateEventImage = async event => {
   tw = ctx.measureText(timestamp).width;
   th = ctx.measureText("M").width;
   ctx.strokeText(timestamp, w / 2 - tw / 2, th * 4);
-  ctx.fillText(timestamp, w/ 2 - tw / 2, th * 4);
+  ctx.fillText(timestamp, w / 2 - tw / 2, th * 4);
 
   // fame
   ctx.beginPath();
@@ -319,7 +319,7 @@ exports.generateEventImage = async event => {
     const totalDamage = participants.reduce((sum, participant) => {
       return sum + Math.max(1, participant.DamageDone);
     }, 0);
-    participants.forEach(participant => {
+    participants.forEach((participant) => {
       const damagePercent = (Math.max(1, participant.DamageDone) / totalDamage) * 100;
       participant.damagePercent = damagePercent;
     });
@@ -401,11 +401,11 @@ exports.generateEventImage = async event => {
   return buffer;
 };
 
-exports.generateInventoryImage = async event => {
+exports.generateInventoryImage = async (event) => {
   const BLOCK_SIZE = 130;
   const WIDTH = 1600;
   const PADDING = 20;
-  const inventory = event.Victim.Inventory.filter(item => item != null);
+  const inventory = event.Victim.Inventory.filter((item) => item != null);
 
   let x = PADDING;
   let y = PADDING;

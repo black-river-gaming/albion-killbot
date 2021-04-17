@@ -11,8 +11,6 @@ const BATTLES_LIMIT = 51;
 const BATTLES_SORT = "recent";
 const EXCHANGE = "battles";
 const PREFETCH_COUNT = Number(process.env.AMQP_PREFETCH_COUNT) || 5;
-const QUEUE_MAX_LENGTH  = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
-const QUEUE_MESSAGE_TTL = 1000 * 60 * 60 * 4; // 4 hours
 
 let latestBattle;
 
@@ -37,7 +35,7 @@ exports.get = async () => {
         },
         timeout: 60000,
       });
-      const foundLatest = !res.data.every(battle => {
+      const foundLatest = !res.data.every((battle) => {
         if (battle.id <= latestBattle.id) return false;
         battles.push(battle);
         return true;
@@ -72,9 +70,9 @@ const getTrackedBattle = (battle, { trackedPlayers, trackedGuilds, trackedAllian
     return null;
   }
 
-  const playerIds = trackedPlayers.map(t => t.id);
-  const guildIds = trackedGuilds.map(t => t.id);
-  const allianceIds = trackedAlliances.map(t => t.id);
+  const playerIds = trackedPlayers.map((t) => t.id);
+  const guildIds = trackedGuilds.map((t) => t.id);
+  const allianceIds = trackedAlliances.map((t) => t.id);
 
   // Ignore battles without fame
   if (battle.totalFame <= 0) {
@@ -83,9 +81,9 @@ const getTrackedBattle = (battle, { trackedPlayers, trackedGuilds, trackedAllian
 
   // Check for tracked ids in players, guilds and alliances
   // Since we are parsing from newer to older events we need to use a FILO array
-  const hasTrackedPlayer = Object.keys(battle.players || {}).some(id => playerIds.indexOf(id) >= 0);
-  const hasTrackedGuild = Object.keys(battle.guilds || {}).some(id => guildIds.indexOf(id) >= 0);
-  const hasTrackedAlliance = Object.keys(battle.alliances || {}).some(id => allianceIds.indexOf(id) >= 0);
+  const hasTrackedPlayer = Object.keys(battle.players || {}).some((id) => playerIds.indexOf(id) >= 0);
+  const hasTrackedGuild = Object.keys(battle.guilds || {}).some((id) => guildIds.indexOf(id) >= 0);
+  const hasTrackedAlliance = Object.keys(battle.alliances || {}).some((id) => allianceIds.indexOf(id) >= 0);
   if (hasTrackedPlayer || hasTrackedGuild || hasTrackedAlliance) {
     return battle;
   }
@@ -96,7 +94,9 @@ exports.subscribe = async ({ client, sendGuildMessage }) => {
   // Set consume callback
   const cb = async (msg) => {
     const btl = JSON.parse(msg.content.toString());
-    if (!btl) { return; }
+    if (!btl) {
+      return;
+    }
 
     try {
       const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());

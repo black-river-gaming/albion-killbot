@@ -1,8 +1,8 @@
 const logger = require("./logger")("bot.utils");
 const moment = require("moment");
 
-exports.sleep = milliseconds => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds));
+exports.sleep = (milliseconds) => {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
 
 exports.timeout = (fn, milliseconds) => {
@@ -16,7 +16,7 @@ exports.timeout = (fn, milliseconds) => {
   return Promise.race([fn, timeout]);
 };
 
-exports.digitsFormatter = num => {
+exports.digitsFormatter = (num) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") || 0;
 };
 
@@ -40,7 +40,7 @@ exports.humanFormatter = (num, digits) => {
   return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
 };
 
-exports.fileSizeFormatter = size => {
+exports.fileSizeFormatter = (size) => {
   const i = Math.floor(Math.log(size) / Math.log(1024));
   return (size / Math.pow(1024, i)).toFixed(2) * 1 + " " + ["B", "kB", "MB", "GB", "TB"][i];
 };

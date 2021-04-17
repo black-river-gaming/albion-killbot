@@ -11,16 +11,12 @@ module.exports = {
     const l = getI18n(guild.config.lang);
 
     if (!args[0]) {
-      return message.channel.send(
-        l.__("MODE.AVAILABLE", { modes: modes.join(", ") }),
-      );
+      return message.channel.send(l.__("MODE.AVAILABLE", { modes: modes.join(", ") }));
     }
 
     const mode = args[0].toLowerCase();
     if (modes.indexOf(mode) < 0) {
-      return message.channel.send(
-        l.__("MODE.NOT_SUPPORTED", { modes: modes.join(", ") }),
-      );
+      return message.channel.send(l.__("MODE.NOT_SUPPORTED", { modes: modes.join(", ") }));
     }
 
     guild.config.mode = mode;

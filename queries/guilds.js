@@ -12,19 +12,19 @@ const FAME_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/events/pla
 
 const GUILDS_COLLECTION = "guilds";
 
-const sleep = milliseconds => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds));
+const sleep = (milliseconds) => {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
 
 exports.getGuildData = async (guildConfigs) => {
   const guildIds = Object.keys(guildConfigs).reduce((guildIds, gid) => {
     const config = guildConfigs[gid];
     if (!config || config.trackedGuilds.length === 0) return guildIds;
-    return guildIds.concat(config.trackedGuilds.filter(t => guildIds.indexOf(t.id) === -1).map(t => t.id));
+    return guildIds.concat(config.trackedGuilds.filter((t) => guildIds.indexOf(t.id) === -1).map((t) => t.id));
   }, []);
 
   const guildData = {};
-  guildIds.forEach(id => {
+  guildIds.forEach((id) => {
     guildData[id] = null;
   });
 
@@ -33,7 +33,7 @@ exports.getGuildData = async (guildConfigs) => {
 
   try {
     const results = await collection.find({}).toArray();
-    results.forEach(guild => {
+    results.forEach((guild) => {
       if (guild._id in guildData) {
         guildData[guild._id] = guild;
       }

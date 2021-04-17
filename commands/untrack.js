@@ -28,10 +28,7 @@ module.exports = {
     }
 
     const untrack = async (name, dest, msg) => {
-      const entity = dest.find(
-        p =>
-          p.name.localeCompare(name, undefined, { sensitivity: "base" }) === 0,
-      );
+      const entity = dest.find((p) => p.name.localeCompare(name, undefined, { sensitivity: "base" }) === 0);
       if (!entity) {
         message.channel.send(l.__("TRACK.NOT_FOUND"));
         return;
@@ -45,24 +42,12 @@ module.exports = {
     };
 
     switch (type) {
-    case "player":
-      return untrack(
-        name,
-        guild.config.trackedPlayers,
-        "TRACK.PLAYER_UNTRACKED",
-      );
-    case "guild":
-      return untrack(
-        name,
-        guild.config.trackedGuilds,
-        "TRACK.GUILD_UNTRACKED",
-      );
-    case "alliance":
-      return untrack(
-        name,
-        guild.config.trackedAlliances,
-        "TRACK.ALLIANCE_UNTRACKED",
-      );
+      case "player":
+        return untrack(name, guild.config.trackedPlayers, "TRACK.PLAYER_UNTRACKED");
+      case "guild":
+        return untrack(name, guild.config.trackedGuilds, "TRACK.GUILD_UNTRACKED");
+      case "alliance":
+        return untrack(name, guild.config.trackedAlliances, "TRACK.ALLIANCE_UNTRACKED");
     }
   },
 };

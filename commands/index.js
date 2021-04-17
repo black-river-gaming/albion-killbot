@@ -3,7 +3,7 @@ const logger = require("../logger")("commands");
 
 const commands = {};
 const cmdFiles = readdirSync(__dirname);
-cmdFiles.forEach(cmdFile => {
+cmdFiles.forEach((cmdFile) => {
   if (cmdFile === "index.js") return;
   try {
     const command = require(`./${cmdFile}`);

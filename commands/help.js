@@ -26,11 +26,7 @@ module.exports = {
         });
       }
       const description = l.__(command.description);
-      response +=
-        commandKey +
-        " ".repeat(LINE_LENGTH - commandKey.length) +
-        description +
-        "\n";
+      response += commandKey + " ".repeat(LINE_LENGTH - commandKey.length) + description + "\n";
     });
 
     response += "```";

@@ -37,7 +37,7 @@ module.exports = {
       }
       if (guild.config.trackedAlliances.length >= limit)
         return message.channel.send(l.__("TRACK.LIMIT_REACHED", { limit }));
-      if (guild.config.trackedAlliances.some(a => a.id === q))
+      if (guild.config.trackedAlliances.some((a) => a.id === q))
         return message.channel.send(l.__("TRACK.ALREADY_TRACKED"));
 
       const alliance = await getAllianceById(q);
@@ -61,7 +61,9 @@ module.exports = {
           guild.config[tracked] = [];
         }
 
-        let entity = guild.config[tracked].find(p => p.name.localeCompare(q, undefined, { sensitivity: "base" }) === 0);
+        let entity = guild.config[tracked].find(
+          (p) => p.name.localeCompare(q, undefined, { sensitivity: "base" }) === 0,
+        );
         if (entity) {
           message.channel.send(l.__("TRACK.ALREADY_TRACKED"));
           return;
@@ -76,7 +78,7 @@ module.exports = {
           return message.channel.send(l.__("TRACK.SEARCH_FAILED"));
         }
 
-        entity = results[`${type}s`].find(p => p.Name.localeCompare(q, undefined, { sensitivity: "base" }) === 0);
+        entity = results[`${type}s`].find((p) => p.Name.localeCompare(q, undefined, { sensitivity: "base" }) === 0);
         if (!entity) {
           message.channel.send(l.__("TRACK.NOT_FOUND"));
           return;
@@ -89,10 +91,10 @@ module.exports = {
       };
 
       switch (type) {
-      case "player":
-        return track("trackedPlayers", "TRACK.PLAYER_TRACKED", getNumber(process.env.MAX_PLAYERS, 30));
-      case "guild":
-        return track("trackedGuilds", "TRACK.GUILD_TRACKED", getNumber(process.env.MAX_GUILDS, 5));
+        case "player":
+          return track("trackedPlayers", "TRACK.PLAYER_TRACKED", getNumber(process.env.MAX_PLAYERS, 30));
+        case "guild":
+          return track("trackedGuilds", "TRACK.GUILD_TRACKED", getNumber(process.env.MAX_GUILDS, 5));
       }
     }
   },

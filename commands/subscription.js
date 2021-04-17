@@ -1,10 +1,6 @@
 const moment = require("moment");
 const { getI18n } = require("../messages");
-const {
-  getSubscription,
-  cancelSubscription,
-  setSubscription,
-} = require("../subscriptions");
+const { getSubscription, cancelSubscription, setSubscription } = require("../subscriptions");
 const { setConfig, getConfigBySubscription } = require("../config");
 
 module.exports = {
@@ -25,9 +21,7 @@ module.exports = {
 
       const days = moment(subscription.expires).diff(moment(), "days");
       const status =
-        days <= 0
-          ? l.__("SUBSCRIPTION.STATUS.EXPIRED")
-          : l.__("SUBSCRIPTION.STATUS.DAYS_REMAINING", { days });
+        days <= 0 ? l.__("SUBSCRIPTION.STATUS.EXPIRED") : l.__("SUBSCRIPTION.STATUS.DAYS_REMAINING", { days });
       return message.channel.send(status);
     }
 
@@ -44,9 +38,7 @@ module.exports = {
         try {
           const c = await getConfigBySubscription(message.author.id);
           if (c && c.guild !== message.guild.id) {
-            return message.channel.send(
-              l.__("SUBSCRIPTION.ALREADY_SUBSCRIBED")
-            );
+            return message.channel.send(l.__("SUBSCRIPTION.ALREADY_SUBSCRIBED"));
           }
 
           guild.config = await setSubscription(guild.config, message.author.id);
@@ -62,7 +54,7 @@ module.exports = {
         return message.channel.send(
           l.__("SUBSCRIPTION.ACTIONS", {
             actions: ["activate", "deactivate"].join(" ,"),
-          })
+          }),
         );
     }
   },

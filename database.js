@@ -58,7 +58,7 @@ exports.connect = async () => {
   }
 };
 exports.db = () => db;
-exports.collection = collection => {
+exports.collection = (collection) => {
   if (!db) return;
   return db.collection(collection);
 };
