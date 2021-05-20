@@ -37,7 +37,7 @@ exports.get = async () => {
       const foundLatest = !res.data.every((evt) => {
         if (evt.EventId <= latestEvent.EventId) return false;
         // Ignore items already on the queue
-        if (events.find((e) => e.EventId === evt.EventId) >= 0) return true;
+        if (events.findIndex((e) => e.EventId === evt.EventId) >= 0) return true;
         events.push(evt);
         return true;
       });
@@ -61,7 +61,10 @@ exports.get = async () => {
   if (events.length === 0) return logger.debug("No new events.");
 
   // Publish new events, from oldest to newest
-  for (const evt of events.reverse()) {
+  for (const evt of events.sort((a, b) => a.EventId - b.EventId)) {
+    if (evt.EventId <= latestEvent.EventId) {
+      logger.warn(`The published id is lower than the previous one!`);
+    }
     await queue.publish(EXCHANGE, "", evt);
     latestEvent = evt;
   }
