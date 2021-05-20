@@ -36,6 +36,7 @@ exports.get = async () => {
       });
       const foundLatest = !res.data.every((evt) => {
         if (evt.EventId <= latestEvent.EventId) return false;
+        if (events.find((e) => e.EventId === evt.EventId) >= 0) return false;
         events.push(evt);
         return true;
       });
