@@ -36,7 +36,8 @@ exports.get = async () => {
       });
       const foundLatest = !res.data.every((evt) => {
         if (evt.EventId <= latestEvent.EventId) return false;
-        if (events.find((e) => e.EventId === evt.EventId) >= 0) return false;
+        // Ignore items already on the queue
+        if (events.find((e) => e.EventId === evt.EventId) >= 0) return true;
         events.push(evt);
         return true;
       });
