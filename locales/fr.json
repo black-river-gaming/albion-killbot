@@ -8,8 +8,8 @@
   "TEST_FAIL": "Je n'ai pas la permission d'envoyer des messages au channel {{{ channel }}}.",
   "MODES_AVAILABLE": "Modes disponibles pour ce paramètre: {{ modes }}",
   "GENERAL": {
-    "ENABLED": "enabled",
-    "DISABLED": "disabled"
+    "ENABLED": "Activé",
+    "DISABLED": "Désactivé"
   },
   "KILL": {
     "EVENT": "{{ killer }} a tué {{ victim }}!",
@@ -45,9 +45,9 @@
     "DEATH_FAME": "Top Death Fame",
     "TOTAL_KILL_FAME": "Total Kill Fame",
     "TOTAL_DEATH_FAME": "Total Death Fame",
-    "DAILY_RANKING_SET": "Afficher le Classement Quetidien est désormais définir sur '{{ mode }}'",
-    "NO_DATA": "No data available for guild '{{{ guild }}}'. Give the bot a day to fetch data and try again.",
-    "NO_DATA_SHORT": "No data available"
+    "DAILY_RANKING_SET": "Afficher le Classement Quotidien est désormais définit sur '{{ mode }}'",
+    "NO_DATA": "Aucune donnée disponible pour la guilde '{{{ guild }}}'. Laissez au bot quelques instants pour récuperer les données et rééssayez plus tard.",
+    "NO_DATA_SHORT": "Aucune donnée disponible"
   },
   "HELP": {
     "VERSION": "Albion Killbot v{{ version }}",
@@ -58,23 +58,23 @@
     "TRACK": "Suivre un joueur, une guilde ou une alliance.",
     "UNTRACK": "Arrêter de suivre un joueur, une alliance ou une guilde.",
     "TEST": "Verifiez si le bot a les permissions pour envoyer des messages.",
-    "MODE": "Sets the output mode, like text or image.",
-    "DAILY_RANKING": "Display Daily Rankings.",
-    "CATEGORY": "Enable/disable bot notifications for each category.",
-    "RANKING": "Display rankings for tracked guilds.",
-    "SUBSCRIPTION": "Check or activate your subscription.",
-    "PREFIX": "Change bot prefix."
+    "MODE": "Définir le mode d'affichage, comme texte ou image.",
+    "DAILY_RANKING": "Affiche le Classement journalier.",
+    "CATEGORY": "Active/Désactive les notification pour chaque catégorie.",
+    "RANKING": "Affiche les classements pour les guildes trackées.",
+    "SUBSCRIPTION": "Vérifie ou active votre Souscription.",
+    "PREFIX": "Change le prefixe du bot."
   },
   "CHANNEL": {
-    "NO_CHANNEL": "Veuillez sélectionner un channel dans le quel les notifications seront envoyées.",
-    "NOT_FOUND": "Désoler, je ne trouve pas le channel spécifié. Verifiez que j'ai les permissions d'y acceder.",
-    "SET_CHANNEL": "Channel pour la catégorie '{{ category }}' sélectionné {{{ channel }}}.",
-    "CATEGORIES_AVAILABLE": "Catégorie de chaîne non valide. Veuillez en sélectionner une: {{ categories }}"
+    "NO_CHANNEL": "Veuillez sélectionner un canal dans lequel les notifications seront envoyées.",
+    "NOT_FOUND": "Désolé, je ne trouve pas le canal spécifié. Vérifiez que j'ai les permissions d'y acceder.",
+    "SET_CHANNEL": "Canal pour la catégorie '{{ category }}' sélectionné {{{ channel }}}.",
+    "CATEGORIES_AVAILABLE": "Catégorie de canal non valide. Veuillez en sélectionner une: {{ categories }}"
   },
   "LANGUAGE": {
-    "AVAILABLE": "Languge disponnible: {{ langs }}",
-    "NOT_SUPPORTED": "Ce language n'est pas disponnible.",
-    "SET_LANGUAGE": "Language sélectionné '{{ lang }}'"
+    "AVAILABLE": "Langue disponible: {{ langs }}",
+    "NOT_SUPPORTED": "Cette langue n'est pas disponible.",
+    "SET_LANGUAGE": "Langue sélectionné '{{ lang }}'"
   },
   "TRACK": {
     "LIST": "Liste des suivis",
@@ -84,17 +84,17 @@
     "ALLIANCES": "Alliances",
     "MISSING_PARAMETERS": "Veuillez renseigner tout les paramètres. Ecrivez !help pour connaître les commandes.",
     "UNSUPPORTED_TYPE": "Je ne peux pas suivre ceci. Ecrivez !help pour en savoir plus.",
-    "TRACKING_DISABLED": "Désoler, le suivi d'{{ type }} est désactivé. Contacter l'administrateur pour plus d'informations.",
-    "SEARCH_FAILED": "Failed to fetch data from Albion Servers. Please try again.",
-    "NOT_FOUND": "Désoler, je ne  trouve rien portant ce nom",
+    "TRACKING_DISABLED": "Désolé, le suivi d'{{ type }} est désactivé. Contacter l'administrateur pour plus d'informations.",
+    "SEARCH_FAILED": "Impossible de récupérer les données depuis les serveurs d'Albion Online. Rééssayez plus tard.",
+    "NOT_FOUND": "Désolé, je ne trouve rien portant ce nom",
     "ALREADY_TRACKED": "Je suis déja ceci.",
     "LIMIT_REACHED": "Tu as déja atteint la limite de {{ limit }} suivis dans la liste..",
     "PLAYER_TRACKED": "Suivi du joueur: {{ name }}.",
     "GUILD_TRACKED": "Suivi de la guilde: {{ name }}.",
     "ALLIANCE_TRACKED": "Suivi de l'alliance: {{ name }}.",
-    "PLAYER_UNTRACKED": "Désactivation de la suivie du joueur: {{ name }}.",
-    "GUILD_UNTRACKED": "Désactivation de la suivie de la guilde: {{ name }}.",
-    "ALLIANCE_UNTRACKED": "Désactivation de la suivie de l'alliance: {{ name }}."
+    "PLAYER_UNTRACKED": "Désactivation de la suivi du joueur: {{ name }}.",
+    "GUILD_UNTRACKED": "Désactivation de la suivi de la guilde: {{ name }}.",
+    "ALLIANCE_UNTRACKED": "Désactivation de la suivi de l'alliance: {{ name }}."
   },
   "MODE": {
     "AVAILABLE": "Modes disponibles: {{ modes }}",
@@ -102,19 +102,19 @@
     "SET": "Mode de sortie défini sur: {{ mode }}"
   },
   "CATEGORY": {
-    "MISSING_PARAMETERS": "Please insert all parameters. Syntax: `!category [category] <on/off>`",
-    "AVAILABLE": "Invalid category. Please input one of: {{ categories }}",
-    "SET": "Notifications for category `{{ category }}` are `{{ option }}`"
+    "MISSING_PARAMETERS": "Merci de renseigner tous les paramètres. Syntaxe: `!category [category] <on/off>`",
+    "AVAILABLE": "Catégorie invalide. Merci d'utiliser l'une des suivantes: {{ categories }}",
+    "SET": "Les notifications pour la catégorie `{{ category }}` sont `{{ option }}`"
   },
   "SUBSCRIPTION": {
     "STATUS": {
-      "DAYS_REMAINING": "Your subscription has {{{ days }}} day(s) remaining",
-      "INACTIVE": "Your subscription isn't activated yet. Please check with bot adminstrator.",
-      "EXPIRED": "Your subscription has expired."
+      "DAYS_REMAINING": "Votre souscription contient {{{ days }}} jour(s) restant",
+      "INACTIVE": "Votre souscription n'est pas active. Merci de voir avec l'administrateur du bot.",
+      "EXPIRED": "Votre souscription a expirée."
     },
     "ERROR": {
-      "FETCH_FAIL": "Failed to fetch subscriber list. Please try again later.",
-      "MAIL_NOT_FOUND": "Couldn't find your e-mail in subscriber list.",
+      "FETCH_FAIL": "Impossible de récupérer la liste des souscriptions. Merci de rééssayer plus tard.",
+      "MAIL_NOT_FOUND": "Impossible de trouver votre email dans la liste des souscriptions.",
       "PATREON_DISCORD_NOT_FOUND": "Couldn't find your account subscriber list. Please link your Discord account with patreon account and try again."
     },
     "ALREADY_SUBSCRIBED": "Sorry, you have a subscription in another server. Please deactivate there and try again.",
@@ -124,6 +124,6 @@
     "FAILED": "Failed to validate subscription: {{ reason }}"
   },
   "PREFIX": {
-    "SET_PREFIX": "The bot prefix is not set to '{{ prefix }}'. Your commands will be called using {{prefix}}command now."
+    "SET_PREFIX": "Le prefixe du bot a été défini sur '{{ prefix }}'. Vos commandes seront maintenant utilisées comme ceci {{prefix}}commande."
   }
 }
