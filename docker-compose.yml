@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  albion-killbot:
+    image: agnjunio/albion-killbot:latest
+    restart: always
+    depends_on:
+      - mongodb
+      - rabbitmq
+    environment:
+      - DISCORD_TOKEN=<your token>
+      - MONGODB_URL=mongodb://mongodb:27017/albion-killbot
+      - RABBITMQ_URL=amqp://rabbitmq
+    volumes:
+      - ./cache:/tmp/albion-killbot-cache
+
+  mongodb:
+    image: mongo:latest
+    restart: always
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongodb:27017/test --quiet
+      interval: 30s
+      timeout: 30s
+      retries: 5
+    volumes:
+      - ./mongodb:/data/db
+    expose:
+      - 27017
+
+  rabbitmq:
+    image: rabbitmq:3
+    restart: always
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 5
+    expose:
+      - 5672
