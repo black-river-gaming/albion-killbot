@@ -95,6 +95,16 @@ cp .env.example .env
 yarn start
 ```
 
+You can also use it with Docker-Compose :
+
+1. Edit docker-compose.yml
+```
+on the line :
+- DISCORD_TOKEN=<your token>
+replace <your token> by your bot token
+example : "123456789"
+```
+
 # Contributing
 
 Patches and suggestions are very welcome, but please note that I will judge the quality of the code before merging it through the Pull Request process.
