@@ -8,8 +8,7 @@ services:
       - mongodb
       - rabbitmq
     environment:
-      - DISCORD_TOKEN=ODM2MjgxNzM5MzU3MzIzMzg0.YIbuEA.-OmnF5L3fWypvZ2X1UDLUSvIhCg
-      - LOGGLY_KEY=da910a34-0476-47f2-bd26-bfa68b6b889f
+      - DISCORD_TOKEN=<your token>
       - MONGODB_URL=mongodb://mongodb:27017/albion-killbot
       - RABBITMQ_URL=amqp://rabbitmq
     volumes:
