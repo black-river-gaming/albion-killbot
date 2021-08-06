@@ -98,7 +98,7 @@ exports.setSubscription = async (config, userId) => {
 
   for (let pledge of pledges) {
     const user = users.find((u) => u.id === pledge.relationships.user.data.id);
-    if (!user) continue;
+    if (!user || !user.attributes || !user.attributes.social_connections) continue;
     const discordUser = user.attributes.social_connections.discord;
     if (!discordUser) continue;
 
