@@ -48,19 +48,25 @@ const fetchPatreonPledges = async () => {
   try {
     campaigns = campaigns || (await patreon.get("/campaigns")).data.data;
     for (let campaign of campaigns) {
-      const campaignPledges = (
-        await patreon.get(`/campaigns/${campaign.id}/members`, {
-          params: {
-            include: "user",
-            ["fields[user]"]: "url,social_connections",
-            ["fields[member]"]: "patron_status,next_charge_date",
-            ["page[count]"]: 100,
-          },
-        })
-      ).data;
+      let req = patreon.get(`/campaigns/${campaign.id}/members`, {
+        params: {
+          include: "user",
+          ["fields[user]"]: "url,social_connections",
+          ["fields[member]"]: "patron_status,next_charge_date",
+          ["page[count]"]: 100,
+        },
+      });
+      while (req) {
+        const campaignPledges = (await req).data;
 
-      pledges = pledges.concat(campaignPledges.data);
-      users = users.concat(campaignPledges.included.filter((i) => i.type === "user"));
+        pledges = pledges.concat(campaignPledges.data);
+        users = users.concat(campaignPledges.included.filter((i) => i.type === "user"));
+
+        req = null;
+        if (campaignPledges.links) {
+          req = patreon.get(campaignPledges.links.next);
+        }
+      }
     }
   } catch (e) {
     logger.error(`Failed to fetch pledge list [${e}]`);
@@ -68,7 +74,6 @@ const fetchPatreonPledges = async () => {
   }
 
   // TODO: Users apply unique
-  // TODO: Pagination via cursor
   logger.debug(`Fetch complete. Pledge: ${pledges.length} / Users: ${users.length}`);
   return {
     pledges,
