@@ -7,7 +7,7 @@
   "author": "Agnaldo Junior <agnaldo.junior01@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "amqplib": "^0.6.0",
+    "amqplib": "^0.8.0",
     "aws-sdk": "^2.689.0",
     "axios": "^0.21.2",
     "canvas": "^2.6.1",
