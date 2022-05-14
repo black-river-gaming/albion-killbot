@@ -1,0 +1,6 @@
+{
+  "exec": "npm start",
+  "watch": ["./src"],
+  "ignore": ["__tests__"],
+  "delay": 2500
+}
