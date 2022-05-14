@@ -1,4 +1,4 @@
-FROM node:14-stretch AS build
+FROM node:16-stretch AS build
 WORKDIR /app
 
 # RUN apk update && apk add yarn curl bash python g++ make && rm -rf /var/cache/apk/*
@@ -7,7 +7,7 @@ RUN curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash 
 
 # Install project dependencies and prune unecessary files
 COPY package*.json ./
-RUN yarn install --production --frozen-lockfile && yarn cache clean
+RUN npm ci
 RUN /usr/local/bin/node-prune
 
 # Copy all files except those listed in .dockerignore
@@ -20,4 +20,4 @@ WORKDIR /app
 COPY --from=build /app .
 
 # Default environment and command to be overriden in each environment
-CMD [ "yarn", "start" ]
+CMD [ "npm", "start" ]

@@ -23,6 +23,7 @@ client.commands = commands;
 
 client.on("shardReady", async (id) => {
   client.shardId = id;
+
   logger.info(`[#${id}] Shard ready as ${client.user.tag}. Guild count: ${client.guilds.cache.size}`);
 
   events.subscribe(exports);
