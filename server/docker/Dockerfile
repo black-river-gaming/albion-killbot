@@ -1,4 +1,4 @@
-FROM node:lts AS build
+FROM node:16 AS build
 WORKDIR /app
 
 # Install node-prune (https://github.com/tj/node-prune)
@@ -12,7 +12,7 @@ RUN /usr/local/bin/node-prune
 # Copy all files except those listed in .dockerignore
 COPY . .
 
-FROM node:lts-slim
+FROM node:16-slim
 WORKDIR /app
 
 # Copy artifacts from build stage to reduce image size
