@@ -2,7 +2,8 @@ const axios = require("axios");
 const moment = require("moment");
 
 const EVENTS_ENDPOINT = "events";
-const EVENTS_LIMIT = 51;
+const BATTLES_ENDPOINT = "battles";
+const DEFAULT_LIMIT = 51;
 
 const albionApiClient = axios.create({
   baseURL: "https://gameinfo.albiononline.com/api/gameinfo/",
@@ -18,8 +19,21 @@ albionApiClient.interceptors.request.use((config) => {
   return config;
 });
 
-async function getEvents({ limit = EVENTS_LIMIT, offset = 0 }) {
+async function getEvents({ limit = DEFAULT_LIMIT, offset = 0 }) {
   const res = await albionApiClient.get(EVENTS_ENDPOINT, {
+    params: {
+      offset,
+      limit,
+      timestamp: moment().unix(),
+    },
+    timeout: 60000,
+  });
+
+  return res.data;
+}
+
+async function getBattles({ limit = DEFAULT_LIMIT, offset = 0 }) {
+  const res = await albionApiClient.get(BATTLES_ENDPOINT, {
     params: {
       offset,
       limit,
@@ -33,4 +47,5 @@ async function getEvents({ limit = EVENTS_LIMIT, offset = 0 }) {
 
 module.exports = {
   getEvents,
+  getBattles,
 };
