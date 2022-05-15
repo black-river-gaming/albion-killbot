@@ -69,9 +69,9 @@ function getNumber(v, def) {
   return isNaN(n) ? def : n;
 }
 
-function execFn(name, fn, ...fnOpts) {
+async function execFn(name, fn, ...fnOpts) {
   try {
-    return fn(...fnOpts);
+    return await fn(...fnOpts);
   } catch (e) {
     logger.error(`"${name}" ${e.stack}`);
   }
@@ -88,17 +88,19 @@ async function runDaily(name, fn, { fnOpts = [], hour = 12, minute = 0, runOnSta
       execFn(name, fn, ...fnOpts);
     }
   }
+  logger.debug(`"${name}" daily interval stopped.`);
 }
 
-// Functions that run on an interval (Default: 30 seconds) until process stops
+// Functions that run on an interval after execFn completes,
+// then waits (Default: 30 seconds) and repeat until process stops
 async function runInterval(name, fn, { fnOpts = [], interval = 30, runOnStart = false }) {
   if (!fn) return;
-  if (runOnStart) execFn(name, fn, ...fnOpts);
+  if (runOnStart) await execFn(name, fn, ...fnOpts);
   while (running) {
     await sleep(interval * 1000);
-    execFn(name, fn, ...fnOpts);
+    await execFn(name, fn, ...fnOpts);
   }
-  logger.debug(`"${name}" Still running? ${running}`);
+  logger.debug(`"${name}" interval stopped.`);
 }
 
 module.exports = {
