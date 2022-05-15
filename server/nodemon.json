@@ -1,5 +1,0 @@
-{
-  "watch": ["./bin", "./src"],
-  "ignore": ["node_modules", "__tests__"],
-  "delay": 2500
-}

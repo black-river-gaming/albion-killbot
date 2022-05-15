@@ -1,0 +1,13 @@
+{
+  "exec": "npm run start:bot",
+  "watch": [
+    "./bin",
+    "./src/modules",
+    "./src/interfaces/bot"
+  ],
+  "ignore": [
+    "node_modules",
+    "__tests__"
+  ],
+  "delay": 2500
+}
