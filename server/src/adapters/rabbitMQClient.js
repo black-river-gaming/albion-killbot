@@ -15,6 +15,7 @@ if (!RABBITMQ_URL) {
 
 let client;
 let subscriptions = [];
+let pubChannel;
 
 const connect = async () => {
   try {
@@ -22,6 +23,8 @@ const connect = async () => {
     client = await amqp.connect(RABBITMQ_URL);
     logger.info("Connection to message broker stabilished.");
 
+    // Restore previous channels
+    if (pubChannel) pubChannel = await client.createChannel();
     subscriptions.forEach((fn) => fn());
   } catch (e) {
     logger.error(`Unable to connect to message broker: ${e}`);
@@ -38,7 +41,6 @@ const connect = async () => {
   });
 };
 
-let pubChannel;
 const publish = async (exchange, routingKey, content) => {
   if (!pubChannel) {
     pubChannel = await client.createChannel();
