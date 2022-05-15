@@ -6,6 +6,23 @@
   "repository": "https://github.com/agnjunio/albion-killbot.git",
   "author": "Agnaldo Junior <agnaldo.junior01@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "node ./bin/start.js",
+    "start:crawler": "npm start -- --mode crawler",
+    "start:crawler:dev": "nodemon -x 'npm run start:crawler'",
+    "start:bot": "npm start -- --mode bot",
+    "start:bot:dev": "nodemon -x 'npm run start:bot'",
+    "start:api": "npm start -- --mode api",
+    "start:api:dev": "nodemon -x 'npm run start:api'",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "prettier": "prettier -c .",
+    "prettier:fix": "prettier --write ."
+  },
+  "engines": {
+    "node": "16.x",
+    "npm": "8.5.x"
+  },
   "dependencies": {
     "amqplib": "^0.8.0",
     "aws-sdk": "^2.689.0",
@@ -21,18 +38,6 @@
     "mongodb": "^3.5.3",
     "winston": "^3.2.1",
     "winston-loggly-bulk": "^3.1.0"
-  },
-  "scripts": {
-    "start": "node ./bin/start.js",
-    "start:dev": "nodemon .",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "prettier": "prettier -c .",
-    "prettier:fix": "prettier --write ."
-  },
-  "engines": {
-    "node": "16.x",
-    "npm": "8.5.x"
   },
   "devDependencies": {
     "eslint": "^6.8.0",

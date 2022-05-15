@@ -31,4 +31,5 @@ if (!mode) {
   process.exit(0);
 }
 
-console.log(`Mode selected: ${mode}`);
+console.log(`Starting component: ${mode.name}...`);
+// TODO

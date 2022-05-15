@@ -44,6 +44,9 @@ services:
       - rabbitmq
     environment:
       - RABBITMQ_URL=amqp://rabbitmq
+    volumes:
+      - "../bin:/app/bin"
+      - "../src:/app/src"
 
   bot:
     build:
@@ -59,6 +62,8 @@ services:
       - MONGODB_URL=mongodb://mongodb:27017/albion-killbot
       - RABBITMQ_URL=amqp://rabbitmq
     volumes:
+      - "../bin:/app/bin"
+      - "../src:/app/src"
       - type: volume
         source: killbotCache
         target: /tmp/albion-killbot-cache
@@ -73,6 +78,9 @@ services:
       - mongodb
     environment:
       - MONGODB_URL=mongodb://mongodb:27017/albion-killbot
+    volumes:
+      - "../bin:/app/bin"
+      - "../src:/app/src"
 
 volumes:
   mongodb:
