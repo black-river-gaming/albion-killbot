@@ -1,8 +1,10 @@
 const axios = require("axios");
 const logger = require("../../helpers/logger");
 const { runInterval } = require("../../helpers/utils");
+const { fetchEvents, fetchBattles } = require("./controllers/events");
 
 // Setup timeouts for crawler axios client
+// FIXME: Move this to the correspondent adapter
 axios.interceptors.request.use((config) => {
   const source = axios.CancelToken.source();
   setTimeout(() => {
@@ -12,15 +14,10 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
-const noop = () => {
-  logger.debug("noop");
-  logger.debug(process.env.NODE_ENV);
-};
-
 async function run() {
   logger.info("Starting Crawler...");
-  runInterval("Fetch events from Albion API", noop, { interval: 10, runOnStart: true });
-  //runInterval("Fetch battles from Albion API", noop, { interval: 60 });
+  runInterval("Fetch events", fetchEvents, { interval: 30 });
+  runInterval("Fetch battles", fetchBattles, { interval: 120 });
 }
 
 module.exports = {
