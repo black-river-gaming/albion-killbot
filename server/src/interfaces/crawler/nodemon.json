@@ -1,7 +1,6 @@
 {
   "exec": "npm run start:crawler",
   "watch": [
-    "./bin",
     "./src/adapters",
     "./src/helpers",
     "./src/services",

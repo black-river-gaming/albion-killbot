@@ -1,8 +1,6 @@
 {
   "exec": "npm run start:api",
   "watch": [
-    "./bin",
-    "./src/modules",
     "./src/interfaces/api"
   ],
   "ignore": [
