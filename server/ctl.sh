@@ -16,8 +16,8 @@ PROJECT_ARGS="-p albion-killbot"
 COMPOSE_FILE="-f docker/docker-compose.yml"
 args="$PROJECT_ARGS $COMPOSE_FILE"
 
-cmd=$1; shift
-component=$1; shift
+cmd=$1; shift 2>/dev/null
+component=$1; shift 2>/dev/null
 
 Build() {
   docker-compose $args build
