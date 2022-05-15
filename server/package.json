@@ -40,9 +40,9 @@
     "winston-loggly-bulk": "^3.1.0"
   },
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^8.2.0",
-    "nodemon": "^2.0.2",
-    "prettier": "^2.2.1"
+    "eslint": "^8.15.0",
+    "eslint-config-prettier": "^8.5.0",
+    "nodemon": "^2.0.16",
+    "prettier": "^2.6.2"
   }
 }
