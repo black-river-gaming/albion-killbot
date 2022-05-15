@@ -2,6 +2,7 @@
   "exec": "npm run start:crawler",
   "watch": [
     "./bin",
+    "./src/helpers",
     "./src/modules",
     "./src/interfaces/crawler"
   ],
