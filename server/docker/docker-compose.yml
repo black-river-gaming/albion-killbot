@@ -43,6 +43,7 @@ services:
     depends_on:
       - rabbitmq
     environment:
+      - NODE_ENV=development
       - RABBITMQ_URL=amqp://rabbitmq
     volumes:
       - "../bin:/app/bin"
@@ -59,6 +60,7 @@ services:
       - rabbitmq
     env_file: ../.env
     environment:
+      - NODE_ENV=development
       - MONGODB_URL=mongodb://mongodb:27017/albion-killbot
       - RABBITMQ_URL=amqp://rabbitmq
     volumes:
@@ -77,6 +79,7 @@ services:
     depends_on:
       - mongodb
     environment:
+      - NODE_ENV=development
       - MONGODB_URL=mongodb://mongodb:27017/albion-killbot
     volumes:
       - "../bin:/app/bin"
