@@ -21,9 +21,7 @@ const modes = [
   {
     name: "bot",
     description: "Component that consumes the queue and publishes kills to Discord servers.",
-    entryPoint: {
-      run,
-    },
+    entryPoint: require("../src/interfaces/bot/index.js"),
   },
   {
     name: "api",

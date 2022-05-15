@@ -15,8 +15,13 @@ async function publishBattle(data) {
   return await rabbitMQClient.publish(BATTLES_EXCHANGE, "", data);
 }
 
+async function unsubscribeAll() {
+  return await rabbitMQClient.unsubscribeAll();
+}
+
 module.exports = {
   init,
   publishBattle,
   publishEvent,
+  unsubscribeAll,
 };

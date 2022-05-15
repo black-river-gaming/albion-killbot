@@ -3,6 +3,7 @@ const moment = require("moment");
 
 const EVENTS_ENDPOINT = "events";
 const BATTLES_ENDPOINT = "battles";
+const BATTLES_SORT = "recent";
 const DEFAULT_LIMIT = 51;
 
 const albionApiClient = axios.create({
@@ -37,6 +38,7 @@ async function getBattles({ limit = DEFAULT_LIMIT, offset = 0 }) {
     params: {
       offset,
       limit,
+      sort: BATTLES_SORT,
       timestamp: moment().unix(),
     },
     timeout: 60000,
