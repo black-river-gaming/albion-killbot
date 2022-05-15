@@ -1,3 +1,4 @@
+require("dotenv").config();
 const parseArgs = require("minimist");
 
 const { MODE } = process.env;
