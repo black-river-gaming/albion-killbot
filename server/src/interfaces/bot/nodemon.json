@@ -1,7 +1,6 @@
 {
   "exec": "npm run start:bot",
   "watch": [
-    "./bin",
     "./src/adapters",
     "./src/helpers",
     "./src/services",

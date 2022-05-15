@@ -11,6 +11,11 @@ async function run() {
   runInterval("Fetch battles", fetchBattles, { interval: 120 });
 }
 
+async function cleanup() {
+  logger.info("Shutting down Crawler.");
+}
+
 module.exports = {
   run,
+  cleanup,
 };

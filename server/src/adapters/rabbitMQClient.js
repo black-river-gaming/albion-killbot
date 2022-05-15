@@ -47,7 +47,7 @@ const publish = async (exchange, routingKey, content) => {
   }
 
   await pubChannel.assertExchange(exchange, "fanout", {
-    durable: true,
+    durable: false,
   });
 
   await pubChannel.publish(exchange, routingKey, Buffer.from(JSON.stringify(content)));
@@ -63,7 +63,6 @@ const subscribe = async (exchange, queue, cb, { prefetch }) => {
       channel.prefetch(prefetch, false);
     }
 
-    // Assert exchange
     await channel.assertExchange(exchange, "fanout", {
       durable: false,
     });

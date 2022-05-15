@@ -26,11 +26,15 @@ const modes = [
         console.log("Not implemented yet.");
         process.exit(0);
       },
+      cleanup: () => {
+        console.log("Not implemented yet.");
+        process.exit(0);
+      },
     },
   },
 ];
 
-const run = async () => {
+(async () => {
   const mode = modes.find((m) => m.name == MODE);
   if (!mode) {
     console.log(`Please select an mode from the following:\n`);
@@ -43,15 +47,19 @@ const run = async () => {
 
   const { run, cleanup } = mode.entryPoint;
 
+  //catches ctrl+c event
+  process.once("SIGINT", cleanup);
+  // catches "kill pid" (for example: nodemon restart)
+  process.once("SIGUSR1", cleanup);
+  process.once("SIGUSR2", cleanup);
+  //catches uncaught exceptions
+  process.once("uncaughtException", cleanup);
+
   try {
     await run();
   } catch (e) {
     console.error(e.stack);
-    if (cleanup) {
-      cleanup({ error: e });
-    }
+    cleanup({ error: e });
     process.exit(1);
   }
-};
-
-run();
+})();
