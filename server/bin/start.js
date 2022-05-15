@@ -7,11 +7,6 @@ if (args.mode) {
 }
 const { MODE } = process.env;
 
-const run = () => {
-  console.log("Not implemented yet.");
-  process.exit(0);
-};
-
 const modes = [
   {
     name: "crawler",
@@ -27,19 +22,36 @@ const modes = [
     name: "api",
     description: "Web API to interact with server configurations and see events.",
     entryPoint: {
-      run,
+      run: () => {
+        console.log("Not implemented yet.");
+        process.exit(0);
+      },
     },
   },
 ];
 
-const mode = modes.find((m) => m.name == MODE);
-if (!mode) {
-  console.log(`Please select an mode from the following:\n`);
-  modes.forEach((mode) => {
-    console.log(`\t${mode.name}\t- ${mode.description}`);
-  });
-  console.log(`\nTIP: You can use MODE env var or --mode command-line argument.`);
-  process.exit(0);
-}
+const run = async () => {
+  const mode = modes.find((m) => m.name == MODE);
+  if (!mode) {
+    console.log(`Please select an mode from the following:\n`);
+    modes.forEach((mode) => {
+      console.log(`\t${mode.name}\t- ${mode.description}`);
+    });
+    console.log(`\nTIP: You can use MODE env var or --mode command-line argument.`);
+    process.exit(0);
+  }
 
-mode.entryPoint.run();
+  const { run, cleanup } = mode.entryPoint;
+
+  try {
+    await run();
+  } catch (e) {
+    console.error(e.stack);
+    if (cleanup) {
+      cleanup({ error: e });
+    }
+    process.exit(1);
+  }
+};
+
+run();
