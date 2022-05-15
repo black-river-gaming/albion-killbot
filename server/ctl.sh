@@ -16,19 +16,19 @@ PROJECT_ARGS="-p albion-killbot"
 COMPOSE_FILE="-f docker/docker-compose.yml"
 args="$PROJECT_ARGS $COMPOSE_FILE"
 
-cmd=$1
-mode=$2
+cmd=$1; shift
+component=$1; shift
 
 Build() {
   docker-compose $args build
 }
 
 Start() {
-  docker-compose $args up -d
+  docker-compose $args up -d $component $@
 }
 
 Stop() {
-  docker-compose $args down
+  docker-compose $args down $component $@
 }
 
 Restart() {
@@ -38,16 +38,24 @@ Restart() {
 Logs() {
   # If exit code is zero (normal exits), just run it again
   while [ $? -eq "0" ]; do
-    docker-compose $args logs -f $1
+    docker-compose $args logs -f $component
   done
 }
 
 Shell() {
-  if [ -z $1 ]; then
+  if [ -z $component ]; then
     echo "Usage: $0 shell [component]"
     exit 1
   fi
-  docker-compose $args exec $1 bash
+  docker-compose $args exec $component bash
+}
+
+Exec() {
+  if [ -z $component ] || [ -z $1 ]; then
+    echo "Usage: $0 exec [component] [commands]"
+    exit 1
+  fi
+  docker-compose $args exec $component $@
 }
 
 Help() {
@@ -67,13 +75,14 @@ Help() {
   exit 0
 }
 
-case $1 in
-  build) Build ;;
-  help) Help ;;
-  logs) Logs $2 ;;
-  restart) Restart ;;
-  shell) Shell $2 ;;
-  start) Start ;;
-  stop) Stop ;;
-  *) Help ;;
+case $cmd in
+  build) Build $@ ;;
+  exec) Exec $@ ;;
+  help) Help $@ ;;
+  logs) Logs $@ ;;
+  restart) Restart $@ ;;
+  shell) Shell $@ ;;
+  start) Start $@ ;;
+  stop) Stop $@ ;;
+  *) Help $@ ;;
 esac
