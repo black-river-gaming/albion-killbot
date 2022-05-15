@@ -1,0 +1,76 @@
+#!/bin/env sh
+
+function check_command() {
+  if ! [ -x "$(command -v $1)" ]; then
+    echo "Error: $1 is not installed. Please install before continuing." >&2
+    exit 1
+  fi
+}
+
+# Run the entire stack in development mode using docker-compose
+
+check_command docker
+check_command docker-compose
+
+PROJECT_ARGS="-p albion-killbot"
+COMPOSE_FILE="-f docker/docker-compose.yml"
+args="$PROJECT_ARGS $COMPOSE_FILE"
+
+cmd=$1
+mode=$2
+
+Build() {
+  docker-compose $args build
+}
+
+Start() {
+  docker-compose $args up -d
+}
+
+Stop() {
+  docker-compose $args down
+}
+
+Restart() {
+  docker-compose $args restart
+}
+
+Logs() {
+  docker-compose $args logs -f $1
+}
+
+Shell() {
+  if [ -z $1 ]; then
+    echo "Usage: $0 shell [component]"
+    exit 1
+  fi
+  docker-compose $args exec $1 bash
+}
+
+Help() {
+  printf "This scripts is a helper for docker-compose for dev-env.\n"
+  printf "\nUsage: $0 COMMAND\n"
+  printf "\nCommands:\n"
+  printf "\tbuild\t\t\tStart all components\n"
+  printf "\tstart\t\t\tStart the stack in detached mode\n"
+  printf "\tstop\t\t\tShutdown the stack\n"
+  printf "\trestart\t\t\tRestart the stack\n"
+  printf "\tshell [component]\t\t\tOpen a bash shell in the target component\n"
+  printf "\tlogs [component]\tGet logs for component or all logs with tail mode\n"
+  printf "\nComponents:\n"
+  printf "\tcrawler\t\t\tAlbion api crawler\n"
+  printf "\tbot\t\t\tDiscord bot\n"
+  printf "\tapi\t\t\tWeb REST api\n"
+  exit 0
+}
+
+case $1 in
+  build) Build ;;
+  help) Help ;;
+  logs) Logs $2 ;;
+  restart) Restart ;;
+  shell) Shell $2 ;;
+  start) Start ;;
+  stop) Stop ;;
+  *) Help ;;
+esac
