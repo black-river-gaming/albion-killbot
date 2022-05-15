@@ -1,0 +1,81 @@
+version: "3.9"
+
+services:
+  mongodb:
+    image: mongo:latest
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongodb:27017/test --quiet
+      interval: 30s
+      timeout: 30s
+      retries: 5
+    volumes:
+      - type: volume
+        source: mongodb
+        target: /data/db
+      - type: volume
+        source: configdb
+        target: /data/configdb
+    expose:
+      - 27017
+
+  rabbitmq:
+    image: rabbitmq:3
+    restart: unless-stopped
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 5
+    volumes:
+      - type: volume
+        source: rabbitmq
+        target: /var/lib/rabbitmq
+    expose:
+      - 5672
+
+  crawler:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: npm run start:crawler:dev
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq
+
+  bot:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: npm run start:bot:dev
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+      - rabbitmq
+    env_file: ../.env
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017/albion-killbot
+      - RABBITMQ_URL=amqp://rabbitmq
+    volumes:
+      - type: volume
+        source: killbotCache
+        target: /tmp/albion-killbot-cache
+
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: npm run start:api:dev
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017/albion-killbot
+
+volumes:
+  mongodb:
+  configdb:
+  killbotCache:
+  rabbitmq:

@@ -1,6 +1,4 @@
-.git
-.github
-.env*
+.*
+docker
 node_modules
 yarn-error.log
-docker-compose.yml

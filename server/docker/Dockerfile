@@ -1,7 +1,6 @@
-FROM node:16-stretch AS build
+FROM node:lts AS build
 WORKDIR /app
 
-# RUN apk update && apk add yarn curl bash python g++ make && rm -rf /var/cache/apk/*
 # Install node-prune (https://github.com/tj/node-prune)
 RUN curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash -s -- -b /usr/local/bin
 
@@ -13,7 +12,7 @@ RUN /usr/local/bin/node-prune
 # Copy all files except those listed in .dockerignore
 COPY . .
 
-FROM node:14-stretch
+FROM node:lts-slim
 WORKDIR /app
 
 # Copy artifacts from build stage to reduce image size
