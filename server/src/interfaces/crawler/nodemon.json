@@ -2,12 +2,14 @@
   "exec": "npm run start:crawler",
   "watch": [
     "./bin",
+    "./src/adapters",
     "./src/helpers",
-    "./src/modules",
+    "./src/services",
     "./src/interfaces/crawler"
   ],
   "ignore": [
     "node_modules",
     "__tests__"
-  ]
+  ],
+  "delay": 5000
 }
