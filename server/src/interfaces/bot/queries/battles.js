@@ -1,14 +1,9 @@
-const axios = require("axios");
-const moment = require("moment");
 const logger = require("../logger")("queries.battles");
 const queue = require("../queue");
-const { sleep, timeout } = require("../utils");
+const { timeout } = require("../utils");
 const { getConfigByGuild } = require("../config");
-const { embedBattle } = require("../messages");
+const { embedBattle } = require("../../../modules/messages");
 
-const BATTLES_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/battles";
-const BATTLES_LIMIT = 51;
-const BATTLES_SORT = "recent";
 const EXCHANGE = "battles";
 const PREFETCH_COUNT = Number(process.env.AMQP_PREFETCH_COUNT) || 5;
 

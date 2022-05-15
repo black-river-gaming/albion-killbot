@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const logger = require("./logger")("bot");
+const logger = require("../../helpers/logger");
 const config = require("./config");
 const messages = require("./messages");
 const commands = require("./commands");
@@ -9,8 +9,8 @@ const battles = require("./queries/battles");
 const dailyRanking = require("./queries/dailyRanking");
 const guilds = require("./queries/guilds");
 const subscriptions = require("./subscriptions");
-const database = require("./database");
-const queue = require("./queue");
+// const database = require("./database");
+const queue = require("../../helpers/queue");
 
 const COMMAND_PREFIX = "!";
 const FREQ_HOUR = 1000 * 60 * 60;
@@ -19,21 +19,29 @@ const FREQ_DAY = FREQ_HOUR * 24;
 const client = new Discord.Client({
   autoReconnect: true,
 });
+
 client.commands = commands;
+client.init = false;
 
 client.on("shardReady", async (id) => {
   client.shardId = id;
 
+  if (!client.init) {
+    await queue.init();
+    //await database.init();
+    client.init = true;
+  }
+
   logger.info(`[#${id}] Shard ready as ${client.user.tag}. Guild count: ${client.guilds.cache.size}`);
 
-  events.subscribe(exports);
-  battles.subscribe(exports);
+  // events.subscribe(exports);
+  // battles.subscribe(exports);
 
-  runDaily(guilds.showRanking, "Display Guild Rankings", exports);
-  runDaily(dailyRanking.scanDaily, "Display Player Ranking (daily)", exports, 0, 0);
-  runInterval(subscriptions.refresh, "Refresh subscriptions", exports, FREQ_DAY, true);
-  runInterval(guilds.update, "Get Guild Data", exports, FREQ_DAY / 4, true);
-  runInterval(dailyRanking.scan, "Display Player Ranking", exports, FREQ_HOUR);
+  // runDaily(guilds.showRanking, "Display Guild Rankings", exports);
+  // runDaily(dailyRanking.scanDaily, "Display Player Ranking (daily)", exports, 0, 0);
+  // runInterval(subscriptions.refresh, "Refresh subscriptions", exports, FREQ_DAY, true);
+  // runInterval(guilds.update, "Get Guild Data", exports, FREQ_DAY / 4, true);
+  // runInterval(dailyRanking.scan, "Display Player Ranking", exports, FREQ_HOUR);
 });
 
 client.on("shardDisconnect", async (ev, id) => {
@@ -149,10 +157,6 @@ exports.sendGuildMessage = async (guild, message, category = "general") => {
   }
 };
 
-exports.client = client;
-
-(async () => {
-  await database.connect();
-  await queue.connect();
-  await client.login();
-})();
+module.exports = {
+  client,
+};
