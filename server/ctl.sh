@@ -32,11 +32,14 @@ Stop() {
 }
 
 Restart() {
-  docker-compose $args restart
+  Stop; Start
 }
 
 Logs() {
-  docker-compose $args logs -f $1
+  # If exit code is zero (normal exits), just run it again
+  while [ $? -eq "0" ]; do
+    docker-compose $args logs -f $1
+  done
 }
 
 Shell() {

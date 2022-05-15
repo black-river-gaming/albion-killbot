@@ -3,21 +3,30 @@ const parseArgs = require("minimist");
 const { MODE } = process.env;
 const args = parseArgs(process.argv.slice(2));
 
+const run = () => {
+  console.log("Not implemented yet.");
+  process.exit(0);
+};
+
 const modes = [
   {
     name: "crawler",
-    entryPoint: "./src/interfaces/crawler/index.js",
     description: "Component that fetches kills in Albion Servers and publish them to queue.",
+    entryPoint: require("../src/interfaces/crawler/index.js"),
   },
   {
     name: "bot",
     description: "Component that consumes the queue and publishes kills to Discord servers.",
-    entryPoint: "./src/interfaces/discord/index.js",
+    entryPoint: {
+      run,
+    },
   },
   {
     name: "api",
     description: "Web API to interact with server configurations and see events.",
-    entryPoint: "./src/interfaces/rest/index.js",
+    entryPoint: {
+      run,
+    },
   },
 ];
 
@@ -32,4 +41,4 @@ if (!mode) {
 }
 
 console.log(`Starting component: ${mode.name}...`);
-// TODO
+mode.entryPoint.run();

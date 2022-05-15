@@ -1,0 +1,12 @@
+{
+  "exec": "npm run start:crawler",
+  "watch": [
+    "./bin",
+    "./src/modules",
+    "./src/interfaces/crawler"
+  ],
+  "ignore": [
+    "node_modules",
+    "__tests__"
+  ]
+}
