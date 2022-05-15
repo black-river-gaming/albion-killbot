@@ -1,8 +1,11 @@
 require("dotenv").config();
 const parseArgs = require("minimist");
 
-const { MODE } = process.env;
 const args = parseArgs(process.argv.slice(2));
+if (args.mode) {
+  process.env.MODE = args.mode;
+}
+const { MODE } = process.env;
 
 const run = () => {
   console.log("Not implemented yet.");
@@ -31,7 +34,7 @@ const modes = [
   },
 ];
 
-const mode = modes.find((m) => m.name == args.mode || m.name == MODE);
+const mode = modes.find((m) => m.name == MODE);
 if (!mode) {
   console.log(`Please select an mode from the following:\n`);
   modes.forEach((mode) => {
@@ -41,5 +44,4 @@ if (!mode) {
   process.exit(0);
 }
 
-console.log(`Starting component: ${mode.name}...`);
 mode.entryPoint.run();
