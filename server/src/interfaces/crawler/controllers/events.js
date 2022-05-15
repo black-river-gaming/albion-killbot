@@ -1,10 +1,6 @@
 const logger = require("../../../helpers/logger");
 const { fetchEventsTo, publishEventToExchange } = require("../../../services/events");
 
-const noop = () => {
-  throw new Error("Not implemented yet");
-};
-
 let latestEvent;
 
 async function fetchEvents() {
@@ -32,5 +28,4 @@ async function fetchEvents() {
 
 module.exports = {
   fetchEvents,
-  fetchBattles: noop,
 };
