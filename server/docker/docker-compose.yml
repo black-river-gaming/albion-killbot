@@ -16,8 +16,8 @@ services:
       - type: volume
         source: configdb
         target: /data/configdb
-    expose:
-      - 27017
+    ports:
+      - 27017:27017
 
   rabbitmq:
     image: rabbitmq:3
