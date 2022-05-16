@@ -4,11 +4,11 @@ async function init() {
   await dbClient.connect();
 }
 
-const collection = (collection) => {
+const getCollection = (collection) => {
   return dbClient.getCollection(collection);
 };
 
 module.exports = {
   init,
-  collection,
+  getCollection,
 };
