@@ -1,6 +1,6 @@
-const { getEvents } = require("../adapters/albionApiClient");
+const { getEvents } = require("../ports/albion");
+const { publish, subscribe } = require("../ports/queue");
 const logger = require("../helpers/logger");
-const { publish, subscribe } = require("../helpers/queue");
 const { sleep } = require("../helpers/utils");
 
 const EVENTS_EXCHANGE = "events";

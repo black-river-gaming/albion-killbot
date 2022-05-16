@@ -3,6 +3,7 @@
   "watch": [
     "./src/adapters",
     "./src/helpers",
+    "./src/ports",
     "./src/services",
     "./src/interfaces/bot"
   ],
