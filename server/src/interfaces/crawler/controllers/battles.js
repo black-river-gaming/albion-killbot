@@ -1,5 +1,5 @@
 const logger = require("../../../helpers/logger");
-const { fetchBattlesTo, publishBattleToExchange } = require("../../../services/battles");
+const { fetchBattlesTo, publishBattle } = require("../../../services/battles");
 
 let latestBattle;
 
@@ -20,7 +20,7 @@ async function fetchBattles() {
       logger.warn(`The published id is lower than latestBattle! Skipping.`);
       continue;
     }
-    await publishBattleToExchange(batl);
+    await publishBattle(batl);
     latestBattle = batl;
   }
   logger.info("Publish battles complete.");

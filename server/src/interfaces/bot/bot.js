@@ -1,14 +1,10 @@
 const Discord = require("discord.js");
+const database = require("../../helpers/database");
 const logger = require("../../helpers/logger");
 const queue = require("../../helpers/queue");
 
 const events = require("./controllers/events");
 const battles = require("./controllers/battles");
-// const config = require("./config");
-// const messages = require("./messages");
-// const commands = require("./commands");
-// const subscriptions = require("./subscriptions");
-// const database = require("./database");
 
 // const COMMAND_PREFIX = "!";
 // const FREQ_HOUR = 1000 * 60 * 60;
@@ -26,12 +22,12 @@ client.on("shardReady", async (id) => {
 
   try {
     await events.subscribe({
-      queueName: `events-${client.shardId}`,
+      queueSuffix: client.shardId,
     });
     logger.info(`${shardPrefix} Subscribed to events queue.`);
 
     await battles.subscribe({
-      queueName: `battles-${client.shardId}`,
+      queueSuffix: client.shardId,
     });
     logger.info(`${shardPrefix} Subscribed to battles queue.`);
   } catch (e) {
@@ -158,7 +154,7 @@ client.on("error", async (e) => {
 
 async function run() {
   await queue.init();
-  //await database.init();
+  await database.init();
   await client.login();
 }
 

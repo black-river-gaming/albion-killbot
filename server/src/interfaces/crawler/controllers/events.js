@@ -1,5 +1,5 @@
 const logger = require("../../../helpers/logger");
-const { fetchEventsTo, publishEventToExchange } = require("../../../services/events");
+const { fetchEventsTo, publishEvent } = require("../../../services/events");
 
 let latestEvent;
 
@@ -20,7 +20,7 @@ async function fetchEvents() {
       logger.warn(`The published id is lower than latestEvent! Skipping.`);
       continue;
     }
-    await publishEventToExchange(evt);
+    await publishEvent(evt);
     latestEvent = evt;
   }
   logger.info("Publish events complete.");

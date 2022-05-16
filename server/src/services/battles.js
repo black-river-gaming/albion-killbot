@@ -1,7 +1,10 @@
 const { getBattles } = require("../adapters/albionApiClient");
 const logger = require("../helpers/logger");
-const { publishBattle } = require("../helpers/queue");
+const { publish, subscribe } = require("../helpers/queue");
 const { sleep } = require("../helpers/utils");
+
+const BATTLES_EXCHANGE = "battles";
+const BATTLES_QUEUE_PREFIX = "battles";
 
 async function fetchBattlesTo(latestBattle, { offset = 0 } = {}, battles = []) {
   // Maximum offset reached, just return what we have
@@ -38,11 +41,17 @@ async function fetchBattlesTo(latestBattle, { offset = 0 } = {}, battles = []) {
   }
 }
 
-async function publishBattleToExchange(event) {
-  return await publishBattle(event);
+async function publishBattle(battle) {
+  return await publish(BATTLES_EXCHANGE, battle);
+}
+
+async function subscribeBattles(queue_suffix, callback) {
+  const queue = `${BATTLES_QUEUE_PREFIX}-${queue_suffix}`;
+  return await subscribe(BATTLES_EXCHANGE, queue, callback);
 }
 
 module.exports = {
   fetchBattlesTo,
-  publishBattleToExchange,
+  publishBattle,
+  subscribeBattles,
 };
