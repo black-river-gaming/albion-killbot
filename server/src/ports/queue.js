@@ -15,7 +15,7 @@ async function subscribe(exchange, queue, callback) {
   const parsedAndCallback = (msg) => {
     const res = JSON.parse(msg.content.toString());
     if (!res) {
-      console.warn("Empty response for subscription");
+      logger.warn("Empty response object received from queue. Ignoring.");
       return true;
     }
     return callback(res);
