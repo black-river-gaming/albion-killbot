@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
-const database = require("../../helpers/database");
+const database = require("../../ports/database");
 const logger = require("../../helpers/logger");
-const queue = require("../../helpers/queue");
+const queue = require("../../ports/queue");
 
 const events = require("./controllers/events");
 const battles = require("./controllers/battles");

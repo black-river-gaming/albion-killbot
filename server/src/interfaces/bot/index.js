@@ -13,16 +13,22 @@ async function run() {
 
   logger.info(`Starting Bot...`);
 
-  manager = new ShardingManager(path.join(__dirname, "bot.js"), {
+  const botFile = path.join(__dirname, "bot.js");
+  require(botFile); // This can throw errors before spawning, preventing inconsistencies
+
+  manager = new ShardingManager(botFile, {
     token: DISCORD_TOKEN,
     totalShards: TOTAL_SHARDS || "auto",
   });
-
   manager.spawn();
+
   runDaily("Clear daily ranking", () => {}, { hour: 0, minute: 10 });
 }
 
-async function cleanup() {
+async function cleanup(e) {
+  if (e) {
+    logger.error(e.stack);
+  }
   logger.info(`Shutting down Bot...`);
 
   for (const shard of manager.shards.values()) {
