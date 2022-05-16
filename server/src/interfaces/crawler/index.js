@@ -1,6 +1,7 @@
 const logger = require("../../helpers/logger");
-const queue = require("../../helpers/queue");
 const { runInterval } = require("../../helpers/utils");
+const queue = require("../../ports/queue");
+
 const { fetchBattles } = require("./controllers/battles");
 const { fetchEvents } = require("./controllers/events");
 
