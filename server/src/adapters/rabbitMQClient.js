@@ -2,15 +2,12 @@ const amqp = require("amqplib");
 const logger = require("../helpers/logger");
 const { sleep } = require("../helpers/utils");
 
-const RABBITMQ_URL = process.env.RABBITMQ_URL;
+const { RABBITMQ_URL } = process.env;
 const QUEUE_MAX_LENGTH = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
 const QUEUE_MESSAGE_TTL = 1000 * 60 * 60 * 4; // 4 hours
 
 if (!RABBITMQ_URL) {
-  logger.warn(
-    "Please set RABBITMQ_URL environment variable with the RabbitMQ location with the following format: amqp://host",
-  );
-  process.exit(1);
+  throw new Error("Please set RABBITMQ_URL environment variable with the RabbitMQ location.");
 }
 
 let client;

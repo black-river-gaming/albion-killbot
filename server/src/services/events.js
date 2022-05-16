@@ -1,7 +1,10 @@
 const { getEvents } = require("../adapters/albionApiClient");
 const logger = require("../helpers/logger");
-const { publishEvent } = require("../helpers/queue");
+const { publish, subscribe } = require("../helpers/queue");
 const { sleep } = require("../helpers/utils");
+
+const EVENTS_EXCHANGE = "events";
+const EVENTS_QUEUE_PREFIX = "events";
 
 async function fetchEventsTo(latestEvent, { offset = 0 } = {}, events = []) {
   // Maximum offset reached, just return what we have
@@ -38,11 +41,17 @@ async function fetchEventsTo(latestEvent, { offset = 0 } = {}, events = []) {
   }
 }
 
-async function publishEventToExchange(event) {
-  return await publishEvent(event);
+async function publishEvent(event) {
+  return await publish(EVENTS_EXCHANGE, event);
+}
+
+async function subscribeEvents(queue_suffix, callback) {
+  const queue = `${EVENTS_QUEUE_PREFIX}-${queue_suffix}`;
+  return await subscribe(EVENTS_EXCHANGE, queue, callback);
 }
 
 module.exports = {
   fetchEventsTo,
-  publishEventToExchange,
+  publishEvent,
+  subscribeEvents,
 };

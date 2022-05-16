@@ -1,5 +1,5 @@
 const logger = require("../../../helpers/logger");
-const queue = require("../../../helpers/queue");
+const { subscribeBattles } = require("../../../services/battles");
 // const { timeout } = require("../utils");
 // const { getConfigByGuild } = require("../config");
 // const { embedBattle } = require("../../../modules/messages");
@@ -29,14 +29,9 @@ const queue = require("../../../helpers/queue");
 //   return null;
 // };
 
-async function subscribe({ queueName }) {
+async function subscribe({ queueSuffix }) {
   // Set consume callback
-  const cb = async (msg) => {
-    const battle = JSON.parse(msg.content.toString());
-    if (!battle) {
-      return;
-    }
-
+  const cb = async (battle) => {
     logger.debug(`Received battle: ${battle.id}`);
 
     try {
@@ -54,13 +49,13 @@ async function subscribe({ queueName }) {
       //   }
       // }
     } catch (e) {
-      logger.error(`[${queueName}] Error while processing battle ${battle.id} [${e}]`);
+      logger.error(`Error while processing battle ${battle.id} [${e}]`);
     }
 
     return true;
   };
 
-  return await queue.subscribeBattlesToQueue(queueName, cb);
+  return await subscribeBattles(queueSuffix, cb);
 }
 
 module.exports = {

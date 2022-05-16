@@ -1,5 +1,5 @@
 const logger = require("../../../helpers/logger");
-const queue = require("../../../helpers/queue");
+const { subscribeEvents } = require("../../../services/events");
 // const { timeout } = require("../../helpers/utils");
 // const { getConfigByGuild } = require("../config");
 // const { embedEvent, embedEventAsImage, embedInventoryAsImage } = require("../messages");
@@ -37,14 +37,9 @@ const queue = require("../../../helpers/queue");
 //   return null;
 // };
 
-async function subscribe({ queueName }) {
+async function subscribe({ queueSuffix }) {
   // Set consume callback
-  const cb = async (msg) => {
-    const event = JSON.parse(msg.content.toString());
-    if (!event) {
-      return;
-    }
-
+  const cb = async (event) => {
     logger.debug(`Received event: ${event.EventId}`);
 
     try {
@@ -74,13 +69,13 @@ async function subscribe({ queueName }) {
       //     }
       //   }
     } catch (e) {
-      logger.error(`[${queueName}] Error processing event ${event.EventId} [${e}]`);
+      logger.error(`Error processing event ${event.EventId} [${e}]`);
     }
 
     return true;
   };
 
-  return await queue.subscribeEventsToQueue(queueName, cb);
+  return await subscribeEvents(queueSuffix, cb);
 }
 
 module.exports = {
