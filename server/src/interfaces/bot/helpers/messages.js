@@ -97,12 +97,12 @@ const embedEvent = (event, { locale }) => {
           },
           {
             name: t("KILL.KILLER_IP"),
-            value: Math.round(event.Killer.AverageItemPower),
+            value: `${Math.round(event.Killer.AverageItemPower)}`,
             inline: true,
           },
           {
             name: t("KILL.VICTIM_IP"),
-            value: Math.round(event.Victim.AverageItemPower),
+            value: `${Math.round(event.Victim.AverageItemPower)}`,
             inline: true,
           },
           {
