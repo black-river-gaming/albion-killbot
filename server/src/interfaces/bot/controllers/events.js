@@ -67,12 +67,12 @@ async function subscribe(client) {
         const locale = guild.settings.lang;
 
         if (mode === REPORT_MODES.IMAGE) {
-          const inventory = event.Victim.Inventory.filter((i) => i != null);
-          const eventImage = await generateEventImage(event, guild.settings.lang);
+          const inventory = guildEvent.Victim.Inventory.filter((i) => i != null);
+          const eventImage = await generateEventImage(guildEvent, guild.settings.lang);
           await sendNotification(
             client,
             channel,
-            embedEventImage(event, eventImage, {
+            embedEventImage(guildEvent, eventImage, {
               locale,
             }),
           );
@@ -81,13 +81,13 @@ async function subscribe(client) {
             await sendNotification(
               client,
               channel,
-              embedEventInventoryImage(event, inventoryImage, {
+              embedEventInventoryImage(guildEvent, inventoryImage, {
                 locale,
               }),
             );
           }
         } else if (mode === REPORT_MODES.TEXT) {
-          await sendNotification(client, channel, embedEvent(event, { locale: guild.settings.lang }));
+          await sendNotification(client, channel, embedEvent(guildEvent, { locale: guild.settings.lang }));
         }
       }
     } catch (e) {
