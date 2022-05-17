@@ -1,13 +1,13 @@
 const logger = require("../../../helpers/logger");
 const { subscribeBattles } = require("../../../services/battles");
-const { getSettingsByGuild, REPORT_MODES } = require("../../../services/settings");
-// const { timeout } = require("../utils");
-// const { getConfigByGuild } = require("../config");
-// const { embedBattle } = require("../../../modules/messages");
+const { getSettingsByGuild } = require("../../../services/settings");
+const { embedBattle } = require("../helpers/messages");
+
+const { sendNotification } = require("./notifications");
 
 // This method checks if a battle is tracked by a discord server
 // and returns the battle or null if the event is not tracked at all
-function checkTrackedBattle (battle, { players, guilds, alliances }) {
+function checkTrackedBattle(battle, { players, guilds, alliances }) {
   if (players.length === 0 && guilds.length === 0 && alliances.length === 0) {
     return null;
   }
@@ -30,12 +30,11 @@ function checkTrackedBattle (battle, { players, guilds, alliances }) {
   }
 
   return null;
-};
+}
 
 async function subscribe(client) {
   const { shardId } = client;
 
-  // Set consume callback
   const cb = async (battle) => {
     logger.debug(`Received battle: ${battle.id}`);
 
@@ -53,11 +52,11 @@ async function subscribe(client) {
         const { enabled, channel } = guild.settings.battles;
         if (!enabled || !channel) continue;
 
-        logger.info(`[#${shardId}] Sending battle ${battle.id} to server "${guild.name}".`);
-        // await timeout(sendGuildMessage(guild, embedBattle(battle, guild.config.lang), "battles"), 7000);
+        logger.info(`[#${shardId}] Sending battle ${battle.id} to "${guild.name}".`);
+        await sendNotification(client, channel, embedBattle(battle, guild.settings.lang));
       }
     } catch (e) {
-      logger.error(`[#${shardId}] Error while processing battle ${battle.id} [${e}]`);
+      logger.error(`[#${shardId}] Error while processing battle ${battle.id}:`, e);
     }
 
     return true;

@@ -1,9 +1,11 @@
 const logger = require("../../../helpers/logger");
 const { subscribeEvents } = require("../../../services/events");
+const { generateEventImage, generateInventoryImage } = require("../../../services/images");
 const { getSettingsByGuild, REPORT_MODES } = require("../../../services/settings");
-// const { timeout } = require("../../helpers/utils");
-// const { getConfigByGuild } = require("../config");
-// const { embedEvent, embedEventAsImage, embedInventoryAsImage } = require("../messages");
+
+const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../helpers/messages");
+
+const { sendNotification } = require("./notifications");
 // const dailyRanking = require("./dailyRanking");
 
 // This method checks if an event is tracked by a discord server
@@ -43,7 +45,6 @@ function checkTrackedEvent(event, { players, guilds, alliances }) {
 async function subscribe(client) {
   const { shardId } = client;
 
-  // Set consume callback
   const cb = async (event) => {
     logger.debug(`Received event: ${event.EventId}`);
 
@@ -62,24 +63,35 @@ async function subscribe(client) {
         const { enabled, channel, mode } = guild.settings.kills;
         if (!enabled || !channel) continue;
 
-        logger.info(`[#${shardId}] Sending event ${event.EventId} to server "${guild.name}".`);
+        logger.info(`[#${shardId}] Sending event ${event.EventId} to "${guild.name}".`);
+        const locale = guild.settings.lang;
 
         if (mode === REPORT_MODES.IMAGE) {
           const hasInventory = event.Victim.Inventory.filter((i) => i != null).length > 0;
-          //         const killImage = await embedEventAsImage(event, guild.config.lang);
-          //         await timeout(sendGuildMessage(guild, killImage, "events"), 10000);
-          //         if (hasInventory) {
-          //           const inventoryImage = await embedInventoryAsImage(event, guild.config.lang);
-          //           await timeout(sendGuildMessage(guild, inventoryImage, "events"), 10000);
-          //         }
-          logger.verbose("Send kill as image");
+          const killImage = await generateEventImage(event, guild.settings.lang);
+          await sendNotification(
+            client,
+            channel,
+            embedEventImage(event, killImage, {
+              locale,
+            }),
+          );
+          if (hasInventory) {
+            const inventoryImage = await generateInventoryImage(event.Victim.Inventory, guild.settings.lang);
+            await sendNotification(
+              client,
+              channel,
+              embedEventInventoryImage(event, inventoryImage, {
+                locale,
+              }),
+            );
+          }
         } else if (mode === REPORT_MODES.TEXT) {
-          logger.verbose("Send kill as text");
-          //         await timeout(sendGuildMessage(guild, embedEvent(event, guild.config.lang), "events"), 10000);
+          await sendNotification(client, channel, embedEvent(event, { locale: guild.settings.lang }));
         }
       }
     } catch (e) {
-      logger.error(`[#${shardId}] Error processing event ${event.EventId} [${e}]`);
+      logger.error(`[#${shardId}] Error processing event ${event.EventId}:`, e);
     }
 
     return true;

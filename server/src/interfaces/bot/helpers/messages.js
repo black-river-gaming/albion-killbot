@@ -1,9 +1,8 @@
 const moment = require("moment");
-const i18n = require("i18n");
-const { generateEventImage, generateInventoryImage } = require("./images");
-const { digitsFormatter, humanFormatter } = require("./utils");
+const { getLocale } = require("../../../helpers/locale");
+const { digitsFormatter, humanFormatter } = require("../../../helpers/utils");
+const { generateEventImage, generateInventoryImage } = require("../../../services/images");
 
-const LOCALE_DIR = __dirname + "/locales";
 const KILL_URL = "https://albiononline.com/{lang}/killboard/kill/{kill}";
 const GREEN = 52224;
 const RED = 13369344;
@@ -22,30 +21,19 @@ const MAXLEN = {
   AUTHOR: 256,
 };
 
-exports.getI18n = (locale = "en") => {
-  const l = {};
-  i18n.configure({
-    directory: LOCALE_DIR,
-    objectNotation: true,
-    defaultLocale: "en",
-    register: l,
-  });
-  l.setLocale(locale);
-  return l;
-};
-
-exports.embedEvent = (event, locale) => {
-  const l = exports.getI18n(locale);
+const embedEvent = (event, { locale }) => {
+  const l = getLocale(locale);
+  const { t } = l;
 
   const good = event.good;
-  const title = l.__("KILL.EVENT", {
+  const title = t("KILL.EVENT", {
     killer: event.Killer.Name,
     victim: event.Victim.Name,
   });
 
   let description;
   if (event.numberOfParticipants === 1) {
-    description = l.__(`KILL.SOLO_${Math.floor(Math.random() * 6)}`);
+    description = t(`KILL.SOLO_${Math.floor(Math.random() * 6)}`);
   } else {
     const totalDamage = event.Participants.reduce((sum, participant) => {
       return sum + participant.DamageDone;
@@ -61,7 +49,7 @@ exports.embedEvent = (event, locale) => {
     });
 
     if (assist.length > 0) {
-      description = l.__("KILL.ASSIST", { assists: assist.join(" / ") });
+      description = t("KILL.ASSIST", { assists: assist.join(" / ") });
     }
   }
 
@@ -88,18 +76,18 @@ exports.embedEvent = (event, locale) => {
       },
       fields: [
         {
-          name: l.__("KILL.FAME"),
+          name: t("KILL.FAME"),
           value: digitsFormatter(event.TotalVictimKillFame),
           inline: false,
         },
         {
-          name: l.__("KILL.KILLER_GUILD"),
-          value: killerGuildValue || l.__("KILL.NO_GUILD"),
+          name: t("KILL.KILLER_GUILD"),
+          value: killerGuildValue || t("KILL.NO_GUILD"),
           inline: true,
         },
         {
-          name: l.__("KILL.VICTIM_GUILD"),
-          value: victimGuildValue || l.__("KILL.NO_GUILD"),
+          name: t("KILL.VICTIM_GUILD"),
+          value: victimGuildValue || t("KILL.NO_GUILD"),
           inline: true,
         },
         {
@@ -108,12 +96,12 @@ exports.embedEvent = (event, locale) => {
           inline: true,
         },
         {
-          name: l.__("KILL.KILLER_IP"),
+          name: t("KILL.KILLER_IP"),
           value: Math.round(event.Killer.AverageItemPower),
           inline: true,
         },
         {
-          name: l.__("KILL.VICTIM_IP"),
+          name: t("KILL.VICTIM_IP"),
           value: Math.round(event.Victim.AverageItemPower),
           inline: true,
         },
@@ -128,11 +116,12 @@ exports.embedEvent = (event, locale) => {
   };
 };
 
-exports.embedEventAsImage = async (event, locale) => {
-  const l = exports.getI18n(locale);
+const embedEventImage = async (event, image, { locale }) => {
+  const l = getLocale(locale);
+  const { t } = l;
 
   const good = event.good;
-  const title = l.__("KILL.EVENT", {
+  const title = t("KILL.EVENT", {
     killer: event.Killer.Name,
     victim: event.Victim.Name,
   });
@@ -145,7 +134,7 @@ exports.embedEventAsImage = async (event, locale) => {
       url: KILL_URL.replace("{lang}", l.getLocale()).replace("{kill}", event.EventId),
       files: [
         {
-          attachment: await generateEventImage(event),
+          attachment: image,
           name: filename,
         },
       ],
@@ -156,8 +145,9 @@ exports.embedEventAsImage = async (event, locale) => {
   };
 };
 
-exports.embedInventoryAsImage = async (event, locale) => {
-  const l = exports.getI18n(locale);
+const embedEventInventoryImage = async (event, image, { locale }) => {
+  const l = getLocale(locale);
+
   const good = event.good;
   const filename = `${event.EventId}-inventory.png`;
 
@@ -178,8 +168,8 @@ exports.embedInventoryAsImage = async (event, locale) => {
   };
 };
 
-exports.embedBattle = (battle, locale) => {
-  const l = exports.getI18n(locale);
+const embedBattle = (battle, { locale }) => {
+  const { t } = getLocale(locale);
 
   const guildCount = Object.keys(battle.guilds || {}).length;
 
@@ -187,7 +177,7 @@ exports.embedBattle = (battle, locale) => {
     .duration(moment(battle.endTime) - moment(battle.startTime))
     .locale(locale || "en")
     .humanize();
-  const description = l.__("BATTLE.DESCRIPTION", {
+  const description = t("BATTLE.DESCRIPTION", {
     players: Object.keys(battle.players || {}).length,
     kills: battle.totalKills,
     fame: digitsFormatter(battle.totalFame),
@@ -195,7 +185,7 @@ exports.embedBattle = (battle, locale) => {
   });
 
   const line = (item) => {
-    return l.__("BATTLE.LINE", {
+    return t("BATTLE.LINE", {
       name: item.name,
       total: item.total,
       kills: item.kills,
@@ -229,7 +219,7 @@ exports.embedBattle = (battle, locale) => {
   const guildsWithoutAlliance = Object.values(battle.guilds).filter((guild) => !guild.allianceId);
   const playersWithoutGuild = Object.values(battle.players).filter((player) => !player.guildId);
   if (guildsWithoutAlliance.length > 0 || playersWithoutGuild.length > 0) {
-    const name = l.__("BATTLE.NO_ALLIANCE");
+    const name = t("BATTLE.NO_ALLIANCE");
 
     let value = "";
     guildsWithoutAlliance.forEach((guild) => {
@@ -240,7 +230,7 @@ exports.embedBattle = (battle, locale) => {
 
     if (playersWithoutGuild.length > 0) {
       const stats = {
-        name: l.__("BATTLE.NO_GUILD"),
+        name: t("BATTLE.NO_GUILD"),
         total: 0,
         kills: 0,
         deaths: 0,
@@ -265,7 +255,7 @@ exports.embedBattle = (battle, locale) => {
   return {
     embed: {
       color: BATTLE,
-      title: l.__("BATTLE.EVENT", { guilds: guildCount }),
+      title: t("BATTLE.EVENT", { guilds: guildCount }),
       url: `http://www.yaga.sk/killboard/battle.php?id=${battle.id}`,
       description,
       thumbnail: {
@@ -277,13 +267,13 @@ exports.embedBattle = (battle, locale) => {
   };
 };
 
-exports.embedRankings = (guild, locale) => {
-  const l = exports.getI18n(locale);
+const embedRankings = (guild, { locale }) => {
+  const { t } = getLocale(locale);
 
   const generateRankFieldValue = (ranking, pvp = false) => {
     let value = "```c";
     if (ranking.length === 0) {
-      const nodata = l.__("RANKING.NO_DATA_SHORT");
+      const nodata = t("RANKING.NO_DATA_SHORT");
       value += `\n${nodata}${" ".repeat(RANKING_LINE_LENGTH - nodata.length)}`;
     }
     ranking.forEach((item) => {
@@ -303,19 +293,19 @@ exports.embedRankings = (guild, locale) => {
 
   return {
     embed: {
-      title: l.__("RANKING.MONTHLY", { guild: guild.Name }),
+      title: t("RANKING.MONTHLY", { guild: guild.Name }),
       url: `https://albiononline.com/pt/killboard/guild/${guild._id}`,
       thumbnail: {
         url: "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
       },
       fields: [
         {
-          name: l.__("RANKING.PVE"),
+          name: t("RANKING.PVE"),
           value: generateRankFieldValue(guild.rankings.pve),
           inline: true,
         },
         {
-          name: l.__("RANKING.PVP"),
+          name: t("RANKING.PVP"),
           value: generateRankFieldValue(guild.rankings.pvp, true),
           inline: true,
         },
@@ -325,12 +315,12 @@ exports.embedRankings = (guild, locale) => {
           inline: false,
         },
         {
-          name: l.__("RANKING.GATHERING"),
+          name: t("RANKING.GATHERING"),
           value: generateRankFieldValue(guild.rankings.gathering),
           inline: true,
         },
         {
-          name: l.__("RANKING.CRAFTING"),
+          name: t("RANKING.CRAFTING"),
           value: generateRankFieldValue(guild.rankings.crafting),
           inline: true,
         },
@@ -340,30 +330,30 @@ exports.embedRankings = (guild, locale) => {
   };
 };
 
-exports.embedList = (config) => {
-  const l = exports.getI18n(config.lang);
+const embedList = (config) => {
+  const { t } = getLocale(config.lang);
 
   const configToList = (list) => {
-    if (!list || list.length === 0) return l.__("TRACK.NONE");
+    if (!list || list.length === 0) return t("TRACK.NONE");
     return list.map((item) => item.name).join("\n");
   };
 
   return {
     embed: {
-      description: l.__("TRACK.LIST"),
+      description: t("TRACK.LIST"),
       fields: [
         {
-          name: l.__("TRACK.PLAYERS"),
+          name: t("TRACK.PLAYERS"),
           value: configToList(config.trackedPlayers),
           inline: true,
         },
         {
-          name: l.__("TRACK.GUILDS"),
+          name: t("TRACK.GUILDS"),
           value: configToList(config.trackedGuilds),
           inline: true,
         },
         {
-          name: l.__("TRACK.ALLIANCES"),
+          name: t("TRACK.ALLIANCES"),
           value: configToList(config.trackedAlliances),
           inline: true,
         },
@@ -372,13 +362,13 @@ exports.embedList = (config) => {
   };
 };
 
-exports.embedDailyRanking = (rankings, locale) => {
-  const l = exports.getI18n(locale);
+const embedDailyRanking = (rankings, { locale }) => {
+  const { t } = getLocale(locale);
 
   const generateRankFieldValue = (ranking, name = "name", number = "fame") => {
     let value = "```c";
     if (ranking.length === 0) {
-      const nodata = l.__("RANKING.NO_DATA_SHORT");
+      const nodata = t("RANKING.NO_DATA_SHORT");
       value += `\n${nodata}${" ".repeat(RANKING_LINE_LENGTH - nodata.length)}`;
     }
     ranking.forEach((item) => {
@@ -392,18 +382,18 @@ exports.embedDailyRanking = (rankings, locale) => {
 
   return {
     embed: {
-      title: l.__("RANKING.DAILY"),
+      title: t("RANKING.DAILY"),
       thumbnail: {
         url: "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
       },
       fields: [
         {
-          name: l.__("RANKING.TOTAL_KILL_FAME"),
+          name: t("RANKING.TOTAL_KILL_FAME"),
           value: digitsFormatter(rankings.totalKillFame),
           inline: true,
         },
         {
-          name: l.__("RANKING.TOTAL_DEATH_FAME"),
+          name: t("RANKING.TOTAL_DEATH_FAME"),
           value: digitsFormatter(rankings.totalDeathFame),
           inline: true,
         },
@@ -413,16 +403,26 @@ exports.embedDailyRanking = (rankings, locale) => {
           inline: false,
         },
         {
-          name: l.__("RANKING.KILL_FAME"),
+          name: t("RANKING.KILL_FAME"),
           value: generateRankFieldValue(rankings.killRanking, "name", "killFame"),
           inline: true,
         },
         {
-          name: l.__("RANKING.DEATH_FAME"),
+          name: t("RANKING.DEATH_FAME"),
           value: generateRankFieldValue(rankings.deathRanking, "name", "deathFame"),
           inline: true,
         },
       ],
     },
   };
+};
+
+module.exports = {
+  embedEvent,
+  embedEventImage,
+  embedEventInventoryImage,
+  embedDailyRanking,
+  embedRankings,
+  embedList,
+  embedBattle,
 };
