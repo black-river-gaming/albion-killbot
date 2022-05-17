@@ -30,7 +30,7 @@ const DEFAULT_SETTINGS = {
   },
   subscription: {
     expires: null,
-  }
+  },
 };
 
 async function getSettings(guild) {
@@ -70,6 +70,7 @@ async function deleteSettings(guild) {
 }
 
 module.exports = {
+  REPORT_MODES,
   getSettings,
   getSettingsByGuild,
   setSettings,

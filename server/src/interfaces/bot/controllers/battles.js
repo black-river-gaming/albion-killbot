@@ -1,63 +1,72 @@
 const logger = require("../../../helpers/logger");
 const { subscribeBattles } = require("../../../services/battles");
+const { getSettingsByGuild, REPORT_MODES } = require("../../../services/settings");
 // const { timeout } = require("../utils");
 // const { getConfigByGuild } = require("../config");
 // const { embedBattle } = require("../../../modules/messages");
 
-// const getTrackedBattle = (battle, { trackedPlayers, trackedGuilds, trackedAlliances }) => {
-//   if (trackedPlayers.length === 0 && trackedGuilds.length === 0 && trackedAlliances.length === 0) {
-//     return null;
-//   }
+// This method checks if a battle is tracked by a discord server
+// and returns the battle or null if the event is not tracked at all
+function checkTrackedBattle (battle, { players, guilds, alliances }) {
+  if (players.length === 0 && guilds.length === 0 && alliances.length === 0) {
+    return null;
+  }
 
-//   const playerIds = trackedPlayers.map((t) => t.id);
-//   const guildIds = trackedGuilds.map((t) => t.id);
-//   const allianceIds = trackedAlliances.map((t) => t.id);
+  const playerIds = players.map((t) => t.id);
+  const guildIds = guilds.map((t) => t.id);
+  const allianceIds = alliances.map((t) => t.id);
 
-//   // Ignore battles without fame
-//   if (battle.totalFame <= 0) {
-//     return;
-//   }
+  // Ignore battles without fame
+  if (battle.totalFame <= 0) {
+    return null;
+  }
 
-//   // Check for tracked ids in players, guilds and alliances
-//   // Since we are parsing from newer to older events we need to use a FILO array
-//   const hasTrackedPlayer = Object.keys(battle.players || {}).some((id) => playerIds.indexOf(id) >= 0);
-//   const hasTrackedGuild = Object.keys(battle.guilds || {}).some((id) => guildIds.indexOf(id) >= 0);
-//   const hasTrackedAlliance = Object.keys(battle.alliances || {}).some((id) => allianceIds.indexOf(id) >= 0);
-//   if (hasTrackedPlayer || hasTrackedGuild || hasTrackedAlliance) {
-//     return battle;
-//   }
-//   return null;
-// };
+  // Check for tracked ids in players, guilds and alliances
+  const hasTrackedPlayer = Object.keys(battle.players || {}).some((id) => playerIds.indexOf(id) >= 0);
+  const hasTrackedGuild = Object.keys(battle.guilds || {}).some((id) => guildIds.indexOf(id) >= 0);
+  const hasTrackedAlliance = Object.keys(battle.alliances || {}).some((id) => allianceIds.indexOf(id) >= 0);
+  if (hasTrackedPlayer || hasTrackedGuild || hasTrackedAlliance) {
+    return battle;
+  }
 
-async function subscribe({ queueSuffix }) {
+  return null;
+};
+
+async function subscribe(client) {
+  const { shardId } = client;
+
   // Set consume callback
   const cb = async (battle) => {
     logger.debug(`Received battle: ${battle.id}`);
 
     try {
-      // const allGuildConfigs = await getConfigByGuild(client.guilds.cache.array());
-      // for (const guild of client.guilds.cache.array()) {
-      //   guild.config = allGuildConfigs[guild.id];
-      //   if (!guild.config) continue;
-      //   const battle = getTrackedBattle(btl, guild.config);
-      //   if (!battle) continue;
-      //   logger.info(`[Shard #${client.shardId}] Sending battle ${battle.id} to guild "${guild.name}".`);
-      //   try {
-      //     await timeout(sendGuildMessage(guild, embedBattle(battle, guild.config.lang), "battles"), 7000);
-      //   } catch (e) {
-      //     logger.error(`[Shard #${client.shardId}] Error while sending battle ${battle.id} [${e}]`);
-      //   }
-      // }
+      const settingsByGuild = await getSettingsByGuild(client.guilds.cache);
+
+      for (const guild of client.guilds.cache.values()) {
+        if (!settingsByGuild[guild.id]) continue;
+
+        guild.settings = settingsByGuild[guild.id];
+
+        const guildBattle = checkTrackedBattle(battle, guild.settings.track);
+        if (!guildBattle) continue;
+
+        const { enabled, channel } = guild.settings.battles;
+        if (!enabled || !channel) continue;
+
+        logger.info(`[#${shardId}] Sending battle ${battle.id} to server "${guild.name}".`);
+        // await timeout(sendGuildMessage(guild, embedBattle(battle, guild.config.lang), "battles"), 7000);
+      }
     } catch (e) {
-      logger.error(`Error while processing battle ${battle.id} [${e}]`);
+      logger.error(`[#${shardId}] Error while processing battle ${battle.id} [${e}]`);
     }
 
     return true;
   };
 
-  return await subscribeBattles(queueSuffix, cb);
+  return await subscribeBattles(shardId, cb);
 }
 
 module.exports = {
+  checkTrackedBattle,
   subscribe,
 };

@@ -21,14 +21,10 @@ client.on("shardReady", async (id) => {
   logger.info(`${shardPrefix} Shard ready as ${client.user.tag}. Guild count: ${client.guilds.cache.size}`);
 
   try {
-    await events.subscribe({
-      queueSuffix: client.shardId,
-    });
+    await events.subscribe(client);
     logger.info(`${shardPrefix} Subscribed to events queue.`);
 
-    await battles.subscribe({
-      queueSuffix: client.shardId,
-    });
+    await battles.subscribe(client);
     logger.info(`${shardPrefix} Subscribed to battles queue.`);
   } catch (e) {
     logger.error(e.stack);
