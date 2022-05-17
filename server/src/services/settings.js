@@ -1,6 +1,7 @@
-const SETTINGS_COLLECTION = "settings";
+const { getCollection } = require("../ports/database");
 
-const DEFAULT = {
+const SETTINGS_COLLECTION = "settings";
+const DEFAULT_SETTINGS = {
   trackedPlayers: [],
   trackedGuilds: [],
   trackedAlliances: [],
@@ -15,89 +16,40 @@ const DEFAULT = {
   lang: "en",
 };
 
-// exports.getConfig = async (guild) => {
-//   const collection = database.collection(SERVER_CONFIG_COLLECTION);
-//   if (!collection) {
-//     return DEFAULT_CONFIG;
-//   }
-//   try {
-//     return await collection.findOne({ guild: guild.id });
-//   } catch (e) {
-//     logger.error(`Unable to find guildConfig for guild ${guild}: ${e}`);
-//     return null;
-//   }
-// };
+async function getSettings(guild) {
+  const collection = getCollection(SETTINGS_COLLECTION);
+  return (await collection.findOne({ guild })) || DEFAULT_SETTINGS;
+}
 
-// exports.getConfigBySubscription = async (userId) => {
-//   const collection = database.collection(SERVER_CONFIG_COLLECTION);
-//   if (!collection) {
-//     return null;
-//   }
-//   try {
-//     return await collection.findOne({ "subscription.owner": userId });
-//   } catch (e) {
-//     logger.error(`Unable to find guildConfig for discord user ${userId}: ${e}`);
-//     return null;
-//   }
-// };
+async function getSettingsByGuild(guilds) {
+  const collection = getCollection(SETTINGS_COLLECTION);
 
-// exports.getConfigByGuild = async (guildList) => {
-//   const configByGuild = {};
-//   guildList.forEach((guild) => {
-//     configByGuild[guild.id] = DEFAULT_CONFIG;
-//   });
+  const settingsByGuild = {};
+  guilds.forEach((guild) => {
+    settingsByGuild[guild] = DEFAULT_SETTINGS;
+  });
 
-//   const collection = database.collection(SERVER_CONFIG_COLLECTION);
-//   if (!collection) return configByGuild;
-//   try {
-//     const results = await collection.find({}).toArray();
-//     results.forEach((config) => {
-//       if (!hasSubscription(config)) return;
-//       if (configByGuild[config.guild]) {
-//         configByGuild[config.guild] = config;
-//       }
-//     });
-//     return configByGuild;
-//   } catch (e) {
-//     logger.error(`Unable to find guildConfig for ${guildList.length} guilds: ${e}`);
-//     return configByGuild;
-//   }
-// };
+  await collection.find({}).forEach((settings) => {
+    // if (!hasSubscription(config)) return;
+    settingsByGuild[settings.guild] = settings;
+  });
 
-// exports.setConfig = async (guild) => {
-//   const collection = database.collection(SERVER_CONFIG_COLLECTION);
-//   if (!collection) {
-//     return false;
-//   }
-//   try {
-//     if (!guild.config) {
-//       guild.config = DEFAULT_CONFIG;
-//     }
-//     guild.config.name = guild.name;
-//     const guildConfig = await collection.updateOne({ guild: guild.id }, { $set: guild.config }, { upsert: true });
-//     return guildConfig;
-//   } catch (e) {
-//     logger.error(`Unable to write guildConfig for guild ${guild}: ${e}`);
-//     return false;
-//   }
-// };
+  return settingsByGuild;
+}
 
-// exports.deleteConfig = async (guild) => {
-//   const collection = database.collection(SERVER_CONFIG_COLLECTION);
-//   if (!collection) {
-//     return false;
-//   }
-//   try {
-//     return await collection.deleteOne({ guild: guild.id });
-//   } catch (e) {
-//     logger.error(`Unable to delete guildConfig for guild ${guild}: ${e}`);
-//   }
-// };
+async function setSettings(guild, settings = DEFAULT_SETTINGS) {
+  const collection = getCollection(SETTINGS_COLLECTION);
+  return await collection.updateOne({ guild }, { $set: settings }, { upsert: true });
+}
 
-async function getSettings(guild) {}
+async function deleteSettings(guild) {
+  const collection = getCollection(SETTINGS_COLLECTION);
+  return await collection.deleteOne({ guild });
+}
 
 module.exports = {
   getSettings,
-  // setSettings,
-  // deleteSettings,
+  getSettingsByGuild,
+  setSettings,
+  deleteSettings,
 };
