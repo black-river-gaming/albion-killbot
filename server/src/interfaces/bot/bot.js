@@ -108,46 +108,6 @@ client.on("error", async (e) => {
 //     .first();
 // };
 
-// const msgErrors = {};
-// exports.sendGuildMessage = async (guild, message, category = "general") => {
-//   if (!guild.config) guild.config = await config.getConfig(guild);
-//   if (!guild.config.categories) guild.config.categories = {};
-//   if (guild.config.categories[category] === false) return;
-
-//   let channelId;
-//   // Old structure backport
-//   if (guild.config.channel) {
-//     if (typeof guild.config.channel === "string") channelId = guild.config.channel;
-//     else channelId = guild.config.channel[category] || guild.config.channel.general;
-//   }
-
-//   const l = messages.getI18n(guild);
-//   const channel = client.channels.cache.find((c) => c.id === channelId) || exports.getDefaultChannel(guild);
-//   if (!channel) return;
-//   try {
-//     await channel.send(message);
-//     msgErrors[guild.id] = 0;
-//   } catch (e) {
-//     logger.error(`Unable to send message to guild ${guild.name}/${channel.name}: ${e}`);
-
-//     if (
-//       e.code === Discord.Constants.APIErrors.UNKNOWN_CHANNEL ||
-//       e.code === Discord.Constants.APIErrors.MISSING_ACCESS ||
-//       e.code === Discord.Constants.APIErrors.MISSING_PERMISSIONS
-//     ) {
-//       if (!msgErrors[guild.id]) msgErrors[guild.id] = 0;
-//       msgErrors[guild.id]++;
-//       // If more than 50 msg errors occur in succession, bot will leave and warn owner
-//       if (msgErrors[guild.id] > 50) {
-//         logger.warn(`Leaving guild ${guild.name} due to excessive message errors. Warning owner.`);
-//         await guild.owner.send(l.__("LEAVE", { guild: guild.name }));
-//         await guild.leave();
-//         msgErrors[guild.id] = 0;
-//       }
-//     }
-//   }
-// };
-
 async function run() {
   await queue.init();
   await database.init();
