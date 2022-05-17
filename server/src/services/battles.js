@@ -26,7 +26,7 @@ async function fetchBattlesTo(latestBattle, { offset = 0 } = {}, battles = []) {
     const foundLatest = !albionBattles.every((batl) => {
       if (batl.id <= latestBattle.id) return false;
       // Ignore items already on the queue
-      if (battles.findIndex((e) => e.EventId === batl.EventId) >= 0) return true;
+      if (battles.findIndex((e) => e.id === batl.id) >= 0) return true;
       battles.push(batl);
       return true;
     });

@@ -20,6 +20,7 @@ async function fetchBattles() {
       logger.warn(`The published id is lower than latestBattle! Skipping.`);
       continue;
     }
+    logger.debug(`Publishing battle ${batl.id}`);
     await publishBattle(batl);
     latestBattle = batl;
   }

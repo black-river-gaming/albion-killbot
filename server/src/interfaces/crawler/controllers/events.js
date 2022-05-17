@@ -20,6 +20,7 @@ async function fetchEvents() {
       logger.warn(`The published id is lower than latestEvent! Skipping.`);
       continue;
     }
+    logger.debug(`Publishing event ${evt.id}`);
     await publishEvent(evt);
     latestEvent = evt;
   }

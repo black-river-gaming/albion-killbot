@@ -46,7 +46,10 @@ const modes = [
     process.once("SIGUSR1", cleanup);
     process.once("SIGUSR2", cleanup);
     //catches uncaught exceptions
-    process.once("uncaughtException", cleanup);
+    process.once("uncaughtException", async (e) => {
+      console.error(`Uncaught exception on ${mode.name}: ${e.stack}`);
+      await cleanup();
+    });
 
     await run();
   } catch (e) {

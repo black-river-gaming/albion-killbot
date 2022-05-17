@@ -9,7 +9,7 @@ async function run() {
   logger.info("Starting Crawler...");
   await queue.init();
   runInterval("Fetch events", fetchEvents, { interval: 30 });
-  runInterval("Fetch battles", fetchBattles, { interval: 120 });
+  runInterval("Fetch battles", fetchBattles, { interval: 30, runOnStart: true });
 }
 
 async function cleanup() {
