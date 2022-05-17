@@ -20,10 +20,12 @@ const isConnected = () => {
   return !!client && !!client.topology && client.topology.isConnected();
 };
 
+let db;
 async function connect() {
   try {
     logger.debug("Connecting to database...");
     await client.connect();
+    db = client.db();
     logger.info("Connection to database stabilished.");
   } catch (e) {
     logger.error(`Unable to connect to database: ${e}`);
@@ -36,12 +38,19 @@ async function connect() {
   });
 }
 
-async function getCollection(collection) {
-  return client.db().collection(collection);
+async function close() {
+  logger.debug("Disconnecting from database...");
+  return await client.close();
+}
+
+function getCollection(collection) {
+  if (!db) throw new Error(`Database is not connected`);
+  return db.collection(collection);
 }
 
 module.exports = {
   connect,
+  close,
   isConnected,
   getCollection,
 };
