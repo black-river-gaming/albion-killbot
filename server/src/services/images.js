@@ -1,12 +1,10 @@
-const axios = require("axios");
-const fs = require("fs");
 const jimp = require("jimp");
 const moment = require("moment");
-const os = require("os");
-const path = require("path");
+const path = require("node:path");
 const { createCanvas, registerFont, loadImage } = require("canvas");
+const { getItemFile } = require("../ports/albion");
 
-const { sleep, digitsFormatter, fileSizeFormatter } = require("../helpers/utils");
+const { digitsFormatter, fileSizeFormatter } = require("../helpers/utils");
 const logger = require("../helpers/logger");
 
 const SMALL_IMAGES = Boolean(process.env.SMALL_IMAGES);
@@ -17,40 +15,22 @@ registerFont(path.join(assetsPath, "fonts", "Roboto-Regular.ttf"), {
   weight: "Normal",
 });
 
-const CDNS = [
-  {
-    url: "https://render.albiononline.com/v1/item/{type}.png?quality={quality}",
-    qualitySupport: true,
-    trash: true,
-  },
-  {
-    url: "https://gameinfo.albiononline.com/api/gameinfo/items/{type}",
-    qualitySupport: true,
-    trash: true,
-  },
-];
+// let S3;
+// if (process.env.AWS_ACCESS_KEY && process.env.AWS_SECRET_KEY) {
+//   const AWS = require("aws-sdk");
+//   S3 = new AWS.S3({
+//     apiVersion: "2006-03-01",
+//     accessKeyId: process.env.AWS_ACCESS_KEY,
+//     secretAccessKey: process.env.AWS_SECRET_KEY,
+//     region: process.env.AWS_REGION || "us-east-1",
+//     maxRetries: 3,
+//     httpOptions: {
+//       timeout: 60000,
+//     },
+//   });
+// }
 
-const TMPDIR = path.join(os.tmpdir(), "albion-killbot-cache");
-// Ensure this exists
-if (!fs.existsSync(TMPDIR)) {
-  fs.mkdirSync(TMPDIR);
-}
-
-let S3;
-if (process.env.AWS_ACCESS_KEY && process.env.AWS_SECRET_KEY) {
-  const AWS = require("aws-sdk");
-  S3 = new AWS.S3({
-    apiVersion: "2006-03-01",
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_KEY,
-    region: process.env.AWS_REGION || "us-east-1",
-    maxRetries: 3,
-    httpOptions: {
-      timeout: 60000,
-    },
-  });
-}
-
+/* eslint-disable prefer-const */
 const drawImage = async (ctx, src, x, y, sw, sh) => {
   if (!src) return;
   let img;
@@ -62,96 +42,6 @@ const drawImage = async (ctx, src, x, y, sw, sh) => {
   }
   if (sw && sh) ctx.drawImage(img, x, y, sw, sh);
   else ctx.drawImage(img, x, y);
-};
-
-const locks = {};
-const missings = {};
-// Download items from CDN, cache them and return path to cached image
-const getItemFile = async (item, tries = 0) => {
-  // If we already tried 2 times and failed, try without parameters (and don't save to s3)
-  const forceResult = tries > 3;
-  const itemFileName = `${item.Type}_Q${item.Quality}`;
-  const itemFile = path.join(TMPDIR, itemFileName);
-  if (forceResult) missings[itemFile] = true;
-  if (missings[itemFile]) return null;
-  if (fs.existsSync(itemFile)) {
-    const stat = fs.statSync(itemFile);
-    if (stat.size > 0) return itemFile;
-  }
-
-  // Lock the file while the Write Stream is open
-  if (locks[itemFile]) {
-    logger.warn(`${itemFile} is locked. Trying again...`);
-    await sleep(10000);
-    return getItemFile(item, tries);
-  }
-  locks[itemFile] = true;
-  const writer = fs.createWriteStream(itemFile);
-  writer.on("finish", () => {
-    locks[itemFile] = false;
-  });
-  // Check if file is available on S3 bucket
-  if (S3) {
-    try {
-      const data = await S3.getObject({
-        Bucket: process.env.AWS_BUCKET || "albion-killbot",
-        Key: itemFileName,
-      }).promise();
-      return new Promise((resolve, reject) => {
-        writer.on("finish", () => resolve(itemFile));
-        writer.on("error", (e) => reject(e));
-        writer.end(data.Body);
-      });
-    } catch (e) {
-      logger.error(`[images] Unable to download file from S3 (${e})`);
-    }
-  }
-  logger.verbose(`[images] Downloading new file from CDNs: ${itemFileName}`);
-  for (const cdn of CDNS) {
-    // If the CDN does not support quality and item has Quality, skip this cdn
-    if (!cdn.qualitySupport && item.Quality > 0) continue;
-    // If trash item is outdated, skip
-    if (!cdn.trash && item.Type.includes("_TRASH")) continue;
-
-    const url = cdn.url.replace("{type}", item.Type).replace("{quality}", item.Quality);
-    const params = {};
-    if (!forceResult) {
-      params.quality = item.Quality;
-    }
-    try {
-      const response = await axios.get(url, {
-        params,
-        timeout: 30000,
-        responseType: "stream",
-      });
-      response.data.pipe(writer);
-      return new Promise((resolve, reject) => {
-        writer.on("finish", () => {
-          // If S3 is set, upload to bucket before returning
-          if (S3 && !forceResult) {
-            logger.verbose(`[images] Uploading new file to S3: ${itemFileName}`);
-            try {
-              S3.putObject({
-                Body: fs.createReadStream(itemFile),
-                Bucket: process.env.AWS_BUCKET || "albion-killbot",
-                Key: itemFileName,
-              }).promise();
-            } catch (e) {
-              logger.error(`[images] Unable to upload file to S3 (${e})`);
-            }
-          }
-
-          resolve(itemFile);
-        });
-        writer.on("error", (e) => reject(e));
-      });
-    } catch (e) {
-      logger.error(`[images] Unable to download ${url} (${e})`);
-      locks[itemFile] = false;
-    }
-  }
-  await sleep(5000);
-  return getItemFile(item, tries + 1);
 };
 
 const drawItem = async (ctx, item, x, y, block_size = 217) => {
@@ -182,7 +72,7 @@ const optimizeImage = async (buffer, w = 640) => {
   return await image.getBufferAsync(jimp.MIME_PNG);
 };
 
-exports.generateEventImage = async (event) => {
+async function generateEventImage(event) {
   let canvas = createCanvas(1600, 1250);
   let tw, th;
   const w = canvas.width;
@@ -401,13 +291,12 @@ exports.generateEventImage = async (event) => {
     logger.warn(`Event image bigger than usual. Size: ${fileSizeFormatter(buffer.length)}`);
   }
   return buffer;
-};
+}
 
-exports.generateInventoryImage = async (event) => {
+async function generateInventoryImage(inventory) {
   const BLOCK_SIZE = 130;
   const WIDTH = 1600;
   const PADDING = 20;
-  const inventory = event.Victim.Inventory.filter((item) => item != null);
 
   let x = PADDING;
   let y = PADDING;
@@ -437,4 +326,10 @@ exports.generateInventoryImage = async (event) => {
     logger.warn(`Event image bigger than usual. Size: ${fileSizeFormatter(buffer.length)}`);
   }
   return buffer;
+}
+/* eslint-enable prefer-const */
+
+module.exports = {
+  generateEventImage,
+  generateInventoryImage,
 };

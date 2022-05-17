@@ -14,7 +14,7 @@ services:
         source: mongodb
         target: /data/db
       - type: volume
-        source: configdb
+        source: mongodb-config
         target: /data/configdb
     ports:
       - 27017:27017
@@ -68,7 +68,7 @@ services:
       - "../bin:/app/bin"
       - "../src:/app/src"
       - type: volume
-        source: killbotCache
+        source: cache
         target: /tmp/albion-killbot-cache
 
   api:
@@ -89,6 +89,6 @@ services:
 
 volumes:
   mongodb:
-  configdb:
-  killbotCache:
+  mongodb-config:
   rabbitmq:
+  cache:

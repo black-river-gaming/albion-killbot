@@ -1,4 +1,4 @@
-const Discord = require("discord.js");
+const { Client, Intents } = require("discord.js");
 const database = require("../../ports/database");
 const logger = require("../../helpers/logger");
 const queue = require("../../ports/queue");
@@ -10,8 +10,9 @@ const battles = require("./controllers/battles");
 // const FREQ_HOUR = 1000 * 60 * 60;
 // const FREQ_DAY = FREQ_HOUR * 24;
 
-const client = new Discord.Client({
+const client = new Client({
   autoReconnect: true,
+  intents: [Intents.FLAGS.GUILDS],
 });
 
 // client.commands = commands;
@@ -27,7 +28,7 @@ client.on("shardReady", async (id) => {
     await battles.subscribe(client);
     logger.info(`${shardPrefix} Subscribed to battles queue.`);
   } catch (e) {
-    logger.error(e.stack);
+    logger.error(e);
   }
 
   // runDaily(guilds.showRanking, "Display Guild Rankings", exports);
@@ -120,7 +121,7 @@ if (require.main == module) {
     try {
       await run();
     } catch (e) {
-      logger.error(e.stack);
+      logger.error(e);
       process.exit(1);
     }
   })();
