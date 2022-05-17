@@ -1,4 +1,3 @@
-const logger = require("./logger");
 const moment = require("moment");
 
 // Flag to keep infinite loops until program is closed
@@ -77,11 +76,7 @@ function getNumber(v, def) {
 }
 
 async function execFn(name, fn, ...fnOpts) {
-  try {
-    return await fn(...fnOpts);
-  } catch (e) {
-    logger.error(`"${name}" ${e.stack}`);
-  }
+  return await fn(...fnOpts);
 }
 
 // Functions that fires daily (Default: 12:00 pm) until process stops
@@ -95,7 +90,6 @@ async function runDaily(name, fn, { fnOpts = [], hour = 12, minute = 0, runOnSta
       execFn(name, fn, ...fnOpts);
     }
   }
-  logger.verbose(`"${name}" daily interval stopped.`);
 }
 
 // Functions that run on an interval after execFn completes,
@@ -107,7 +101,6 @@ async function runInterval(name, fn, { fnOpts = [], interval = 30, runOnStart = 
     await sleep(interval * 1000);
     await execFn(name, fn, ...fnOpts);
   }
-  logger.verbose(`"${name}" interval stopped.`);
 }
 
 module.exports = {
