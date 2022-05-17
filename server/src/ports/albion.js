@@ -1,5 +1,6 @@
 const albionApiClient = require("../adapters/albionApiClient");
 const itemCDNClient = require("../adapters/itemCDNClient");
+const awsSdkClient = require("../adapters/awsSdkClient");
 const cache = require("../adapters/fsCache");
 
 const { sleep } = require("../helpers/utils");
@@ -44,38 +45,14 @@ const getItemFile = async (item, tries = 0) => {
   }
 
   // Check if file is available on S3 bucket
-  // if (S3) {
-  //   try {
-  //     const data = await S3.getObject({
-  //       Bucket: process.env.AWS_BUCKET || "albion-killbot",
-  //       Key: itemFileName,
-  //     }).promise();
-  //     return new Promise((resolve, reject) => {
-  //       writer.on("finish", () => resolve(itemFile));
-  //       writer.on("error", (e) => reject(e));
-  //       writer.end(data.Body);
-  //     });
-  //   } catch (e) {
-  //     logger.error(`[images] Unable to download file from S3 (${e})`);
-  //   }
-  // }
+  if (awsSdkClient.isEnabled && (await awsSdkClient.downloadFromS3(filename, writer))) {
+    return cache.getFile(ITEMS_DIR, filename);
+  }
 
-  logger.verbose(`Searching item "${filename}" in CDNs...`);
   if (await itemCDNClient.downloadFromCDNs(item, writer)) {
-    // If S3 is set, upload to bucket before returning
-    //   if (S3 && !forceResult) {
-    //     logger.verbose(`[images] Uploading new file to S3: ${itemFileName}`);
-    //     try {
-    //       S3.putObject({
-    //         Body: fs.createReadStream(itemFile),
-    //         Bucket: process.env.AWS_BUCKET || "albion-killbot",
-    //         Key: itemFileName,
-    //       }).promise();
-    //     } catch (e) {
-    //       logger.error(`[images] Unable to upload file to S3 (${e})`);
-    //     }
-    //   }
-
+    if (awsSdkClient.isEnabled) {
+      awsSdkClient.uploadToS3(filename, cache.createReadStream(ITEMS_DIR, filename));
+    }
     return cache.getFile(ITEMS_DIR, filename);
   }
 

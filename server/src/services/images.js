@@ -15,21 +15,6 @@ registerFont(path.join(assetsPath, "fonts", "Roboto-Regular.ttf"), {
   weight: "Normal",
 });
 
-// let S3;
-// if (process.env.AWS_ACCESS_KEY && process.env.AWS_SECRET_KEY) {
-//   const AWS = require("aws-sdk");
-//   S3 = new AWS.S3({
-//     apiVersion: "2006-03-01",
-//     accessKeyId: process.env.AWS_ACCESS_KEY,
-//     secretAccessKey: process.env.AWS_SECRET_KEY,
-//     region: process.env.AWS_REGION || "us-east-1",
-//     maxRetries: 3,
-//     httpOptions: {
-//       timeout: 60000,
-//     },
-//   });
-// }
-
 /* eslint-disable prefer-const */
 const drawImage = async (ctx, src, x, y, sw, sh) => {
   if (!src) return;
