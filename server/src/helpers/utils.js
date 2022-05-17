@@ -61,7 +61,14 @@ function humanFormatter(num, digits) {
 
 function fileSizeFormatter(size) {
   const i = Math.floor(Math.log(size) / Math.log(1024));
-  return (size / Math.pow(1024, i)).toFixed(2) * 1 + " " + ["B", "kB", "MB", "GB", "TB"][i];
+  return (size / Math.pow(1024, i)).toFixed(2) * 1 + " " + ["B", "KB", "MB", "GB", "TB"][i];
+}
+
+function parseFileSize(sizeStr) {
+  const m = sizeStr.match(/(\d+)(B|KB?|MB?|GB?|TB?)/i);
+  if (!m) return sizeStr;
+  const unit = `${m[2]}${!m[2].endsWith("B") ? "B" : ""}`;
+  return m[1] * Math.pow(1024, ["B", "KB", "MB", "GB", "TB"].indexOf(unit));
 }
 
 function getNumber(v, def) {
@@ -106,6 +113,7 @@ async function runInterval(name, fn, { fnOpts = [], interval = 30, runOnStart = 
 module.exports = {
   digitsFormatter,
   fileSizeFormatter,
+  parseFileSize,
   humanFormatter,
   getNumber,
   runDaily,
