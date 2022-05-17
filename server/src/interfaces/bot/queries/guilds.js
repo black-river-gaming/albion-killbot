@@ -53,11 +53,11 @@ exports.update = async ({ client }) => {
     const guild = guildData[id];
     if (!!guild && moment().diff(moment(guild.updatedAt), "days") < 1) continue;
 
-    logger.debug(`[#${client.shardId}] Updating guild "${guild ? guild.Name : id}" data...`);
+    logger.verbose(`[#${client.shardId}] Updating guild "${guild ? guild.Name : id}" data...`);
     await exports.updateGuild({ client }, id);
   }
 
-  logger.debug(`[#${client.shardId}] Guild update finished!`);
+  logger.verbose(`[#${client.shardId}] Guild update finished!`);
 };
 
 exports.updateGuild = async ({ client }, guildId) => {
@@ -91,7 +91,7 @@ exports.updateGuild = async ({ client }, guildId) => {
   const timeout = 60000;
 
   while (!rankings.pve) {
-    logger.debug(`[#${client.shardId}] [${guild.Name}] Fetching PvE rankings...`);
+    logger.verbose(`[#${client.shardId}] [${guild.Name}] Fetching PvE rankings...`);
     params.type = "PvE";
     params.timestamp = moment().unix();
     try {
@@ -107,7 +107,7 @@ exports.updateGuild = async ({ client }, guildId) => {
   }
 
   while (!rankings.pvp) {
-    logger.debug(`[#${client.shardId}] [${guild.Name}] Fetching PvP rankings...`);
+    logger.verbose(`[#${client.shardId}] [${guild.Name}] Fetching PvP rankings...`);
     params.type = "PvP";
     params.timestamp = moment().unix();
     try {
@@ -123,7 +123,7 @@ exports.updateGuild = async ({ client }, guildId) => {
   }
 
   while (!rankings.gathering) {
-    logger.debug(`[#${client.shardId}] [${guild.Name}] Fetching Gathering rankings...`);
+    logger.verbose(`[#${client.shardId}] [${guild.Name}] Fetching Gathering rankings...`);
     params.type = "Gathering";
     params.subtype = "All";
     params.timestamp = moment().unix();
@@ -140,7 +140,7 @@ exports.updateGuild = async ({ client }, guildId) => {
   }
 
   while (!rankings.crafting) {
-    logger.debug(`[#${client.shardId}] [${guild.Name}] Fetching Crafting rankings...`);
+    logger.verbose(`[#${client.shardId}] [${guild.Name}] Fetching Crafting rankings...`);
     params.type = "Crafting";
     params.timestamp = moment().unix();
     delete params.subtype;
@@ -161,7 +161,7 @@ exports.updateGuild = async ({ client }, guildId) => {
 
   try {
     await collection.replaceOne({ _id: guild._id }, guild, { upsert: true });
-    logger.debug(`[#${client.shardId}] [${guild.Name}] Guild updated sucessfully.`);
+    logger.verbose(`[#${client.shardId}] [${guild.Name}] Guild updated sucessfully.`);
   } catch (e) {
     logger.error(`[#${client.shardId}] Unable to update data for guild ${guild.Name}: ${e}`);
   }
@@ -180,7 +180,7 @@ exports.showRanking = async ({ client, sendGuildMessage }) => {
     for (const trackedGuild of guild.config.trackedGuilds) {
       const guildData = allGuildData[trackedGuild.id];
       if (!guildData || !guildData.rankings) {
-        logger.debug(`[#${client.shardId}] No data available for guild "${trackedGuild.name}".`);
+        logger.verbose(`[#${client.shardId}] No data available for guild "${trackedGuild.name}".`);
         continue;
       }
       await sendGuildMessage(guild, embedRankings(guildData, guild.config.lang), "rankings");

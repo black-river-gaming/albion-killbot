@@ -23,7 +23,7 @@ const isConnected = () => {
 let db;
 async function connect() {
   try {
-    logger.debug("Connecting to database...");
+    logger.verbose("Connecting to database...");
     await client.connect();
     db = client.db();
     logger.info("Connection to database stabilished.");
@@ -39,7 +39,7 @@ async function connect() {
 }
 
 async function close() {
-  logger.debug("Disconnecting from database...");
+  logger.verbose("Disconnecting from database...");
   return await client.close();
 }
 

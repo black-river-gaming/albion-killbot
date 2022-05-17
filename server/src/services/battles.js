@@ -18,7 +18,7 @@ async function fetchBattlesTo(latestBattle, { offset = 0 } = {}, battles = []) {
       });
     }
 
-    logger.debug(`Fetching battles with offset: ${offset}`);
+    logger.verbose(`Fetching battles with offset: ${offset}`);
     const albionBattles = await getBattles({
       offset,
     });

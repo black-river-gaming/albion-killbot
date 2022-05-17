@@ -11,10 +11,10 @@ async function fetchBattles() {
   }
 
   const battles = await fetchBattlesTo(latestBattle);
-  if (battles.length === 0) return logger.debug("No new battles.");
+  if (battles.length === 0) return logger.verbose("No new battles.");
 
   // Publish new battles, from oldest to newest
-  logger.debug(`Publishing ${battles.length} new battles to exchange...`);
+  logger.verbose(`Publishing ${battles.length} new battles to exchange...`);
   for (const batl of battles) {
     if (latestBattle && batl.id <= latestBattle.id) {
       logger.warn(`The published id is lower than latestBattle! Skipping.`);

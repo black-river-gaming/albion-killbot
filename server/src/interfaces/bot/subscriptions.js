@@ -30,7 +30,7 @@ exports.hasSubscription = (config) => {
 let campaigns;
 const fetchPatreonPledges = async () => {
   if (!PATREON_ACCESS_TOKEN) return null;
-  logger.debug("Fetching patreon pledges...");
+  logger.verbose("Fetching patreon pledges...");
 
   const patreon = axios.create({
     baseURL: PATREON_API,
@@ -74,7 +74,7 @@ const fetchPatreonPledges = async () => {
   }
 
   // TODO: Users apply unique
-  logger.debug(`Fetch complete. Pledge: ${pledges.length} / Users: ${users.length}`);
+  logger.verbose(`Fetch complete. Pledge: ${pledges.length} / Users: ${users.length}`);
   return {
     pledges,
     users,
@@ -88,7 +88,7 @@ exports.setSubscription = async (config, userId) => {
   }
 
   if (!PATREON_ACCESS_TOKEN) {
-    logger.debug(`[${config.name}] Subscription validated.`);
+    logger.verbose(`[${config.name}] Subscription validated.`);
     return {
       ...config,
       subscription: {
@@ -120,7 +120,7 @@ exports.setSubscription = async (config, userId) => {
         subscription.add(1, "months");
       }
 
-      logger.debug(
+      logger.verbose(
         `[${config.name}] Subscription validated for Patreon user ${
           user.attributes.url
         }. Subscription until ${subscription.toString()}`,
@@ -145,7 +145,7 @@ exports.cancelSubscription = (config) => {
     return null;
   }
 
-  logger.debug(`[${config.name}] Subscription cancelled.`);
+  logger.verbose(`[${config.name}] Subscription cancelled.`);
   config.subscription = null;
   return config;
 };
@@ -169,12 +169,12 @@ exports.refresh = async ({ client }) => {
     const pledge = pledges.find((p) => p.relationships.user.data.id === subscription.patreon);
 
     if (!pledge) {
-      logger.debug(`[#${client.shardId}] Couldn't find pledge for ${guild.name}. Skip renew subscription.`);
+      logger.verbose(`[#${client.shardId}] Couldn't find pledge for ${guild.name}. Skip renew subscription.`);
       continue;
     }
 
     if (pledge.attributes.patron_status !== "active_patron") {
-      logger.debug(`[#${client.shardId}] [${guild.name}] Pledge is cancelled. Skip renew subscription.`);
+      logger.verbose(`[#${client.shardId}] [${guild.name}] Pledge is cancelled. Skip renew subscription.`);
       continue;
     }
 
@@ -183,7 +183,7 @@ exports.refresh = async ({ client }) => {
       expires.add(1, "months");
     }
 
-    logger.debug(`[${client.shardId}] [${guild.name}] Subscription extended until ${expires.toString()}`);
+    logger.verbose(`[${client.shardId}] [${guild.name}] Subscription extended until ${expires.toString()}`);
     guild.config.subscription.expires = expires.toDate();
     await setConfig(guild);
   }

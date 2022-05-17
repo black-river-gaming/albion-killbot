@@ -11,10 +11,10 @@ async function fetchEvents() {
   }
 
   const events = await fetchEventsTo(latestEvent);
-  if (events.length === 0) return logger.debug("No new events.");
+  if (events.length === 0) return logger.verbose("No new events.");
 
   // Publish new events, from oldest to newest
-  logger.debug(`Publishing ${events.length} new events to exchange...`);
+  logger.verbose(`Publishing ${events.length} new events to exchange...`);
   for (const evt of events) {
     if (latestEvent && evt.EventId <= latestEvent.EventId) {
       logger.warn(`The published id is lower than latestEvent! Skipping.`);

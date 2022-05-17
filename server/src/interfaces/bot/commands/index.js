@@ -9,7 +9,7 @@ cmdFiles.forEach((cmdFile) => {
     const command = require(`./${cmdFile}`);
     if (command.requirements != null && !command.requirements) return;
     commands[command.aliases[0]] = command;
-    logger.debug(`Command loaded: ${cmdFile}`);
+    logger.verbose(`Command loaded: ${cmdFile}`);
   } catch (e) {
     logger.error(`Error loading command ${cmdFile}: ${e}`);
   }

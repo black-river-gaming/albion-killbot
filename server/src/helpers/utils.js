@@ -88,7 +88,7 @@ async function runDaily(name, fn, { fnOpts = [], hour = 12, minute = 0, runOnSta
       execFn(name, fn, ...fnOpts);
     }
   }
-  logger.debug(`"${name}" daily interval stopped.`);
+  logger.verbose(`"${name}" daily interval stopped.`);
 }
 
 // Functions that run on an interval after execFn completes,
@@ -100,7 +100,7 @@ async function runInterval(name, fn, { fnOpts = [], interval = 30, runOnStart = 
     await sleep(interval * 1000);
     await execFn(name, fn, ...fnOpts);
   }
-  logger.debug(`"${name}" interval stopped.`);
+  logger.verbose(`"${name}" interval stopped.`);
 }
 
 module.exports = {

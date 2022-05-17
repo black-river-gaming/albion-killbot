@@ -5,7 +5,7 @@ const SEARCH_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/search";
 
 exports.search = async (q) => {
   try {
-    logger.debug(`Searching entities in Albion Online for: ${q}`);
+    logger.verbose(`Searching entities in Albion Online for: ${q}`);
     const res = await axios.get(SEARCH_ENDPOINT, {
       params: { q },
     });
@@ -21,7 +21,7 @@ const ALLIANCE_ENDPOINT = "https://gameinfo.albiononline.com/api/gameinfo/allian
 
 exports.getAllianceById = async (id) => {
   try {
-    logger.debug(`Getting alliance info in Albion Online server: ${id}`);
+    logger.verbose(`Getting alliance info in Albion Online server: ${id}`);
     const res = await axios.get(`${ALLIANCE_ENDPOINT}/${id}`);
     return res.data;
   } catch (e) {

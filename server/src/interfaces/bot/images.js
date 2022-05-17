@@ -104,7 +104,7 @@ const getItemFile = async (item, tries = 0) => {
       logger.error(`[images] Unable to download file from S3 (${e})`);
     }
   }
-  logger.debug(`[images] Downloading new file from CDNs: ${itemFileName}`);
+  logger.verbose(`[images] Downloading new file from CDNs: ${itemFileName}`);
   for (let cdn of CDNS) {
     // If the CDN does not support quality and item has Quality, skip this cdn
     if (!cdn.qualitySupport && item.Quality > 0) continue;
@@ -127,7 +127,7 @@ const getItemFile = async (item, tries = 0) => {
         writer.on("finish", () => {
           // If S3 is set, upload to bucket before returning
           if (S3 && !forceResult) {
-            logger.debug(`[images] Uploading new file to S3: ${itemFileName}`);
+            logger.verbose(`[images] Uploading new file to S3: ${itemFileName}`);
             try {
               S3.putObject({
                 Body: fs.createReadStream(itemFile),

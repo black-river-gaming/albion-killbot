@@ -18,7 +18,7 @@ async function fetchEventsTo(latestEvent, { offset = 0 } = {}, events = []) {
       });
     }
 
-    logger.debug(`Fetching events with offset: ${offset}`);
+    logger.verbose(`Fetching events with offset: ${offset}`);
     const albionEvents = await getEvents({
       offset,
     });

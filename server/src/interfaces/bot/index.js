@@ -32,7 +32,7 @@ async function cleanup(e) {
   logger.info(`Shutting down Bot...`);
 
   for (const shard of manager.shards.values()) {
-    logger.debug(`Killing shard ${shard.id}`);
+    logger.verbose(`Killing shard #${shard.id}`);
     await shard.kill();
   }
 }

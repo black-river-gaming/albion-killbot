@@ -42,6 +42,7 @@ services:
     restart: unless-stopped
     depends_on:
       - rabbitmq
+    env_file: ../.env
     environment:
       - NODE_ENV=development
       - RABBITMQ_URL=amqp://rabbitmq
@@ -78,6 +79,7 @@ services:
     restart: unless-stopped
     depends_on:
       - mongodb
+    env_file: ../.env
     environment:
       - NODE_ENV=development
       - MONGODB_URL=mongodb://mongodb:27017/albion-killbot

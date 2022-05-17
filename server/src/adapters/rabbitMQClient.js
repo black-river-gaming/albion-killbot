@@ -16,7 +16,7 @@ let pubChannel;
 
 const connect = async () => {
   try {
-    logger.debug("Connecting to message broker...");
+    logger.verbose("Connecting to message broker...");
     client = await amqp.connect(RABBITMQ_URL);
     logger.info("Connection to message broker stabilished.");
 
