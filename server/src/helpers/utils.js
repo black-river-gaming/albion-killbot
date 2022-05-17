@@ -103,6 +103,10 @@ async function runInterval(name, fn, { fnOpts = [], interval = 30, runOnStart = 
   }
 }
 
+function clearAllIntervals() {
+  running = false;
+}
+
 module.exports = {
   digitsFormatter,
   fileSizeFormatter,
@@ -111,6 +115,7 @@ module.exports = {
   getNumber,
   runDaily,
   runInterval,
+  clearAllIntervals,
   sleep,
   timeout,
 };
