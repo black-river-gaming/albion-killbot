@@ -1,7 +1,6 @@
 const moment = require("moment");
 const { getLocale } = require("../../../helpers/locale");
 const { digitsFormatter, humanFormatter } = require("../../../helpers/utils");
-const { generateEventImage, generateInventoryImage } = require("../../../services/images");
 
 const KILL_URL = "https://albiononline.com/{lang}/killboard/kill/{kill}";
 const GREEN = 52224;
@@ -66,57 +65,59 @@ const embedEvent = (event, { locale }) => {
   }
 
   return {
-    embed: {
-      color: good ? GREEN : RED,
-      title,
-      url: KILL_URL.replace("{lang}", l.getLocale()).replace("{kill}", event.EventId),
-      description,
-      thumbnail: {
-        url: "https://user-images.githubusercontent.com/13356774/76129825-ee15b580-5fde-11ea-9f77-7ae16bd65368.png",
+    embeds: [
+      {
+        color: good ? GREEN : RED,
+        title,
+        url: KILL_URL.replace("{lang}", l.getLocale()).replace("{kill}", event.EventId),
+        description,
+        thumbnail: {
+          url: "https://user-images.githubusercontent.com/13356774/76129825-ee15b580-5fde-11ea-9f77-7ae16bd65368.png",
+        },
+        fields: [
+          {
+            name: t("KILL.FAME"),
+            value: digitsFormatter(event.TotalVictimKillFame),
+            inline: false,
+          },
+          {
+            name: t("KILL.KILLER_GUILD"),
+            value: killerGuildValue || t("KILL.NO_GUILD"),
+            inline: true,
+          },
+          {
+            name: t("KILL.VICTIM_GUILD"),
+            value: victimGuildValue || t("KILL.NO_GUILD"),
+            inline: true,
+          },
+          {
+            name: "\u200B",
+            value: "\u200B",
+            inline: true,
+          },
+          {
+            name: t("KILL.KILLER_IP"),
+            value: Math.round(event.Killer.AverageItemPower),
+            inline: true,
+          },
+          {
+            name: t("KILL.VICTIM_IP"),
+            value: Math.round(event.Victim.AverageItemPower),
+            inline: true,
+          },
+          {
+            name: "\u200B",
+            value: "\u200B",
+            inline: true,
+          },
+        ],
+        timestamp: event.TimeStamp,
       },
-      fields: [
-        {
-          name: t("KILL.FAME"),
-          value: digitsFormatter(event.TotalVictimKillFame),
-          inline: false,
-        },
-        {
-          name: t("KILL.KILLER_GUILD"),
-          value: killerGuildValue || t("KILL.NO_GUILD"),
-          inline: true,
-        },
-        {
-          name: t("KILL.VICTIM_GUILD"),
-          value: victimGuildValue || t("KILL.NO_GUILD"),
-          inline: true,
-        },
-        {
-          name: "\u200B",
-          value: "\u200B",
-          inline: true,
-        },
-        {
-          name: t("KILL.KILLER_IP"),
-          value: Math.round(event.Killer.AverageItemPower),
-          inline: true,
-        },
-        {
-          name: t("KILL.VICTIM_IP"),
-          value: Math.round(event.Victim.AverageItemPower),
-          inline: true,
-        },
-        {
-          name: "\u200B",
-          value: "\u200B",
-          inline: true,
-        },
-      ],
-      timestamp: event.TimeStamp,
-    },
+    ],
   };
 };
 
-const embedEventImage = async (event, image, { locale }) => {
+const embedEventImage = (event, image, { locale }) => {
   const l = getLocale(locale);
   const { t } = l;
 
@@ -128,43 +129,47 @@ const embedEventImage = async (event, image, { locale }) => {
   const filename = `${event.EventId}-event.png`;
 
   return {
-    embed: {
-      color: good ? GREEN : RED,
-      title,
-      url: KILL_URL.replace("{lang}", l.getLocale()).replace("{kill}", event.EventId),
-      files: [
-        {
-          attachment: image,
-          name: filename,
+    embeds: [
+      {
+        color: good ? GREEN : RED,
+        title,
+        url: KILL_URL.replace("{lang}", l.getLocale()).replace("{kill}", event.EventId),
+        image: {
+          url: `attachment://${filename}`,
         },
-      ],
-      image: {
-        url: `attachment://${filename}`,
       },
-    },
+    ],
+    files: [
+      {
+        attachment: image,
+        name: filename,
+      },
+    ],
   };
 };
 
-const embedEventInventoryImage = async (event, image, { locale }) => {
+const embedEventInventoryImage = (event, image, { locale }) => {
   const l = getLocale(locale);
 
   const good = event.good;
   const filename = `${event.EventId}-inventory.png`;
 
   return {
-    embed: {
-      color: good ? GREEN : RED,
-      url: KILL_URL.replace("{lang}", l.getLocale()).replace("{kill}", event.EventId),
-      files: [
-        {
-          attachment: await generateInventoryImage(event),
-          name: filename,
+    embeds: [
+      {
+        color: good ? GREEN : RED,
+        url: KILL_URL.replace("{lang}", l.getLocale()).replace("{kill}", event.EventId),
+        image: {
+          url: `attachment://${filename}`,
         },
-      ],
-      image: {
-        url: `attachment://${filename}`,
       },
-    },
+    ],
+    files: [
+      {
+        attachment: image,
+        name: filename,
+      },
+    ],
   };
 };
 
@@ -253,17 +258,19 @@ const embedBattle = (battle, { locale }) => {
   }
 
   return {
-    embed: {
-      color: BATTLE,
-      title: t("BATTLE.EVENT", { guilds: guildCount }),
-      url: `http://www.yaga.sk/killboard/battle.php?id=${battle.id}`,
-      description,
-      thumbnail: {
-        url: "https://user-images.githubusercontent.com/13356774/76130049-b9eec480-5fdf-11ea-95c0-7de130a705a3.png",
+    embeds: [
+      {
+        color: BATTLE,
+        title: t("BATTLE.EVENT", { guilds: guildCount }),
+        url: `http://www.yaga.sk/killboard/battle.php?id=${battle.id}`,
+        description,
+        thumbnail: {
+          url: "https://user-images.githubusercontent.com/13356774/76130049-b9eec480-5fdf-11ea-95c0-7de130a705a3.png",
+        },
+        fields: fields.slice(0, MAXLEN.FIELD.COUNT),
+        timestamp: moment(battle.endTime).toISOString(),
       },
-      fields: fields.slice(0, MAXLEN.FIELD.COUNT),
-      timestamp: moment(battle.endTime).toISOString(),
-    },
+    ],
   };
 };
 
@@ -292,41 +299,43 @@ const embedRankings = (guild, { locale }) => {
   };
 
   return {
-    embed: {
-      title: t("RANKING.MONTHLY", { guild: guild.Name }),
-      url: `https://albiononline.com/pt/killboard/guild/${guild._id}`,
-      thumbnail: {
-        url: "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
+    embeds: [
+      {
+        title: t("RANKING.MONTHLY", { guild: guild.Name }),
+        url: `https://albiononline.com/pt/killboard/guild/${guild._id}`,
+        thumbnail: {
+          url: "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
+        },
+        fields: [
+          {
+            name: t("RANKING.PVE"),
+            value: generateRankFieldValue(guild.rankings.pve),
+            inline: true,
+          },
+          {
+            name: t("RANKING.PVP"),
+            value: generateRankFieldValue(guild.rankings.pvp, true),
+            inline: true,
+          },
+          {
+            name: "\u200B",
+            value: "\u200B",
+            inline: false,
+          },
+          {
+            name: t("RANKING.GATHERING"),
+            value: generateRankFieldValue(guild.rankings.gathering),
+            inline: true,
+          },
+          {
+            name: t("RANKING.CRAFTING"),
+            value: generateRankFieldValue(guild.rankings.crafting),
+            inline: true,
+          },
+        ],
+        timestamp: moment().toISOString(),
       },
-      fields: [
-        {
-          name: t("RANKING.PVE"),
-          value: generateRankFieldValue(guild.rankings.pve),
-          inline: true,
-        },
-        {
-          name: t("RANKING.PVP"),
-          value: generateRankFieldValue(guild.rankings.pvp, true),
-          inline: true,
-        },
-        {
-          name: "\u200B",
-          value: "\u200B",
-          inline: false,
-        },
-        {
-          name: t("RANKING.GATHERING"),
-          value: generateRankFieldValue(guild.rankings.gathering),
-          inline: true,
-        },
-        {
-          name: t("RANKING.CRAFTING"),
-          value: generateRankFieldValue(guild.rankings.crafting),
-          inline: true,
-        },
-      ],
-      timestamp: moment().toISOString(),
-    },
+    ],
   };
 };
 
@@ -339,26 +348,28 @@ const embedList = (config) => {
   };
 
   return {
-    embed: {
-      description: t("TRACK.LIST"),
-      fields: [
-        {
-          name: t("TRACK.PLAYERS"),
-          value: configToList(config.trackedPlayers),
-          inline: true,
-        },
-        {
-          name: t("TRACK.GUILDS"),
-          value: configToList(config.trackedGuilds),
-          inline: true,
-        },
-        {
-          name: t("TRACK.ALLIANCES"),
-          value: configToList(config.trackedAlliances),
-          inline: true,
-        },
-      ],
-    },
+    embeds: [
+      {
+        description: t("TRACK.LIST"),
+        fields: [
+          {
+            name: t("TRACK.PLAYERS"),
+            value: configToList(config.trackedPlayers),
+            inline: true,
+          },
+          {
+            name: t("TRACK.GUILDS"),
+            value: configToList(config.trackedGuilds),
+            inline: true,
+          },
+          {
+            name: t("TRACK.ALLIANCES"),
+            value: configToList(config.trackedAlliances),
+            inline: true,
+          },
+        ],
+      },
+    ],
   };
 };
 
@@ -381,39 +392,41 @@ const embedDailyRanking = (rankings, { locale }) => {
   };
 
   return {
-    embed: {
-      title: t("RANKING.DAILY"),
-      thumbnail: {
-        url: "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
+    embeds: [
+      {
+        title: t("RANKING.DAILY"),
+        thumbnail: {
+          url: "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
+        },
+        fields: [
+          {
+            name: t("RANKING.TOTAL_KILL_FAME"),
+            value: digitsFormatter(rankings.totalKillFame),
+            inline: true,
+          },
+          {
+            name: t("RANKING.TOTAL_DEATH_FAME"),
+            value: digitsFormatter(rankings.totalDeathFame),
+            inline: true,
+          },
+          {
+            name: "\u200B",
+            value: "\u200B",
+            inline: false,
+          },
+          {
+            name: t("RANKING.KILL_FAME"),
+            value: generateRankFieldValue(rankings.killRanking, "name", "killFame"),
+            inline: true,
+          },
+          {
+            name: t("RANKING.DEATH_FAME"),
+            value: generateRankFieldValue(rankings.deathRanking, "name", "deathFame"),
+            inline: true,
+          },
+        ],
       },
-      fields: [
-        {
-          name: t("RANKING.TOTAL_KILL_FAME"),
-          value: digitsFormatter(rankings.totalKillFame),
-          inline: true,
-        },
-        {
-          name: t("RANKING.TOTAL_DEATH_FAME"),
-          value: digitsFormatter(rankings.totalDeathFame),
-          inline: true,
-        },
-        {
-          name: "\u200B",
-          value: "\u200B",
-          inline: false,
-        },
-        {
-          name: t("RANKING.KILL_FAME"),
-          value: generateRankFieldValue(rankings.killRanking, "name", "killFame"),
-          inline: true,
-        },
-        {
-          name: t("RANKING.DEATH_FAME"),
-          value: generateRankFieldValue(rankings.deathRanking, "name", "deathFame"),
-          inline: true,
-        },
-      ],
-    },
+    ],
   };
 };
 

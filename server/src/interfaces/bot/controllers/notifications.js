@@ -10,7 +10,7 @@ async function sendNotification(client, channelId, message) {
     return logger.debug(`${channel.guild.name}/${channelId}: Channel not found.`);
   }
 
-  logger.debug(`Sending notification to ${channel.guild.name}/#${channel.name}:`, { metadata: message });
+  logger.debug(`Sending notification to ${channel.guild.name}/#${channel.name}:`, { metadata: message.embeds });
   try {
     await timeout(channel.send(message), NOTIFICATION_TIMEOUT);
   } catch (e) {
