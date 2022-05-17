@@ -10,90 +10,38 @@ Also, when you are tracking a guild, the bot will display the monthly ranking ev
 
 Other feature suggestions are welcome in the issues section of the github. Please join our Discord server for further questions: https://discord.gg/56AExWh
 
-# How to install
-
-> Since we are quite overloaded, the Free Version of the bot isn't accepting new tracking queries. If you wish to join our Premium server, please contact us in the Discord server.
-
-# Usage
-
-Make sure the bot have the following permissions:
-
-- Read Texts
-- Send Messages
-- Embed Links
-
-> For detailed information about the commands available. Please check our [Command List](https://github.com/agnjunio/albion-killbot/wiki/Command-List) page on wiki.
-> Also, in Discord type `!help` to see the commands available.
-
-First, you need to set up the notification channel using `!channel #channel` command.
-
-```
-!channel #killboard
-```
-
-If you want to send your notifications to different channels, simply set their categories manually.
-
-Categories are:
-
-- **general**: Any message not related to other categories. Default category.
-- **events**: Kills and Deaths of tracked entities.
-- **battles**: Battles between guilds and alliances.
-- **rankings**: Monthly guild rankings and Daily PvP rankings.
-
-```
-!channel #killboard events
-!channel #rankings rankings
-!channel #battles battles
-!channel #announcements general
-```
-
-The bot can track players and guilds. Alliances are disabled for now to avoid bot spam. Examples:
-
-If you want to track a guild:
-
-```
-!track guild Blue Army
-!track guild Black River
-```
-
-If you want to track a player:
-
-```
-!track player Anjek
-!track player MyPlayer
-```
-
-To list what guilds/players you're currently tracking, type `!list`
-To stop tracking there guilds/players, just swap `!track` for `!untrack`
-
 # Development
 
-To set up the bot in a self-hosted way:
+While you can develop without docker, this is the preferred way used for the development team. Steps to start working with it are described below.
 
-1. Clone the repository
+## Requirements
 
-```
-git clone git@github.com:agnjunio/albion-killbot.git
-cd albion-killbot
-```
+- [docker](https://www.docker.com/) (20.x)
+- [docker-compose](https://docs.docker.com/compose/) (2.5.x)
 
-2. Run yarn to install dependencies
+## Setup steps
 
-```
-yarn
-```
-
-3. Create an .env file or set the environment variables that you wish to use, following the example
+First, you need a [Discord Token](https://discord.com/developers/applications) to run the bot component. The bot uses the following [environment variable](https://en.wikipedia.org/wiki/Environment_variable):
 
 ```
-cp .env.example .env
+DISCORD_TOKEN=<your discord token>
 ```
 
-4. Run the bot
+You can drop that into an `.env` file or in your system's environment variables.
+
+We have a convencience script called `ctl.sh` (refered in this guide as `ctl`) that you can use to quickly start the project. This assumes you have the requirements set-up. If your system is not compatible with shell script, the commands inside are well-descripted so you can use them directly instead.
+
+To start the project, just run:
 
 ```
-yarn start
+ctl start
 ```
+
+And then follow the logs using `ctl.sh logs [component]`. The component list can be found in `ctl help`.
+
+That's it! Any changes made in the watched folders (`src/interfaces/<component>/nodemon.json`) will trigger a restart.
+
+**NOTE**: Because the bot deals with sub processes, sometimes a full restart may be required. `ctl restart` is the command to do this.
 
 # Contributing
 
