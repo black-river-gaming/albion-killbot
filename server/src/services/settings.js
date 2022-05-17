@@ -1,19 +1,36 @@
 const { getCollection } = require("../ports/database");
 
 const SETTINGS_COLLECTION = "settings";
+const REPORT_MODES = {
+  IMAGE: "image",
+  TEXT: "text",
+};
+
 const DEFAULT_SETTINGS = {
-  trackedPlayers: [],
-  trackedGuilds: [],
-  trackedAlliances: [],
-  dailyRanking: "daily",
-  categories: {
-    general: true,
-    events: true,
-    battles: true,
-    rankings: true,
-  },
-  mode: "image",
   lang: "en",
+  kills: {
+    enabled: true,
+    channel: null,
+    mode: REPORT_MODES.IMAGE,
+  },
+  battles: {
+    enabled: true,
+    channel: null,
+  },
+  rankings: {
+    enabled: true,
+    channel: null,
+    pvpRanking: "daily",
+    guildRanking: "daily",
+  },
+  track: {
+    players: [],
+    guilds: [],
+    alliances: [],
+  },
+  subscription: {
+    expires: null,
+  }
 };
 
 async function getSettings(guild) {
@@ -37,9 +54,14 @@ async function getSettingsByGuild(guilds) {
   return settingsByGuild;
 }
 
-async function setSettings(guild, settings = DEFAULT_SETTINGS) {
+async function setSettings(guild, settings) {
   const collection = getCollection(SETTINGS_COLLECTION);
   return await collection.updateOne({ guild }, { $set: settings }, { upsert: true });
+}
+
+async function resetSettings(guild) {
+  const collection = getCollection(SETTINGS_COLLECTION);
+  return await collection.updateOne({ guild }, { $set: DEFAULT_SETTINGS }, { upsert: true });
 }
 
 async function deleteSettings(guild) {
@@ -51,5 +73,6 @@ module.exports = {
   getSettings,
   getSettingsByGuild,
   setSettings,
+  resetSettings,
   deleteSettings,
 };
