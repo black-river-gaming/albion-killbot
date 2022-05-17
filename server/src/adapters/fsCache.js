@@ -41,10 +41,16 @@ function createWriteStream(...file) {
   });
 
   const writer = fs.createWriteStream(absFilePath);
+
+  // A lock can be release both by completion, error or timeout
   writer.on("close", () => {
     logger.debug(`${absFilePath}: close event received. Unlocking...`);
     locks[absFilePath] = false;
   });
+
+  setTimeout(() => {
+    locks[absFilePath] = false;
+  }, 60000);
 
   return writer;
 }
