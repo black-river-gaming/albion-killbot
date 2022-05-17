@@ -1,16 +1,18 @@
-const os = require("os");
-const fs = require("fs");
-const path = require("path");
 const axios = require("axios");
+const fs = require("fs");
+const jimp = require("jimp");
 const moment = require("moment");
+const os = require("os");
+const path = require("path");
 const { createCanvas, registerFont, loadImage } = require("canvas");
-const logger = require("./logger")("images");
-const { sleep, digitsFormatter, fileSizeFormatter } = require("./utils");
-const Jimp = require("jimp");
+
+const { sleep, digitsFormatter, fileSizeFormatter } = require("../helpers/utils");
+const logger = require("../helpers/logger");
 
 const SMALL_IMAGES = Boolean(process.env.SMALL_IMAGES);
+const assetsPath = path.join(__dirname, "..", "assets");
 
-registerFont(path.join(__dirname, "assets", "fonts", "Roboto-Regular.ttf"), {
+registerFont(path.join(assetsPath, "fonts", "Roboto-Regular.ttf"), {
   family: "Roboto",
   weight: "Normal",
 });
@@ -56,7 +58,7 @@ const drawImage = async (ctx, src, x, y, sw, sh) => {
     img = await loadImage(src);
   } catch (e) {
     logger.error(`[images] Error loading image: ${src} (${e})`);
-    img = await loadImage("./assets/notfound.png");
+    img = await loadImage(path.join(assetsPath, "notfound.png"));
   }
   if (sw && sh) ctx.drawImage(img, x, y, sw, sh);
   else ctx.drawImage(img, x, y);
@@ -105,7 +107,7 @@ const getItemFile = async (item, tries = 0) => {
     }
   }
   logger.verbose(`[images] Downloading new file from CDNs: ${itemFileName}`);
-  for (let cdn of CDNS) {
+  for (const cdn of CDNS) {
     // If the CDN does not support quality and item has Quality, skip this cdn
     if (!cdn.qualitySupport && item.Quality > 0) continue;
     // If trash item is outdated, skip
@@ -153,7 +155,7 @@ const getItemFile = async (item, tries = 0) => {
 };
 
 const drawItem = async (ctx, item, x, y, block_size = 217) => {
-  if (!item) return await drawImage(ctx, "./assets/slot.png", x, y, block_size, block_size);
+  if (!item) return await drawImage(ctx, path.join(assetsPath, "slot.png"), x, y, block_size, block_size);
   const itemImage = await getItemFile(item);
   await drawImage(ctx, itemImage, x, y, block_size, block_size);
 
@@ -170,14 +172,14 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
 };
 
 const optimizeImage = async (buffer, w = 640) => {
-  const image = await Jimp.read(buffer);
+  const image = await jimp.read(buffer);
 
   image.deflateLevel(9);
   image.deflateStrategy(1);
   if (SMALL_IMAGES) {
-    image.resize(w, Jimp.AUTO);
+    image.resize(w, jimp.AUTO);
   }
-  return await image.getBufferAsync(Jimp.MIME_PNG);
+  return await image.getBufferAsync(jimp.MIME_PNG);
 };
 
 exports.generateEventImage = async (event) => {
@@ -186,7 +188,7 @@ exports.generateEventImage = async (event) => {
   const w = canvas.width;
   const ctx = canvas.getContext("2d");
 
-  await drawImage(ctx, "./assets/background.png", 0, 0);
+  await drawImage(ctx, path.join(assetsPath, "background.png"), 0, 0);
 
   const drawPlayer = async (player, x, y) => {
     const BLOCK_SIZE = 217;
@@ -271,7 +273,7 @@ exports.generateEventImage = async (event) => {
   const fame = digitsFormatter(event.TotalVictimKillFame);
   tw = ctx.measureText(fame).width;
   const IMG_SIZE = 100;
-  await drawImage(ctx, "./assets/fame.png", w / 2 - IMG_SIZE / 2, 500 - IMG_SIZE / 2);
+  await drawImage(ctx, path.join(assetsPath, "fame.png"), w / 2 - IMG_SIZE / 2, 500 - IMG_SIZE / 2);
   ctx.strokeText(fame, w / 2 - tw / 2, 600);
   ctx.fillText(fame, w / 2 - tw / 2, 600);
 
@@ -415,9 +417,9 @@ exports.generateInventoryImage = async (event) => {
   let canvas = createCanvas(WIDTH, rows * BLOCK_SIZE + PADDING * 2);
   const ctx = canvas.getContext("2d");
 
-  await drawImage(ctx, "./assets/background.png", 0, 0);
+  await drawImage(ctx, path.join(assetsPath, "/background.png"), 0, 0);
 
-  for (let item of inventory) {
+  for (const item of inventory) {
     if (!item) continue;
 
     if (x + BLOCK_SIZE > WIDTH - PADDING) {
