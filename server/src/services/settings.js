@@ -47,11 +47,15 @@ async function getSettingsByGuild(guilds) {
   });
 
   await collection.find({}).forEach((settings) => {
-    // if (!hasSubscription(config)) return;
     settingsByGuild[settings.guild] = settings;
   });
 
   return settingsByGuild;
+}
+
+async function getAllSettings() {
+  const collection = getCollection(SETTINGS_COLLECTION);
+  return await collection.find({}).toArray();
 }
 
 async function setSettings(guild, settings) {
@@ -73,6 +77,7 @@ module.exports = {
   REPORT_MODES,
   getSettings,
   getSettingsByGuild,
+  getAllSettings,
   setSettings,
   resetSettings,
   deleteSettings,

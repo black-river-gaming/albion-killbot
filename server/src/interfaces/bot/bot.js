@@ -11,6 +11,7 @@ const events = require("./controllers/events");
 const battles = require("./controllers/battles");
 const guilds = require("./controllers/guilds");
 const rankings = require("./controllers/rankings");
+const subscriptions = require("./controllers/subscriptions");
 
 // const COMMAND_PREFIX = "!";
 
@@ -48,7 +49,6 @@ client.on("shardReady", async (id) => {
     fnOpts: [client, { setting: "daily" }],
     hour: 0,
     minute: 0,
-    runOnStart: true,
   });
 
   runInterval(`${shardPrefix} Display rankings for hourly setting`, rankings.displayRankings, {
@@ -62,11 +62,14 @@ client.on("shardReady", async (id) => {
       fnOpts: [client],
       hour: 0,
       minute: 5,
-      runOnStart: true,
     });
   }
 
-  // runInterval(subscriptions.refresh, "Refresh subscriptions", exports, FREQ_DAY, true);
+  runInterval(`${shardPrefix} Refresh subscriptions`, subscriptions.refresh, {
+    fnOpts: [client],
+    interval: DAY,
+    runOnStart: true,
+  });
 });
 
 client.on("shardDisconnect", async (ev, id) => {

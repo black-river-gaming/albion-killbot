@@ -5,6 +5,7 @@ const { subscribeEvents } = require("../../../services/events");
 const { generateEventImage, generateInventoryImage } = require("../../../services/images");
 const { getSettingsByGuild, REPORT_MODES } = require("../../../services/settings");
 const { addRankingKill } = require("../../../services/rankings");
+const { hasSubscription } = require("../../../services/subscriptions");
 
 const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../helpers/messages");
 
@@ -24,6 +25,7 @@ async function subscribe(client) {
         if (!settingsByGuild[guild.id]) continue;
 
         guild.settings = settingsByGuild[guild.id];
+        if (!hasSubscription(guild.settings)) continue;
 
         const guildEvent = getTrackedEvent(event, guild.settings);
         if (!guildEvent) continue;
