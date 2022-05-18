@@ -2,7 +2,7 @@ const { Client, Intents } = require("discord.js");
 
 const logger = require("../../helpers/logger");
 const { runInterval, runDaily } = require("../../helpers/utils");
-const { DAY } = require("../../helpers/constants");
+const { DAY, HOUR } = require("../../helpers/constants");
 
 const database = require("../../ports/database");
 const queue = require("../../ports/queue");
@@ -10,6 +10,7 @@ const queue = require("../../ports/queue");
 const events = require("./controllers/events");
 const battles = require("./controllers/battles");
 const guilds = require("./controllers/guilds");
+const rankings = require("./controllers/rankings");
 
 // const COMMAND_PREFIX = "!";
 
@@ -37,15 +38,36 @@ client.on("shardReady", async (id) => {
   runDaily(`${shardPrefix} Display Guild rankings`, guilds.displayRankings, {
     fnOpts: [client],
   });
+
   runInterval(`${shardPrefix} Collect Guild data`, guilds.updateGuilds, {
     fnOpts: [client],
     interval: DAY / 4,
+  });
+
+  runDaily(`${shardPrefix} Display ranking for daily setting`, rankings.displayRankings, {
+    fnOpts: [client, { setting: "daily" }],
+    hour: 0,
+    minute: 0,
     runOnStart: true,
   });
 
-  // runDaily(dailyRanking.scanDaily, "Display Player Ranking (daily)", exports, 0, 0);
+  runInterval(`${shardPrefix} Display rankings for hourly setting`, rankings.displayRankings, {
+    fnOpts: [client, { setting: "hourly" }],
+    interval: HOUR,
+    // runOnStart: true
+  });
+
+  // Only one shard needs to run this
+  if (id == 0) {
+    runDaily(`Clear rankings data`, rankings.clearRankings, {
+      fnOpts: [client],
+      hour: 0,
+      minute: 5,
+      runOnStart: true,
+    });
+  }
+
   // runInterval(subscriptions.refresh, "Refresh subscriptions", exports, FREQ_DAY, true);
-  // runInterval(dailyRanking.scan, "Display Player Ranking", exports, FREQ_HOUR);
 });
 
 client.on("shardDisconnect", async (ev, id) => {

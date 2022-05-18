@@ -1,7 +1,6 @@
 const { ShardingManager } = require("discord.js");
 const path = require("node:path");
 const logger = require("../../helpers/logger");
-const { runDaily, clearAllIntervals } = require("../../helpers/utils");
 
 let manager;
 
@@ -21,8 +20,6 @@ async function run() {
     totalShards: TOTAL_SHARDS || "auto",
   });
   manager.spawn();
-
-  runDaily("Clear daily ranking", () => {}, { hour: 0, minute: 10 });
 }
 
 async function cleanup(e) {
@@ -30,8 +27,6 @@ async function cleanup(e) {
     logger.error(e.stack);
   }
   logger.info(`Shutting down Bot...`);
-
-  clearAllIntervals();
 
   for (const shard of manager.shards.values()) {
     logger.verbose(`Killing shard #${shard.id}`);
