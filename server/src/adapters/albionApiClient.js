@@ -36,20 +36,10 @@ albionApiClient.interceptors.request.use((config) => {
 
 // Also, setup an automatic retry mechanism since API throws a lot of 504 errors
 albionApiClient.interceptors.response.use(null, async (error) => {
-  const { config, request, response } = error;
+  const { config, response } = error;
 
-  if (config) {
-    if (response) {
-      if (response.status == 504) {
-        logger.error(`Request to /${config.url} returned ${response.status}. Retrying...`);
-      } else {
-        return Promise.reject(error);
-      }
-    } else if (request) {
-      logger.error(`Request to /${config.url} had no response. Retrying...`);
-    } else {
-      logger.error(`Request to /${config.url} had an unknown error:`, error.message);
-    }
+  if (config && response && response.status == 504) {
+    logger.warn(`Albion API request to ${config.url} returned ${response.status}. Retrying...`);
     await sleep(5000);
     return albionApiClient.request(config);
   }
