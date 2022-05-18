@@ -7,7 +7,7 @@ const { embedRankings } = require("../helpers/messages");
 
 const { sendNotification } = require("./notifications");
 
-async function fetchGuilds({ client }) {
+async function updateGuilds(client) {
   const { shardId } = client;
 
   logger.verbose(`[#${shardId}] Updating albion guild data`);
@@ -25,7 +25,7 @@ async function fetchGuilds({ client }) {
       if (!!albionGuild && moment().diff(moment(albionGuild.updatedAt), "days") < 1) continue;
 
       logger.verbose(`[#${shardId}] Updating guild "${trackedGuild.name}" data`);
-      await updateGuild({ client }, trackedGuild.id);
+      await updateGuild(trackedGuild.id);
     }
   }
 
@@ -64,5 +64,5 @@ async function displayRankings(client) {
 
 module.exports = {
   displayRankings,
-  fetchGuilds,
+  updateGuilds,
 };

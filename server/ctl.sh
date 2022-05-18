@@ -58,6 +58,10 @@ Exec() {
   docker-compose $args exec $component $@
 }
 
+DockerCompose() {
+  docker-compose $args $component $@
+}
+
 Help() {
   printf "This scripts is a helper for docker-compose for dev-env.\n"
   printf "\nUsage: $0 COMMAND\n"
@@ -69,6 +73,7 @@ Help() {
   printf "\texec [component]\tExecute a single command in the target component\n"
   printf "\tshell [component]\tOpen a bash shell in the target component\n"
   printf "\tlogs [component]\tGet logs for component or all logs with tail mode\n"
+  printf "\tdocker-compose <cmd>\tShorthand for docker-compose $args <cmd>\n"
   printf "\nComponents:\n"
   printf "\tcrawler\t\t\tAlbion api crawler\n"
   printf "\tbot\t\t\tDiscord bot\n"
@@ -85,5 +90,6 @@ case $cmd in
   shell) Shell $@ ;;
   start) Start $@ ;;
   stop) Stop $@ ;;
+  docker-compose) DockerCompose $@ ;;
   *) Help $@ ;;
 esac

@@ -1,6 +1,5 @@
 const { createLogger, format, transports } = require("winston");
 const path = require("path");
-const { parseFileSize } = require("./utils");
 
 const { MODE, DEBUG_LEVEL } = process.env;
 
@@ -15,14 +14,14 @@ const logger = createLogger({
     new transports.File({
       filename: path.join("logs", "debug.log"),
       level: "debug",
-      maxsize: parseFileSize("10MB"),
+      maxsize: 10 * Math.pow(1024, 2), // 10 MB
       maxFiles: 1,
       tailable: true,
     }),
     new transports.File({
       filename: path.join("logs", "error.log"),
       level: "error",
-      maxsize: parseFileSize("1MB"),
+      maxsize: 1 * Math.pow(1024, 1), // 1 MB
       maxFiles: 1,
       tailable: true,
     }),

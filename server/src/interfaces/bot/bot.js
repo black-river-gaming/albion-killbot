@@ -36,9 +36,8 @@ client.on("shardReady", async (id) => {
 
   runDaily(`${shardPrefix} Display Guild rankings`, guilds.displayRankings, {
     fnOpts: [client],
-    runOnStart: true,
   });
-  runInterval(`${shardPrefix} Collect Guild data`, guilds.fetchGuilds, {
+  runInterval(`${shardPrefix} Collect Guild data`, guilds.updateGuilds, {
     fnOpts: [client],
     interval: DAY / 4,
     runOnStart: true,

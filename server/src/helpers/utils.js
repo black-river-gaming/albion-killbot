@@ -1,4 +1,5 @@
 const moment = require("moment");
+const logger = require("./logger");
 
 // Flag to keep infinite loops until program is closed
 let running = true;
@@ -76,7 +77,11 @@ function getNumber(v, def) {
 }
 
 async function execFn(name, fn, ...fnOpts) {
-  return await fn(...fnOpts);
+  try {
+    return await fn(...fnOpts);
+  } catch (e) {
+    logger.error(`An error ocurred in routine "${name}":`, e);
+  }
 }
 
 // Functions that fires daily (Default: 12:00 pm) until process stops

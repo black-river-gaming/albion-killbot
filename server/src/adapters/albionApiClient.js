@@ -1,8 +1,20 @@
 const axios = require("axios");
 const moment = require("moment");
+const logger = require("../helpers/logger");
+const { sleep } = require("../helpers/utils");
 
 const EVENTS_ENDPOINT = "events";
 const BATTLES_ENDPOINT = "battles";
+const GUILDS_ENDPOINT = "guilds";
+const STATISTICS_ENDPOINT = "players/statistics";
+const PLAYER_FAME_ENDPOINT = "events/playerfame";
+
+const STATISTICS_TYPES = {
+  PVE: "PvE",
+  GATHERING: "Gathering",
+  CRAFTING: "Crafting",
+};
+
 const BATTLES_SORT = "recent";
 const DEFAULT_LIMIT = 51;
 
@@ -10,7 +22,7 @@ const albionApiClient = axios.create({
   baseURL: "https://gameinfo.albiononline.com/api/gameinfo/",
 });
 
-// Setup timeouts for crawler axios client beucase sometimes server just hangs indefinetly
+// Setup timeouts for crawler axios client because sometimes server just hangs indefinetly
 albionApiClient.interceptors.request.use((config) => {
   const source = axios.CancelToken.source();
   setTimeout(() => {
@@ -20,34 +32,90 @@ albionApiClient.interceptors.request.use((config) => {
   return config;
 });
 
-async function getEvents({ limit = DEFAULT_LIMIT, offset = 0 }) {
-  const res = await albionApiClient.get(EVENTS_ENDPOINT, {
-    params: {
-      offset,
-      limit,
-      timestamp: moment().unix(),
-    },
-    timeout: 60000,
-  });
+// Also, setup an automatic retry mechanism since API throws a lot of 504 errors
+albionApiClient.interceptors.response.use(null, async (error) => {
+  const { config, request, response } = error;
 
+  if (config) {
+    if (response) {
+      if (response.status == 504) {
+        logger.error(`Request to /${config.url} returned ${response.status}. Retrying...`);
+      } else {
+        return Promise.reject(error);
+      }
+    } else if (request) {
+      logger.error(`Request to /${config.url} had no response. Retrying...`);
+    } else {
+      logger.error(`Request to /${config.url} had an unknown error:`, error.message);
+    }
+    await sleep(5000);
+    return albionApiClient.request(config);
+  }
+
+  return Promise.reject(error);
+});
+
+async function getEvents({ limit = DEFAULT_LIMIT, offset = 0 }) {
+  const params = {
+    offset,
+    limit,
+    timestamp: moment().unix(),
+  };
+
+  const res = await albionApiClient.get(EVENTS_ENDPOINT, { params });
   return res.data;
 }
 
 async function getBattles({ limit = DEFAULT_LIMIT, offset = 0 }) {
-  const res = await albionApiClient.get(BATTLES_ENDPOINT, {
-    params: {
-      offset,
-      limit,
-      sort: BATTLES_SORT,
-      timestamp: moment().unix(),
-    },
-    timeout: 60000,
-  });
+  const params = {
+    offset,
+    limit,
+    sort: BATTLES_SORT,
+    timestamp: moment().unix(),
+  };
 
+  const res = await albionApiClient.get(BATTLES_ENDPOINT, { params });
+  return res.data;
+}
+
+async function getGuild(guildId) {
+  const res = await albionApiClient.get(`${GUILDS_ENDPOINT}/${guildId}`);
+  return res.data;
+}
+
+async function getStatistics(guildId, type) {
+  const params = {
+    guildId,
+    type,
+    range: "month",
+    limit: 11,
+    offset: 0,
+    region: "Total",
+    timestamp: moment().unix(),
+  };
+
+  const res = await albionApiClient.get(STATISTICS_ENDPOINT, { params });
+  return res.data;
+}
+
+async function getPlayerFame(guildId) {
+  const params = {
+    guildId,
+    range: "month",
+    limit: 11,
+    offset: 0,
+    timestamp: moment().unix(),
+  };
+
+  const res = await albionApiClient.get(PLAYER_FAME_ENDPOINT, { params });
   return res.data;
 }
 
 module.exports = {
+  STATISTICS_TYPES,
   getEvents,
   getBattles,
+  getGuild,
+  getStatistics,
+  getPlayerFame,
 };

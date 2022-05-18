@@ -60,8 +60,25 @@ const getItemFile = async (item, tries = 0) => {
   return getItemFile(item, tries + 1);
 };
 
+async function getGuild(guildId) {
+  const guild = await albionApiClient.getGuild(guildId);
+
+  guild.rankings = {};
+  logger.verbose(`[${guild.Name}] Fetching PvE rankings...`);
+  guild.rankings.pve = await albionApiClient.getStatistics(guildId, albionApiClient.STATISTICS_TYPES.PVE);
+  logger.verbose(`[${guild.Name}] Fetching PvP rankings...`);
+  guild.rankings.pvp = await albionApiClient.getPlayerFame(guildId, albionApiClient.STATISTICS_TYPES.PVE);
+  logger.verbose(`[${guild.Name}] Fetching Gathering rankings...`);
+  guild.rankings.gathering = await albionApiClient.getPlayerFame(guildId, albionApiClient.STATISTICS_TYPES.GATHERING);
+  logger.verbose(`[${guild.Name}] Fetching Crafting rankings...`);
+  guild.rankings.crafting = await albionApiClient.getPlayerFame(guildId, albionApiClient.STATISTICS_TYPES.CRAFTING);
+
+  return guild;
+}
+
 module.exports = {
-  getEvents,
   getBattles,
+  getEvents,
+  getGuild,
   getItemFile,
 };
