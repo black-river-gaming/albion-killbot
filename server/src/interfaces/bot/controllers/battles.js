@@ -1,36 +1,12 @@
 const logger = require("../../../helpers/logger");
+const { getTrackedBattle } = require("../../../helpers/tracking");
+
 const { subscribeBattles } = require("../../../services/battles");
 const { getSettingsByGuild } = require("../../../services/settings");
+
 const { embedBattle } = require("../helpers/messages");
 
 const { sendNotification } = require("./notifications");
-
-// This method checks if a battle is tracked by a discord server
-// and returns the battle or null if the event is not tracked at all
-function checkTrackedBattle(battle, { players, guilds, alliances }) {
-  if (players.length === 0 && guilds.length === 0 && alliances.length === 0) {
-    return null;
-  }
-
-  const playerIds = players.map((t) => t.id);
-  const guildIds = guilds.map((t) => t.id);
-  const allianceIds = alliances.map((t) => t.id);
-
-  // Ignore battles without fame
-  if (battle.totalFame <= 0) {
-    return null;
-  }
-
-  // Check for tracked ids in players, guilds and alliances
-  const hasTrackedPlayer = Object.keys(battle.players || {}).some((id) => playerIds.indexOf(id) >= 0);
-  const hasTrackedGuild = Object.keys(battle.guilds || {}).some((id) => guildIds.indexOf(id) >= 0);
-  const hasTrackedAlliance = Object.keys(battle.alliances || {}).some((id) => allianceIds.indexOf(id) >= 0);
-  if (hasTrackedPlayer || hasTrackedGuild || hasTrackedAlliance) {
-    return battle;
-  }
-
-  return null;
-}
 
 async function subscribe(client) {
   const { shardId } = client;
@@ -46,7 +22,7 @@ async function subscribe(client) {
 
         guild.settings = settingsByGuild[guild.id];
 
-        const guildBattle = checkTrackedBattle(battle, guild.settings.track);
+        const guildBattle = getTrackedBattle(battle, guild.settings);
         if (!guildBattle) continue;
 
         const { enabled, channel } = guild.settings.battles;
@@ -66,6 +42,5 @@ async function subscribe(client) {
 }
 
 module.exports = {
-  checkTrackedBattle,
   subscribe,
 };

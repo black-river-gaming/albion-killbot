@@ -1,46 +1,14 @@
 const logger = require("../../../helpers/logger");
+const { getTrackedEvent } = require("../../../helpers/tracking");
+
 const { subscribeEvents } = require("../../../services/events");
 const { generateEventImage, generateInventoryImage } = require("../../../services/images");
 const { getSettingsByGuild, REPORT_MODES } = require("../../../services/settings");
+const { addRankingKill } = require("../../../services/rankings");
 
 const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../helpers/messages");
 
 const { sendNotification } = require("./notifications");
-// const dailyRanking = require("./dailyRanking");
-
-// This method checks if an event is tracked by a discord server
-// and flags it as a good event (killed is tracked) or bad event (victim is tracker)
-// and returns a copy of it or null if the event is not tracked at all
-function checkTrackedEvent(event, { players, guilds, alliances }) {
-  if (players.length === 0 && guilds.length === 0 && alliances.length === 0) {
-    return null;
-  }
-
-  const playerIds = players.map((t) => t.id);
-  const guildIds = guilds.map((t) => t.id);
-  const allianceIds = alliances.map((t) => t.id);
-
-  // Ignore Arena kills or Duel kills
-  if (event.TotalVictimKillFame <= 0) {
-    return null;
-  }
-
-  // Check for kill in event.Killer / event.Victim for anything tracked
-  const goodEvent =
-    allianceIds.indexOf(event.Killer.AllianceId) >= 0 ||
-    guildIds.indexOf(event.Killer.GuildId) >= 0 ||
-    playerIds.indexOf(event.Killer.Id) >= 0;
-  const badEvent =
-    allianceIds.indexOf(event.Victim.AllianceId) >= 0 ||
-    guildIds.indexOf(event.Victim.GuildId) >= 0 ||
-    playerIds.indexOf(event.Victim.Id) >= 0;
-  if (goodEvent || badEvent) {
-    // We need to create a new object here so we don't change the original event
-    return Object.assign({}, event, { good: goodEvent });
-  }
-
-  return null;
-}
 
 async function subscribe(client) {
   const { shardId } = client;
@@ -49,6 +17,7 @@ async function subscribe(client) {
     logger.debug(`Received event: ${event.EventId}`);
 
     try {
+      // TODO: This chunk repeat a lot. Find a way to componentize
       const settingsByGuild = await getSettingsByGuild(client.guilds.cache);
 
       for (const guild of client.guilds.cache.values()) {
@@ -56,9 +25,9 @@ async function subscribe(client) {
 
         guild.settings = settingsByGuild[guild.id];
 
-        const guildEvent = checkTrackedEvent(event, guild.settings.track);
+        const guildEvent = getTrackedEvent(event, guild.settings);
         if (!guildEvent) continue;
-        //     dailyRanking.add(guild, event, guild.config);
+        addRankingKill(guild.id, guildEvent, guild.settings);
 
         const { enabled, channel, mode } = guild.settings.kills;
         if (!enabled || !channel) continue;
@@ -101,6 +70,5 @@ async function subscribe(client) {
 }
 
 module.exports = {
-  checkTrackedEvent,
   subscribe,
 };
