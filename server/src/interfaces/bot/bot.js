@@ -1,14 +1,17 @@
 const { Client, Intents } = require("discord.js");
-const database = require("../../ports/database");
+
 const logger = require("../../helpers/logger");
+const { runInterval, runDaily } = require("../../helpers/utils");
+const { DAY } = require("../../helpers/constants");
+
+const database = require("../../ports/database");
 const queue = require("../../ports/queue");
 
 const events = require("./controllers/events");
 const battles = require("./controllers/battles");
+const guilds = require("./controllers/guilds");
 
 // const COMMAND_PREFIX = "!";
-// const FREQ_HOUR = 1000 * 60 * 60;
-// const FREQ_DAY = FREQ_HOUR * 24;
 
 const client = new Client({
   autoReconnect: true,
@@ -28,13 +31,21 @@ client.on("shardReady", async (id) => {
     await battles.subscribe(client);
     logger.info(`${shardPrefix} Subscribed to battles queue.`);
   } catch (e) {
-    logger.error(e);
+    logger.error(`Error in subscriptions:`, e);
   }
 
-  // runDaily(guilds.showRanking, "Display Guild Rankings", exports);
+  runDaily(`${shardPrefix} Display Guild rankings`, guilds.displayRankings, {
+    fnOpts: [client],
+    runOnStart: true,
+  });
+  runInterval(`${shardPrefix} Collect Guild data`, guilds.fetchGuilds, {
+    fnOpts: [client],
+    interval: DAY / 4,
+    runOnStart: true,
+  });
+
   // runDaily(dailyRanking.scanDaily, "Display Player Ranking (daily)", exports, 0, 0);
   // runInterval(subscriptions.refresh, "Refresh subscriptions", exports, FREQ_DAY, true);
-  // runInterval(guilds.update, "Get Guild Data", exports, FREQ_DAY / 4, true);
   // runInterval(dailyRanking.scan, "Display Player Ranking", exports, FREQ_HOUR);
 });
 

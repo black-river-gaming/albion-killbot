@@ -94,11 +94,11 @@ async function runDaily(name, fn, { fnOpts = [], hour = 12, minute = 0, runOnSta
 
 // Functions that run on an interval after execFn completes,
 // then waits (Default: 30 seconds) and repeat until process stops
-async function runInterval(name, fn, { fnOpts = [], interval = 30, runOnStart = false }) {
+async function runInterval(name, fn, { fnOpts = [], interval = 30000, runOnStart = false }) {
   if (!fn) return;
   if (runOnStart) await execFn(name, fn, ...fnOpts);
   while (running) {
-    await sleep(interval * 1000);
+    await sleep(interval);
     await execFn(name, fn, ...fnOpts);
   }
 }
