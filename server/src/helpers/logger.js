@@ -29,9 +29,11 @@ const logger = createLogger({
 });
 
 if (!isProd) {
-  const consoleFormat = format.printf(({ level, message, timestamp, metadata }) => {
+  const consoleFormat = format.printf(({ level, message, timestamp, metadata, [Symbol.for("level")]: logLevel }) => {
     const metadataStr = metadata ? JSON.stringify(metadata) : "";
-    return `${timestamp} [${level}]\t: ${message} ${metadataStr}`;
+    const maxLen = "verbose".length;
+    const spacing = " ".repeat(Math.max(0, maxLen - logLevel.length));
+    return `${timestamp} [${level}] ${spacing}: ${message} ${metadataStr}`;
   });
 
   logger.add(
