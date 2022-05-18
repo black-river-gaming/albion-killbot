@@ -6,8 +6,10 @@ const { sleep } = require("../helpers/utils");
 const EVENTS_ENDPOINT = "events";
 const BATTLES_ENDPOINT = "battles";
 const GUILDS_ENDPOINT = "guilds";
+const ALLIANCES_ENDPOINT = "alliances";
 const STATISTICS_ENDPOINT = "players/statistics";
 const PLAYER_FAME_ENDPOINT = "events/playerfame";
+const SEARCH_ENDPOINT = "search";
 
 const STATISTICS_TYPES = {
   PVE: "PvE",
@@ -83,6 +85,11 @@ async function getGuild(guildId) {
   return res.data;
 }
 
+async function getAlliance(allianceId) {
+  const res = await albionApiClient.get(`${ALLIANCES_ENDPOINT}/${allianceId}`);
+  return res.data;
+}
+
 async function getStatistics(guildId, type) {
   const params = {
     guildId,
@@ -111,11 +118,19 @@ async function getPlayerFame(guildId) {
   return res.data;
 }
 
+async function search(q) {
+  const params = { q };
+  const res = await albionApiClient.get(SEARCH_ENDPOINT, { params });
+  return res.data;
+}
+
 module.exports = {
   STATISTICS_TYPES,
   getEvents,
   getBattles,
   getGuild,
+  getAlliance,
   getStatistics,
   getPlayerFame,
+  search,
 };

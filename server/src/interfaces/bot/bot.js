@@ -54,7 +54,6 @@ client.on("shardReady", async (id) => {
   runInterval(`${shardPrefix} Display rankings for hourly setting`, rankings.displayRankings, {
     fnOpts: [client, { setting: "hourly" }],
     interval: HOUR,
-    // runOnStart: true
   });
 
   // Only one shard needs to run this
@@ -113,33 +112,6 @@ client.on("error", async (e) => {
 //     message.channel.send(l.__("CHANNEL_NOT_SET"));
 //   }
 // });
-
-// client.on("guildCreate", async (guild) => {
-//   logger.info(`Joined guild "${guild.name}". Creating default settings.`);
-//   guild.config = await config.setConfig(guild);
-//   const l = messages.getI18n(guild);
-//   exports.sendGuildMessage(guild, l.__("JOIN"));
-// });
-
-// client.on("guildDelete", (guild) => {
-//   logger.info(`Left guild "${guild.name}". Deleting settings.`);
-//   config.deleteConfig(guild);
-// });
-
-// exports.getDefaultChannel = (guild) => {
-//   // Get "original" default channel
-//   if (guild.channels.cache.has(guild.id)) return guild.channels.cache.get(guild.id);
-
-//   // Check for a "general" channel, which is often default chat
-//   const generalChannel = guild.channels.cache.find((channel) => channel.name === "general");
-//   if (generalChannel) return generalChannel;
-//   // Now we get into the heavy stuff: first channel in order where the bot can speak
-//   // hold on to your hats!
-//   return guild.channels.cache
-//     .filter((c) => c.type === "text" && c.permissionsFor(guild.client.user).has("SEND_MESSAGES"))
-//     .sort((a, b) => a.position - b.position)
-//     .first();
-// };
 
 async function run() {
   await queue.init();

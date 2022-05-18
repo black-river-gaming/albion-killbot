@@ -76,9 +76,19 @@ async function getGuild(guildId) {
   return guild;
 }
 
+async function getAlliance(allianceId) {
+  return await albionApiClient.getAlliance(allianceId);
+}
+
+async function search(q) {
+  return await albionApiClient.search(q);
+}
+
 module.exports = {
+  getAlliance,
   getBattles,
   getEvents,
   getGuild,
   getItemFile,
+  search,
 };
