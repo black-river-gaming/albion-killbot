@@ -1,8 +1,15 @@
 import React from "react";
-import Div from "styles/global-styles";
+import { BrowserRouter } from "react-router-dom";
+import MainRoutes from "routes";
 
 export const App = () => {
-  return <Div> Hello, Welcome to React and TypeScript </Div>;
+  return (
+    <React.StrictMode>
+      <BrowserRouter>
+        <MainRoutes />
+      </BrowserRouter>
+    </React.StrictMode>
+  );
 };
 
 export default App;

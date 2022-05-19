@@ -8,30 +8,25 @@
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
     "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./build",
     "baseUrl": "src",
-    "incremental": true,
-    "rootDirs": ["src"],
+    "rootDirs": [
+      "src"
+    ],
   },
-  "include": ["./**/*.ts", "./**/*.tsx"],
+  "include": [
+    "./**/*.ts",
+    "./**/*.tsx"
+  ],
   "exclude": [
     "node_modules, dist, build"
   ],
-  
 }
