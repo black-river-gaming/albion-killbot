@@ -13,6 +13,8 @@ const guilds = require("./controllers/guilds");
 const rankings = require("./controllers/rankings");
 const subscriptions = require("./controllers/subscriptions");
 
+const commands = require("./commands");
+
 // const COMMAND_PREFIX = "!";
 
 const client = new Client({
@@ -20,8 +22,9 @@ const client = new Client({
   intents: [Intents.FLAGS.GUILDS],
 });
 
-// client.commands = commands;
 client.on("shardReady", async (id) => {
+  await commands.init(client.application.id);
+
   client.shardId = id;
   const shardPrefix = `[#${id}]`;
   logger.info(`${shardPrefix} Shard ready as ${client.user.tag}. Guild count: ${client.guilds.cache.size}`);
@@ -84,6 +87,29 @@ client.on("shardReconnecting", async (id) => {
 
 client.on("error", async (e) => {
   logger.error(`Discord error: ${e.stack}`);
+});
+
+client.on("interactionCreate", async (interaction) => {
+  const prefix = `[#${interaction.id}/${interaction.commandName}]`;
+
+  try {
+    if (!commands.hasCommand(interaction.commandName)) return;
+    // TODO: Find a place for this
+    // This is needed because interaction uses BigInt and toJSON() fails
+    BigInt.prototype.toJSON = function () {
+      return this.toString();
+    };
+
+    logger.debug(`${prefix} Interaction received`, {
+      metadata: interaction.toJSON(),
+    });
+
+    // For now we only accept commands
+    if (!interaction.isCommand()) return;
+    return await commands.handle(interaction);
+  } catch (e) {
+    logger.error(`${prefix} Error in interaction:`, e);
+  }
 });
 
 // client.on("message", async (message) => {
