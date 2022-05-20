@@ -15,8 +15,6 @@ const subscriptions = require("./controllers/subscriptions");
 
 const commands = require("./commands");
 
-// const COMMAND_PREFIX = "!";
-
 const client = new Client({
   autoReconnect: true,
   intents: [Intents.FLAGS.GUILDS],
@@ -110,36 +108,6 @@ client.on("interactionCreate", async (interaction) => {
     logger.error(`${prefix} Error in interaction:`, e);
   }
 });
-
-// client.on("message", async (message) => {
-//   if (!message.guild) return;
-//   // Fetch guild config and create default if not config is found
-//   const guild = message.guild;
-//   guild.config = await config.getConfig(guild);
-//   if (!guild.config) {
-//     logger.info(`Guild "${guild.name}" has no configuration. Creating default settings.`);
-//     guild.config = await config.setConfig(guild);
-//   }
-//   const prefix = guild.config.prefix || COMMAND_PREFIX;
-
-//   if (message.author.bot) return;
-//   if (!message.content || !message.content.startsWith(prefix)) return;
-//   if (!message.member) return;
-//   // For now, bot only accepts commands from server admins
-//   if (!message.member.hasPermission("ADMINISTRATOR")) return;
-
-//   const args = message.content.slice(prefix.length).trim().split(/ +/g);
-//   const command = commands[args.shift().toLowerCase()];
-//   if (!command) return;
-//   if (!subscriptions.hasSubscription(guild.config) && !command.public) return;
-
-//   await command.run(client, guild, message, args);
-
-//   if (!guild.config.channel) {
-//     const l = messages.getI18n(guild);
-//     message.channel.send(l.__("CHANNEL_NOT_SET"));
-//   }
-// });
 
 async function run() {
   await queue.init();
