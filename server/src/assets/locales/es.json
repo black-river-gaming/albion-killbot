@@ -45,7 +45,8 @@
     "DEATH_FAME": "Top Death Fama",
     "TOTAL_KILL_FAME": "Fama Total Kills",
     "TOTAL_DEATH_FAME": "Fama Total Deaths",
-    "DAILY_RANKING_SET": "Clasificación Diaria ahora está configurado en modo '{{ mode }}'",
+    "PVP_RANKING_SET": "PvP Ranking display mode is set to '{{ pvpRanking }}'",
+    "GUILD_RANKING_SET": "Guild Ranking display mode is set to '{{ guildRanking }}'",
     "NO_DATA": "No data available for guild '{{{ guild }}}'. Give the bot a day to fetch data and try again.",
     "NO_DATA_SHORT": "No data available"
   },
@@ -63,7 +64,8 @@
     "CATEGORY": "Enable/disable bot notifications for each category.",
     "RANKING": "Display rankings for tracked guilds.",
     "SUBSCRIPTION": "Check or activate your subscription.",
-    "PREFIX": "Change bot prefix."
+    "PREFIX": "Change bot prefix.",
+    "SETTINGS": "Change settings for your server."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Ingrese un canal para las notificaciones",
@@ -125,5 +127,24 @@
   },
   "PREFIX": {
     "SET_PREFIX": "The bot prefix is not set to '{{ prefix }}'. Your commands will be called using {{prefix}}command now."
+  },
+  "SETTINGS": {
+    "KILLS": "Change settings for kill notifications.",
+    "BATTLES": "Change settings for battle notifications.",
+    "RANKINGS": "Change settings for ranking notifications.",
+    "ENABLED": "Enable",
+    "CHANNEL": "Channel",
+    "MODE": {
+      "IMAGE": "Image",
+      "TEXT": "Text"
+    },
+    "PVP_RANKING": "PvP Ranking",
+    "GUILD_RANKING": "Guild Ranking",
+    "FREQUENCIES": {
+      "OFF": "Off",
+      "HOURLY": "Every hour",
+      "DAILY": "Daily"
+    },
+    "LANG": "Change language."
   }
 }

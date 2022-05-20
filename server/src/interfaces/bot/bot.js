@@ -91,9 +91,7 @@ client.on("error", async (e) => {
 
 client.on("interactionCreate", async (interaction) => {
   const prefix = `[#${interaction.id}/${interaction.commandName}]`;
-
   try {
-    if (!commands.hasCommand(interaction.commandName)) return;
     // TODO: Find a place for this
     // This is needed because interaction uses BigInt and toJSON() fails
     BigInt.prototype.toJSON = function () {
@@ -104,6 +102,7 @@ client.on("interactionCreate", async (interaction) => {
       metadata: interaction.toJSON(),
     });
 
+    if (!commands.hasCommand(interaction.commandName)) return;
     // For now we only accept commands
     if (!interaction.isCommand()) return;
     return await commands.handle(interaction);
