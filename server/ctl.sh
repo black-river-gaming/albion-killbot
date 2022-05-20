@@ -28,7 +28,7 @@ Start() {
 }
 
 Stop() {
-  docker-compose $args down $component $@
+  docker-compose $args down $@
 }
 
 Restart() {
