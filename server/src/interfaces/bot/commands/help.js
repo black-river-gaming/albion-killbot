@@ -1,38 +1,35 @@
 const { InteractionType } = require("discord-api-types/v10");
+const { getCommands } = require(".");
 const { getLocale } = require("../../../helpers/locale");
 
-// const LINE_LENGTH = 70;
+const LINE_LENGTH = 15;
 
 const command = {
   name: "help",
   description: getLocale().t("HELP.HELP"),
   type: InteractionType.Ping,
   default_permission: true,
-  handle: async (interaction) => {
-    // const t = getI18n(guild.config.lang);
-    // let response = "```\n";
-    // if (process.env.npm_package_version) {
-    //   response += l.__("HELP.VERSION", {
-    //     version: process.env.npm_package_version,
-    //   });
-    //   response += "\n\n";
-    // }
-    // Object.keys(client.commands).forEach((key) => {
-    //   const command = client.commands[key];
-    //   let commandKey = `!${command.aliases[0]}`;
-    //   if (command.args && command.args.length > 0) {
-    //     command.args.forEach((arg) => {
-    //       commandKey += ` [${arg}]`;
-    //       ("");
-    //     });
-    //   }
-    //   const description = l.__(command.description);
-    //   response += commandKey + " ".repeat(LINE_LENGTH - commandKey.length) + description + "\n";
-    // });
-    // response += "```";
-    // await message.channel.send(response);
+  handle: async (interaction, { lang }) => {
+    const t = getLocale(lang).t;
+
+    let response = "```\n";
+    if (process.env.npm_package_version) {
+      response += t("HELP.VERSION", {
+        version: process.env.npm_package_version,
+      });
+      response += "\n\n";
+    }
+
+    const commands = getCommands();
+    for (const command of commands) {
+      const commandKey = `/${command.name}`;
+      const description = t(`HELP.${command.name.toUpperCase()}`);
+      response += commandKey + " ".repeat(LINE_LENGTH - commandKey.length) + description + "\n";
+    }
+    response += "```";
+
     return interaction.reply({
-      content: "Pong!",
+      content: response,
       ephemeral: true,
     });
   },

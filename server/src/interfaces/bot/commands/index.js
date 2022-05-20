@@ -2,7 +2,9 @@ const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v10");
 const { readdirSync } = require("fs");
 const path = require("node:path");
+
 const logger = require("../../../helpers/logger");
+const { getSettings } = require("../../../services/settings");
 
 const rest = new REST({ version: "10" });
 let commands = [];
@@ -46,12 +48,18 @@ function hasCommand(name) {
   return commands.some((c) => c.name == name);
 }
 
+function getCommands() {
+  return commands;
+}
+
 async function handle(interaction) {
+  const settings = await getSettings(interaction.guild.id);
   const command = commands.find((c) => c.name == interaction.commandName);
-  return await command.handle(interaction);
+  return await command.handle(interaction, settings);
 }
 
 module.exports = {
+  getCommands,
   hasCommand,
   init,
   reload,
