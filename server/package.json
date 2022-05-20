@@ -6,6 +6,9 @@
   "repository": "https://github.com/agnjunio/albion-killbot.git",
   "author": "Agnaldo Junior <agnaldo.junior01@gmail.com>",
   "license": "MIT",
+  "bin": {
+    "ctl": "./ctl.sh"
+  },
   "scripts": {
     "start": "node ./bin/start.js",
     "start:api": "npm start -- --mode api",

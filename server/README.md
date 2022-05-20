@@ -29,7 +29,7 @@ DISCORD_TOKEN=<your discord token>
 
 You can drop that into an `.env` file or in your system's environment variables.
 
-We have a convencience script called `ctl.sh` (refered in this guide as `ctl`) that you can use to quickly start the project. This assumes you have the requirements set-up. If your system is not compatible with shell script, the commands inside are well-descripted so you can use them directly instead.
+We have a convencience script called `ctl.sh` (refered in this guide as `ctl`) that you can install using `npm link` and use to quickly start the project. This assumes you have the requirements set-up. The commands inside are well-descripted so you can use them directly if you wish.
 
 To start the project, just run:
 

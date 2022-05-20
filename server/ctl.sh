@@ -16,6 +16,7 @@ PROJECT_ARGS="-p albion-killbot"
 COMPOSE_FILE="-f docker/docker-compose.yml"
 args="$PROJECT_ARGS $COMPOSE_FILE"
 
+script=$(basename $0)
 cmd=$1; shift 2>/dev/null
 component=$1; shift 2>/dev/null
 
@@ -44,7 +45,7 @@ Logs() {
 
 Shell() {
   if [ -z $component ]; then
-    echo "Usage: $0 shell [component]"
+    echo "Usage: $script shell [component]"
     exit 1
   fi
   docker-compose $args exec $component bash
@@ -52,7 +53,7 @@ Shell() {
 
 Exec() {
   if [ -z $component ] || [ -z $1 ]; then
-    echo "Usage: $0 exec [component] [commands]"
+    echo "Usage: $script exec [component] [commands]"
     exit 1
   fi
   docker-compose $args exec $component $@
@@ -64,7 +65,7 @@ DockerCompose() {
 
 Help() {
   printf "This scripts is a helper for docker-compose for dev-env.\n"
-  printf "\nUsage: $0 COMMAND\n"
+  printf "\nUsage: $script COMMAND\n"
   printf "\nCommands:\n"
   printf "\tbuild\t\t\tBuild all components\n"
   printf "\tstart\t\t\tStart the stack in detached mode\n"
