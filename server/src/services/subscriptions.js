@@ -1,7 +1,7 @@
 const moment = require("moment");
 const logger = require("../helpers/logger");
 const subscriptions = require("../ports/subscriptions");
-const { getAllSettings, setSettings } = require("./settings");
+const { getAllSettings, setSettings, DEFAULT_SETTINGS } = require("./settings");
 
 const SUBSCRIPTIONS_ONLY = Boolean(process.env.SUBSCRIPTIONS_ONLY);
 
@@ -9,48 +9,47 @@ function isSubscriptionsEnabled() {
   return SUBSCRIPTIONS_ONLY;
 }
 
-function getSubscription(setting) {
+function getSubscription(settings) {
   if (!isSubscriptionsEnabled()) return null;
-  if (!setting || !setting.subscription) return null;
-  return setting.subscription;
+  if (!settings || !settings.subscription) return null;
+  return settings.subscription;
 }
 
-function hasSubscription(setting) {
+function hasSubscription(settings) {
   if (!isSubscriptionsEnabled()) return true;
-  if (!setting || !setting.subscription) return false;
-  return moment(setting.subscription.expires).diff() > 0;
+  if (!settings || !settings.subscription) return false;
+  return moment(settings.subscription.expires).diff() > 0;
 }
 
-async function activateSubscription(setting, userId) {
+async function activateSubscription(settings, userId) {
   if (!isSubscriptionsEnabled()) return false;
-  if (!setting) return false;
+  if (!settings) return false;
 
   try {
-    setting.subscription = await subscriptions.activateSubscription(userId);
-    await setSettings(setting.guild, setting);
-    logger.info(`[#${setting.guild}] Subscription activated until ${setting.subscription.expires.toString()}`);
-    return true;
+    settings.subscription = await subscriptions.activateSubscription(userId);
+    await setSettings(settings.guild, settings);
+    logger.info(`[#${settings.guild}] Subscription activated until ${settings.subscription.expires.toString()}`);
   } catch (e) {
-    logger.verbose(`[#${setting.guild}] Unable to active subscription:`, e);
-    return false;
+    logger.verbose(`[#${settings.guild}] Unable to active subscription:`, e);
+    throw e;
   }
 }
 
 async function refreshSubscriptions() {
   if (!isSubscriptionsEnabled()) return;
 
-  const settings = await getAllSettings();
+  const allServerSettings = await getAllSettings();
 
-  for (const setting of settings) {
-    const subscription = getSubscription(setting);
+  for (const settings of allServerSettings) {
+    const subscription = getSubscription(settings);
     if (!subscription) continue;
 
     try {
-      setting.subscription = await subscriptions.renewSubscription(subscription);
-      await setSettings(setting.guild, setting);
-      logger.info(`[#${setting.guild}] Subscription extended until ${setting.subscription.expires.toString()}`);
+      settings.subscription = await subscriptions.renewSubscription(subscription);
+      await setSettings(settings.guild, settings);
+      logger.info(`[#${settings.guild}] Subscription extended until ${settings.subscription.expires.toString()}`);
     } catch (e) {
-      logger.verbose(`[#${setting.guild}] Unable to renew subscription:`, e);
+      logger.verbose(`[#${settings.guild}] Unable to renew subscription:`, e);
     }
   }
 }
@@ -60,7 +59,7 @@ async function cancelSubscription(settings) {
   if (!settings || !settings.subscription) return false;
 
   logger.verbose(`[#${settings.guild}] Subscription cancelled`);
-  settings.subscription = null;
+  settings.subscription = { ...DEFAULT_SETTINGS.subscription };
 
   await setSettings(settings.guild, settings);
   return true;

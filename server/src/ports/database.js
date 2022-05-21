@@ -8,8 +8,10 @@ async function cleanup() {
   await dbClient.close();
 }
 
-const getCollection = (collection) => {
-  return dbClient.getCollection(collection);
+const getCollection = (collectionName) => {
+  const collection = dbClient.getCollection(collectionName);
+  if (!collection) throw new Error("Database not connected");
+  return collection;
 };
 
 module.exports = {

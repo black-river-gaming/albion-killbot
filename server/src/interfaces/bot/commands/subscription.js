@@ -1,61 +1,83 @@
+const { InteractionType } = require("discord-api-types/v10");
+const { String } = require("discord-api-types/v10").ApplicationCommandOptionType;
 const moment = require("moment");
-const { getI18n } = require("../messages");
-const { getSubscription, cancelSubscription, setSubscription } = require("../subscriptions");
-const { setConfig, getConfigBySubscription } = require("../config");
+const { getLocale } = require("../../../helpers/locale");
+const { activateSubscription } = require("../../../ports/subscriptions");
+const { getSettingsBySubscriptionOwner } = require("../../../services/settings");
+const { cancelSubscription } = require("../../../services/subscriptions");
 
-module.exports = {
-  aliases: ["subscription"],
-  args: ["activate/deactivate"],
-  requirements: process.env.SUBSCRIPTIONS_ONLY,
-  public: true,
-  description: "HELP.SUBSCRIPTION",
-  run: async (_client, guild, message, args) => {
-    const l = getI18n(guild.config.lang);
+const t = getLocale().t;
 
-    //check current subscription
-    if (!args[0]) {
-      const subscription = getSubscription(guild.config);
-      if (!subscription) {
-        return message.channel.send(l.__("SUBSCRIPTION.STATUS.INACTIVE"));
-      }
+const options = [
+  {
+    name: "action",
+    description: t("HELP.SUBSCRIPTION"),
+    type: String,
+    required: false,
+    choices: [
+      {
+        name: t("GENERAL.ACTIVATE"),
+        value: "activate",
+      },
+      {
+        name: t("GENERAL.DEACTIVATE"),
+        value: "deactivate",
+      },
+    ],
+  },
+];
+
+const command = {
+  name: "subscription",
+  description: t("HELP.SUBSCRIPTION"),
+  type: InteractionType.Ping,
+  default_member_permissions: "0",
+  options,
+  handle: async (interaction, settings) => {
+    const { subscription, lang } = settings;
+    const t = getLocale(lang).t;
+    const ephemeral = true;
+
+    const action = interaction.options.getString("action");
+    if (!action) {
+      if (!subscription.expires)
+        return await interaction.reply({
+          content: t("SUBSCRIPTION.STATUS.INACTIVE"),
+          ephemeral,
+        });
 
       const days = moment(subscription.expires).diff(moment(), "days");
-      const status =
-        days <= 0 ? l.__("SUBSCRIPTION.STATUS.EXPIRED") : l.__("SUBSCRIPTION.STATUS.DAYS_REMAINING", { days });
-      return message.channel.send(status);
+      return await interaction.reply({
+        content: days <= 0 ? t("SUBSCRIPTION.STATUS.EXPIRED") : t("SUBSCRIPTION.STATUS.DAYS_REMAINING", { days }),
+        ephemeral,
+      });
     }
 
-    const action = args[0].toLowerCase();
-    // 'deactivate' will deactivate the current subscription
-    switch (action) {
-      case "deactivate":
-        guild.config = cancelSubscription(guild.config);
-        if (!(await setConfig(guild))) {
-          return message.channel.send(l.__("CONFIG_NOT_SET"));
-        }
-        return message.channel.send(l.__("SUBSCRIPTION.CANCELLED"));
-      case "activate":
-        try {
-          const c = await getConfigBySubscription(message.author.id);
-          if (c && c.guild !== message.guild.id) {
-            return message.channel.send(l.__("SUBSCRIPTION.ALREADY_SUBSCRIBED"));
-          }
+    if (action == "activate") {
+      await interaction.deferReply({ ephemeral });
+      // If the user is already owner of a subscription in another server
+      const anotherServerSettings = await getSettingsBySubscriptionOwner(interaction.user.id);
+      if (anotherServerSettings.guild && anotherServerSettings.guild !== interaction.guild.id) {
+        return interaction.editReply(t("SUBSCRIPTION.ALREADY_SUBSCRIBED"));
+      }
 
-          guild.config = await setSubscription(guild.config, message.author.id);
-          if (!(await setConfig(guild))) {
-            return message.channel.send(l.__("CONFIG_NOT_SET"));
-          }
-          return message.channel.send(l.__("SUBSCRIPTION.CONFIRMED"));
-        } catch (e) {
-          const reason = l.__(`SUBSCRIPTION.ERROR.${e.message.toUpperCase()}`);
-          return message.channel.send(l.__("SUBSCRIPTION.FAILED", { reason }));
-        }
-      default:
-        return message.channel.send(
-          l.__("SUBSCRIPTION.ACTIONS", {
-            actions: ["activate", "deactivate"].join(" ,"),
-          }),
-        );
+      try {
+        await activateSubscription(settings, interaction.user.id);
+        return interaction.editReply(t("SUBSCRIPTION.CONFIRMED"));
+      } catch (e) {
+        const reason = t(`SUBSCRIPTION.ERROR.${e.message.toUpperCase()}`);
+        return await interaction.editReply(t("SUBSCRIPTION.FAILED", { reason }));
+      }
     }
+
+    if (action == "deactivate") {
+      await interaction.deferReply({ ephemeral });
+      await cancelSubscription(settings);
+      return await interaction.editReply(t("SUBSCRIPTION.CANCELLED"));
+    }
+
+    return await interaction.reply({ content: "Please specify a valid option.", ephemeral });
   },
 };
+
+module.exports = command;
