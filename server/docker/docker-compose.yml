@@ -81,6 +81,8 @@ services:
     volumes:
       - "../bin:/app/bin"
       - "../src:/app/src"
+    ports:
+      - 80:80
 
 volumes:
   mongodb:

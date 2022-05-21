@@ -3,18 +3,19 @@ const api = require("./api");
 
 const { PORT } = process.env;
 const port = PORT || 80;
+let server;
 
 async function run() {
   logger.info(`Starting Api...`);
-  await api.listen(port);
+  server = await api.listen(port);
   logger.verbose(`Api is listening on port ${port}.`);
 }
 
-async function cleanup(e) {
-  if (e) {
-    logger.error(`Error during cleanup:`, e);
-  }
+async function cleanup() {
   logger.info(`Shutting down Api...`);
+  if (server) {
+    await server.close();
+  }
 }
 
 module.exports = {
