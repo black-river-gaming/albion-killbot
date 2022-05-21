@@ -6,6 +6,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:update": "react-scripts test --updateSnapshot",
     "eject": "react-scripts eject",
     "lint": "eslint src/",
     "lint:fix": "eslint --fix src/",
