@@ -1,4 +1,4 @@
-name: Main
+name: Release
 
 on:
   push:
@@ -6,15 +6,18 @@ on:
 
 jobs:
   publish:
-    name: Publish Docker Image
+    name: Publish server docker image
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - id: docker_meta
         name: Docker meta
-        uses: crazy-max/ghaction-docker-meta@v1
+        uses: docker/metadata-action@v4
         with:
-          images: ${{ github.repository }}
-          tag-sha: false
+          images: agnjunio/albion-killbot
+          tag: type=semver,pattern={{version}}
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -24,8 +27,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker images
-        uses: docker/build-push-action@v2.2.2
+        uses: docker/build-push-action@v3
         with:
+          context: server/
           push: ${{ github.event_name != 'pull_request' }}
+          file: server/docker/Dockerfile
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}

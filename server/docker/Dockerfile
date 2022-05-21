@@ -1,13 +1,13 @@
 FROM node:16 AS build
 WORKDIR /app
 
-# Install node-prune (https://github.com/tj/node-prune)
-RUN curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash -s -- -b /usr/local/bin
+# Install node-prune
+RUN npm i -g node-prune
 
 # Install project dependencies and prune unecessary files
 COPY package*.json ./
 RUN npm ci
-RUN /usr/local/bin/node-prune
+RUN node-prune
 
 # Copy all files except those listed in .dockerignore
 COPY . .
