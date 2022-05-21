@@ -1,0 +1,69 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches:
+      - master
+      - v*
+    paths:
+      - "dashboard/**"
+
+defaults:
+  run:
+    shell: bash
+    working-directory: dashboard/
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: dashboard/
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run prettier
+
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: dashboard/
+      - run: npm ci
+      - run: npm run build
+
+  test:
+    permissions:
+      checks: write
+      pull-requests: write
+    strategy:
+      matrix:
+        node-version: [16.x]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: dashboard/
+      - uses: ArtiomTr/jest-coverage-report-action@v2
+        with:
+          working-directory: dashboard/
+          test-script: npm test
