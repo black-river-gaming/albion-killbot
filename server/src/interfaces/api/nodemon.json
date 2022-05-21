@@ -1,5 +1,5 @@
 {
   "exec": "npm run start:api",
-  "watch": ["./src/interfaces/api"],
+  "watch": ["./src/adapters", "./src/helpers", "./src/ports", "./src/services", "./src/interfaces/api"],
   "ignore": ["node_modules", "__tests__"]
 }
