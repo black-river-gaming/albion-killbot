@@ -23,6 +23,7 @@ const modes = [
   {
     name: "api",
     description: "Web API to interact with server configurations and see events.",
+    entryPoint: path.join(interfaces, "api"),
   },
 ];
 
