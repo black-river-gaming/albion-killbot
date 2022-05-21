@@ -1,0 +1,48 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches:
+      - master
+      - v*
+    paths:
+      - "server/**"
+
+defaults:
+  run:
+    shell: bash
+    working-directory: server/
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: server/
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npm run prettier
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: server/
+          push: ${{ github.event_name != 'pull_request' }}
+          file: server/docker/Dockerfile
