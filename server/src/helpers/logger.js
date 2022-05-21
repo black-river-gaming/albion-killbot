@@ -44,4 +44,10 @@ if (!isProd) {
   );
 }
 
+logger.stream = {
+  write: (message) => {
+    logger.info(message);
+  },
+};
+
 module.exports = logger;
