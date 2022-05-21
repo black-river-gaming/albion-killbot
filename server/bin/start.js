@@ -42,20 +42,20 @@ const modes = [
     const { run, cleanup } = require(mode.entryPoint);
 
     //catches ctrl+c event
-    process.once("SIGINT", cleanup);
-    // catches "kill pid" (for example: nodemon restart)
-    process.once("SIGUSR1", cleanup);
-    process.once("SIGUSR2", cleanup);
+    process.once("SIGINT", await cleanup);
+    // graceful shutdown when using nodemon
+    process.once("SIGHUP", await cleanup);
+    process.once("SIGUSR2", await cleanup);
     //catches uncaught exceptions
-    process.once("uncaughtException", async (e) => {
-      console.error(`Uncaught exception on ${mode.name}: ${e.stack}`);
+    process.once("uncaughtException", async (error) => {
+      console.error(`Uncaught exception on ${mode.name}: ${error.stack}`);
       await cleanup();
     });
 
     await run();
   } catch (e) {
-    console.error(e.stack);
     console.log(`An error ocurred while running ${mode.name}. Exiting...`);
+    console.error(e.stack);
     process.exit(1);
   }
 })();
