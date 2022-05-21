@@ -17,6 +17,7 @@ WORKDIR /app
 
 # Copy artifacts from build stage to reduce image size
 COPY --from=build /app .
+COPY --from=build /etc/fonts /etc/fonts
 
 # Default environment and command to be overriden in each environment
 CMD [ "npm", "start" ]
