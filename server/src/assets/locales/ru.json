@@ -7,6 +7,7 @@
   "TEST_MSG": "У меня есть разрешение отправлять сообщения в канал {{{ channel }}}.",
   "TEST_FAIL": "У меня нет прав на отправку сообщений в настроенный канал {{{ channel }}}.",
   "MODES_AVAILABLE": "Modes available for this setting: {{ modes }}",
+  "COMMAND_ERROR": "Ocorreu um erro ao executar o comando. Por favor tente novamente mais tarde.",
   "GENERAL": {
     "ENABLED": "enabled",
     "DISABLED": "disabled"
@@ -62,7 +63,7 @@
     "MODE": "Задает режим вывода, например текст или изображение.",
     "DAILY_RANKING": "Display Daily Rankings.",
     "CATEGORY": "Enable/disable bot notifications for each category.",
-    "RANKING": "Display rankings for tracked guilds.",
+    "RANKING": "Display rankings.",
     "SUBSCRIPTION": "Check or activate your subscription.",
     "PREFIX": "Change bot prefix.",
     "SETTINGS": "Change settings for your server."

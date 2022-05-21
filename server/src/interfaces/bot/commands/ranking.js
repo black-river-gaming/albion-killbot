@@ -1,23 +1,60 @@
-const { getGuildData } = require("../queries/guilds");
-const { getI18n, embedRankings } = require("../messages");
+const { InteractionType } = require("discord-api-types/v10");
+const { String } = require("discord-api-types/v10").ApplicationCommandOptionType;
+const { getLocale } = require("../../../helpers/locale");
+const { getRanking } = require("../../../services/rankings");
+const { getGuild } = require("../../../services/guilds");
+const { embedPvpRanking, embedGuildRanking } = require("../helpers/embeds");
 
-module.exports = {
-  aliases: ["ranking"],
-  description: "HELP.RANKING",
-  run: async (client, guild, message) => {
-    const l = getI18n(guild.config.lang);
+const t = getLocale().t;
 
-    const allGuildData = await getGuildData({
-      [guild.id]: guild.config,
-    });
+const options = [
+  {
+    name: "ranking",
+    description: t("HELP.RANKING"),
+    type: String,
+    required: true,
+    choices: [
+      {
+        name: t("SETTINGS.PVP_RANKING"),
+        value: "pvpRanking",
+      },
+      {
+        name: t("SETTINGS.GUILD_RANKING"),
+        value: "guildRanking",
+      },
+    ],
+  },
+];
 
-    for (const trackedGuild of guild.config.trackedGuilds) {
-      const guildData = allGuildData[trackedGuild.id];
-      if (!guildData || !guildData.rankings) {
-        await message.channel.send(l.__("RANKING.NO_DATA", { guild: trackedGuild.name }));
-        continue;
-      }
-      await message.channel.send(embedRankings(guildData, guild.config.lang));
-    }
+const command = {
+  name: "ranking",
+  description: t("HELP.RANKING"),
+  type: InteractionType.Ping,
+  default_permission: true,
+  options,
+  handle: async (interaction, settings) => {
+    const rankingType = interaction.options.getString("ranking");
+
+    const rankings = {
+      pvpRanking: async () => {
+        await interaction.deferReply({ ephemeral: false });
+        const pvpRanking = await getRanking(interaction.guild.id);
+        return await interaction.editReply(embedPvpRanking(pvpRanking, { locale: settings.lang }));
+      },
+      guildRanking: async () => {
+        await interaction.deferReply({ ephemeral: false });
+        for (const trackGuild of settings.track.guilds) {
+          const albionGuild = await getGuild(trackGuild.id);
+          if (!albionGuild) await interaction.followUp(t("RANKING.NO_DATA", { guild: trackGuild.name }));
+          else await interaction.followUp(embedGuildRanking(albionGuild, { locale: settings.lang }));
+        }
+      },
+    };
+
+    const showRanking = rankings[rankingType];
+    if (showRanking) return await showRanking();
+    return await interaction.reply({ content: "Please specify a valid option for the ranking.", ephemeral: true });
   },
 };
+
+module.exports = command;

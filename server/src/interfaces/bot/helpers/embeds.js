@@ -274,14 +274,16 @@ const embedBattle = (battle, { locale }) => {
   };
 };
 
-const embedRankings = (guild, { locale }) => {
+const embedGuildRanking = (guild, { locale }) => {
   const { t } = getLocale(locale);
 
   const generateRankFieldValue = (ranking, pvp = false) => {
     let value = "```c";
-    if (ranking.length === 0) {
+    if (!ranking || ranking.length === 0) {
       const nodata = t("RANKING.NO_DATA_SHORT");
       value += `\n${nodata}${" ".repeat(RANKING_LINE_LENGTH - nodata.length)}`;
+      value += "```";
+      return value;
     }
     ranking.forEach((item) => {
       if (pvp) {
@@ -373,7 +375,7 @@ const embedList = (config) => {
   };
 };
 
-const embedDailyRanking = (rankings, { locale }) => {
+const embedPvpRanking = (rankings, { locale }) => {
   const { t } = getLocale(locale);
 
   const generateRankFieldValue = (ranking, name = "name", number = "fame") => {
@@ -434,8 +436,8 @@ module.exports = {
   embedEvent,
   embedEventImage,
   embedEventInventoryImage,
-  embedDailyRanking,
-  embedRankings,
+  embedPvpRanking,
+  embedGuildRanking,
   embedList,
   embedBattle,
 };

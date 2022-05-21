@@ -3,7 +3,7 @@ const moment = require("moment");
 const logger = require("../../../helpers/logger");
 const { getSettingsByGuild } = require("../../../services/settings");
 const { getAllGuilds, updateGuild } = require("../../../services/guilds");
-const { embedRankings } = require("../helpers/messages");
+const { embedGuildRanking } = require("../helpers/embeds");
 
 const { sendNotification } = require("./notifications");
 
@@ -55,7 +55,7 @@ async function displayRankings(client) {
         continue;
       }
 
-      await sendNotification(client, channel, embedRankings(trackedGuildData, { locale: guild.settings.lang }));
+      await sendNotification(client, channel, embedGuildRanking(trackedGuildData, { locale: guild.settings.lang }));
     }
   }
 

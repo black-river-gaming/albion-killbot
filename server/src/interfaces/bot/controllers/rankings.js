@@ -2,7 +2,7 @@ const logger = require("../../../helpers/logger");
 const { getRanking, deleteRankings } = require("../../../services/rankings");
 const { getSettingsByGuild } = require("../../../services/settings");
 
-const { embedDailyRanking } = require("../helpers/messages");
+const { embedPvpRanking } = require("../helpers/embeds");
 
 const { sendNotification } = require("./notifications");
 
@@ -29,7 +29,7 @@ async function displayRankings(client, { setting }) {
     await sendNotification(
       client,
       channel,
-      embedDailyRanking(ranking, {
+      embedPvpRanking(ranking, {
         locale: guild.settings.lang,
       }),
     );

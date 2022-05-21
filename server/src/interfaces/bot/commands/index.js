@@ -2,6 +2,7 @@ const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v10");
 const { readdirSync } = require("fs");
 const path = require("node:path");
+const { getLocale } = require("../../../helpers/locale");
 
 const logger = require("../../../helpers/logger");
 const { getSettings } = require("../../../services/settings");
@@ -25,7 +26,7 @@ async function reload(clientId) {
     const commandFiles = readdirSync(__dirname);
     for (const commandFile of commandFiles) {
       if (commandFile === "index.js") continue;
-      if (commandFile != "help.js" && commandFile != "settings.js") continue;
+      if (commandFile != "help.js" && commandFile != "settings.js" && commandFile != "ranking.js") continue;
 
       try {
         const command = require(path.join(__dirname, commandFile));
@@ -53,9 +54,33 @@ function getCommands() {
 }
 
 async function handle(interaction) {
+  const prefix = `[#${interaction.id}/${interaction.commandName}]`;
   const settings = await getSettings(interaction.guild.id);
-  const command = commands.find((c) => c.name == interaction.commandName);
-  return await command.handle(interaction, settings);
+  const t = getLocale().t;
+
+  try {
+    if (!hasCommand(interaction.commandName)) throw new Error("COMMAND_NOT_FOUND");
+    // TODO: Find a place for this
+    // This is needed because interaction uses BigInt and toJSON() fails
+    BigInt.prototype.toJSON = function () {
+      return this.toString();
+    };
+
+    logger.debug(`${prefix} Interaction received`, {
+      metadata: interaction.toJSON(),
+    });
+
+    const command = commands.find((c) => c.name == interaction.commandName);
+    return await command.handle(interaction, settings);
+  } catch (e) {
+    logger.error(`${prefix} Error in interaction:`, e);
+    const reply = (!interaction.deferred && !interaction.replied ? interaction.reply : interaction.editReply).bind(
+      interaction,
+    );
+    return await reply({
+      content: t("COMMAND_ERROR"),
+    });
+  }
 }
 
 module.exports = {

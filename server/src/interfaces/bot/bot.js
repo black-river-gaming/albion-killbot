@@ -69,7 +69,6 @@ client.on("shardReady", async (id) => {
   runInterval(`${shardPrefix} Refresh subscriptions`, subscriptions.refresh, {
     fnOpts: [client],
     interval: DAY,
-    runOnStart: true,
   });
 });
 
@@ -87,27 +86,7 @@ client.on("error", async (e) => {
   logger.error(`Discord error: ${e.stack}`);
 });
 
-client.on("interactionCreate", async (interaction) => {
-  const prefix = `[#${interaction.id}/${interaction.commandName}]`;
-  try {
-    // TODO: Find a place for this
-    // This is needed because interaction uses BigInt and toJSON() fails
-    BigInt.prototype.toJSON = function () {
-      return this.toString();
-    };
-
-    logger.debug(`${prefix} Interaction received`, {
-      metadata: interaction.toJSON(),
-    });
-
-    if (!commands.hasCommand(interaction.commandName)) return;
-    // For now we only accept commands
-    if (!interaction.isCommand()) return;
-    return await commands.handle(interaction);
-  } catch (e) {
-    logger.error(`${prefix} Error in interaction:`, e);
-  }
-});
+client.on("interactionCreate", commands.handle);
 
 async function run() {
   await queue.init();

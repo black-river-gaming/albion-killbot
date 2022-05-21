@@ -7,6 +7,7 @@
   "TEST_MSG": "Eu tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
   "TEST_FAIL": "Eu NÃO tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
   "MODES_AVAILABLE": "Modos disponíveis: {{{ modes }}}",
+  "COMMAND_ERROR": "Ocorreu um erro ao executar o comando. Por favor tente novamente mais tarde.",
   "GENERAL": {
     "ENABLED": "ativado",
     "DISABLED": "desativado"
@@ -62,7 +63,7 @@
     "MODE": "Define o modo de envio de eventos, como texto ou imagem.",
     "DAILY_RANKING": "Mostrar o Ranking Diário.",
     "CATEGORY": "Ativa/desativa notificações de cada categoria.",
-    "RANKING": "Mostra os rankings de cada guilda rastreada.",
+    "RANKING": "Mostra os rankings.",
     "SUBSCRIPTION": "Verifica ou ativa sua assinatura.",
     "PREFIX": "Muda o prefixo do bot.",
     "SETTINGS": "Mudar as configurações do seu servidor."

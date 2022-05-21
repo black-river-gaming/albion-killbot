@@ -7,6 +7,7 @@
   "TEST_MSG": "J'ai la permission d'envoyer des messages dans le channel {{{ channel }}}.",
   "TEST_FAIL": "Je n'ai pas la permission d'envoyer des messages au channel {{{ channel }}}.",
   "MODES_AVAILABLE": "Modes disponibles pour ce paramètre: {{ modes }}",
+  "COMMAND_ERROR": "There was an error while executing this command. Please try again later.",
   "GENERAL": {
     "ENABLED": "Activé",
     "DISABLED": "Désactivé"
@@ -62,7 +63,7 @@
     "MODE": "Définir le mode d'affichage, comme texte ou image.",
     "DAILY_RANKING": "Affiche le Classement journalier.",
     "CATEGORY": "Active/Désactive les notification pour chaque catégorie.",
-    "RANKING": "Affiche les classements pour les guildes trackées.",
+    "RANKING": "Affiche les classements.",
     "SUBSCRIPTION": "Vérifie ou active votre Souscription.",
     "PREFIX": "Change le prefixe du bot.",
     "SETTINGS": "Change settings for your server."
