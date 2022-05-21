@@ -13,7 +13,7 @@ check_command docker
 check_command docker-compose
 
 PROJECT_ARGS="-p albion-killbot"
-COMPOSE_FILE="-f docker/docker-compose.yml"
+COMPOSE_FILE="-f devenv/docker-compose.yml"
 args="$PROJECT_ARGS $COMPOSE_FILE"
 
 script=$(basename $0)

@@ -1,0 +1,6 @@
+{
+  "name": "albion-killbot",
+  "bin": {
+    "ctl": "./devenv/ctl.sh"
+  }
+}
