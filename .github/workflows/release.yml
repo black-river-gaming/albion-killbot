@@ -30,7 +30,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: server/
-          push: ${{ github.event_name != 'pull_request' }}
           file: server/docker/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
