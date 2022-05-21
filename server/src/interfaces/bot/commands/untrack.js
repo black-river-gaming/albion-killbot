@@ -1,53 +1,81 @@
-const { setConfig } = require("../config");
-const { getI18n } = require("../messages");
+const { InteractionType } = require("discord-api-types/v10");
+const { String } = require("discord-api-types/v10").ApplicationCommandOptionType;
+const { getLocale } = require("../../../helpers/locale");
+const { setSettings } = require("../../../services/settings");
 
-const SUPPORTED_TYPES = ["player", "guild", "alliance"];
+const t = getLocale().t;
 
-module.exports = {
-  aliases: ["untrack"],
-  args: ["player/guild/alliance", "name"],
-  description: "HELP.UNTRACK",
-  run: async (client, guild, message, args) => {
-    const l = getI18n(guild.config.lang);
+const options = [
+  {
+    name: "player",
+    description: t("TRACK.PLAYERS.DESCRIPTION"),
+    type: String,
+  },
+  {
+    name: "guild",
+    description: t("TRACK.GUILDS.DESCRIPTION"),
+    type: String,
+  },
+  {
+    name: "alliance",
+    description: t("TRACK.ALLIANCES.DESCRIPTION"),
+    type: String,
+  },
+];
 
-    if (!args || !args[0] || !args[1]) {
-      message.channel.send(l.__("TRACK.MISSING_PARAMETERS"));
-      return;
+const command = {
+  name: "untrack",
+  description: t("HELP.UNTRACK"),
+  type: InteractionType.Ping,
+  default_member_permissions: "0",
+  options,
+  handle: async (interaction, settings) => {
+    const t = getLocale(settings.lang).t;
+
+    const playerName = interaction.options.getString("player");
+    const guildName = interaction.options.getString("guild");
+    const allianceId = interaction.options.getString("alliance");
+
+    if (!playerName && !guildName && !allianceId) {
+      return await interaction.reply({
+        content: t("TRACK.MISSING_PARAMETERS"),
+        ephemeral: true,
+      });
     }
 
-    if (!guild.config.trackedPlayers) guild.config.trackedPlayers = [];
-    if (!guild.config.trackedGuilds) guild.config.trackedGuilds = [];
-    if (!guild.config.trackedAlliances) guild.config.trackedAlliances = [];
+    await interaction.deferReply({ ephemeral: true });
 
-    const type = args.shift().toLowerCase();
-    const name = args.join(" ").trim();
-
-    if (!SUPPORTED_TYPES.includes(type)) {
-      message.channel.send(l.__("TRACK.UNSUPPORTED_TYPE"));
-      return;
-    }
-
-    const untrack = async (name, dest, msg) => {
-      const entity = dest.find((p) => p.name.localeCompare(name, undefined, { sensitivity: "base" }) === 0);
-      if (!entity) {
-        message.channel.send(l.__("TRACK.NOT_FOUND"));
-        return;
-      }
-
-      dest.splice(dest.indexOf(entity), 1);
-      if (!(await setConfig(guild))) {
-        message.channel.send(l.__("CONFIG_NOT_SET"));
-      }
-      await message.channel.send(l.__(msg, { name: entity.name }));
+    let content = ``;
+    const addContent = (msg) => {
+      content += msg + "\n";
     };
 
-    switch (type) {
-      case "player":
-        return untrack(name, guild.config.trackedPlayers, "TRACK.PLAYER_UNTRACKED");
-      case "guild":
-        return untrack(name, guild.config.trackedGuilds, "TRACK.GUILD_UNTRACKED");
-      case "alliance":
-        return untrack(name, guild.config.trackedAlliances, "TRACK.ALLIANCE_UNTRACKED");
-    }
+    const untrack = async (type, value) => {
+      if (!settings.track) settings.track = {};
+      if (!settings.track[type]) settings.track[type] = [];
+
+      let entity;
+      if (type == "alliances") {
+        entity = settings.track.alliances.find((a) => a.id === value);
+      } else {
+        const equalsCaseInsensitive = (a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
+        entity = settings.track[type].find((trackEntity) => equalsCaseInsensitive(trackEntity.name, value));
+      }
+
+      if (!entity) return addContent(t("TRACK.NOT_FOUND"));
+
+      settings.track[type] = settings.track[type].filter((e) => e != entity);
+
+      await setSettings(interaction.guild.id, settings);
+      return addContent(t(`TRACK.${type.toUpperCase()}.UNTRACKED`, { name: entity.name }));
+    };
+
+    if (allianceId) await untrack("alliances", allianceId);
+    if (playerName) await untrack("players", playerName);
+    if (guildName) await untrack("guilds", guildName);
+
+    return await interaction.editReply({ content, ephemeral: true });
   },
 };
+
+module.exports = command;

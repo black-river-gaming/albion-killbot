@@ -30,7 +30,8 @@ async function reload(clientId) {
         commandFile != "help.js" &&
         commandFile != "settings.js" &&
         commandFile != "ranking.js" &&
-        commandFile != "track.js"
+        commandFile != "track.js" &&
+        commandFile != "untrack.js"
       )
         continue;
 

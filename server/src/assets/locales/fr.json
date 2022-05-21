@@ -84,19 +84,19 @@
     "NONE": "Aucun",
     "PLAYERS": {
       "NAME": "Joueurs",
-      "DESCRIPTION": "Player name to track",
+      "DESCRIPTION": "Player name",
       "TRACKED": "Suivi du joueur: {{ name }}.",
       "UNTRACKED": "Désactivation de la suivi du joueur: {{ name }}."
     },
     "GUILDS": {
       "NAME": "Guildes",
-      "DESCRIPTION": "Guild name to track",
+      "DESCRIPTION": "Guild name",
       "TRACKED": "Suivi de la guilde: {{ name }}.",
       "UNTRACKED": "Désactivation de la suivi de la guilde: {{ name }}."
     },
     "ALLIANCES": {
       "NAME": "Alliances",
-      "DESCRIPTION": "Alliance ID to track",
+      "DESCRIPTION": "Alliance ID",
       "TRACKED": "Suivi de l'alliance: {{ name }}.",
       "UNTRACKED": "Désactivation de la suivi de l'alliance: {{ name }}."
     },

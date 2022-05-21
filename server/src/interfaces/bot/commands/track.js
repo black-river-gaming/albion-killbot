@@ -75,7 +75,7 @@ const command = {
         });
 
         await setSettings(interaction.guild.id, settings);
-        return addContent(t("TRACK.ALLIANCE.TRACKED", { name: alliance.AllianceTag }));
+        return addContent(t("TRACK.ALLIANCES.TRACKED", { name: alliance.AllianceTag }));
       } else {
         const equalsCaseInsensitive = (a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
 
