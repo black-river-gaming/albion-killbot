@@ -9,8 +9,10 @@
   "MODES_AVAILABLE": "Modos disponibles para esta configuración: {{ modes }}",
   "COMMAND_ERROR": "There was an error while executing this command. Please try again later.",
   "GENERAL": {
-    "ENABLED": "enabled",
-    "DISABLED": "disabled"
+    "ENABLED": "Enabled",
+    "DISABLED": "Disabled",
+    "ACTIVATE": "Activate",
+    "DEACTIVATE": "Deactivate"
   },
   "KILL": {
     "EVENT": "{{ killer }} Mató {{ victim }}!",

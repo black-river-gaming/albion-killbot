@@ -341,12 +341,24 @@ const embedGuildRanking = (guild, { locale }) => {
   };
 };
 
-const embedList = (config) => {
-  const { t } = getLocale(config.lang);
+const embedTrackList = (track, { locale }) => {
+  const { t } = getLocale(locale);
 
-  const configToList = (list) => {
-    if (!list || list.length === 0) return t("TRACK.NONE");
-    return list.map((item) => item.name).join("\n");
+  const printTrackList = (list) => {
+    let value = "```";
+
+    if (!list || list.length === 0) {
+      value += `\n${t("TRACK.NONE")}`;
+      value += "```";
+      return value;
+    }
+
+    list.forEach((item) => {
+      value += `\n${item.name}`;
+    });
+
+    value += "```";
+    return value;
   };
 
   return {
@@ -356,17 +368,17 @@ const embedList = (config) => {
         fields: [
           {
             name: t("TRACK.PLAYERS.NAME"),
-            value: configToList(config.trackedPlayers),
+            value: printTrackList(track.players),
             inline: true,
           },
           {
             name: t("TRACK.GUILDS.NAME"),
-            value: configToList(config.trackedGuilds),
+            value: printTrackList(track.guilds),
             inline: true,
           },
           {
             name: t("TRACK.ALLIANCES.NAME"),
-            value: configToList(config.trackedAlliances),
+            value: printTrackList(track.alliances),
             inline: true,
           },
         ],
@@ -438,6 +450,6 @@ module.exports = {
   embedEventInventoryImage,
   embedPvpRanking,
   embedGuildRanking,
-  embedList,
+  embedTrackList,
   embedBattle,
 };

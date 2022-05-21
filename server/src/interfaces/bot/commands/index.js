@@ -26,14 +26,7 @@ async function reload(clientId) {
     const commandFiles = readdirSync(__dirname);
     for (const commandFile of commandFiles) {
       if (commandFile === "index.js") continue;
-      if (
-        commandFile != "help.js" &&
-        commandFile != "settings.js" &&
-        commandFile != "ranking.js" &&
-        commandFile != "track.js" &&
-        commandFile != "untrack.js"
-      )
-        continue;
+      if (commandFile == "subscription.js") continue;
 
       try {
         const command = require(path.join(__dirname, commandFile));

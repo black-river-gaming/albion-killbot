@@ -10,7 +10,9 @@
   "COMMAND_ERROR": "There was an error while executing this command. Please try again later.",
   "GENERAL": {
     "ENABLED": "Activé",
-    "DISABLED": "Désactivé"
+    "DISABLED": "Désactivé",
+    "ACTIVATE": "Activate",
+    "DEACTIVATE": "Deactivate"
   },
   "KILL": {
     "EVENT": "{{ killer }} a tué {{ victim }}!",

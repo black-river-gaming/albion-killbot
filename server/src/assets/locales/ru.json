@@ -10,7 +10,9 @@
   "COMMAND_ERROR": "Ocorreu um erro ao executar o comando. Por favor tente novamente mais tarde.",
   "GENERAL": {
     "ENABLED": "enabled",
-    "DISABLED": "disabled"
+    "DISABLED": "disabled",
+    "ACTIVATE": "Activate",
+    "DEACTIVATE": "Deactivate"
   },
   "KILL": {
     "EVENT": "{{ killer }} убил {{ victim }}!",

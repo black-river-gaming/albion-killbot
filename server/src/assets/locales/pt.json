@@ -1,163 +1,165 @@
 {
-	"JOIN": "Olá todo mundo! Sou Albion Killbot. Se você é um admin, por favor me configure usando !help para ver o que sei fazer.",
-	"LEAVE": "Infelizmente, eu estou tendo problemas em enviar mensagens para o seu servidor {{ guild }}, entãõ tenho que sair agora =(\nVejo você em breve!",
-	"NO_PERMISSION": "Desulpe, mas só aceito comandos de administradores.",
-	"CONFIG_NOT_SET": "AVISO: Não foi possível persistir a configuração do servidor. Ela será revertida quando o bot reiniciar.",
-	"CHANNEL_NOT_SET": "AVISO: Canal para enviar notificações não configurado. Por favor, use !channel [channel] to configurá-lo.",
-	"TEST_MSG": "Eu tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
-	"TEST_FAIL": "Eu NÃO tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
-	"MODES_AVAILABLE": "Modos disponíveis: {{{ modes }}}",
-	"COMMAND_ERROR": "Ocorreu um erro ao executar o comando. Por favor tente novamente mais tarde.",
-	"GENERAL": {
-		"ENABLED": "ativado",
-		"DISABLED": "desativado"
-	},
-	"KILL": {
-		"EVENT": "{{ killer }} matou {{ victim }}!",
-		"SOLO_0": "Solado parça!",
-		"SOLO_1": "SOLADINHO BR!!! HUEHUEU",
-		"SOLO_2": "E foi de soled!",
-		"SOLO_3": "Ciiirco de soled.",
-		"SOLO_4": "Chamou pro duelo e foi de base.",
-		"SOLO_5": "Não garantiu no x1.",
-		"ASSIST": "Assistência(s): {{{ assists }}}",
-		"FAME": "Fama do Abate",
-		"KILLER_GUILD": "Guilda do Matador",
-		"VICTIM_GUILD": "Guilda da Vítima",
-		"NO_GUILD": "Sem guilda",
-		"KILLER_IP": "IP do Matador",
-		"VICTIM_IP": "IP da Vítima"
-	},
-	"BATTLE": {
-		"EVENT": "Ocorreu uma batalha entre {{ guilds }} guildas!",
-		"DESCRIPTION": "Jogadores: {{ players }} / Abates: {{ kills }} / Fama: {{ fame }}\nDuração: {{ duration }}",
-		"LINE": "{{ name }} [{{ total }}] ({{ kills }}/{{ deaths }}) - Fama: {{fame}}",
-		"NO_ALLIANCE": "Outros",
-		"NO_GUILD": "Jogadores sem Guilda"
-	},
-	"RANKING": {
-		"MONTHLY": "Ranking Mensal - {{ guild }}",
-		"PVE": "Ranking PvE",
-		"PVP": "Ranking PvP",
-		"GATHERING": "Ranking de Coleta",
-		"CRAFTING": "Ranking de Criação",
-		"DAILY": "Ranking diário de PvP",
-		"KILL_FAME": "Top Fama de Abates",
-		"DEATH_FAME": "Top Fama de Mortes",
-		"TOTAL_KILL_FAME": "Fama Total de Abates",
-		"TOTAL_DEATH_FAME": "Fama Total de Mortes",
-		"PVP_RANKING_SET": "Ranking PvP está definido no modo '{{ pvpRanking }}'",
-		"GUILD_RANKING_SET": "Ranking de Guildas está definido no modo '{{ guildRanking }}'",
-		"NO_DATA": "Sem dados disponíveis para a guilda '{{{ guild }}}'. Aguarde um dia e tente novamente.",
-		"NO_DATA_SHORT": "Sem dados"
-	},
-	"HELP": {
-		"VERSION": "Albion Killbot v{{ version }}",
-		"HELP": "Mostra a lista de comandos do bot.",
-		"CHANNEL": "Define o canal para mostrar as notificações.",
-		"LANGUAGE": "Define o idioma do bot.",
-		"LIST": "Lista os jogadores, guildas e alianças rastreadas.",
-		"TRACK": "Rastreia um jogador, guilda ou aliança.",
-		"UNTRACK": "Para de rastrear um jogador, guilda ou aliança.",
-		"TEST": "Verifica se o bot possui permissões para enviar mensagens.",
-		"MODE": "Define o modo de envio de eventos, como texto ou imagem.",
-		"DAILY_RANKING": "Mostrar o Ranking Diário.",
-		"CATEGORY": "Ativa/desativa notificações de cada categoria.",
-		"RANKING": "Mostra os rankings.",
-		"SUBSCRIPTION": "Verifica ou ativa sua assinatura.",
-		"PREFIX": "Muda o prefixo do bot.",
-		"SETTINGS": "Mudar as configurações do seu servidor."
-	},
-	"CHANNEL": {
-		"NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",
-		"NOT_FOUND": "Desculpe, não consigo encontrar o canal mencionado. Verifique se eu possuo acesso a ele e tente novamente.",
-		"SET_CHANNEL": "Canal para a categoria '{{ category }}' definido para {{{ channel }}}.",
-		"CATEGORIES_AVAILABLE": "Categoria inválida. Por favor, escolha uma destas: {{ categories }}"
-	},
-	"LANGUAGE": {
-		"AVAILABLE": "Idiomas suportados: {{ langs }}",
-		"NOT_SUPPORTED": "Este idioma não é suportado.",
-		"SET_LANGUAGE": "Idioma definido para '{{ lang }}'"
-	},
-	"TRACK": {
-		"LIST": "Lista de rastreamentos",
-		"NONE": "Nenhum(a)",
-		"PLAYERS": {
-			"NAME": "Jogadores",
-			"DESCRIPTION": "Nome do jogador",
-			"TRACKED": "Rastreando jogador: {{ name }}.",
-			"UNTRACKED": "Parando de rastrear jogador: {{ name }}."
-		},
-		"GUILDS": {
-			"NAME": "Guildas",
-			"DESCRIPTION": "Nome da guilda",
-			"TRACKED": "Rastreando guilda: {{ name }}.",
-			"UNTRACKED": "Parando de rastrear guilda: {{ name }}."
-		},
-		"ALLIANCES": {
-			"NAME": "Alianças",
-			"DESCRIPTION": "ID da aliança",
-			"TRACKED": "Rastreando aliança: {{ name }}.",
-			"UNTRACKED": "Parando de rastrear aliança: {{ name }}."
-		},
-		"MISSING_PARAMETERS": "Por favor, insira pelo menos uma opção.",
-		"UNSUPPORTED_TYPE": "Tipo de rastreamento não suportado. Digite !help para ver mais.",
-		"TRACKING_DISABLED": "Desculpe, rastreamento de {{ type }} está desabilitado por enquanto. Consulte o administrador do bot para mais informações.",
-		"SEARCH_FAILED": "Falha ao buscar dados nos servidores do jogo. Por favor, tente novamente.",
-		"NOT_FOUND": "Desculpe, não consegui encontrar nada com este nome.",
-		"ALREADY_TRACKED": "Já estou rastreando este item.",
-		"LIMIT_REACHED": "Você atingiu o limite de {{ limit }} itens nesta lista.",
-		"ALLIANCE": {
-			"TRACKED": "TRACK.ALLIANCE.TRACKED"
-		}
-	},
-	"MODE": {
-		"AVAILABLE": "Modos disponíveis: {{ modes }}",
-		"NOT_SUPPORTED": "Este modo não é suportado. Por favor, escolha um destes: {{ modes }}",
-		"SET": "Modo de saida definido para: {{ mode }}"
-	},
-	"CATEGORY": {
-		"MISSING_PARAMETERS": "Parametros faltando. Sintaxe: `!category [categoria] <on/off>`",
-		"AVAILABLE": "Categoria invalida. Escolha um destes: {{ categories }}",
-		"SET": "Notificações da categoria `{{ category }}` estão `{{ option }}s`"
-	},
-	"SUBSCRIPTION": {
-		"STATUS": {
-			"DAYS_REMAINING": "Sua assinatura possui {{{ days }}} dia(s) restando",
-			"INACTIVE": "Sua assinatura ainda não foi ativada. Por favor contate o administrador do bot.",
-			"EXPIRED": "Sua assinatura expirou."
-		},
-		"ERROR": {
-			"FETCH_FAIL": "Falha ao buscar lista de assinantes. Tente novamente mais tarde.",
-			"MAIL_NOT_FOUND": "Não fui capaz de encontrar seu e-mail na lista de assinantes.",
-			"PATREON_DISCORD_NOT_FOUND": "Não encontrei sua conta na lista de assinantes. Por favor, vincule sua conta Discord com a conta Patreon e tente novamente."
-		},
-		"ALREADY_SUBSCRIBED": "Sorry, you have a subscription in another server. Please deactivate there and try again.",
-		"ACTIONS": "Ação inválida, use um destes: {{ actions }}.",
-		"CANCELLED": "Sua assinatura foi cancelada.",
-		"CONFIRMED": "Sua assinatura foi confirmada com sucesso. Aproveite o bot :)",
-		"FAILED": "Não foi possível validar assinatura: {{ reason }}"
-	},
-	"PREFIX": {
-		"SET_PREFIX": "O prefixo foi definido para '{{ prefix }}'. Seus comandos serão chamado usando {{prefix}}commando a partir de agora."
-	},
-	"SETTINGS": {
-		"KILLS": "Change settings for kill notifications.",
-		"BATTLES": "Change settings for battle notifications.",
-		"RANKINGS": "Change settings for ranking notifications.",
-		"ENABLED": "Enable",
-		"CHANNEL": "Channel",
-		"MODE": {
-			"IMAGE": "Image",
-			"TEXT": "Text"
-		},
-		"PVP_RANKING": "PvP Ranking",
-		"GUILD_RANKING": "Guild Ranking",
-		"FREQUENCIES": {
-			"OFF": "Off",
-			"HOURLY": "Every hour",
-			"DAILY": "Daily"
-		},
-		"LANG": "Alterar idioma."
-	}
+  "JOIN": "Olá todo mundo! Sou Albion Killbot. Se você é um admin, por favor me configure usando !help para ver o que sei fazer.",
+  "LEAVE": "Infelizmente, eu estou tendo problemas em enviar mensagens para o seu servidor {{ guild }}, entãõ tenho que sair agora =(\nVejo você em breve!",
+  "NO_PERMISSION": "Desulpe, mas só aceito comandos de administradores.",
+  "CONFIG_NOT_SET": "AVISO: Não foi possível persistir a configuração do servidor. Ela será revertida quando o bot reiniciar.",
+  "CHANNEL_NOT_SET": "AVISO: Canal para enviar notificações não configurado. Por favor, use !channel [channel] to configurá-lo.",
+  "TEST_MSG": "Eu tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
+  "TEST_FAIL": "Eu NÃO tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
+  "MODES_AVAILABLE": "Modos disponíveis: {{{ modes }}}",
+  "COMMAND_ERROR": "Ocorreu um erro ao executar o comando. Por favor tente novamente mais tarde.",
+  "GENERAL": {
+    "ENABLED": "ativado",
+    "DISABLED": "desativado",
+    "ACTIVATE": "Activar",
+    "DEACTIVATE": "Desativar"
+  },
+  "KILL": {
+    "EVENT": "{{ killer }} matou {{ victim }}!",
+    "SOLO_0": "Solado parça!",
+    "SOLO_1": "SOLADINHO BR!!! HUEHUEU",
+    "SOLO_2": "E foi de soled!",
+    "SOLO_3": "Ciiirco de soled.",
+    "SOLO_4": "Chamou pro duelo e foi de base.",
+    "SOLO_5": "Não garantiu no x1.",
+    "ASSIST": "Assistência(s): {{{ assists }}}",
+    "FAME": "Fama do Abate",
+    "KILLER_GUILD": "Guilda do Matador",
+    "VICTIM_GUILD": "Guilda da Vítima",
+    "NO_GUILD": "Sem guilda",
+    "KILLER_IP": "IP do Matador",
+    "VICTIM_IP": "IP da Vítima"
+  },
+  "BATTLE": {
+    "EVENT": "Ocorreu uma batalha entre {{ guilds }} guildas!",
+    "DESCRIPTION": "Jogadores: {{ players }} / Abates: {{ kills }} / Fama: {{ fame }}\nDuração: {{ duration }}",
+    "LINE": "{{ name }} [{{ total }}] ({{ kills }}/{{ deaths }}) - Fama: {{fame}}",
+    "NO_ALLIANCE": "Outros",
+    "NO_GUILD": "Jogadores sem Guilda"
+  },
+  "RANKING": {
+    "MONTHLY": "Ranking Mensal - {{ guild }}",
+    "PVE": "Ranking PvE",
+    "PVP": "Ranking PvP",
+    "GATHERING": "Ranking de Coleta",
+    "CRAFTING": "Ranking de Criação",
+    "DAILY": "Ranking diário de PvP",
+    "KILL_FAME": "Top Fama de Abates",
+    "DEATH_FAME": "Top Fama de Mortes",
+    "TOTAL_KILL_FAME": "Fama Total de Abates",
+    "TOTAL_DEATH_FAME": "Fama Total de Mortes",
+    "PVP_RANKING_SET": "Ranking PvP está definido no modo '{{ pvpRanking }}'",
+    "GUILD_RANKING_SET": "Ranking de Guildas está definido no modo '{{ guildRanking }}'",
+    "NO_DATA": "Sem dados disponíveis para a guilda '{{{ guild }}}'. Aguarde um dia e tente novamente.",
+    "NO_DATA_SHORT": "Sem dados"
+  },
+  "HELP": {
+    "VERSION": "Albion Killbot v{{ version }}",
+    "HELP": "Mostra a lista de comandos do bot.",
+    "CHANNEL": "Define o canal para mostrar as notificações.",
+    "LANGUAGE": "Define o idioma do bot.",
+    "LIST": "Lista os jogadores, guildas e alianças rastreadas.",
+    "TRACK": "Rastreia um jogador, guilda ou aliança.",
+    "UNTRACK": "Para de rastrear um jogador, guilda ou aliança.",
+    "TEST": "Verifica se o bot possui permissões para enviar mensagens.",
+    "MODE": "Define o modo de envio de eventos, como texto ou imagem.",
+    "DAILY_RANKING": "Mostrar o Ranking Diário.",
+    "CATEGORY": "Ativa/desativa notificações de cada categoria.",
+    "RANKING": "Mostra os rankings.",
+    "SUBSCRIPTION": "Verifica ou ativa sua assinatura.",
+    "PREFIX": "Muda o prefixo do bot.",
+    "SETTINGS": "Mudar as configurações do seu servidor."
+  },
+  "CHANNEL": {
+    "NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",
+    "NOT_FOUND": "Desculpe, não consigo encontrar o canal mencionado. Verifique se eu possuo acesso a ele e tente novamente.",
+    "SET_CHANNEL": "Canal para a categoria '{{ category }}' definido para {{{ channel }}}.",
+    "CATEGORIES_AVAILABLE": "Categoria inválida. Por favor, escolha uma destas: {{ categories }}"
+  },
+  "LANGUAGE": {
+    "AVAILABLE": "Idiomas suportados: {{ langs }}",
+    "NOT_SUPPORTED": "Este idioma não é suportado.",
+    "SET_LANGUAGE": "Idioma definido para '{{ lang }}'"
+  },
+  "TRACK": {
+    "LIST": "Lista de rastreamentos",
+    "NONE": "Nenhum(a)",
+    "PLAYERS": {
+      "NAME": "Jogadores",
+      "DESCRIPTION": "Nome do jogador",
+      "TRACKED": "Rastreando jogador: {{ name }}.",
+      "UNTRACKED": "Parando de rastrear jogador: {{ name }}."
+    },
+    "GUILDS": {
+      "NAME": "Guildas",
+      "DESCRIPTION": "Nome da guilda",
+      "TRACKED": "Rastreando guilda: {{ name }}.",
+      "UNTRACKED": "Parando de rastrear guilda: {{ name }}."
+    },
+    "ALLIANCES": {
+      "NAME": "Alianças",
+      "DESCRIPTION": "ID da aliança",
+      "TRACKED": "Rastreando aliança: {{ name }}.",
+      "UNTRACKED": "Parando de rastrear aliança: {{ name }}."
+    },
+    "MISSING_PARAMETERS": "Por favor, insira pelo menos uma opção.",
+    "UNSUPPORTED_TYPE": "Tipo de rastreamento não suportado. Digite !help para ver mais.",
+    "TRACKING_DISABLED": "Desculpe, rastreamento de {{ type }} está desabilitado por enquanto. Consulte o administrador do bot para mais informações.",
+    "SEARCH_FAILED": "Falha ao buscar dados nos servidores do jogo. Por favor, tente novamente.",
+    "NOT_FOUND": "Desculpe, não consegui encontrar nada com este nome.",
+    "ALREADY_TRACKED": "Já estou rastreando este item.",
+    "LIMIT_REACHED": "Você atingiu o limite de {{ limit }} itens nesta lista.",
+    "ALLIANCE": {
+      "TRACKED": "TRACK.ALLIANCE.TRACKED"
+    }
+  },
+  "MODE": {
+    "AVAILABLE": "Modos disponíveis: {{ modes }}",
+    "NOT_SUPPORTED": "Este modo não é suportado. Por favor, escolha um destes: {{ modes }}",
+    "SET": "Modo de saida definido para: {{ mode }}"
+  },
+  "CATEGORY": {
+    "MISSING_PARAMETERS": "Parametros faltando. Sintaxe: `!category [categoria] <on/off>`",
+    "AVAILABLE": "Categoria invalida. Escolha um destes: {{ categories }}",
+    "SET": "Notificações da categoria `{{ category }}` estão `{{ option }}s`"
+  },
+  "SUBSCRIPTION": {
+    "STATUS": {
+      "DAYS_REMAINING": "Sua assinatura possui {{{ days }}} dia(s) restando",
+      "INACTIVE": "Sua assinatura ainda não foi ativada. Por favor contate o administrador do bot.",
+      "EXPIRED": "Sua assinatura expirou."
+    },
+    "ERROR": {
+      "FETCH_FAIL": "Falha ao buscar lista de assinantes. Tente novamente mais tarde.",
+      "MAIL_NOT_FOUND": "Não fui capaz de encontrar seu e-mail na lista de assinantes.",
+      "PATREON_DISCORD_NOT_FOUND": "Não encontrei sua conta na lista de assinantes. Por favor, vincule sua conta Discord com a conta Patreon e tente novamente."
+    },
+    "ALREADY_SUBSCRIBED": "Sorry, you have a subscription in another server. Please deactivate there and try again.",
+    "ACTIONS": "Ação inválida, use um destes: {{ actions }}.",
+    "CANCELLED": "Sua assinatura foi cancelada.",
+    "CONFIRMED": "Sua assinatura foi confirmada com sucesso. Aproveite o bot :)",
+    "FAILED": "Não foi possível validar assinatura: {{ reason }}"
+  },
+  "PREFIX": {
+    "SET_PREFIX": "O prefixo foi definido para '{{ prefix }}'. Seus comandos serão chamado usando {{prefix}}commando a partir de agora."
+  },
+  "SETTINGS": {
+    "KILLS": "Change settings for kill notifications.",
+    "BATTLES": "Change settings for battle notifications.",
+    "RANKINGS": "Change settings for ranking notifications.",
+    "ENABLED": "Enable",
+    "CHANNEL": "Channel",
+    "MODE": {
+      "IMAGE": "Image",
+      "TEXT": "Text"
+    },
+    "PVP_RANKING": "PvP Ranking",
+    "GUILD_RANKING": "Guild Ranking",
+    "FREQUENCIES": {
+      "OFF": "Off",
+      "HOURLY": "Every hour",
+      "DAILY": "Daily"
+    },
+    "LANG": "Alterar idioma."
+  }
 }

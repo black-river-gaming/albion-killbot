@@ -1,9 +1,18 @@
-const { embedList } = require("../messages");
+const { InteractionType } = require("discord-api-types/v10");
+const { getLocale } = require("../../../helpers/locale");
+const { embedTrackList } = require("../helpers/embeds");
 
-module.exports = {
-  aliases: ["list"],
-  description: "HELP.LIST",
-  run: async (client, guild, message) => {
-    await message.channel.send(embedList(guild.config));
+const command = {
+  name: "list",
+  description: getLocale().t("HELP.LIST"),
+  type: InteractionType.Ping,
+  default_member_permissions: "0",
+  handle: async (interaction, { track, lang }) => {
+    await interaction.reply({
+      ...embedTrackList(track, { locale: lang }),
+      ephemeral: true,
+    });
   },
 };
+
+module.exports = command;
