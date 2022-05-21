@@ -3,10 +3,7 @@
     "es2022": true,
     "node": true
   },
-  "extends": [
-    "eslint:recommended",
-    "prettier"
-  ],
+  "extends": ["eslint:recommended", "prettier"],
   "rules": {
     "no-unused-vars": [
       "error",
@@ -14,8 +11,6 @@
         "argsIgnorePattern": "^_"
       }
     ],
-    "prefer-const": [
-      "warn"
-    ]
+    "prefer-const": ["warn"]
   }
 }
