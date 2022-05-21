@@ -82,22 +82,31 @@
   "TRACK": {
     "LIST": "Lista de rastreamentos",
     "NONE": "Nenhum(a)",
-    "PLAYERS": "Jogadores",
-    "GUILDS": "Guildas",
-    "ALLIANCES": "Alianças",
-    "MISSING_PARAMETERS": "Por favor, insira todos os parametros. Digite !help para ver mais",
+    "PLAYERS": {
+      "NAME": "Jogadores",
+      "DESCRIPTION": "Nome do jogador a ser rastreado",
+      "TRACKED": "Rastreando jogador: {{ name }}.",
+      "UNTRACKED": "Parando de rastrear jogador: {{ name }}."
+    },
+    "GUILDS": {
+      "NAME": "Guildas",
+      "DESCRIPTION": "Nome da guilda a ser rastreada",
+      "TRACKED": "Rastreando guilda: {{ name }}.",
+      "UNTRACKED": "Parando de rastrear guilda: {{ name }}."
+    },
+    "ALLIANCES": {
+      "NAME": "Alianças",
+      "DESCRIPTION": "ID da aliança a ser rastreada",
+      "TRACKED": "Rastreando aliança: {{ name }}.",
+      "UNTRACKED": "Parando de rastrear aliança: {{ name }}."
+    },
+    "MISSING_PARAMETERS": "Por favor, insira pelo menos uma opção.",
     "UNSUPPORTED_TYPE": "Tipo de rastreamento não suportado. Digite !help para ver mais.",
     "TRACKING_DISABLED": "Desculpe, rastreamento de {{ type }} está desabilitado por enquanto. Consulte o administrador do bot para mais informações.",
     "SEARCH_FAILED": "Falha ao buscar dados nos servidores do jogo. Por favor, tente novamente.",
     "NOT_FOUND": "Desculpe, não consegui encontrar nada com este nome.",
     "ALREADY_TRACKED": "Já estou rastreando este item.",
-    "LIMIT_REACHED": "Você atingiu o limite de {{ limit }} itens nesta lista.",
-    "PLAYER_TRACKED": "Rastreando jogador: {{ name }}.",
-    "GUILD_TRACKED": "Rastreando guilda: {{ name }}.",
-    "ALLIANCE_TRACKED": "Rastreano aliança: {{ name }}.",
-    "PLAYER_UNTRACKED": "Parando de rastrear jogador: {{ name }}.",
-    "GUILD_UNTRACKED": "Parando de rastrear guilda: {{ name }}.",
-    "ALLIANCE_UNTRACKED": "Parando de rastrear aliança: {{ name }}."
+    "LIMIT_REACHED": "Você atingiu o limite de {{ limit }} itens nesta lista."
   },
   "MODE": {
     "AVAILABLE": "Modos disponíveis: {{ modes }}",

@@ -82,22 +82,31 @@
   "TRACK": {
     "LIST": "Tracking list",
     "NONE": "None",
-    "PLAYERS": "Players",
-    "GUILDS": "Guilds",
-    "ALLIANCES": "Alliances",
-    "MISSING_PARAMETERS": "Please insert all parameters. Type !help to see more.",
+    "PLAYERS": {
+      "NAME": "Players",
+      "DESCRIPTION": "Player name to track",
+      "TRACKED": "Tracking player: {{ name }}.",
+      "UNTRACKED": "Untracking player: {{ name }}."
+    },
+    "GUILDS": {
+      "NAME": "Guilds",
+      "DESCRIPTION": "Guild name to track",
+      "TRACKED": "Tracking guild: {{ name }}.",
+      "UNTRACKED": "Untracking guild: {{ name }}."
+    },
+    "ALLIANCES": {
+      "NAME": "Alliances",
+      "DESCRIPTION": "Alliance ID to track",
+      "TRACKED": "Tracking alliance: {{ name }}.",
+      "UNTRACKED": "Untracking alliance: {{ name }}."
+    },
+    "MISSING_PARAMETERS": "Please set at least one option.",
     "UNSUPPORTED_TYPE": "Unsupported type of tracking. Type !help to see more.",
     "TRACKING_DISABLED": "Sorry, tracking of {{type}} is disabled for now. Please contact bot admin for more information.",
     "SEARCH_FAILED": "Failed to fetch data from game servers. Please try again.",
     "NOT_FOUND": "Sorry, I couldn't find anything with this name.",
     "ALREADY_TRACKED": "I am already tracking this item.",
-    "LIMIT_REACHED": "You already reached the limit of {{ limit }} items in this list.",
-    "PLAYER_TRACKED": "Tracking player: {{ name }}.",
-    "GUILD_TRACKED": "Tracking guild: {{ name }}.",
-    "ALLIANCE_TRACKED": "Tracking alliance: {{ name }}.",
-    "PLAYER_UNTRACKED": "Untracking player: {{ name }}.",
-    "GUILD_UNTRACKED": "Untracking guild: {{ name }}.",
-    "ALLIANCE_UNTRACKED": "Untracking alliance: {{ name }}."
+    "LIMIT_REACHED": "You already reached the limit of {{ limit }} items in this list."
   },
   "MODE": {
     "AVAILABLE": "Available modes: {{ modes }}",

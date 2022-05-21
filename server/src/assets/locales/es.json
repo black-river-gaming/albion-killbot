@@ -82,22 +82,31 @@
   "TRACK": {
     "LIST": "Lista de rastreo",
     "NONE": "Ninguna",
-    "PLAYERS": "Jugadores",
-    "GUILDS": "Gremios",
-    "ALLIANCES": "Alianzas",
-    "MISSING_PARAMETERS": "Por favor inserte todos los parámetros. Escriba !Help para ver más..",
+    "PLAYERS": {
+      "NAME": "Jugadores",
+      "DESCRIPTION": "Player name to track",
+      "TRACKED": "Jugador rastreado: {{ name }}.",
+      "UNTRACKED": "Dejar de rastrear Jugador: {{ name }}."
+    },
+    "GUILDS": {
+      "NAME": "Gremios",
+      "DESCRIPTION": "Guild name to track",
+      "TRACKED": "Gremio rastreado: {{ name }}.",
+      "UNTRACKED": "Dejar de rastrear gremio: {{ name }}."
+    },
+    "ALLIANCES": {
+      "NAME": "Alianzas",
+      "DESCRIPTION": "Alliance ID to track",
+      "TRACKED": "Alianza rastreada: {{ name }}.",
+      "UNTRACKED": "Dejar de rastrear Alianza: {{ name }}."
+    },
+    "MISSING_PARAMETERS": "Por favor inserte ao menos un de los parámetros",
     "UNSUPPORTED_TYPE": "Tipo de seguimiento no compatible. Escriba !Help para ver más.",
     "TRACKING_DISABLED": "Lo sentimos, el seguimiento de {{ type }} está deshabilitado por ahora. Póngase en contacto con el administrador de bot para obtener más información.",
     "SEARCH_FAILED": "Failed to fetch data from Albion Servers. Please try again.",
     "NOT_FOUND": "Lo siento, no pude encontrar nada con este nombre.",
     "ALREADY_TRACKED": "Ya estoy rastreando este artículo.",
-    "LIMIT_REACHED": "Limite Alcanzado de {{ limit }} articulos en esta lista.",
-    "PLAYER_TRACKED": "Jugador rastreado: {{ name }}.",
-    "GUILD_TRACKED": "Gremio rastreado: {{ name }}.",
-    "ALLIANCE_TRACKED": "Alianza rastreada: {{ name }}.",
-    "PLAYER_UNTRACKED": "Dejar de rastrear Jugador: {{ name }}.",
-    "GUILD_UNTRACKED": "Dejar de rastrear gremio: {{ name }}.",
-    "ALLIANCE_UNTRACKED": "Dejar de rastrear Alianza: {{ name }}."
+    "LIMIT_REACHED": "Limite Alcanzado de {{ limit }} articulos en esta lista."
   },
   "MODE": {
     "AVAILABLE": "Modos disponibles: {{ modes }}",

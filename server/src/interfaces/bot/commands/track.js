@@ -1,101 +1,109 @@
-const { search, getAllianceById } = require("../queries/search");
-const { setConfig } = require("../config");
-const { getI18n } = require("../messages");
-const { getNumber } = require("../utils");
+const { InteractionType } = require("discord-api-types/v10");
+const { String } = require("discord-api-types/v10").ApplicationCommandOptionType;
+const { getLocale } = require("../../../helpers/locale");
+const { getNumber } = require("../../../helpers/utils");
+const { getAlliance, search } = require("../../../services/search");
+const { setSettings } = require("../../../services/settings");
 
-const SUPPORTED_TYPES = ["player", "guild", "alliance"];
+const t = getLocale().t;
 
-module.exports = {
-  aliases: ["track"],
-  args: ["player/guild/alliance", "name"],
-  description: "HELP.TRACK",
-  run: async (client, guild, message, args) => {
-    const l = getI18n(guild.config.lang);
+const options = [
+  {
+    name: "player",
+    description: t("TRACK.PLAYERS.DESCRIPTION"),
+    type: String,
+  },
+  {
+    name: "guild",
+    description: t("TRACK.GUILDS.DESCRIPTION"),
+    type: String,
+  },
+  {
+    name: "alliance",
+    description: t("TRACK.ALLIANCES.DESCRIPTION"),
+    type: String,
+  },
+];
 
-    if (!args || !args[0] || !args[1]) {
-      message.channel.send(l.__("TRACK.MISSING_PARAMETERS"));
-      return;
-    }
+const command = {
+  name: "track",
+  description: t("HELP.TRACK"),
+  type: InteractionType.Ping,
+  default_member_permissions: "0",
+  options,
+  handle: async (interaction, settings) => {
+    const t = getLocale(settings.lang).t;
 
-    if (!guild.config.trackedPlayers) guild.config.trackedPlayers = [];
-    if (!guild.config.trackedGuilds) guild.config.trackedGuilds = [];
-    if (!guild.config.trackedAlliances) guild.config.trackedAlliances = [];
+    const playerName = interaction.options.getString("player");
+    const guildName = interaction.options.getString("guild");
+    const allianceId = interaction.options.getString("alliance");
 
-    const type = args.shift().toLowerCase();
-    const q = args.join(" ").trim();
-
-    if (!SUPPORTED_TYPES.includes(type)) {
-      return message.channel.send(l.__("TRACK.UNSUPPORTED_TYPE"));
-    }
-
-    if (type == "alliance") {
-      // For alliances, tracking is done via id only
-      const limit = getNumber(process.env.MAX_ALLIANCES, 1);
-      if (limit == 0) {
-        const trackType = l.__(`TRACK.${type.toUpperCase()}S`).toLowerCase();
-        return message.channel.send(l.__("TRACK.TRACKING_DISABLED", { type: trackType }));
-      }
-      if (guild.config.trackedAlliances.length >= limit)
-        return message.channel.send(l.__("TRACK.LIMIT_REACHED", { limit }));
-      if (guild.config.trackedAlliances.some((a) => a.id === q))
-        return message.channel.send(l.__("TRACK.ALREADY_TRACKED"));
-
-      const alliance = await getAllianceById(q);
-      if (!alliance) return message.channel.send(l.__("TRACK.NOT_FOUND"));
-      guild.config.trackedAlliances.push({
-        id: alliance.AllianceId,
-        name: alliance.AllianceTag,
+    if (!playerName && !guildName && !allianceId) {
+      return await interaction.reply({
+        content: t("TRACK.MISSING_PARAMETERS"),
+        ephemeral: true,
       });
-      if (!(await setConfig(guild))) {
-        return message.channel.send(l.__("CONFIG_NOT_SET"));
-      }
-      return message.channel.send(l.__("TRACK.ALLIANCE_TRACKED", { name: alliance.AllianceTag }));
-    } else {
-      // For players and guilds, we can use the default search method
-      const track = async (tracked, msg, limit = 5) => {
-        if (limit == 0) {
-          const trackType = l.__(`TRACK.${type.toUpperCase()}S`).toLowerCase();
-          return message.channel.send(l.__("TRACK.TRACKING_DISABLED", { type: trackType }));
-        }
-        if (!guild.config[tracked]) {
-          guild.config[tracked] = [];
-        }
-
-        let entity = guild.config[tracked].find(
-          (p) => p.name.localeCompare(q, undefined, { sensitivity: "base" }) === 0,
-        );
-        if (entity) {
-          message.channel.send(l.__("TRACK.ALREADY_TRACKED"));
-          return;
-        }
-        if (guild.config[tracked].length >= limit) {
-          message.channel.send(l.__("TRACK.LIMIT_REACHED", { limit }));
-          return;
-        }
-
-        const results = await search(q);
-        if (!results) {
-          return message.channel.send(l.__("TRACK.SEARCH_FAILED"));
-        }
-
-        entity = results[`${type}s`].find((p) => p.Name.localeCompare(q, undefined, { sensitivity: "base" }) === 0);
-        if (!entity) {
-          message.channel.send(l.__("TRACK.NOT_FOUND"));
-          return;
-        }
-        guild.config[tracked].push({ id: entity.Id, name: entity.Name });
-        if (!(await setConfig(guild))) {
-          message.channel.send(l.__("CONFIG_NOT_SET"));
-        }
-        await message.channel.send(l.__(msg, { name: entity.Name }));
-      };
-
-      switch (type) {
-        case "player":
-          return track("trackedPlayers", "TRACK.PLAYER_TRACKED", getNumber(process.env.MAX_PLAYERS, 30));
-        case "guild":
-          return track("trackedGuilds", "TRACK.GUILD_TRACKED", getNumber(process.env.MAX_GUILDS, 5));
-      }
     }
+
+    await interaction.deferReply({ ephemeral: true });
+
+    let content = ``;
+    const addContent = (msg) => {
+      content += msg + "\n";
+    };
+
+    const track = async (type, value, limit = 5) => {
+      if (limit == 0) {
+        const trackType = t(`TRACK.${type.toUpperCase()}.DESCRIPTION`).toLowerCase();
+        return addContent(t("TRACK.TRACKING_DISABLED", { type: trackType }));
+      }
+
+      if (!settings.track) settings.track = {};
+      if (!settings.track[type]) settings.track[type] = [];
+
+      if (settings.track[type].length >= limit) return addContent(t("TRACK.LIMIT_REACHED", { limit }));
+
+      if (type == "alliances") {
+        if (settings.track.alliances.some((a) => a.id === value)) return addContent(t("TRACK.ALREADY_TRACKED"));
+
+        const alliance = await getAlliance(value);
+        if (!alliance) return addContent(t("TRACK.NOT_FOUND"));
+
+        settings.track.alliances.push({
+          id: alliance.AllianceId,
+          name: alliance.AllianceTag,
+        });
+
+        await setSettings(interaction.guild.id, settings);
+        return addContent(t("TRACK.ALLIANCE.TRACKED", { name: alliance.AllianceTag }));
+      } else {
+        const equalsCaseInsensitive = (a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
+
+        if (settings.track[type].some((trackEntity) => equalsCaseInsensitive(trackEntity.name, value)))
+          return addContent(t("TRACK.ALREADY_TRACKED"));
+
+        const searchResults = await search(value);
+        if (!searchResults) return addContent(t("TRACK.SEARCH_FAILED"));
+
+        const entity = searchResults[type].find((searchEntity) => equalsCaseInsensitive(searchEntity.Name, value));
+        if (!entity) return addContent(t("TRACK.NOT_FOUND"));
+
+        settings.track[type].push({
+          id: entity.Id,
+          name: entity.Name,
+        });
+
+        await setSettings(interaction.guild.id, settings);
+        return addContent(t(`TRACK.${type.toUpperCase()}.TRACKED`, { name: entity.Name }));
+      }
+    };
+
+    if (allianceId) await track("alliances", allianceId, getNumber(process.env.MAX_ALLIANCES, 1));
+    if (playerName) await track("players", playerName, getNumber(process.env.MAX_PLAYERS, 30));
+    if (guildName) await track("guilds", guildName, getNumber(process.env.MAX_GUILDS, 5));
+
+    return await interaction.editReply({ content, ephemeral: true });
   },
 };
+
+module.exports = command;

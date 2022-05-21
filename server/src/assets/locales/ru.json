@@ -82,22 +82,31 @@
   "TRACK": {
     "LIST": "Список отслеживаемых",
     "NONE": "Никто",
-    "PLAYERS": "Игроки",
-    "GUILDS": "Гильдии",
-    "ALLIANCES": "Альянсы",
-    "MISSING_PARAMETERS": "Пожалуйста, введите все параметры. Введите !help чтобы увидеть больше.",
+    "PLAYERS": {
+      "NAME": "Игроки",
+      "DESCRIPTION": "Player name to track",
+      "TRACKED": "Отслеживание игрока: {{ name }}.",
+      "UNTRACKED": "Прекращение отслеживание игрока: {{ name }}."
+    },
+    "GUILDS": {
+      "NAME": "Гильдии",
+      "DESCRIPTION": "Guild name to track",
+      "TRACKED": "Отслеживание гильдии: {{ name }}.",
+      "UNTRACKED": "Прекращение отслеживание гильдии: {{ name }}."
+    },
+    "ALLIANCES": {
+      "NAME": "Альянсы",
+      "DESCRIPTION": "Alliance ID to track",
+      "TRACKED": "Отслеживание альянса: {{ name }}.",
+      "UNTRACKED": "Прекращение отслеживание альянса: {{ name }}."
+    },
+    "MISSING_PARAMETERS": "Please set at least one option.",
     "UNSUPPORTED_TYPE": "Неподдерживаемый тип. Введите !help чтобы увидеть больше",
     "TRACKING_DISABLED": "Sorry, tracking of {{ type }} is disabled for now. Please contact bot admin for more information.",
     "SEARCH_FAILED": "Failed to fetch data from Albion Servers. Please try again.",
     "NOT_FOUND": "К сожалению, я не смог найти ничего с таким именем.",
     "ALREADY_TRACKED": "Я уже отслеживаю это.",
-    "LIMIT_REACHED": "Вы уже достигли лимита {{ limit }} элементов в этом списке.",
-    "PLAYER_TRACKED": "Отслеживание игрока: {{ name }}.",
-    "GUILD_TRACKED": "Отслеживание гильдии: {{ name }}.",
-    "ALLIANCE_TRACKED": "Отслеживание альянса: {{ name }}.",
-    "PLAYER_UNTRACKED": "Прекращение отслеживание игрока: {{ name }}.",
-    "GUILD_UNTRACKED": "Прекращение отслеживание гильдии: {{ name }}.",
-    "ALLIANCE_UNTRACKED": "Прекращение отслеживание альянса: {{ name }}."
+    "LIMIT_REACHED": "Вы уже достигли лимита {{ limit }} элементов в этом списке."
   },
   "MODE": {
     "AVAILABLE": "Доступный режим: {{ modes }}",

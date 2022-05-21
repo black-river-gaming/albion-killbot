@@ -82,22 +82,31 @@
   "TRACK": {
     "LIST": "Liste des suivis",
     "NONE": "Aucun",
-    "PLAYERS": "Joueurs",
-    "GUILDS": "Guildes",
-    "ALLIANCES": "Alliances",
-    "MISSING_PARAMETERS": "Veuillez renseigner tout les paramètres. Ecrivez !help pour connaître les commandes.",
+    "PLAYERS": {
+      "NAME": "Joueurs",
+      "DESCRIPTION": "Player name to track",
+      "TRACKED": "Suivi du joueur: {{ name }}.",
+      "UNTRACKED": "Désactivation de la suivi du joueur: {{ name }}."
+    },
+    "GUILDS": {
+      "NAME": "Guildes",
+      "DESCRIPTION": "Guild name to track",
+      "TRACKED": "Suivi de la guilde: {{ name }}.",
+      "UNTRACKED": "Désactivation de la suivi de la guilde: {{ name }}."
+    },
+    "ALLIANCES": {
+      "NAME": "Alliances",
+      "DESCRIPTION": "Alliance ID to track",
+      "TRACKED": "Suivi de l'alliance: {{ name }}.",
+      "UNTRACKED": "Désactivation de la suivi de l'alliance: {{ name }}."
+    },
+    "MISSING_PARAMETERS": "Please set at least one option.",
     "UNSUPPORTED_TYPE": "Je ne peux pas suivre ceci. Ecrivez !help pour en savoir plus.",
     "TRACKING_DISABLED": "Désolé, le suivi d'{{ type }} est désactivé. Contacter l'administrateur pour plus d'informations.",
     "SEARCH_FAILED": "Impossible de récupérer les données depuis les serveurs d'Albion Online. Rééssayez plus tard.",
     "NOT_FOUND": "Désolé, je ne trouve rien portant ce nom",
     "ALREADY_TRACKED": "Je suis déja ceci.",
-    "LIMIT_REACHED": "Tu as déja atteint la limite de {{ limit }} suivis dans la liste..",
-    "PLAYER_TRACKED": "Suivi du joueur: {{ name }}.",
-    "GUILD_TRACKED": "Suivi de la guilde: {{ name }}.",
-    "ALLIANCE_TRACKED": "Suivi de l'alliance: {{ name }}.",
-    "PLAYER_UNTRACKED": "Désactivation de la suivi du joueur: {{ name }}.",
-    "GUILD_UNTRACKED": "Désactivation de la suivi de la guilde: {{ name }}.",
-    "ALLIANCE_UNTRACKED": "Désactivation de la suivi de l'alliance: {{ name }}."
+    "LIMIT_REACHED": "Tu as déja atteint la limite de {{ limit }} suivis dans la liste.."
   },
   "MODE": {
     "AVAILABLE": "Modes disponibles: {{ modes }}",

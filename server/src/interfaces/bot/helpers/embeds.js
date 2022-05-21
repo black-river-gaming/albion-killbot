@@ -355,17 +355,17 @@ const embedList = (config) => {
         description: t("TRACK.LIST"),
         fields: [
           {
-            name: t("TRACK.PLAYERS"),
+            name: t("TRACK.PLAYERS.NAME"),
             value: configToList(config.trackedPlayers),
             inline: true,
           },
           {
-            name: t("TRACK.GUILDS"),
+            name: t("TRACK.GUILDS.NAME"),
             value: configToList(config.trackedGuilds),
             inline: true,
           },
           {
-            name: t("TRACK.ALLIANCES"),
+            name: t("TRACK.ALLIANCES.NAME"),
             value: configToList(config.trackedAlliances),
             inline: true,
           },
