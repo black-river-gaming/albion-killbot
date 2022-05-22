@@ -6,7 +6,7 @@ on:
 
 jobs:
   publish:
-    name: Publish server docker image
+    name: Publish docker images
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,7 +30,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: server/
-          file: server/docker/Dockerfile
+          file: server/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
