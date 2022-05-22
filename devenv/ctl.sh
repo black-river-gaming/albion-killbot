@@ -12,34 +12,35 @@ function check_command() {
 check_command docker
 check_command docker-compose
 
+DEVENV_DIR="$(cd $(dirname $([ -L $0 ] && readlink -f $0 || echo $0)) && pwd)"
 PROJECT_ARGS="-p albion-killbot"
-COMPOSE_FILE="-f devenv/docker-compose.yml"
-args="$PROJECT_ARGS $COMPOSE_FILE"
+COMPOSE_FILE="-f $DEVENV_DIR/docker-compose.yml"
+ARGS="$PROJECT_ARGS $COMPOSE_FILE"
 
 script=$(basename $0)
 cmd=$1; shift 2>/dev/null
 component=$1; shift 2>/dev/null
 
 Build() {
-  docker-compose $args build
+  docker-compose $ARGS build
 }
 
 Start() {
-  docker-compose $args up -d $component $@
+  docker-compose $ARGS up -d $component $@
 }
 
 Stop() {
-  docker-compose $args down $@
+  docker-compose $ARGS down
 }
 
 Restart() {
-  Stop; Start
+  Stop; Start $@
 }
 
 Logs() {
   # If exit code is zero (normal exits), just run it again
   while [ $? -eq "0" ]; do
-    docker-compose $args logs -f $component
+    docker-compose $ARGS logs -f $component
   done
 }
 
@@ -48,7 +49,7 @@ Shell() {
     echo "Usage: $script shell [component]"
     exit 1
   fi
-  docker-compose $args exec $component bash
+  docker-compose $ARGS exec $component bash
 }
 
 Exec() {
@@ -56,11 +57,11 @@ Exec() {
     echo "Usage: $script exec [component] [commands]"
     exit 1
   fi
-  docker-compose $args exec $component $@
+  docker-compose $ARGS exec $component $@
 }
 
 DockerCompose() {
-  docker-compose $args $component $@
+  docker-compose $ARGS $component $@
 }
 
 Help() {
@@ -74,11 +75,12 @@ Help() {
   printf "\texec [component]\tExecute a single command in the target component\n"
   printf "\tshell [component]\tOpen a bash shell in the target component\n"
   printf "\tlogs [component]\tGet logs for component or all logs with tail mode\n"
-  printf "\tdocker-compose <cmd>\tShorthand for docker-compose $args <cmd>\n"
+  printf "\tdocker-compose <cmd>\tShorthand for docker-compose $ARGS <cmd>\n"
   printf "\nComponents:\n"
   printf "\tcrawler\t\t\tAlbion api crawler\n"
   printf "\tbot\t\t\tDiscord bot\n"
   printf "\tapi\t\t\tWeb REST api\n"
+  printf "\tdashboard\t\t\tDashboard frontend\n"
   exit 0
 }
 
