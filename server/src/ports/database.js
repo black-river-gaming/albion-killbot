@@ -20,8 +20,20 @@ function getCollection(collectionName) {
   return collection;
 }
 
+async function dropColection(collectionName) {
+  try {
+    await dbClient.getCollection(collectionName).drop();
+  } catch (e) {
+    // In case the collection does not exist, just ignore
+    if (e.message.match(/ns not found/)) return true;
+    throw e;
+  }
+  return true;
+}
+
 module.exports = {
   init,
   cleanup,
   getCollection,
+  dropColection,
 };

@@ -60,6 +60,10 @@ Exec() {
   docker-compose $ARGS exec $component $@
 }
 
+Migrate() {
+  docker-compose $ARGS run bot npm run db:migrate
+}
+
 DockerCompose() {
   docker-compose $ARGS $component $@
 }
@@ -72,6 +76,7 @@ Help() {
   printf "\tstart\t\t\tStart the stack in detached mode\n"
   printf "\tstop\t\t\tShutdown the stack\n"
   printf "\trestart\t\t\tRestart the stack\n"
+  printf "\tmigrate\t\t\tRun migrations\n"
   printf "\texec [component]\tExecute a single command in the target component\n"
   printf "\tshell [component]\tOpen a bash shell in the target component\n"
   printf "\tlogs [component]\tGet logs for component or all logs with tail mode\n"
@@ -86,13 +91,14 @@ Help() {
 
 case $cmd in
   build) Build $@ ;;
+  docker-compose) DockerCompose $@ ;;
   exec) Exec $@ ;;
   help) Help $@ ;;
   logs) Logs $@ ;;
+  migrate) Migrate $@ ;;
   restart) Restart $@ ;;
   shell) Shell $@ ;;
   start) Start $@ ;;
   stop) Stop $@ ;;
-  docker-compose) DockerCompose $@ ;;
   *) Help $@ ;;
 esac

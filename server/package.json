@@ -14,6 +14,7 @@
     "start:bot:dev": "nodemon --config src/interfaces/bot/nodemon.json",
     "start:crawler": "npm start -- --mode crawler",
     "start:crawler:dev": "nodemon --config src/interfaces/crawler/nodemon.json",
+    "db:migrate": "node ./bin/migrate",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prettier": "prettier -c .",
