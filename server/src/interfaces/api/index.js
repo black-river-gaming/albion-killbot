@@ -1,4 +1,5 @@
 const logger = require("../../helpers/logger");
+const database = require("../../ports/database");
 const api = require("./api");
 
 const { PORT } = process.env;
@@ -7,6 +8,7 @@ let server;
 
 async function run() {
   logger.info(`Starting Api...`);
+  await database.init();
   server = await api.listen(port);
   logger.verbose(`Api is listening on port ${port}.`);
 }
