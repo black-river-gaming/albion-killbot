@@ -65,12 +65,14 @@ async function getAllSettings() {
 
 async function setSettings(guild, settings) {
   const collection = getCollection(SETTINGS_COLLECTION);
-  return await collection.updateOne({ guild }, { $set: settings }, { upsert: true });
-}
-
-async function resetSettings(guild) {
-  const collection = getCollection(SETTINGS_COLLECTION);
-  return await collection.updateOne({ guild }, { $set: DEFAULT_SETTINGS }, { upsert: true });
+  await collection.updateOne(
+    { guild },
+    {
+      $set: Object.assign({}, DEFAULT_SETTINGS, settings),
+    },
+    { upsert: true },
+  );
+  return await getSettings(guild);
 }
 
 async function deleteSettings(guild) {
@@ -86,6 +88,5 @@ module.exports = {
   getSettingsByGuild,
   getAllSettings,
   setSettings,
-  resetSettings,
   deleteSettings,
 };
