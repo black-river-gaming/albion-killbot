@@ -2,26 +2,18 @@ const MongoClient = require("mongodb").MongoClient;
 const logger = require("../helpers/logger");
 const { sleep } = require("../helpers/utils");
 
-const { MONGODB_URL } = process.env;
-
-if (!MONGODB_URL) {
-  throw new Error("Please define MONGODB_URL environment variable with the MongoDB location.");
-}
-
-const client = new MongoClient(MONGODB_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  writeConcern: {
-    wtimeout: 60000,
-  },
-});
-
-const isConnected = () => {
-  return !!client && !!client.topology && client.topology.isConnected();
-};
-
+let client;
 let db;
-async function connect() {
+
+async function connect(mongoDbUrl) {
+  client = new MongoClient(mongoDbUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    writeConcern: {
+      wtimeout: 60000,
+    },
+  });
+
   try {
     logger.verbose("Connecting to database...");
     await client.connect();
@@ -37,6 +29,10 @@ async function connect() {
     logger.info(`Connection error: ${e}`);
   });
 }
+
+const isConnected = () => {
+  return !!client && !!client.topology && client.topology.isConnected();
+};
 
 async function close() {
   logger.verbose("Disconnecting from database...");

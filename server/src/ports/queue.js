@@ -4,7 +4,13 @@ const logger = require("../helpers/logger");
 const PREFETCH_COUNT = 1;
 
 async function init() {
-  await rabbitMQClient.connect();
+  const { RABBITMQ_URL } = process.env;
+
+  if (!RABBITMQ_URL) {
+    throw new Error("Please set RABBITMQ_URL environment variable with the RabbitMQ location.");
+  }
+
+  await rabbitMQClient.connect(RABBITMQ_URL);
 }
 
 async function publish(exchange, data) {

@@ -2,34 +2,29 @@ const amqp = require("amqplib");
 const logger = require("../helpers/logger");
 const { sleep } = require("../helpers/utils");
 
-const { RABBITMQ_URL } = process.env;
 const QUEUE_MAX_LENGTH = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
 const QUEUE_MESSAGE_TTL = 1000 * 60 * 60 * 4; // 4 hours
-
-if (!RABBITMQ_URL) {
-  throw new Error("Please set RABBITMQ_URL environment variable with the RabbitMQ location.");
-}
 
 let client;
 let subscriptions = [];
 let pubChannel;
 
-const connect = async () => {
+const connect = async (rabbitMQUrl) => {
   try {
     logger.verbose("Connecting to message broker...");
-    client = await amqp.connect(RABBITMQ_URL);
+    client = await amqp.connect(rabbitMQUrl);
     logger.info("Connection to message broker stabilished.");
 
     // Restore previous channels
     if (pubChannel) pubChannel = await client.createChannel();
     subscriptions.forEach((fn) => fn());
   } catch (e) {
-    logger.error(`Unable to connect to message broker: ${e}`);
+    logger.error(`Unable to connect to message broker:`, e);
     await sleep(5000);
     return connect();
   }
 
-  client.on("err", (err) => logger.error(`Message broker connection error: ${err}`));
+  client.on("err", (e) => logger.error(`Message broker connection error:`, e));
 
   client.on("close", async () => {
     logger.error("Message broker connection closed. Trying to reconnect...");
