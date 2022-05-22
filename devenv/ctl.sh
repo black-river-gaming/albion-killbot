@@ -61,7 +61,7 @@ Exec() {
 }
 
 Migrate() {
-  docker-compose $ARGS run bot npm run db:migrate
+  docker-compose $ARGS run --rm bot npm run db:migrate
 }
 
 DockerCompose() {
