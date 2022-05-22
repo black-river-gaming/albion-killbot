@@ -1,8 +1,7 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const morgan = require("morgan");
-
 const logger = require("../../helpers/logger");
+const { swaggerSpecs, swaggerUI } = require("./helpers/swagger");
 const routes = require("./routes");
 const app = express();
 
@@ -15,10 +14,12 @@ if (NODE_ENV == "development") {
   app.use(morgan("tiny", { stream: logger.stream }));
 }
 app.use(
-  bodyParser.json({
+  express.json({
     limit: "1mb",
   }),
 );
+app.get("/openapi.json", (req, res) => res.send(swaggerSpecs));
+app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
 
 // Routes
 routes.init(app);
