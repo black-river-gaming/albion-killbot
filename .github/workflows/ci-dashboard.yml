@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Dashboard CI
 
 on:
   pull_request:
@@ -33,19 +33,15 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
-          cache-dependency-path: dashboard/
-      - run: npm ci
-      - run: npm run build
+          context: dashboard/
+          file: dashboard/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
 
   test:
     permissions:
