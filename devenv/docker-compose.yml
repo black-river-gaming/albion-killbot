@@ -32,6 +32,18 @@ services:
     expose:
       - 5672
 
+  nginx:
+    image: nginx:latest
+    healthcheck:
+      test: service nginx status || exit 1
+      interval: 30s
+      timeout: 30s
+      retries: 5
+    volumes:
+      - ./nginx:/etc/nginx/templates
+    ports:
+      - 80:80
+
   crawler:
     build:
       context: ../server
@@ -75,14 +87,31 @@ services:
     command: npm run start:api:dev
     depends_on:
       - mongodb
+      - nginx
     env_file: ../server/.env
     environment:
       - NODE_ENV=development
       - MONGODB_URL=mongodb://mongodb:27017/albion-killbot
     volumes:
       - ../server/src:/app/src
-    ports:
-      - 80:80
+    expose:
+      - 80
+
+  dashboard:
+    build:
+      context: ../dashboard
+      dockerfile: Dockerfile
+    image: albion-killbot-dashboard
+    depends_on:
+      - api
+      - nginx
+    environment:
+      - PORT=80
+    volumes:
+      - ../dashboard/public:/app/public
+      - ../dashboard/src:/app/src
+    expose:
+      - 80
 
 volumes:
   mongodb:
