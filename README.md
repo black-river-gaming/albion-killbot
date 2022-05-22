@@ -43,6 +43,16 @@ That's it! Any changes made in the watched folders (`src/interfaces/<component>/
 
 **NOTE**: Because the bot deals with sub processes, sometimes a full restart may be required. `ctl restart` is the command to do this.
 
+## Upgrading from v3
+
+If you are already using v3, there is a convencience script at the server that is designed to help with migrations. To run it, you can use:
+
+```
+ctl migrate
+```
+
+This will setup a temporary devenv and run the migrations. Outside of docker, there is the `npm run db:migrate` script, but you need to setup the necessary environment variables for that to work.
+
 # Contributing
 
 Patches and suggestions are very welcome, but please note that I will judge the quality of the code before merging it through the Pull Request process.
