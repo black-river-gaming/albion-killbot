@@ -21,7 +21,7 @@ const connect = async (rabbitMQUrl) => {
   } catch (e) {
     logger.error(`Unable to connect to message broker:`, e);
     await sleep(5000);
-    return connect();
+    return connect(rabbitMQUrl);
   }
 
   client.on("err", (e) => logger.error(`Message broker connection error:`, e));
@@ -29,7 +29,7 @@ const connect = async (rabbitMQUrl) => {
   client.on("close", async () => {
     logger.error("Message broker connection closed. Trying to reconnect...");
     await sleep(5000);
-    return connect();
+    return connect(rabbitMQUrl);
   });
 };
 
