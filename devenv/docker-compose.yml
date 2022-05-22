@@ -40,7 +40,7 @@ services:
       timeout: 30s
       retries: 5
     volumes:
-      - ./nginx:/etc/nginx/templates
+      - ./nginx:/etc/nginx/conf.d
     ports:
       - 80:80
 
