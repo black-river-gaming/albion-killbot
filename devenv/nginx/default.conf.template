@@ -1,0 +1,11 @@
+server {
+  listen 80;
+
+  location /api/ {
+    proxy_pass http://api/;
+  }
+
+  location / {
+    proxy_pass http://dashboard/;
+  }
+}
