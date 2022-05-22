@@ -28,7 +28,6 @@
     "amqplib": "^0.9.0",
     "aws-sdk": "^2.1135.0",
     "axios": "^0.27.2",
-    "body-parser": "^2.0.0-beta.1",
     "canvas": "^2.6.1",
     "discord-api-types": "^0.33.0",
     "discord.js": "^13.7.0",
@@ -40,6 +39,8 @@
     "moment": "^2.29.3",
     "mongodb": "^4.6.0",
     "morgan": "^1.10.0",
+    "swagger-jsdoc": "^6.2.1",
+    "swagger-ui-express": "^4.4.0",
     "winston": "^3.7.2"
   },
   "devDependencies": {
