@@ -16,7 +16,7 @@ async function run() {
 async function cleanup() {
   logger.info(`Shutting down Api...`);
   if (server) {
-    await server.close();
+    await server.close(() => process.exit(0));
   }
 }
 
