@@ -2,10 +2,10 @@ const { isPlayerTracked } = require("../helpers/tracking");
 const { getCollection } = require("../ports/database");
 const { getSettings } = require("./settings");
 
-const KILLS_COLLECTION = "kills";
+const RANKINGS_COLLECTION = "rankings";
 
 async function addRankingKill(guildId, event, settings) {
-  const collection = getCollection(KILLS_COLLECTION);
+  const collection = getCollection(RANKINGS_COLLECTION);
   if (!collection) throw new Error("Not connected to the database");
 
   if (!settings) settings = await getSettings(guildId);
@@ -60,7 +60,7 @@ async function addRankingKill(guildId, event, settings) {
 }
 
 async function getRanking(guildId, limit = 5) {
-  const collection = getCollection(KILLS_COLLECTION);
+  const collection = getCollection(RANKINGS_COLLECTION);
   if (!collection) throw new Error("Not connected to the database");
 
   let killRanking = await collection
@@ -101,7 +101,7 @@ async function getRanking(guildId, limit = 5) {
 }
 
 async function deleteRankings() {
-  const collection = getCollection(KILLS_COLLECTION);
+  const collection = getCollection(RANKINGS_COLLECTION);
   await collection.deleteMany({});
 }
 
