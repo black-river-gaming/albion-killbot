@@ -1,5 +1,8 @@
 const router = require("express").Router();
 const settingsController = require("../controllers/settings");
+const { disableCache } = require("../helpers/cache");
+
+router.use(disableCache);
 
 /**
  * @openapi
