@@ -12,6 +12,10 @@ async function getEvents(queryParams = {}) {
   return await albionApiClient.getEvents(queryParams);
 }
 
+async function getBattle(battleId) {
+  return await albionApiClient.getBattle(battleId);
+}
+
 async function getBattles(queryParams = {}) {
   return await albionApiClient.getBattles(queryParams);
 }
@@ -86,6 +90,7 @@ async function search(q) {
 
 module.exports = {
   getAlliance,
+  getBattle,
   getBattles,
   getEvents,
   getGuild,

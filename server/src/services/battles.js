@@ -1,4 +1,4 @@
-const { getBattles } = require("../ports/albion");
+const albion = require("../ports/albion");
 const { publish, subscribe } = require("../ports/queue");
 const logger = require("../helpers/logger");
 const { sleep } = require("../helpers/utils");
@@ -13,13 +13,13 @@ async function fetchBattlesTo(latestBattle, { offset = 0 } = {}, battles = []) {
   try {
     // If not latestBattle, just fetch a single one to create a reference
     if (!latestBattle) {
-      return await getBattles({
+      return await albion.getBattles({
         limit: 1,
       });
     }
 
     logger.verbose(`Fetching battles with offset: ${offset}`);
-    const albionBattles = await getBattles({
+    const albionBattles = await albion.getBattles({
       offset,
     });
 
@@ -50,8 +50,13 @@ async function subscribeBattles(queue_suffix, callback) {
   return await subscribe(BATTLES_EXCHANGE, queue, callback);
 }
 
+async function getBattle(battleId) {
+  return await albion.getBattle(battleId);
+}
+
 module.exports = {
   fetchBattlesTo,
   publishBattle,
   subscribeBattles,
+  getBattle,
 };
