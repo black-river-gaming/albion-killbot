@@ -58,6 +58,11 @@ async function getEvents({ limit = DEFAULT_LIMIT, offset = 0 }) {
   return res.data;
 }
 
+async function getBattle(battleId) {
+  const res = await albionApiClient.get(`${BATTLES_ENDPOINT}/${battleId}`);
+  return res.data;
+}
+
 async function getBattles({ limit = DEFAULT_LIMIT, offset = 0 }) {
   const params = {
     offset,
@@ -117,6 +122,7 @@ async function search(q) {
 module.exports = {
   STATISTICS_TYPES,
   getEvents,
+  getBattle,
   getBattles,
   getGuild,
   getAlliance,
