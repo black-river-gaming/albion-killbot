@@ -1,6 +1,6 @@
-#!/bin/env sh
+#!/usr/bin/env bash
 
-function check_command() {
+check_command() {
   if ! [ -x "$(command -v $1)" ]; then
     echo "Error: $1 is not installed. Please install before continuing." >&2
     exit 1
