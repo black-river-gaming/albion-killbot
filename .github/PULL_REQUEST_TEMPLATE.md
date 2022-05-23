@@ -4,7 +4,7 @@ Please include a summary of the change and which issue is fixed in the next para
 
 Fixes #(issue)
 
-## Check list
+# PR Checklist
 
 - [ ] I tested my changes locally
 - [ ] I added new tests (if applicabble)
