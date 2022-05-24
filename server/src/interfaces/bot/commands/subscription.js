@@ -2,9 +2,8 @@ const { InteractionType } = require("discord-api-types/v10");
 const { String } = require("discord-api-types/v10").ApplicationCommandOptionType;
 const moment = require("moment");
 const { getLocale } = require("../../../helpers/locale");
-const { activateSubscription } = require("../../../ports/subscriptions");
 const { getSettingsBySubscriptionOwner } = require("../../../services/settings");
-const { cancelSubscription } = require("../../../services/subscriptions");
+const { isSubscriptionsEnabled, activateSubscription, cancelSubscription } = require("../../../services/subscriptions");
 
 const t = getLocale().t;
 
@@ -38,6 +37,12 @@ const command = {
     const t = getLocale(lang).t;
     const ephemeral = true;
 
+    if (!isSubscriptionsEnabled())
+      return interaction.reply({
+        content: t("SUBSCRIPTION.FAILED", { reason: t("GENERAL.DISABLED") }),
+        ephemeral,
+      });
+
     const action = interaction.options.getString("action");
     if (!action) {
       if (!subscription.expires)
@@ -62,7 +67,10 @@ const command = {
       }
 
       try {
-        await activateSubscription(settings, interaction.user.id);
+        const subscription = await activateSubscription(settings, interaction.user.id);
+        if (!subscription) {
+          return await interaction.editReply(t("SUBSCRIPTION.FAILED", { reason: t("SUBSCRIPTION.ERROR.FETCH_FAIL") }));
+        }
         return interaction.editReply(t("SUBSCRIPTION.CONFIRMED"));
       } catch (e) {
         const reason = t(`SUBSCRIPTION.ERROR.${e.message.toUpperCase()}`);
