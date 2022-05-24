@@ -103,11 +103,14 @@ services:
       context: ../dashboard
       dockerfile: Dockerfile
     image: albion-killbot-dashboard
+    tty: true
+    command: npm start
     depends_on:
       - api
       - nginx
     environment:
       - PORT=80
+      - NODE_ENV=development
     volumes:
       - ../dashboard/public:/app/public
       - ../dashboard/src:/app/src
