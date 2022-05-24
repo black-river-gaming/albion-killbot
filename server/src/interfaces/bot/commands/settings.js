@@ -137,7 +137,8 @@ function printCommonOptions(settings, category, interaction, t) {
   const option = settings[category].enabled ? t("GENERAL.ENABLED") : t("GENERAL.DISABLED");
   const channel = interaction.guild.channels.cache.get(settings[category].channel);
   reply += t("CATEGORY.SET", { category, option }) + "\n";
-  reply += t("CHANNEL.SET_CHANNEL", { category, channel: channel.toString() }) + "\n";
+  if (channel) reply += t("CHANNEL.SET_CHANNEL", { category, channel: channel.toString() }) + "\n";
+  else reply += t("CHANNEL.NO_CHANNEL") + "\n";
 
   return reply;
 }

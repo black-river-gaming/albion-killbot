@@ -9,7 +9,7 @@ const { sendNotification } = require("./notifications");
 async function displayRankings(client, { setting }) {
   const { shardId } = client;
 
-  logger.info(`[#${shardId}] Sending rankings on ${setting} setting to all servers.`);
+  logger.info(`[#${shardId}] Sending pvp ranking on '${setting}' setting to all servers.`);
 
   const settingsByGuild = await getSettingsByGuild(client.guilds.cache);
 
@@ -20,7 +20,6 @@ async function displayRankings(client, { setting }) {
 
     const { enabled, channel, pvpRanking } = guild.settings.rankings;
     if (!enabled || !channel) continue;
-
     if (pvpRanking != setting) continue;
 
     const ranking = await getRanking(guild.id);
