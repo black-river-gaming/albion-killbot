@@ -10,6 +10,9 @@
     }
   ],
   "settings": {
+    "docker.containers.label": "ContainerName",
+    "docker.containers.description": ["Status", "FullTag"],
+    "docker.containers.sortBy": "Label",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
       "source.fixAll": true,
