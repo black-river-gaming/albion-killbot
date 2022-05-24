@@ -1,4 +1,4 @@
-const { getEvents } = require("../ports/albion");
+const albion = require("../ports/albion");
 const { publish, subscribe } = require("../ports/queue");
 const logger = require("../helpers/logger");
 const { sleep } = require("../helpers/utils");
@@ -13,13 +13,13 @@ async function fetchEventsTo(latestEvent, { offset = 0 } = {}, events = []) {
   try {
     // If not latestEvent, just fetch a single one to create a reference
     if (!latestEvent) {
-      return await getEvents({
+      return await albion.getEvents({
         limit: 1,
       });
     }
 
     logger.verbose(`Fetching events with offset: ${offset}`);
-    const albionEvents = await getEvents({
+    const albionEvents = await albion.getEvents({
       offset,
     });
 
@@ -50,8 +50,13 @@ async function subscribeEvents(queue_suffix, callback) {
   return await subscribe(EVENTS_EXCHANGE, queue, callback);
 }
 
+async function getEvent(eventId) {
+  return await albion.getEvent(eventId);
+}
+
 module.exports = {
   fetchEventsTo,
   publishEvent,
   subscribeEvents,
+  getEvent,
 };
