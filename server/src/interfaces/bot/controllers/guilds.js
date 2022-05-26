@@ -32,10 +32,10 @@ async function updateGuilds(client) {
   logger.verbose(`[#${shardId}] Update albion guild data complete`);
 }
 
-async function displayRankings(client) {
+async function displayRankings(client, { setting }) {
   const { shardId } = client;
 
-  logger.info(`[#${shardId}] Displaying guild rankings to all servers`);
+  logger.info(`[#${shardId}] Sending guild ranking on '${setting}' setting to all servers.`);
 
   const settingsByGuild = await getSettingsByGuild(client.guilds.cache);
   const albionGuilds = await getAllGuilds();
@@ -45,8 +45,9 @@ async function displayRankings(client) {
 
     guild.settings = settingsByGuild[guild.id];
 
-    const { enabled, channel } = guild.settings.rankings;
+    const { enabled, channel, guildRanking } = guild.settings.rankings;
     if (!enabled || !channel) continue;
+    if (guildRanking != setting) continue;
 
     for (const trackedGuild of guild.settings.track.guilds) {
       const trackedGuildData = albionGuilds[trackedGuild.id];

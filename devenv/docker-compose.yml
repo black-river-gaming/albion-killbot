@@ -5,7 +5,7 @@ services:
     image: mongo:latest
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongo mongodb:27017/test --quiet
-      interval: 30s
+      interval: 5s
       timeout: 30s
       retries: 5
     volumes:
@@ -22,7 +22,7 @@ services:
     image: rabbitmq:3
     healthcheck:
       test: rabbitmq-diagnostics -q ping
-      interval: 30s
+      interval: 5s
       timeout: 30s
       retries: 5
     volumes:
@@ -36,7 +36,7 @@ services:
     image: nginx:latest
     healthcheck:
       test: service nginx status || exit 1
-      interval: 30s
+      interval: 5s
       timeout: 30s
       retries: 5
     volumes:
@@ -51,7 +51,8 @@ services:
     image: albion-killbot
     command: npm run start:crawler:dev
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     env_file: ../server/.env
     environment:
       - NODE_ENV=development
@@ -66,8 +67,10 @@ services:
     image: albion-killbot
     command: npm run start:bot:dev
     depends_on:
-      - mongodb
-      - rabbitmq
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     env_file: ../server/.env
     environment:
       - NODE_ENV=development
@@ -87,8 +90,10 @@ services:
     image: albion-killbot
     command: npm run start:api:dev
     depends_on:
-      - mongodb
-      - nginx
+      mongodb:
+        condition: service_healthy
+      nginx:
+        condition: service_started
     env_file: ../server/.env
     environment:
       - NODE_ENV=development
@@ -106,8 +111,10 @@ services:
     tty: true
     command: npm start
     depends_on:
-      - api
-      - nginx
+      api:
+        condition: service_started
+      nginx:
+        condition: service_started
     environment:
       - PORT=80
       - NODE_ENV=development

@@ -37,22 +37,25 @@ client.on("shardReady", async (id) => {
     logger.error(`Error in subscriptions:`, e);
   }
 
-  runDaily(`${shardPrefix} Display Guild rankings`, guilds.displayRankings, {
-    fnOpts: [client],
-  });
-
   runInterval(`${shardPrefix} Collect Guild data`, guilds.updateGuilds, {
     fnOpts: [client],
     interval: DAY / 4,
   });
 
-  runDaily(`${shardPrefix} Display ranking for daily setting`, rankings.displayRankings, {
+  runDaily(`${shardPrefix} Display guild rankings for daily setting`, guilds.displayRankings, {
+    fnOpts: [client, { setting: "daily" }],
+  });
+  runInterval(`${shardPrefix} Display guild rankings for hourly setting`, guilds.displayRankings, {
+    fnOpts: [client, { setting: "hourly" }],
+    interval: HOUR,
+  });
+
+  runDaily(`${shardPrefix} Display pvp ranking for daily setting`, rankings.displayRankings, {
     fnOpts: [client, { setting: "daily" }],
     hour: 0,
     minute: 0,
   });
-
-  runInterval(`${shardPrefix} Display rankings for hourly setting`, rankings.displayRankings, {
+  runInterval(`${shardPrefix} Display pvp ranking for hourly setting`, rankings.displayRankings, {
     fnOpts: [client, { setting: "hourly" }],
     interval: HOUR,
   });

@@ -7,7 +7,6 @@ const { getItemFile } = require("../ports/albion");
 const { digitsFormatter, fileSizeFormatter } = require("../helpers/utils");
 const logger = require("../helpers/logger");
 
-const SMALL_IMAGES = Boolean(process.env.SMALL_IMAGES);
 const assetsPath = path.join(__dirname, "..", "assets");
 
 registerFont(path.join(assetsPath, "fonts", "Roboto-Regular.ttf"), {
@@ -51,9 +50,7 @@ const optimizeImage = async (buffer, w = 640) => {
 
   image.deflateLevel(9);
   image.deflateStrategy(1);
-  if (SMALL_IMAGES) {
-    image.resize(w, jimp.AUTO);
-  }
+  image.resize(w, jimp.AUTO);
   return await image.getBufferAsync(jimp.MIME_PNG);
 };
 
@@ -269,7 +266,7 @@ async function generateEventImage(event) {
 
   drawAssistBar(event.Participants, 35, 1050, 1530, 80, 40);
 
-  const buffer = optimizeImage(canvas.toBuffer());
+  const buffer = await optimizeImage(canvas.toBuffer(), 580);
   canvas = null;
 
   if (buffer.length > 2 * 1048576) {
@@ -304,7 +301,7 @@ async function generateInventoryImage(inventory) {
     x += BLOCK_SIZE;
   }
 
-  const buffer = optimizeImage(canvas.toBuffer(), 800);
+  const buffer = await optimizeImage(canvas.toBuffer(), 900);
   canvas = null;
 
   if (buffer.length > 1048576) {

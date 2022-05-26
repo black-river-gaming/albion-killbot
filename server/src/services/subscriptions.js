@@ -1,6 +1,6 @@
 const moment = require("moment");
 const logger = require("../helpers/logger");
-const subscriptions = require("../ports/subscriptions");
+const patreon = require("../ports/patreon");
 const { getAllSettings, setSettings, DEFAULT_SETTINGS } = require("./settings");
 
 const SUBSCRIPTIONS_ONLY = Boolean(process.env.SUBSCRIPTIONS_ONLY);
@@ -22,13 +22,14 @@ function hasSubscription(settings) {
 }
 
 async function activateSubscription(settings, userId) {
-  if (!isSubscriptionsEnabled()) return false;
-  if (!settings) return false;
+  if (!isSubscriptionsEnabled()) return null;
+  if (!settings) return null;
 
   try {
-    settings.subscription = await subscriptions.activateSubscription(userId);
-    await setSettings(settings.guild, settings);
+    settings.subscription = await patreon.activateSubscription(userId);
     logger.info(`[#${settings.guild}] Subscription activated until ${settings.subscription.expires.toString()}`);
+    await setSettings(settings.guild, settings);
+    return settings.subscription;
   } catch (e) {
     logger.verbose(`[#${settings.guild}] Unable to active subscription:`, e);
     throw e;
@@ -45,7 +46,7 @@ async function refreshSubscriptions() {
     if (!subscription) continue;
 
     try {
-      settings.subscription = await subscriptions.renewSubscription(subscription);
+      settings.subscription = await patreon.renewSubscription(subscription);
       await setSettings(settings.guild, settings);
       logger.info(`[#${settings.guild}] Subscription extended until ${settings.subscription.expires.toString()}`);
     } catch (e) {

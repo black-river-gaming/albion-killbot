@@ -7,10 +7,10 @@ check_command() {
   fi
 }
 
-# Run the entire stack in development mode using docker-compose
+# Run the entire stack in development mode using docker compose
 
 check_command docker
-check_command docker-compose
+check_command docker compose
 
 DEVENV_DIR="$(cd $(dirname $([ -L $0 ] && readlink -f $0 || echo $0)) && pwd)"
 PROJECT_ARGS="-p albion-killbot"
@@ -22,15 +22,15 @@ cmd=$1; shift 2>/dev/null
 component=$1; shift 2>/dev/null
 
 Build() {
-  docker-compose $ARGS build
+  docker compose $ARGS build
 }
 
 Start() {
-  docker-compose $ARGS up -d $component $@
+  docker compose $ARGS up -d $component $@
 }
 
 Stop() {
-  docker-compose $ARGS down
+  docker compose $ARGS down
 }
 
 Restart() {
@@ -40,7 +40,7 @@ Restart() {
 Logs() {
   # If exit code is zero (normal exits), just run it again
   while [ $? -eq "0" ]; do
-    docker-compose $ARGS logs -f $component
+    docker compose $ARGS logs -f $component
   done
 }
 
@@ -49,7 +49,7 @@ Shell() {
     echo "Usage: $script shell [component]"
     exit 1
   fi
-  docker-compose $ARGS exec $component bash
+  docker compose $ARGS exec $component bash
 }
 
 Exec() {
@@ -57,19 +57,19 @@ Exec() {
     echo "Usage: $script exec [component] [commands]"
     exit 1
   fi
-  docker-compose $ARGS exec $component $@
+  docker compose $ARGS exec $component $@
 }
 
 Migrate() {
-  docker-compose $ARGS run --rm bot npm run db:migrate
+  docker compose $ARGS run --rm bot npm run db:migrate
 }
 
 DockerCompose() {
-  docker-compose $ARGS $component $@
+  docker compose $ARGS $component $@
 }
 
 Help() {
-  printf "This scripts is a helper for docker-compose for dev-env.\n"
+  printf "This scripts is a helper for docker compose for dev-env.\n"
   printf "\nUsage: $script COMMAND\n"
   printf "\nCommands:\n"
   printf "\tbuild\t\t\tBuild all components\n"
@@ -80,18 +80,18 @@ Help() {
   printf "\texec [component]\tExecute a single command in the target component\n"
   printf "\tshell [component]\tOpen a bash shell in the target component\n"
   printf "\tlogs [component]\tGet logs for component or all logs with tail mode\n"
-  printf "\tdocker-compose <cmd>\tShorthand for docker-compose $ARGS <cmd>\n"
+  printf "\tcmd <cmd>\t\tShorthand for docker compose $ARGS <cmd>\n"
   printf "\nComponents:\n"
   printf "\tcrawler\t\t\tAlbion api crawler\n"
   printf "\tbot\t\t\tDiscord bot\n"
   printf "\tapi\t\t\tWeb REST api\n"
-  printf "\tdashboard\t\t\tDashboard frontend\n"
+  printf "\tdashboard\t\tDashboard frontend\n"
   exit 0
 }
 
 case $cmd in
   build) Build $@ ;;
-  docker-compose) DockerCompose $@ ;;
+  cmd) DockerCompose $@ ;;
   exec) Exec $@ ;;
   help) Help $@ ;;
   logs) Logs $@ ;;
