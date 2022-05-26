@@ -1,3 +1,5 @@
+[![Server](https://github.com/black-river-gaming/albion-killbot/actions/workflows/ci-server.yml/badge.svg)](https://github.com/black-river-gaming/albion-killbot/actions/workflows/ci-server.yml)
+[![Dashboard](https://github.com/black-river-gaming/albion-killbot/actions/workflows/ci-dashboard.yml/badge.svg)](https://github.com/black-river-gaming/albion-killbot/actions/workflows/ci-dashboard.yml)
 ![](https://img.shields.io/discord/738365346855256107?label=Discord&logo=Discord&style=social)
 
 # albion-killbot
