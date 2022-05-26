@@ -47,6 +47,11 @@ albionApiClient.interceptors.response.use(null, async (error) => {
   return Promise.reject(error);
 });
 
+async function getEvent(eventId) {
+  const res = await albionApiClient.get(`${EVENTS_ENDPOINT}/${eventId}`);
+  return res.data;
+}
+
 async function getEvents({ limit = DEFAULT_LIMIT, offset = 0 }) {
   const params = {
     offset,
@@ -121,12 +126,13 @@ async function search(q) {
 
 module.exports = {
   STATISTICS_TYPES,
-  getEvents,
+  getAlliance,
   getBattle,
   getBattles,
+  getEvent,
+  getEvents,
   getGuild,
-  getAlliance,
-  getStatistics,
   getPlayerFame,
+  getStatistics,
   search,
 };

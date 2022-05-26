@@ -8,12 +8,24 @@ const logger = require("../helpers/logger");
 
 const ITEMS_DIR = "items";
 
+async function getEvent(eventId) {
+  try {
+    return await albionApiClient.getEvent(eventId);
+  } catch (e) {
+    return null;
+  }
+}
+
 async function getEvents(queryParams = {}) {
   return await albionApiClient.getEvents(queryParams);
 }
 
 async function getBattle(battleId) {
-  return await albionApiClient.getBattle(battleId);
+  try {
+    return await albionApiClient.getBattle(battleId);
+  } catch (e) {
+    return null;
+  }
 }
 
 async function getBattles(queryParams = {}) {
@@ -92,6 +104,7 @@ module.exports = {
   getAlliance,
   getBattle,
   getBattles,
+  getEvent,
   getEvents,
   getGuild,
   getItemFile,

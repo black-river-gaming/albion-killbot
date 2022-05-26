@@ -128,6 +128,8 @@ const battlesController = require("../controllers/battles");
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Battle'
+ *       404:
+ *         description: Battle not found
  */
 router.get(`/battles/:battleId`, battlesController.getBattle);
 
