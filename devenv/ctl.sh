@@ -22,7 +22,7 @@ cmd=$1; shift 2>/dev/null
 component=$1; shift 2>/dev/null
 
 Build() {
-  docker compose $ARGS build
+  docker compose $ARGS build $@
 }
 
 Start() {

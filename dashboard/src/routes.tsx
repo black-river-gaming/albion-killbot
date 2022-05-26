@@ -1,3 +1,4 @@
+import Home from "pages/Home";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 
 interface IRedirectTo {
@@ -13,7 +14,7 @@ function ProtectedRoutes({ redirectTo }: IRedirectTo) {
 function MainRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<div>Home</div>} />
+      <Route path="/" element={<Home />} />
 
       <Route element={<ProtectedRoutes redirectTo="/" />}>
         <Route path="/example" element={<div>Example</div>} />

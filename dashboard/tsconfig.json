@@ -1,32 +1,26 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
     "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "strict": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "module": "commonjs",
-    "target": "es2017",
-    "sourceMap": true,
-    "outDir": "./build",
     "baseUrl": "src",
-    "rootDirs": [
-      "src"
-    ],
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "outDir": "./build",
+    "paths": {
+      "pages/*": ["./pages/*"],
+      "styles/*": ["./styles/*"]
+    },
+    "resolveJsonModule": true,
+    "rootDirs": ["src"],
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2017"
   },
-  "include": [
-    "./**/*.ts",
-    "./**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules, dist, build"
-  ],
+  "include": ["./**/*.ts", "./**/*.tsx"],
+  "exclude": ["node_modules, dist, build"]
 }
