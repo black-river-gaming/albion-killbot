@@ -22,7 +22,7 @@ try {
           description: "Development server",
         },
         {
-          url: "https://www.albionkillbot.com/api",
+          url: "https://albion-killbot.com/api",
           description: "Production server",
         },
       ],
