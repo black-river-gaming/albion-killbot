@@ -63,4 +63,4 @@ jobs:
         with:
           working-directory: dashboard/
           test-script: npm test
-          annotations: failed-tests
+          annotations: none
