@@ -10,17 +10,11 @@
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "outDir": "./build",
-    "paths": {
-      "pages/*": ["./pages/*"],
-      "styles/*": ["./styles/*"]
-    },
     "resolveJsonModule": true,
-    "rootDirs": ["src"],
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "es2017"
   },
-  "include": ["./**/*.ts", "./**/*.tsx"],
-  "exclude": ["node_modules, dist, build"]
+  "exclude": ["__tests__"]
 }
