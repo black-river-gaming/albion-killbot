@@ -22,7 +22,7 @@ const Container = styled.div`
       align-items: center;
       justify-content: end;
 
-      a {
+      a:not(.btn) {
         padding: 0 1.5rem;
         display: flex;
         align-items: center;
@@ -31,6 +31,11 @@ const Container = styled.div`
         svg {
           padding: 0 0.5rem;
         }
+      }
+
+      a.btn {
+        margin-left: 1.5rem;
+        padding: 0.5rem 1.5rem;
       }
     }
   }
@@ -51,12 +56,19 @@ const Container = styled.div`
       .navbar-items {
         flex-direction: column;
         padding-bottom: 0.75rem;
+        align-items: end;
 
-        a {
-          padding: 0.75rem 0;
+        a:not(.btn) {
+          padding: 0.85rem 0;
           display: flex;
           justify-content: end;
           width: 100%;
+        }
+
+        a.btn {
+          margin: 0.35rem 0;
+          padding: 0.5rem;
+          width: 25%;
         }
       }
     }
