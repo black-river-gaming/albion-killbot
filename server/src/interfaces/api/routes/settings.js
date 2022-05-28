@@ -111,25 +111,6 @@ router.use(disableCache);
 
 /**
  * @openapi
- * /settings:
- *   get:
- *     tags: [Settings]
- *     summary: Get settings for all servers
- *     operationId: settingsController.getAllSettings
- *     responses:
- *       200:
- *         description: List of server settings
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Settings'
- */
-router.get(`/settings`, settingsController.getAllSettings);
-
-/**
- * @openapi
  * /settings/{guildId}:
  *   get:
  *     tags: [Settings]
