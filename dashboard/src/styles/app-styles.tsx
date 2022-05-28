@@ -40,5 +40,10 @@ export default styled.div`
     &:hover {
       color: ${({ theme }) => theme.primary};
     }
+
+    &.btn {
+      background-color: ${({ theme }) => theme.secondary};
+      border: none;
+    }
   }
 `;
