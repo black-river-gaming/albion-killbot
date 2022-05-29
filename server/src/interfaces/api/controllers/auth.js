@@ -19,18 +19,6 @@ async function auth(req, res) {
   }
 }
 
-async function getUserProfile(req, res) {
-  try {
-    const { accessToken } = req.session.discord;
-    console.log(req.session.discord);
-    const user = await discord.getMe(accessToken);
-    return res.send(user);
-  } catch (error) {
-    return res.sendStatus(403);
-  }
-}
-
 module.exports = {
   auth,
-  getUserProfile,
 };
