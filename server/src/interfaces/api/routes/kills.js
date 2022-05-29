@@ -181,7 +181,7 @@ const killsController = require("../controllers/kills");
  *       schema:
  *         type: string
  *     summary: Get kill report.
- *     operationId: killsController.getKill
+ *     operationId: getKill
  *     responses:
  *       200:
  *         description: Kill report

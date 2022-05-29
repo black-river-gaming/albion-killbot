@@ -1,7 +1,7 @@
 const moment = require("moment");
 const discord = require("../../../ports/discord");
 
-async function getDiscordToken(req, res) {
+async function auth(req, res) {
   try {
     const { code } = req.body;
 
@@ -19,6 +19,18 @@ async function getDiscordToken(req, res) {
   }
 }
 
+async function getUserProfile(req, res) {
+  try {
+    const { accessToken } = req.session.discord;
+    console.log(req.session.discord);
+    const user = await discord.getMe(accessToken);
+    return res.send(user);
+  } catch (error) {
+    return res.sendStatus(403);
+  }
+}
+
 module.exports = {
-  getDiscordToken,
+  auth,
+  getUserProfile,
 };
