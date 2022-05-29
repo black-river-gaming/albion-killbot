@@ -8,8 +8,8 @@ async function getDiscordToken(req, res) {
     const token = await discord.getToken(code);
 
     req.session.discord = {
-      access_token: token.access_token,
-      refresh_token: token.refresh_token,
+      accessToken: token.access_token,
+      refreshToken: token.refresh_token,
       expires: moment().add(token.expires_in, "seconds"),
     };
 

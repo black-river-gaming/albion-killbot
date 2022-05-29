@@ -20,17 +20,6 @@ const session = expressSession({
   }),
 });
 
-const refreshToken = async (req, res, next) => {
-  // if token is about to expire
-  //  discord .refreshToken(req.session.discord.refresh_token);
-
-  // if refresh fails, unset cookie and throw 403
-  // throw error 403
-
-  return next();
-};
-
 module.exports = {
   session,
-  refreshToken,
 };

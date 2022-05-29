@@ -25,6 +25,23 @@ async function exchangeCode(code) {
   }
 }
 
+async function refreshToken(refreshToken) {
+  try {
+    const params = new URLSearchParams();
+    params.append("client_id", DISCORD_CLIENT_ID);
+    params.append("client_secret", DISCORD_CLIENT_SECRET);
+    params.append("grant_type", "refresh_token");
+    params.append("refresh_token", refreshToken);
+
+    const res = await discordApiClient.post(TOKEN_ENDPOINT, params);
+    return res.data;
+  } catch (e) {
+    logger.error(`Error while refreshing discord token:`, e);
+    throw e;
+  }
+}
+
 module.exports = {
   exchangeCode,
+  refreshToken,
 };
