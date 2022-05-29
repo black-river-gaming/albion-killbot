@@ -1,7 +1,9 @@
 const express = require("express");
 const morgan = require("morgan");
 const logger = require("../../helpers/logger");
-const { swaggerSpecs, swaggerUI } = require("./helpers/swagger");
+const { disableCache } = require("./middlewares/cache");
+const { session } = require("./middlewares/session");
+const { swaggerSpecs, swaggerUI } = require("./middlewares/swagger");
 const routes = require("./routes");
 const app = express();
 
@@ -18,8 +20,9 @@ app.use(
     limit: "1mb",
   }),
 );
-app.get("/openapi.json", (req, res) => res.send(swaggerSpecs));
-app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
+app.get("/openapi.json", disableCache, (req, res) => res.send(swaggerSpecs));
+app.use("/docs", disableCache, swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
+app.use(session);
 
 // Routes
 routes.init(app);

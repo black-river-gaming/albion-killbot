@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const settingsController = require("../controllers/settings");
-const { disableCache } = require("../helpers/cache");
+const { disableCache } = require("../middlewares/cache");
 
 router.use(disableCache);
 
