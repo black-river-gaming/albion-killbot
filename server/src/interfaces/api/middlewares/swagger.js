@@ -27,10 +27,11 @@ try {
         },
       ],
       tags: [
-        { name: "Settings", description: "Server settings" },
-        { name: "Kills", description: "Kill data" },
+        { name: "Auth", description: "Authentication methods" },
         { name: "Battles", description: "Battle data" },
+        { name: "Kills", description: "Kill data" },
         { name: "Rankings", description: "Ranking data" },
+        { name: "Settings", description: "Server settings" },
       ],
     },
     apis: [path.join(__dirname, "..", "routes", "**.js")],
