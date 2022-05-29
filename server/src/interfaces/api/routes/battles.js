@@ -120,7 +120,7 @@ const battlesController = require("../controllers/battles");
  *       schema:
  *         type: string
  *     summary: Get battle report.
- *     operationId: battlesController.getBattle
+ *     operationId: getBattle
  *     responses:
  *       200:
  *         description: Battle report
