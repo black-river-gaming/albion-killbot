@@ -71,6 +71,41 @@ router.use(disableCache);
  *          description: User has multi-factor enabled
  *          readOnly: true
  *          example: false
+ *
+ *    Server:
+ *      type: object
+ *      properties:
+ *        id:
+ *          type: string
+ *          description: Discord server id.
+ *          readOnly: true
+ *          example: "159962941502783488"
+ *        name:
+ *          type: string
+ *          description: Server name.
+ *          readOnly: true
+ *          example: "Discord Server Name"
+ *        icon:
+ *          type: string
+ *          description: Discord server icon, to be used with the default icon url.
+ *          readOnly: true
+ *          example: "a_70cacbcd2ce03227ca160f18d250c868"
+ *        owner:
+ *          type: boolean
+ *          description: If the current user is the server owner
+ *          readOnly: true
+ *          example: true
+ *        permissions:
+ *          type: string
+ *          description: List of server default permissions.
+ *          readOnly: true
+ *          example: "4398046511103"
+ *        features:
+ *          type: array
+ *          items:
+ *            type: string
+ *          description: Enabled guild features
+ *          readOnly: true
  */
 
 /**
@@ -79,7 +114,7 @@ router.use(disableCache);
  *   get:
  *     tags: [Users]
  *     summary: Return user information
- *     operationId: getUserProfile
+ *     operationId: getUser
  *     responses:
  *       200:
  *         description: User profile
@@ -90,6 +125,27 @@ router.use(disableCache);
  *       403:
  *         description: Unable to authenticate
  */
-router.get(`/users/me`, usersController.getUserProfile);
+router.get(`/users/me`, usersController.getUser);
+
+/**
+ * @openapi
+ * /users/me/servers:
+ *   get:
+ *     tags: [Users]
+ *     summary: Return list of servers for current user
+ *     operationId: getUserServers
+ *     responses:
+ *       200:
+ *         description: List of user servers
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Server'
+ *       403:
+ *         description: Unable to authenticate
+ */
+router.get(`/users/me/servers`, usersController.getUserServers);
 
 module.exports = router;

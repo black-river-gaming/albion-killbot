@@ -1,11 +1,11 @@
 const moment = require("moment");
-const discord = require("../../../ports/discord");
+const authService = require("../../../services/auth");
 
 async function auth(req, res) {
   try {
     const { code } = req.body;
 
-    const token = await discord.getToken(code);
+    const token = await authService.auth(code);
 
     req.session.discord = {
       accessToken: token.access_token,

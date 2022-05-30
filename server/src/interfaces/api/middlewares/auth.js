@@ -1,5 +1,5 @@
 const moment = require("moment");
-const { refreshToken } = require("../../../ports/discord");
+const authService = require("../../../services/auth");
 
 const refreshDiscordToken = async (req, _res, next) => {
   const { discord } = req.session;
@@ -7,7 +7,7 @@ const refreshDiscordToken = async (req, _res, next) => {
   if (moment(discord.expires).diff(moment(), "days") > 1) return next();
 
   try {
-    const token = await refreshToken(discord.refreshToken);
+    const token = await authService.refresh(discord.refreshToken);
 
     req.session.discord = {
       accessToken: token.access_token,

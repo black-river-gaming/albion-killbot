@@ -1,36 +1,31 @@
 const discordApiClient = require("../adapters/discordApiClient");
-const logger = require("../helpers/logger");
+
+const { DISCORD_TOKEN } = process.env;
 
 async function getToken(code) {
-  try {
-    return await discordApiClient.exchangeCode(code);
-  } catch (e) {
-    logger.error(`Error while retrieving discord token:`, e);
-    throw e;
-  }
+  return await discordApiClient.getToken(code);
 }
 
 async function refreshToken(refreshToken) {
-  try {
-    return await discordApiClient.refreshToken(refreshToken);
-  } catch (e) {
-    logger.error(`Error while refreshing discord token:`, e);
-    throw e;
-  }
+  return await discordApiClient.refreshToken(refreshToken);
 }
 
 async function getMe(accessToken) {
-  try {
-    return await discordApiClient.getMe(accessToken);
-  } catch (e) {
-    logger.error(`Error while getting user profile:`, e);
-    console.log(e.config);
-    throw e;
-  }
+  return await discordApiClient.getMe(`Bearer ${accessToken}`);
+}
+
+async function getMeGuilds(accessToken) {
+  return await discordApiClient.getMeGuilds(`Bearer ${accessToken}`);
+}
+
+async function getBotGuilds() {
+  return await discordApiClient.getMeGuilds(`Bot ${DISCORD_TOKEN}`);
 }
 
 module.exports = {
+  getBotGuilds,
   getMe,
+  getMeGuilds,
   getToken,
   refreshToken,
 };

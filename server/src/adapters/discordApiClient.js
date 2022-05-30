@@ -32,10 +32,19 @@ async function refreshToken(refreshToken) {
   return res.data;
 }
 
-async function getMe(accessToken) {
+async function getMe(Authorization) {
   const res = await discordApiClient.get(`${USERS_ENDPOINT}/@me`, {
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization,
+    },
+  });
+  return res.data;
+}
+
+async function getMeGuilds(Authorization) {
+  const res = await discordApiClient.get(`${USERS_ENDPOINT}/@me/guilds`, {
+    headers: {
+      Authorization,
     },
   });
   return res.data;
@@ -45,4 +54,5 @@ module.exports = {
   exchangeCode,
   refreshToken,
   getMe,
+  getMeGuilds,
 };
