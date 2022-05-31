@@ -36,6 +36,7 @@ export default styled.div`
     color: ${({ theme }) => theme.text};
     transition: color 0.25s ease-in-out;
     text-decoration: none;
+    cursor: pointer;
 
     &:hover {
       color: ${({ theme }) => theme.primary};
