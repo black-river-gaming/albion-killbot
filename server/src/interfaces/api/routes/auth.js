@@ -27,4 +27,19 @@ router.use(disableCache);
  */
 router.post(`/auth`, authController.auth);
 
+/**
+ * @openapi
+ * /auth/logout:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Logout, deleting all session cookies.
+ *     operationId: logout
+ *     responses:
+ *       200:
+ *         description: Logout sucess
+ *       403:
+ *         description: Unable to logout
+ */
+router.post(`/auth/logout`, authController.logout);
+
 module.exports = router;

@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 const logger = require("../../helpers/logger");
 const { disableCache } = require("./middlewares/cache");
 const { refreshDiscordToken } = require("./middlewares/auth");
@@ -20,6 +21,10 @@ app.use(
     limit: "1mb",
   }),
 );
+
+if (NODE_ENV == "development") {
+  app.use(cors());
+}
 
 // Session
 app.use(session);

@@ -19,6 +19,12 @@ async function auth(req, res) {
   }
 }
 
+async function logout(req, res) {
+  delete req.session.discord;
+  return res.sendStatus(200);
+}
+
 module.exports = {
   auth,
+  logout,
 };
