@@ -1,0 +1,47 @@
+name: Deploy
+
+on:
+  push:
+    tags: [v*.*.*]
+
+defaults:
+  run:
+    shell: bash
+    working-directory: dashboard/
+
+jobs:
+  server:
+    name: Deploy dashboard
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://albion-killbot.com/
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: "npm"
+          cache-dependency-path: dashboard/
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build for production
+        env:
+          REACT_APP_DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
+          REACT_APP_DISCORD_REDIRECT_URL: ${{ secrets.DISCORD_REDIRECT_URL }}
+        run: npm run build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-1
+
+      - name: Sync files to S3
+        run: aws s3 sync ./build s3://${{ secrets.AWS_S3_BUCKET }}
