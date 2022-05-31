@@ -87,10 +87,15 @@ const Header = () => {
                 <FontAwesomeIcon icon={faCrown} style={{ paddingBottom: 4 }} />
                 <div>Premium</div>
               </NavLink>
-              <NavLink to="/discord" className="navbar-link">
+              <a
+                href="https://discord.gg/56AExWh"
+                target="_blank"
+                className="navbar-link"
+                rel="noreferrer"
+              >
                 <FontAwesomeIcon icon={faDiscord} />
                 <div>Join Server</div>
-              </NavLink>
+              </a>
               <div className="desktop">{renderLogin(user)}</div>
             </div>
           </Navbar.Collapse>
