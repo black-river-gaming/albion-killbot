@@ -3,7 +3,7 @@ const discordApiClient = require("../adapters/discordApiClient");
 const { DISCORD_TOKEN } = process.env;
 
 async function getToken(code) {
-  return await discordApiClient.getToken(code);
+  return await discordApiClient.exchangeCode(code);
 }
 
 async function refreshToken(refreshToken) {
