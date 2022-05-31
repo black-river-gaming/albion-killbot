@@ -106,7 +106,7 @@ services:
   dashboard:
     build:
       context: ../dashboard
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     image: albion-killbot-dashboard
     tty: true
     command: npm start
