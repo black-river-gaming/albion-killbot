@@ -1,4 +1,5 @@
 import App from "App";
+import Auth from "pages/Auth";
 import Home from "pages/Home";
 import {
   BrowserRouter,
@@ -22,6 +23,7 @@ function MainRoutes() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/auth" element={<Auth />} />
         <Route path="/" element={<App />}>
           <Route index element={<Home />} />
           <Route element={<ProtectedRoutes redirectTo="/" />} />
