@@ -119,11 +119,9 @@ services:
       - PORT=80
       - NODE_ENV=development
     volumes:
-      - ../dashboard/node_modules:/app/node_modules
       - ../dashboard/public:/app/public
       - ../dashboard/src:/app/src
       - ../dashboard/tsconfig.json:/app/tsconfig.json
-      - ../dashboard/tsconfig.build.json:/app/tsconfig.build.json
     expose:
       - 80
 
