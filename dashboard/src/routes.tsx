@@ -9,6 +9,7 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
+import Loader from "shared/components/Loader";
 import { useFetchUserQuery } from "store/api";
 
 interface IRedirectTo {
@@ -17,6 +18,7 @@ interface IRedirectTo {
 
 function AuthenticatedRoutes({ redirectTo }: IRedirectTo) {
   const user = useFetchUserQuery();
+  if (user.isFetching) return <Loader />;
   return user.data ? <Outlet /> : <Navigate to={redirectTo} />;
 }
 

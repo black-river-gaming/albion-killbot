@@ -1,10 +1,19 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-interface User {
+export interface User {
   id: string;
   username: string;
   avatar: string;
   discriminator: string;
+}
+
+export interface Server {
+  id: string;
+  name: string;
+  icon: string;
+  owner: boolean;
+  admin?: boolean;
+  bot: boolean;
 }
 
 export const apiSlice = createApi({
@@ -33,13 +42,17 @@ export const apiSlice = createApi({
       fetchUser: builder.query<User, void>({
         query: () => `/users/me`,
       }),
+      fetchUserServers: builder.query<Server[], void>({
+        query: () => `/users/me/servers`,
+      }),
     };
   },
 });
 
 export const {
-  useFetchUserQuery,
-  useLazyFetchUserQuery,
   useAuthMutation,
+  useFetchUserQuery,
+  useFetchUserServersQuery,
+  useLazyFetchUserQuery,
   useLogoutMutation,
 } = apiSlice;

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import ContentLoader from "react-content-loader";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import Loader from "shared/components/Loader";
+import Paper from "shared/components/Paper";
 import { useAuthMutation, useLazyFetchUserQuery } from "store/api";
 
 const Auth = () => {
@@ -16,6 +17,8 @@ const Auth = () => {
         await auth(code);
         await fetchUser();
         navigate("/dashboard", { replace: true });
+      } else {
+        navigate("/", { replace: true });
       }
     };
 
@@ -23,16 +26,9 @@ const Auth = () => {
   }, [auth, navigate, search, fetchUser]);
 
   return (
-    <ContentLoader
-      viewBox="0 0 400 160"
-      height="100%"
-      width="100%"
-      backgroundColor="transparent"
-    >
-      <circle cx="150" cy="86" r="8" />
-      <circle cx="194" cy="86" r="8" />
-      <circle cx="238" cy="86" r="8" />
-    </ContentLoader>
+    <Paper className="fullscreen">
+      <Loader />
+    </Paper>
   );
 };
 
