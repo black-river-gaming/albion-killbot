@@ -7,6 +7,11 @@ import ContentLoader from "react-content-loader";
 import { NavLink } from "react-router-dom";
 import Dropdown from "shared/components/Dropdown";
 import Paper from "shared/components/Paper";
+import {
+  DISCORD_OAUTH_URL,
+  DISCORD_SERVER_URL,
+  getUserPictureUrl,
+} from "shared/discord";
 import theme from "shared/theme";
 import { useFetchUserQuery, useLogoutMutation } from "store/api";
 import Container from "./styles";
@@ -14,11 +19,6 @@ import Container from "./styles";
 const Header = () => {
   const user = useFetchUserQuery();
   const [logout] = useLogoutMutation();
-
-  const { REACT_APP_DISCORD_CLIENT_ID, REACT_APP_DISCORD_REDIRECT_URI = "" } =
-    process.env;
-  const encodedRedirectUri = encodeURIComponent(REACT_APP_DISCORD_REDIRECT_URI);
-  const discordOAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${REACT_APP_DISCORD_CLIENT_ID}&redirect_uri=${encodedRedirectUri}&response_type=code&scope=identify%20guilds`;
 
   const doLogout = async () => {
     try {
@@ -54,7 +54,7 @@ const Header = () => {
             <Image
               className="user-avatar"
               roundedCircle
-              src={`https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`}
+              src={getUserPictureUrl(data)}
             />
           </Dropdown.Toggle>
 
@@ -70,7 +70,7 @@ const Header = () => {
       );
     }
 
-    return <Button href={discordOAuthUrl}>Login</Button>;
+    return <Button href={DISCORD_OAUTH_URL}>Login</Button>;
   };
 
   return (
@@ -88,7 +88,7 @@ const Header = () => {
                 <div>Premium</div>
               </NavLink>
               <a
-                href="https://discord.gg/56AExWh"
+                href={DISCORD_SERVER_URL}
                 target="_blank"
                 className="navbar-link"
                 rel="noreferrer"

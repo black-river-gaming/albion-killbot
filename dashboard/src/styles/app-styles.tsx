@@ -52,4 +52,27 @@ export default styled.div`
       border: none;
     }
   }
+
+  /* Bootstrap Button overrides */
+  .btn {
+    &.btn-primary {
+      color: ${({ theme }) => theme.text};
+      background-color: ${({ theme }) => theme.primary};
+      border-color: ${({ theme }) => theme.primary};
+
+      &:focus {
+        box-shadow: 0 0 0 0.25rem ${({ theme }) => theme.primary}1a;
+      }
+    }
+
+    &.btn-secondary {
+      color: ${({ theme }) => theme.text};
+      background-color: ${({ theme }) => theme.secondary};
+      border-color: ${({ theme }) => theme.secondary};
+
+      &:focus {
+        box-shadow: 0 0 0 0.25rem ${({ theme }) => theme.secondary}1a;
+      }
+    }
+  }
 `;

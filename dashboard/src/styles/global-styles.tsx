@@ -6,4 +6,14 @@ export default createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
   }
+  
+  .fill {
+    width: 100%;
+    height: 100%;
+  }
+
+  .fullscreen {
+    width: 100vw;
+    height: 100vh;
+  }
 `;

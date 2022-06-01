@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Paper = styled.div`
+const PaperStyles = styled.div`
   background-color: ${({ theme }) => theme.background};
   color: ${({ theme }) => theme.text};
 
@@ -84,4 +84,4 @@ const Paper = styled.div`
   }
 `;
 
-export default Paper;
+export default PaperStyles;
