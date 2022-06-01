@@ -1,24 +1,26 @@
 import { useEffect } from "react";
 import ContentLoader from "react-content-loader";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAuthMutation } from "store/api";
+import { useAuthMutation, useLazyFetchUserQuery } from "store/api";
 
 const Auth = () => {
   const [auth] = useAuthMutation();
   const [search] = useSearchParams();
   const navigate = useNavigate();
+  const [fetchUser] = useLazyFetchUserQuery();
 
   useEffect(() => {
     const doAuth = async () => {
       const code = search.get("code");
       if (code) {
         await auth(code);
-        navigate("/", { replace: true });
+        await fetchUser();
+        navigate("/dashboard", { replace: true });
       }
     };
 
     doAuth();
-  }, [auth, navigate, search]);
+  }, [auth, navigate, search, fetchUser]);
 
   return (
     <ContentLoader
