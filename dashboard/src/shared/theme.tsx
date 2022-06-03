@@ -1,6 +1,6 @@
 const theme = {
   name: "dark",
-  background: "#121212",
+  background: "#1c1c1c",
   primary: "#ffbd59",
   secondary: "#69657c",
   text: "#ffffff",

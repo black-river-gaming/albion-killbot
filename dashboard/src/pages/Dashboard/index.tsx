@@ -1,6 +1,8 @@
-import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import Loader from "shared/components/Loader";
-import { getServerInviteUrl, getServerPictureUrl } from "shared/discord";
+import ServerCard from "shared/components/ServerCard";
+import { getServerInviteUrl } from "shared/discord";
 import { Server, useFetchUserServersQuery } from "store/api";
 import DashboardStyles from "./styles";
 
@@ -40,40 +42,24 @@ const Dashboard = () => {
   };
 
   const renderUserServer = (server: Server) => {
-    const serverImg = getServerPictureUrl(server);
-
     return (
       <Col sm={6} lg={4} key={server.id}>
-        <Card bg="dark" className="server-card">
-          <div className="server-img-container">
-            <Card.Img className="server-img-blurred" src={serverImg} />
-            <Card.Img
-              className="server-img-icon"
-              variant="top"
-              src={serverImg}
-            />
-          </div>
-          <Card.Body>
-            <Card.Title>{server.name}</Card.Title>
-            {server.owner ? (
-              <Card.Text>Owner</Card.Text>
-            ) : (
-              server.admin && <Card.Text>Admin</Card.Text>
-            )}
-            <div className="server-buttons">
-              {server.bot ? (
+        <ServerCard server={server}>
+          <div className="server-buttons">
+            {server.bot ? (
+              <Link to={server.id}>
                 <Button variant="primary">Dashboard</Button>
-              ) : (
-                <Button
-                  variant="secondary"
-                  onClick={() => inviteToServer(server)}
-                >
-                  Invite
-                </Button>
-              )}
-            </div>
-          </Card.Body>
-        </Card>
+              </Link>
+            ) : (
+              <Button
+                variant="secondary"
+                onClick={() => inviteToServer(server)}
+              >
+                Invite
+              </Button>
+            )}
+          </div>
+        </ServerCard>
       </Col>
     );
   };
@@ -81,7 +67,7 @@ const Dashboard = () => {
   return (
     <DashboardStyles>
       <div className="dashboard-title">
-        <h2>Select your server</h2>
+        <h1>Discord Servers</h1>
       </div>
       <Container fluid className="pt-4">
         <Row className="g-4">

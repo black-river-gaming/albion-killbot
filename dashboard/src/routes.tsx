@@ -2,6 +2,10 @@ import App from "App";
 import Auth from "pages/Auth";
 import Dashboard from "pages/Dashboard";
 import Home from "pages/Home";
+import Server from "pages/Server";
+import Settings from "pages/Settings";
+import Subscription from "pages/Subscription";
+import Track from "pages/Track";
 import {
   BrowserRouter,
   Navigate,
@@ -30,7 +34,18 @@ function MainRoutes() {
         <Route path="/" element={<App />}>
           <Route index element={<Home />} />
           <Route element={<AuthenticatedRoutes redirectTo="/" />}>
-            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="dashboard">
+              <Route index element={<Dashboard />} />
+              <Route path=":serverId" element={<Server />}>
+                <Route
+                  index
+                  element={<Navigate to="settings" replace={true} />}
+                />
+                <Route path="settings" element={<Settings />} />
+                <Route path="track" element={<Track />} />
+                <Route path="subscription" element={<Subscription />} />
+              </Route>
+            </Route>
           </Route>
           <Route path="*" element={<h1>404 - Not found</h1>}></Route>
         </Route>
