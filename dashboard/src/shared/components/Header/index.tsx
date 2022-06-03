@@ -74,7 +74,7 @@ const Header = () => {
   };
 
   return (
-    <Paper>
+    <Paper elevation={0}>
       <Container>
         <Navbar expand="lg" variant="dark">
           <Navbar.Brand as={NavLink} to="/">
