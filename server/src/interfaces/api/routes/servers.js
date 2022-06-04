@@ -29,9 +29,9 @@ router.use(disableCache);
  *        channels:
  *          type: array
  *          items:
- *            - $ref: '#/components/schemas/Channel'
+ *            $ref: '#/components/schemas/Channel'
  *        settings:
- *          - $ref: '#/components/schemas/Settings'
+ *          $ref: '#/components/schemas/Settings'
  *
  *    Channel:
  *      type: object
@@ -49,7 +49,9 @@ router.use(disableCache);
  *        type:
  *          type: number
  *          description: Type of channel, refer to external doc
- *          externalDocs: https://discord.com/developers/docs/resources/channel#channel-object-channel-types
+ *          externalDocs:
+ *            description: Official discord list of channel types
+ *            url: https://discord.com/developers/docs/resources/channel#channel-object-channel-types
  *          readOnly: true
  *          example: 0
  *
