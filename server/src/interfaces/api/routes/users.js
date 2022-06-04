@@ -72,7 +72,7 @@ router.use(disableCache);
  *          readOnly: true
  *          example: false
  *
- *    Server:
+ *    ServerPartial:
  *      type: object
  *      properties:
  *        id:
@@ -95,17 +95,16 @@ router.use(disableCache);
  *          description: If the current user is the server owner
  *          readOnly: true
  *          example: true
- *        permissions:
- *          type: string
- *          description: List of server default permissions.
+ *        admin:
+ *          type: boolean
+ *          description: If the current user is the server admin
  *          readOnly: true
- *          example: "4398046511103"
- *        features:
- *          type: array
- *          items:
- *            type: string
- *          description: Enabled guild features
+ *          example: true
+ *        bot:
+ *          type: boolean
+ *          description: If the current bot is present on the server
  *          readOnly: true
+ *          example: true
  */
 
 /**
@@ -142,7 +141,7 @@ router.get(`/users/me`, usersController.getUser);
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Server'
+ *                 $ref: '#/components/schemas/ServerPartial'
  *       403:
  *         description: Unable to authenticate
  */

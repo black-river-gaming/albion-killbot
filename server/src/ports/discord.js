@@ -15,15 +15,41 @@ async function getMe(accessToken) {
 }
 
 async function getMeGuilds(accessToken) {
-  return await discordApiClient.getMeGuilds(`Bearer ${accessToken}`);
+  const guilds = await discordApiClient.getMeGuilds(`Bearer ${accessToken}`);
+  return guilds.map((guild) => ({
+    id: guild.id,
+    name: guild.name,
+    icon: guild.icon,
+    owner: guild.owner,
+  }));
 }
 
 async function getBotGuilds() {
   return await discordApiClient.getMeGuilds(`Bot ${DISCORD_TOKEN}`);
 }
 
+async function getGuild(guildId) {
+  const guild = await discordApiClient.getGuild(`Bot ${DISCORD_TOKEN}`, guildId);
+  return {
+    id: guild.id,
+    name: guild.name,
+    icon: guild.icon,
+  };
+}
+
+async function getGuildChannels(guildId) {
+  const channels = await discordApiClient.getGuildChannels(`Bot ${DISCORD_TOKEN}`, guildId);
+  return channels.map((channel) => ({
+    id: channel.id,
+    name: channel.name,
+    type: channel.type,
+  }));
+}
+
 module.exports = {
   getBotGuilds,
+  getGuild,
+  getGuildChannels,
   getMe,
   getMeGuilds,
   getToken,

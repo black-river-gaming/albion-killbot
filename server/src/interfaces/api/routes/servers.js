@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const settingsController = require("../controllers/settings");
+const serversController = require("../controllers/servers");
 const { disableCache } = require("../middlewares/cache");
 
 router.use(disableCache);
@@ -8,6 +8,51 @@ router.use(disableCache);
  * @openapi
  * components:
  *  schemas:
+ *    Server:
+ *      type: object
+ *      properties:
+ *        id:
+ *          type: string
+ *          description: Discord server id.
+ *          readOnly: true
+ *          example: "159962941502783488"
+ *        name:
+ *          type: string
+ *          description: Server name.
+ *          readOnly: true
+ *          example: "Discord Server Name"
+ *        icon:
+ *          type: string
+ *          description: Discord server icon, to be used with the default icon url.
+ *          readOnly: true
+ *          example: "a_70cacbcd2ce03227ca160f18d250c868"
+ *        channels:
+ *          type: array
+ *          items:
+ *            - $ref: '#/components/schemas/Channel'
+ *        settings:
+ *          - $ref: '#/components/schemas/Settings'
+ *
+ *    Channel:
+ *      type: object
+ *      properties:
+ *        id:
+ *          type: string
+ *          description: Discord channel id.
+ *          readOnly: true
+ *          example: "869662789713666099"
+ *        name:
+ *          type: string
+ *          description: Channel name.
+ *          readOnly: true
+ *          example: "channel"
+ *        type:
+ *          type: number
+ *          description: Type of channel, refer to external doc
+ *          externalDocs: https://discord.com/developers/docs/resources/channel#channel-object-channel-types
+ *          readOnly: true
+ *          example: 0
+ *
  *    Settings:
  *      type: object
  *      properties:
@@ -111,17 +156,17 @@ router.use(disableCache);
 
 /**
  * @openapi
- * /settings/{guildId}:
+ * /servers/{guildId}:
  *   get:
- *     tags: [Settings]
+ *     tags: [Servers]
  *     parameters:
  *     - name: guildId
  *       in: path
  *       required: true
  *       schema:
  *         type: string
- *     summary: Get settings for a specific server.
- *     operationId: getSettings
+ *     summary: Get data for a given server, including a list of channels and settings.
+ *     operationId: getServer
  *     responses:
  *       200:
  *         description: Server settings
@@ -130,13 +175,13 @@ router.use(disableCache);
  *             schema:
  *               $ref: '#/components/schemas/Settings'
  */
-router.get(`/settings/:guildId`, settingsController.getSettings);
+router.get(`/servers/:guildId`, serversController.getServer);
 
 /**
  * @openapi
- * /settings/{guildId}:
+ * /servers/{guildId}/settings:
  *   put:
- *     tags: [Settings]
+ *     tags: [Servers]
  *     parameters:
  *     - name: guildId
  *       in: path
@@ -149,7 +194,7 @@ router.get(`/settings/:guildId`, settingsController.getSettings);
  *           schema:
  *             $ref: '#/components/schemas/Settings'
  *     summary: Update settings for a specific server.
- *     operationId: setSettings
+ *     operationId: setServerSettings
  *     responses:
  *       200:
  *         description: Server settings
@@ -158,25 +203,6 @@ router.get(`/settings/:guildId`, settingsController.getSettings);
  *             schema:
  *               $ref: '#/components/schemas/Settings'
  */
-router.put(`/settings/:guildId`, settingsController.setSettings);
-
-/**
- * @openapi
- * /settings/{guildId}:
- *   delete:
- *     tags: [Settings]
- *     parameters:
- *     - name: guildId
- *       in: path
- *       required: true
- *       schema:
- *         type: string
- *     summary: Delete settings for a server.
- *     operationId: deleteSettings
- *     responses:
- *       200:
- *         description: Operation success
- */
-router.delete(`/settings/:guildId`, settingsController.deleteSettings);
+router.put(`/servers/:guildId/settings`, serversController.setServerSettings);
 
 module.exports = router;

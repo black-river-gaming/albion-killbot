@@ -13,12 +13,13 @@ async function getCurrentUser(accessToken) {
 async function getCurrentUserServers(accessToken) {
   try {
     const botServerIds = (await discord.getBotGuilds()).map((s) => s.id);
-    // TODO: Show servers where the user has Administrator permission
     const servers = (await discord.getMeGuilds(accessToken))
+      // TODO: Show servers where the user has Administrator permission
       .filter((server) => server.owner)
       .map((server) => {
         return {
           ...server,
+          admin: true,
           bot: botServerIds.indexOf(server.id) >= 0,
         };
       });

@@ -2,6 +2,7 @@ const axios = require("axios");
 
 const TOKEN_ENDPOINT = "/oauth2/token";
 const USERS_ENDPOINT = "/users";
+const GUILDS_ENDPOINT = "/guilds";
 
 const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_REDIRECT_URL } = process.env;
 
@@ -50,9 +51,29 @@ async function getMeGuilds(Authorization) {
   return res.data;
 }
 
+async function getGuild(Authorization, guildId) {
+  const res = await discordApiClient.get(`${GUILDS_ENDPOINT}/${guildId}`, {
+    headers: {
+      Authorization,
+    },
+  });
+  return res.data;
+}
+
+async function getGuildChannels(Authorization, guildId) {
+  const res = await discordApiClient.get(`${GUILDS_ENDPOINT}/${guildId}/channels`, {
+    headers: {
+      Authorization,
+    },
+  });
+  return res.data;
+}
+
 module.exports = {
   exchangeCode,
-  refreshToken,
+  getGuild,
+  getGuildChannels,
   getMe,
   getMeGuilds,
+  refreshToken,
 };

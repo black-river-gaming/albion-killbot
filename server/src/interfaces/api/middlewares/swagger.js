@@ -31,7 +31,7 @@ try {
         { name: "Battles", description: "Battle data" },
         { name: "Kills", description: "Kill data" },
         { name: "Rankings", description: "Ranking data" },
-        { name: "Settings", description: "Server settings" },
+        { name: "Servers", description: "Servers and settings" },
       ],
     },
     apis: [path.join(__dirname, "..", "routes", "**.js")],

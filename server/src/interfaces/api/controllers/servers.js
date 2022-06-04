@@ -1,17 +1,19 @@
+const serversService = require("../../../services/servers");
 const settingsService = require("../../../services/settings");
 
-async function getAllSettings(req, res) {
-  const allSettings = await settingsService.getAllSettings();
-  return res.send(allSettings);
-}
-
-async function getSettings(req, res) {
+async function getServer(req, res) {
   const { guildId } = req.params;
+  const server = await serversService.getServer(guildId);
   const settings = await settingsService.getSettings(guildId);
-  return res.send(settings);
+
+  server.settings = settings;
+
+  return res.send(server);
 }
 
-async function setSettings(req, res) {
+async function setServerSettings(req, res) {
+  // TODO: Add authorization guard for Server Owner and Administrators
+
   const { guildId } = req.params;
   const newSettings = req.body;
 
@@ -24,15 +26,7 @@ async function setSettings(req, res) {
   return res.send(settings);
 }
 
-async function deleteSettings(req, res) {
-  const { guildId } = req.params;
-  await settingsService.deleteSettings(guildId);
-  return res.send(200);
-}
-
 module.exports = {
-  getAllSettings,
-  getSettings,
-  setSettings,
-  deleteSettings,
+  getServer,
+  setServerSettings,
 };
