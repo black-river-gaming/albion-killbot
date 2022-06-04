@@ -3,7 +3,7 @@ const { String } = require("discord-api-types/v10").ApplicationCommandOptionType
 const { getLocale } = require("../../../helpers/locale");
 const { getRanking } = require("../../../services/rankings");
 const { getGuild } = require("../../../services/guilds");
-const { embedPvpRanking, embedGuildRanking } = require("../helpers/embeds");
+const { embedPvpRanking, embedGuildRanking } = require("../../../helpers/embeds");
 
 const t = getLocale().t;
 

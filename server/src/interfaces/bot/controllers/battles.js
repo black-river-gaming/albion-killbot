@@ -5,7 +5,7 @@ const { subscribeBattles } = require("../../../services/battles");
 const { getSettingsByGuild } = require("../../../services/settings");
 const { hasSubscription } = require("../../../services/subscriptions");
 
-const { embedBattle } = require("../helpers/embeds");
+const { embedBattle } = require("../../../helpers/embeds");
 
 const { sendNotification } = require("./notifications");
 

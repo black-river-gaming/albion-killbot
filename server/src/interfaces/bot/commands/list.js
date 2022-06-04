@@ -1,6 +1,6 @@
 const { InteractionType } = require("discord-api-types/v10");
 const { getLocale } = require("../../../helpers/locale");
-const { embedTrackList } = require("../helpers/embeds");
+const { embedTrackList } = require("../../../helpers/embeds");
 
 const command = {
   name: "list",

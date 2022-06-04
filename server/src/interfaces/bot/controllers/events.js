@@ -7,7 +7,7 @@ const { getSettingsByGuild, REPORT_MODES } = require("../../../services/settings
 const { addRankingKill } = require("../../../services/rankings");
 const { hasSubscription } = require("../../../services/subscriptions");
 
-const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../helpers/embeds");
+const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../../../helpers/embeds");
 
 const { sendNotification } = require("./notifications");
 

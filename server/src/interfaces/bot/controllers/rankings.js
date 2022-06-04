@@ -2,7 +2,7 @@ const logger = require("../../../helpers/logger");
 const { getRanking, deleteRankings } = require("../../../services/rankings");
 const { getSettingsByGuild } = require("../../../services/settings");
 
-const { embedPvpRanking } = require("../helpers/embeds");
+const { embedPvpRanking } = require("../../../helpers/embeds");
 
 const { sendNotification } = require("./notifications");
 

@@ -3,7 +3,7 @@ const moment = require("moment");
 const logger = require("../../../helpers/logger");
 const { getSettingsByGuild } = require("../../../services/settings");
 const { getAllGuilds, updateGuild } = require("../../../services/guilds");
-const { embedGuildRanking } = require("../helpers/embeds");
+const { embedGuildRanking } = require("../../../helpers/embeds");
 
 const { sendNotification } = require("./notifications");
 

@@ -1,6 +1,6 @@
 const moment = require("moment");
-const { getLocale } = require("../../../helpers/locale");
-const { digitsFormatter, humanFormatter } = require("../../../helpers/utils");
+const { getLocale } = require("./locale");
+const { digitsFormatter, humanFormatter } = require("./utils");
 
 const KILL_URL = "https://albiononline.com/{lang}/killboard/kill/{kill}";
 const GREEN = 52224;
