@@ -43,6 +43,7 @@ async function getGuildChannels(guildId) {
     id: channel.id,
     name: channel.name,
     type: channel.type,
+    parentId: channel.parent_id,
   }));
 }
 

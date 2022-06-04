@@ -54,6 +54,11 @@ router.use(disableCache);
  *            url: https://discord.com/developers/docs/resources/channel#channel-object-channel-types
  *          readOnly: true
  *          example: 0
+ *        parentId:
+ *          type: string
+ *          description: Id of category if it's nested.
+ *          readOnly: true
+ *          example: "903291231612858378"
  *
  *    Settings:
  *      type: object
