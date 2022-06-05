@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Loader from "shared/components/Loader";
 import ServerCard from "shared/components/ServerCard";
 import { getServerInviteUrl } from "shared/discord";
-import { Server, useFetchUserServersQuery } from "store/api";
+import { ServerPartial, useFetchUserServersQuery } from "store/api";
 import DashboardStyles from "./styles";
 
 const Dashboard = () => {
@@ -22,7 +22,7 @@ const Dashboard = () => {
   }
 
   let invitePopup: Window;
-  const inviteToServer = (server: Server) => {
+  const inviteToServer = (server: ServerPartial) => {
     if (!invitePopup || invitePopup.closed) {
       invitePopup = window.open(
         getServerInviteUrl(server),
@@ -41,7 +41,7 @@ const Dashboard = () => {
     }
   };
 
-  const renderUserServer = (server: Server) => {
+  const renderUserServer = (server: ServerPartial) => {
     return (
       <Col sm={6} lg={4} key={server.id}>
         <ServerCard server={server}>

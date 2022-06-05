@@ -16,4 +16,9 @@ export default createGlobalStyle`
     width: 100vw;
     height: 100vh;
   }
+
+  .toast {
+    position: fixed;
+    bottom: 1rem;
+  }
 `;
