@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Accordion, Button, Col, Form, Row } from "react-bootstrap";
+import { Accordion, Button, Card, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import ChannelInput from "shared/components/ChannelInput";
 import Loader from "shared/components/Loader";
@@ -76,166 +76,168 @@ const Settings = () => {
   const { lang, kills, battles, rankings } = settings;
 
   return (
-    <Form className="p-2">
-      <h4 className="d-flex justify-content-center">Settings</h4>
-      <Form.Group controlId="language" className="p-3">
-        <Form.Label>Language</Form.Label>
-        <Form.Select
-          aria-label="Language select"
-          value={lang}
-          onChange={(e) => dispatch(setLang(e.target.value))}
-        >
-          {languages.map(renderLanguageOptions)}
-        </Form.Select>
-      </Form.Group>
-      <Accordion
-        alwaysOpen
-        defaultActiveKey={["kills", "battles", "rankings"]}
-        flush
+    <Card>
+      <Form
+        className="p-2"
+        onSubmit={async () => {
+          await dispatchUpdateSettings({ serverId, settings });
+        }}
       >
-        <Accordion.Item eventKey="kills">
-          <Accordion.Header>Kills </Accordion.Header>
-          <Accordion.Body>
-            <Form.Check
-              type="checkbox"
-              label="Enabled"
-              checked={kills.enabled}
-              onChange={(e) => dispatch(setKillsEnabled(e.target.checked))}
-            />
-            <Form.Group controlId="kills-channel" className="py-2">
-              <Form.Label>Notification Channel</Form.Label>
-              <ChannelInput
-                aria-label="Kills channel"
-                disabled={!kills.enabled}
-                availableChannels={channels}
-                value={kills.channel}
-                onChannelChange={(channelId) =>
-                  dispatch(setKillsChannel(channelId))
-                }
-              />
-            </Form.Group>
-            <Form.Group controlId="kills-mode" className="py-2">
-              <Form.Label>Mode</Form.Label>
-              <Form.Select
-                aria-label="Language select"
-                disabled={!kills.enabled}
-                value={kills.mode}
-                onChange={(e) => dispatch(setKillsMode(e.target.value))}
-              >
-                {killModes.map(renderKillModeOptions)}
-              </Form.Select>
-            </Form.Group>
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="battles">
-          <Accordion.Header>Battles</Accordion.Header>
-          <Accordion.Body>
-            <Form.Check
-              type="checkbox"
-              label="Enabled"
-              checked={battles.enabled}
-              onChange={(e) => dispatch(setBattlesEnabled(e.target.checked))}
-            />
-            <Form.Group controlId="battles-channel" className="py-2">
-              <Form.Label>Notification Channel</Form.Label>
-              <ChannelInput
-                aria-label="Battles channel"
-                disabled={!battles.enabled}
-                availableChannels={channels}
-                value={battles.channel}
-                onChannelChange={(channelId) =>
-                  dispatch(setBattlesChannel(channelId))
-                }
-              />
-            </Form.Group>
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="rankings">
-          <Accordion.Header>Rankings</Accordion.Header>
-          <Accordion.Body>
-            <Form.Check
-              type="checkbox"
-              label="Enabled"
-              checked={rankings.enabled}
-              onChange={(e) => dispatch(setRankingsEnabled(e.target.checked))}
-            />
-            <Form.Group controlId="rankings-channel" className="py-2">
-              <Form.Label>Notification Channel</Form.Label>
-              <ChannelInput
-                aria-label="Rankings channel"
-                disabled={!rankings.enabled}
-                availableChannels={channels}
-                value={rankings.channel}
-                onChannelChange={(channelId) =>
-                  dispatch(setRankingsChannel(channelId))
-                }
-              />
-            </Form.Group>
-            <Row>
-              <Col sm={6}>
-                <Form.Group controlId="rankings-pvp-mode" className="py-2">
-                  <Form.Label>PvP Ranking Mode</Form.Label>
-                  <Form.Select
-                    aria-label="PvP ranking mode select"
-                    disabled={!rankings.enabled}
-                    value={rankings.pvpRanking}
-                    onChange={(e) =>
-                      dispatch(setRankingsPvpRanking(e.target.value))
-                    }
-                  >
-                    {rankingModes.map(renderRankingModeOptions)}
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-              <Col sm={6}>
-                <Form.Group controlId="rankings-guild-mode" className="py-2">
-                  <Form.Label>Guild Ranking Mode</Form.Label>
-                  <Form.Select
-                    aria-label="Guild ranking mode select"
-                    disabled={!rankings.enabled}
-                    value={rankings.guildRanking}
-                    onChange={(e) =>
-                      dispatch(setRankingsGuildRanking(e.target.value))
-                    }
-                  >
-                    {rankingModes.map(renderRankingModeOptions)}
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-            </Row>
-          </Accordion.Body>
-        </Accordion.Item>
-      </Accordion>
-      <div className="p-3">
-        <div className="d-flex justify-content-end">
-          <Button
-            variant="secondary"
-            onClick={() => {
-              if (server?.data?.settings)
-                dispatch(loadSettings(server.data.settings));
-            }}
+        <h4 className="d-flex justify-content-center">Settings</h4>
+        <Form.Group controlId="language" className="p-3">
+          <Form.Label>Language</Form.Label>
+          <Form.Select
+            aria-label="Language select"
+            value={lang}
+            onChange={(e) => dispatch(setLang(e.target.value))}
           >
-            Reset
-          </Button>
-          <div className="px-2" />
-          <Button
-            variant="primary"
-            onClick={async () => {
-              await dispatchUpdateSettings({ serverId, settings });
-            }}
-          >
-            Save
-          </Button>
+            {languages.map(renderLanguageOptions)}
+          </Form.Select>
+        </Form.Group>
+        <Accordion
+          alwaysOpen
+          defaultActiveKey={["kills", "battles", "rankings"]}
+          flush
+        >
+          <Accordion.Item eventKey="kills">
+            <Accordion.Header>Kills </Accordion.Header>
+            <Accordion.Body>
+              <Form.Check
+                type="checkbox"
+                label="Enabled"
+                checked={kills.enabled}
+                onChange={(e) => dispatch(setKillsEnabled(e.target.checked))}
+              />
+              <Form.Group controlId="kills-channel" className="py-2">
+                <Form.Label>Notification Channel</Form.Label>
+                <ChannelInput
+                  aria-label="Kills channel"
+                  disabled={!kills.enabled}
+                  availableChannels={channels}
+                  value={kills.channel}
+                  onChannelChange={(channelId) =>
+                    dispatch(setKillsChannel(channelId))
+                  }
+                />
+              </Form.Group>
+              <Form.Group controlId="kills-mode" className="py-2">
+                <Form.Label>Mode</Form.Label>
+                <Form.Select
+                  aria-label="Language select"
+                  disabled={!kills.enabled}
+                  value={kills.mode}
+                  onChange={(e) => dispatch(setKillsMode(e.target.value))}
+                >
+                  {killModes.map(renderKillModeOptions)}
+                </Form.Select>
+              </Form.Group>
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="battles">
+            <Accordion.Header>Battles</Accordion.Header>
+            <Accordion.Body>
+              <Form.Check
+                type="checkbox"
+                label="Enabled"
+                checked={battles.enabled}
+                onChange={(e) => dispatch(setBattlesEnabled(e.target.checked))}
+              />
+              <Form.Group controlId="battles-channel" className="py-2">
+                <Form.Label>Notification Channel</Form.Label>
+                <ChannelInput
+                  aria-label="Battles channel"
+                  disabled={!battles.enabled}
+                  availableChannels={channels}
+                  value={battles.channel}
+                  onChannelChange={(channelId) =>
+                    dispatch(setBattlesChannel(channelId))
+                  }
+                />
+              </Form.Group>
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="rankings">
+            <Accordion.Header>Rankings</Accordion.Header>
+            <Accordion.Body>
+              <Form.Check
+                type="checkbox"
+                label="Enabled"
+                checked={rankings.enabled}
+                onChange={(e) => dispatch(setRankingsEnabled(e.target.checked))}
+              />
+              <Form.Group controlId="rankings-channel" className="py-2">
+                <Form.Label>Notification Channel</Form.Label>
+                <ChannelInput
+                  aria-label="Rankings channel"
+                  disabled={!rankings.enabled}
+                  availableChannels={channels}
+                  value={rankings.channel}
+                  onChannelChange={(channelId) =>
+                    dispatch(setRankingsChannel(channelId))
+                  }
+                />
+              </Form.Group>
+              <Row>
+                <Col sm={6}>
+                  <Form.Group controlId="rankings-pvp-mode" className="py-2">
+                    <Form.Label>PvP Ranking Mode</Form.Label>
+                    <Form.Select
+                      aria-label="PvP ranking mode select"
+                      disabled={!rankings.enabled}
+                      value={rankings.pvpRanking}
+                      onChange={(e) =>
+                        dispatch(setRankingsPvpRanking(e.target.value))
+                      }
+                    >
+                      {rankingModes.map(renderRankingModeOptions)}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                <Col sm={6}>
+                  <Form.Group controlId="rankings-guild-mode" className="py-2">
+                    <Form.Label>Guild Ranking Mode</Form.Label>
+                    <Form.Select
+                      aria-label="Guild ranking mode select"
+                      disabled={!rankings.enabled}
+                      value={rankings.guildRanking}
+                      onChange={(e) =>
+                        dispatch(setRankingsGuildRanking(e.target.value))
+                      }
+                    >
+                      {rankingModes.map(renderRankingModeOptions)}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
+        <div className="p-3">
+          <div className="d-flex justify-content-end">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                if (server?.data?.settings)
+                  dispatch(loadSettings(server.data.settings));
+              }}
+            >
+              Reset
+            </Button>
+            <div className="px-2" />
+            <Button variant="primary" type="submit">
+              Save
+            </Button>
+          </div>
         </div>
-      </div>
 
-      <Toast bg="success" show={updateSettings.isSuccess}>
-        Settings saved.
-      </Toast>
-      <Toast bg="danger" show={updateSettings.isError}>
-        Failed to save settings. Please try again later.
-      </Toast>
-    </Form>
+        <Toast bg="success" show={updateSettings.isSuccess}>
+          Settings saved.
+        </Toast>
+        <Toast bg="danger" show={updateSettings.isError}>
+          Failed to save settings. Please try again later.
+        </Toast>
+      </Form>
+    </Card>
   );
 };
 

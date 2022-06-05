@@ -46,9 +46,7 @@ const Server = () => {
             </Card>
           </Col>
           <Col md={8}>
-            <Card>
-              <Outlet />
-            </Card>
+            <Outlet />
           </Col>
         </Row>
       </Container>
