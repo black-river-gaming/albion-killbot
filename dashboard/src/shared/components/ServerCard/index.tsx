@@ -1,10 +1,10 @@
 import { Card } from "react-bootstrap";
 import { getServerPictureUrl } from "shared/discord";
-import { Server } from "store/api";
+import { Server, ServerPartial } from "store/api";
 import StyledServerCard from "./styles";
 
 interface ServerCardProps {
-  server: Server;
+  server: ServerPartial | Server;
   children?: JSX.Element | string | number;
 }
 

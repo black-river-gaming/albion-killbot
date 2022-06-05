@@ -1,4 +1,4 @@
-import { Server, User } from "store/api";
+import { Server, ServerPartial, User } from "store/api";
 
 const { REACT_APP_DISCORD_CLIENT_ID, REACT_APP_DISCORD_REDIRECT_URI = "" } =
   process.env;
@@ -12,8 +12,12 @@ export const DISCORD_SERVER_URL = "https://discord.gg/56AExWh";
 export const getUserPictureUrl = (user: User) =>
   `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
 
-export const getServerPictureUrl = (server: Server) =>
+export const getServerPictureUrl = (server: ServerPartial | Server) =>
   `https://cdn.discordapp.com/icons/${server.id}/${server.icon}.png`;
 
-export const getServerInviteUrl = (server: Server) =>
+export const getServerInviteUrl = (server: ServerPartial | Server) =>
   `https://discord.com/oauth2/authorize?client_id=${REACT_APP_DISCORD_CLIENT_ID}&guild_id=${server.id}&scope=bot&permissions=2147534848`;
+
+export const CHANNEL_TYPES = {
+  TEXT: 0,
+};
