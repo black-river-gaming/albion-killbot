@@ -77,7 +77,7 @@ const command = {
         await setSettings(interaction.guild.id, settings);
         return addContent(t("TRACK.ALLIANCES.TRACKED", { name: alliance.AllianceTag }));
       } else {
-        const equalsCaseInsensitive = (a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
+        const equalsCaseInsensitive = (a, b) => a && a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
 
         if (settings.track[type].some((trackEntity) => equalsCaseInsensitive(trackEntity.name, value)))
           return addContent(t("TRACK.ALREADY_TRACKED"));
@@ -85,16 +85,16 @@ const command = {
         const searchResults = await search(value);
         if (!searchResults) return addContent(t("TRACK.SEARCH_FAILED"));
 
-        const entity = searchResults[type].find((searchEntity) => equalsCaseInsensitive(searchEntity.Name, value));
+        const entity = searchResults[type].find((searchEntity) => equalsCaseInsensitive(searchEntity.name, value));
         if (!entity) return addContent(t("TRACK.NOT_FOUND"));
 
         settings.track[type].push({
-          id: entity.Id,
-          name: entity.Name,
+          id: entity.id,
+          name: entity.name,
         });
 
         await setSettings(interaction.guild.id, settings);
-        return addContent(t(`TRACK.${type.toUpperCase()}.TRACKED`, { name: entity.Name }));
+        return addContent(t(`TRACK.${type.toUpperCase()}.TRACKED`, { name: entity.name }));
       }
     };
 

@@ -76,28 +76,61 @@ const getItemFile = async (item, tries = 0) => {
   return getItemFile(item, tries + 1);
 };
 
-async function getGuild(guildId) {
-  const guild = await albionApiClient.getGuild(guildId);
-
-  guild.rankings = {};
-  logger.verbose(`[${guild.Name}] Fetching PvE rankings...`);
-  guild.rankings.pve = await albionApiClient.getStatistics(guildId, albionApiClient.STATISTICS_TYPES.PVE);
-  logger.verbose(`[${guild.Name}] Fetching PvP rankings...`);
-  guild.rankings.pvp = await albionApiClient.getPlayerFame(guildId, albionApiClient.STATISTICS_TYPES.PVE);
-  logger.verbose(`[${guild.Name}] Fetching Gathering rankings...`);
-  guild.rankings.gathering = await albionApiClient.getPlayerFame(guildId, albionApiClient.STATISTICS_TYPES.GATHERING);
-  logger.verbose(`[${guild.Name}] Fetching Crafting rankings...`);
-  guild.rankings.crafting = await albionApiClient.getPlayerFame(guildId, albionApiClient.STATISTICS_TYPES.CRAFTING);
-
-  return guild;
+async function getPlayer(playerId, { silent = false }) {
+  try {
+    logger.verbose(`Fetch Albion Online player: ${playerId}`);
+    return await albionApiClient.getPlayer(playerId);
+  } catch (e) {
+    if (!silent) logger.error(`Failed to fetch Albion Online player [${playerId}]:`, e);
+    return null;
+  }
 }
 
-async function getAlliance(allianceId) {
-  return await albionApiClient.getAlliance(allianceId);
+async function getGuild(guildId, { rankings = true, silent = false }) {
+  try {
+    logger.verbose(`Fetch Albion Online guild: ${guildId}`);
+    const guild = await albionApiClient.getGuild(guildId);
+
+    if (rankings) {
+      guild.rankings = {};
+      logger.verbose(`[${guild.Name}] Fetching PvE rankings...`);
+      guild.rankings.pve = await albionApiClient.getStatistics(guildId, albionApiClient.STATISTICS_TYPES.PVE);
+      logger.verbose(`[${guild.Name}] Fetching PvP rankings...`);
+      guild.rankings.pvp = await albionApiClient.getPlayerFame(guildId, albionApiClient.STATISTICS_TYPES.PVE);
+      logger.verbose(`[${guild.Name}] Fetching Gathering rankings...`);
+      guild.rankings.gathering = await albionApiClient.getPlayerFame(
+        guildId,
+        albionApiClient.STATISTICS_TYPES.GATHERING,
+      );
+      logger.verbose(`[${guild.Name}] Fetching Crafting rankings...`);
+      guild.rankings.crafting = await albionApiClient.getPlayerFame(guildId, albionApiClient.STATISTICS_TYPES.CRAFTING);
+    }
+
+    return guild;
+  } catch (e) {
+    if (!silent) logger.error(`Failed to fetch Albion Online guild [${guildId}]:`, e);
+    return null;
+  }
 }
 
-async function search(q) {
-  return await albionApiClient.search(q);
+async function getAlliance(allianceId, { silent = false }) {
+  try {
+    logger.verbose(`Fetch Albion Online alliance: ${allianceId}`);
+    return await albionApiClient.getAlliance(allianceId);
+  } catch (e) {
+    if (!silent) logger.error(`Failed to fetch Albion Online alliance [${allianceId}]:`, e);
+    return null;
+  }
+}
+
+async function search(query) {
+  try {
+    logger.verbose(`Searching entities in Albion Online for: ${query}`);
+    return await albionApiClient.search(query);
+  } catch (e) {
+    logger.error(`Failed to search entities in API:`, e);
+    return null;
+  }
 }
 
 module.exports = {
@@ -108,5 +141,6 @@ module.exports = {
   getEvents,
   getGuild,
   getItemFile,
+  getPlayer,
   search,
 };

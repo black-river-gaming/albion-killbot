@@ -1,27 +1,36 @@
 const albion = require("../ports/albion");
-const logger = require("../helpers/logger");
+const { toSearchResult } = require("../helpers/albion");
+
+async function getPlayer(playerId) {
+  const player = await albion.getPlayer(playerId, { silent: true });
+  return toSearchResult(player);
+}
+
+async function getGuild(guildId) {
+  const guild = await albion.getGuild(guildId, {
+    rankings: false,
+    silent: true,
+  });
+  return toSearchResult(guild);
+}
 
 async function getAlliance(allianceId) {
-  try {
-    logger.verbose(`Searching alliance: ${allianceId}`);
-    return await albion.getAlliance(allianceId);
-  } catch (e) {
-    logger.error(`Failed to search entities in API:`, e);
-    return null;
-  }
+  const alliance = await albion.getAlliance(allianceId, { silent: true });
+  return toSearchResult(alliance);
 }
 
 async function search(q) {
-  try {
-    logger.verbose(`Searching entities in Albion Online for: ${q}`);
-    return await albion.search(q);
-  } catch (e) {
-    logger.error(`Failed to search entities in API:`, e);
-    return null;
-  }
+  const search = await albion.search(q);
+  return {
+    players: search.players.map(toSearchResult),
+    guilds: search.guilds.map(toSearchResult),
+    alliances: [],
+  };
 }
 
 module.exports = {
   getAlliance,
+  getGuild,
+  getPlayer,
   search,
 };

@@ -7,7 +7,8 @@ async function updateGuild(guildId) {
   const collection = getCollection(GUILDS_COLLECTION);
   if (!collection) return;
 
-  const guild = await albion.getGuild(guildId);
+  const guild = await albion.getGuild(guildId, { rankings: true });
+  if (!guild) return;
 
   guild.updatedAt = new Date();
 
