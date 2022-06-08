@@ -1,18 +1,25 @@
 import StyledLoader from "./style";
 
 interface LoaderProps {
-  width?: number;
-  height?: number;
   children?: any;
+  className?: string;
+  height?: number;
+  width?: number;
 }
 
-const Loader = ({ width = 400, height = 160, children }: LoaderProps) => {
+const Loader = ({
+  children,
+  className,
+  height = 160,
+  width = 400,
+}: LoaderProps) => {
   return (
     <StyledLoader
       viewBox={`0 0 ${width} ${height}`}
       width={width}
       height={height}
       backgroundColor="transparent"
+      className={className}
     >
       {children ? (
         children

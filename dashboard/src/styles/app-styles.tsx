@@ -68,8 +68,16 @@ export default styled.div`
 
       .accordion-header {
         background-color: inherit;
-        font-weight: 500;
+        border-radius: 0.75rem;
         color: ${({ theme }) => theme.primary};
+        font-weight: 500;
+
+        &:hover {
+          background-image: linear-gradient(
+            rgba(255, 255, 255, 0.05),
+            rgba(255, 255, 255, 0.05)
+          );
+        }
 
         .accordion-button {
           background-color: inherit;
@@ -94,7 +102,7 @@ export default styled.div`
 
       .accordion-collapse {
         .accordion-body {
-          padding: 1rem;
+          padding: 0rem 0.75rem;
         }
       }
     }
@@ -239,8 +247,8 @@ export default styled.div`
       &.active,
       &:active {
         background-image: linear-gradient(
-          rgba(255, 255, 255, 0.03),
-          rgba(255, 255, 255, 0.03)
+          rgba(255, 255, 255, 0.05),
+          rgba(255, 255, 255, 0.05)
         );
       }
     }
