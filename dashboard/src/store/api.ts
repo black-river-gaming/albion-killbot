@@ -53,6 +53,21 @@ export interface Settings {
   };
 }
 
+export interface SearchResults {
+  players: {
+    id: string;
+    name: string;
+  }[];
+  guilds: {
+    id: string;
+    name: string;
+  }[];
+  alliances: {
+    id: string;
+    name: string;
+  }[];
+}
+
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -85,6 +100,9 @@ export const apiSlice = createApi({
       fetchServer: builder.query<Server, string>({
         query: (serverId) => `/servers/${serverId}`,
       }),
+      search: builder.query<SearchResults, string>({
+        query: (query) => `/search/${query}`,
+      }),
       updateSettings: builder.mutation<
         void,
         { serverId: string; settings: Partial<Settings> }
@@ -105,6 +123,7 @@ export const {
   useFetchUserQuery,
   useFetchUserServersQuery,
   useLazyFetchUserQuery,
+  useLazySearchQuery,
   useLogoutMutation,
   useUpdateSettingsMutation,
 } = apiSlice;
