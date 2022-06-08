@@ -83,8 +83,8 @@ const Settings = () => {
           await dispatchUpdateSettings({ serverId, settings });
         }}
       >
-        <h4 className="d-flex justify-content-center">Settings</h4>
-        <Form.Group controlId="language" className="p-3">
+        <h4 className="d-flex justify-content-center py-2">Settings</h4>
+        <Form.Group controlId="language" className="p-2">
           <Form.Label>Language</Form.Label>
           <Form.Select
             aria-label="Language select"
@@ -100,11 +100,12 @@ const Settings = () => {
           flush
         >
           <Accordion.Item eventKey="kills">
-            <Accordion.Header>Kills </Accordion.Header>
+            <Accordion.Header>Kills</Accordion.Header>
             <Accordion.Body>
               <Form.Check
                 type="checkbox"
                 label="Enabled"
+                className="py-2"
                 checked={kills.enabled}
                 onChange={(e) => dispatch(setKillsEnabled(e.target.checked))}
               />
@@ -139,6 +140,7 @@ const Settings = () => {
               <Form.Check
                 type="checkbox"
                 label="Enabled"
+                className="py-2"
                 checked={battles.enabled}
                 onChange={(e) => dispatch(setBattlesEnabled(e.target.checked))}
               />
@@ -162,6 +164,7 @@ const Settings = () => {
               <Form.Check
                 type="checkbox"
                 label="Enabled"
+                className="py-2"
                 checked={rankings.enabled}
                 onChange={(e) => dispatch(setRankingsEnabled(e.target.checked))}
               />
