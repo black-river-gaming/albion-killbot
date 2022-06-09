@@ -30,15 +30,24 @@ const Server = () => {
             </ServerCard>
             <Card className="mt-3">
               <ListGroup>
-                <NavLink to="settings" className="list-group-item">
+                <NavLink
+                  to="settings"
+                  className="list-group-item list-group-item-action"
+                >
                   <FontAwesomeIcon icon={faGear} className="menu-icon" />
                   <span>Settings</span>
                 </NavLink>
-                <NavLink to="track" className="list-group-item">
+                <NavLink
+                  to="track"
+                  className="list-group-item list-group-item-action"
+                >
                   <FontAwesomeIcon icon={faList} className="menu-icon" />
                   <span>Tracking List</span>
                 </NavLink>
-                <NavLink to="subscription" className="list-group-item">
+                <NavLink
+                  to="subscription"
+                  className="list-group-item list-group-item-action"
+                >
                   <FontAwesomeIcon icon={faCrown} className="menu-icon" />
                   <span>Subscription</span>
                 </NavLink>

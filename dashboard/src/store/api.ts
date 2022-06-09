@@ -51,9 +51,10 @@ export interface Settings {
     pvpRanking: string;
     guildRanking: string;
   };
+  track: TrackList;
 }
 
-export interface SearchResults {
+export interface TrackList {
   players: {
     id: string;
     name: string;
@@ -67,6 +68,8 @@ export interface SearchResults {
     name: string;
   }[];
 }
+
+export type SearchResults = TrackList;
 
 export const apiSlice = createApi({
   reducerPath: "api",
@@ -103,6 +106,16 @@ export const apiSlice = createApi({
       search: builder.query<SearchResults, string>({
         query: (query) => `/search/${query}`,
       }),
+      updateTrack: builder.mutation<
+        void,
+        { serverId: string; track: TrackList }
+      >({
+        query: ({ serverId, track }) => ({
+          url: `/server/${serverId}/track`,
+          method: "PUT",
+          body: track,
+        }),
+      }),
       updateSettings: builder.mutation<
         void,
         { serverId: string; settings: Partial<Settings> }
@@ -125,5 +138,6 @@ export const {
   useLazyFetchUserQuery,
   useLazySearchQuery,
   useLogoutMutation,
+  useUpdateTrackMutation,
   useUpdateSettingsMutation,
 } = apiSlice;

@@ -21,4 +21,8 @@ export default createGlobalStyle`
     position: fixed;
     bottom: 1rem;
   }
+
+  .rounded {
+    border-radius: 0.75rem;
+  }
 `;
