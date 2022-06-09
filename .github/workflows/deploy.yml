@@ -33,7 +33,7 @@ jobs:
       - name: Build for production
         env:
           REACT_APP_DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
-          REACT_APP_DISCORD_REDIRECT_URL: ${{ secrets.DISCORD_REDIRECT_URL }}
+          REACT_APP_DISCORD_REDIRECT_URI: ${{ secrets.DISCORD_REDIRECT_URL }}
         run: npm run build
 
       - name: Configure AWS Credentials
