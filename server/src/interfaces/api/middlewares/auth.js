@@ -1,5 +1,6 @@
 const moment = require("moment");
 const authService = require("../../../services/auth");
+const usersService = require("../../../services/users");
 
 const refreshDiscordToken = async (req, _res, next) => {
   const { discord } = req.session;
@@ -25,6 +26,19 @@ const refreshDiscordToken = async (req, _res, next) => {
   }
 };
 
+const authenticated = async (req, res, next) => {
+  try {
+    const currentUser = await usersService.getCurrentUser(req.session.discord.accessToken);
+    req.session.discord.user = currentUser;
+
+    return next();
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(403);
+  }
+};
+
 module.exports = {
+  authenticated,
   refreshDiscordToken,
 };

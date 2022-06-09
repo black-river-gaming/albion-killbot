@@ -34,6 +34,12 @@ async function getGuild(guildId) {
     id: guild.id,
     name: guild.name,
     icon: guild.icon,
+    owner: guild.owner_id,
+    roles: guild.roles.map((role) => ({
+      id: role.id,
+      name: role.name,
+      permission: role.permissions,
+    })),
   };
 }
 

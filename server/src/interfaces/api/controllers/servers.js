@@ -12,9 +12,14 @@ async function getServer(req, res) {
 }
 
 async function setServerSettings(req, res) {
-  // TODO: Add authorization guard for Server Owner and Administrators
-
   const { guildId } = req.params;
+  const { user } = req.session.discord;
+  const server = await serversService.getServer(guildId);
+
+  const isOwner = server.owner === user.id;
+  // TODO: Get roles for user.id, then check if any of them is & (1 << 3) [Administrator]
+  if (!isOwner) return res.sendStatus(403);
+
   const newSettings = req.body;
 
   // Remove non-modifiable fields
@@ -27,9 +32,14 @@ async function setServerSettings(req, res) {
 }
 
 async function setServerTrack(req, res) {
-  // TODO: Add authorization guard for Server Owner and Administrators
-
   const { guildId } = req.params;
+  const { user } = req.session.discord;
+  const server = await serversService.getServer(guildId);
+
+  const isOwner = server.owner === user.id;
+  // TODO: Get roles for user.id, then check if any of them is & (1 << 3) [Administrator]
+  if (!isOwner) return res.sendStatus(403);
+
   const track = req.body;
 
   const settings = await settingsService.setSettings(guildId, { track });
