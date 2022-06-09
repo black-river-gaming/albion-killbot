@@ -1,7 +1,7 @@
 import { Toast, ToastProps } from "react-bootstrap";
 import StyledToast from "./style";
 
-const MyToast = (props: ToastProps) => {
+const CustomToast = (props: ToastProps) => {
   return (
     <StyledToast {...props}>
       <Toast.Body>{props.children}</Toast.Body>
@@ -9,4 +9,4 @@ const MyToast = (props: ToastProps) => {
   );
 };
 
-export default MyToast;
+export default CustomToast;

@@ -115,6 +115,10 @@ export default styled.div`
 
   /* Bootstrap Button overrides */
   .btn {
+    &.btn-icon {
+      border-radius: 50%;
+    }
+
     &.btn-primary {
       color: ${({ theme }) => theme.text};
       background-color: ${({ theme }) => theme.primary};
@@ -133,6 +137,23 @@ export default styled.div`
       &:focus {
         box-shadow: 0 0 0 0.25rem ${({ theme }) => theme.secondary}1a;
       }
+    }
+  }
+
+  /* Bootstrap Button Group overrides */
+  .btn-group {
+    .btn:not(:first-child):not(.dropdown-toggle) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+
+      border-left: 1px solid ${({ theme }) => theme.text}2f;
+    }
+
+    .btn:not(:last-child):not(.dropdown-toggle) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+
+      border-right: 1px solid ${({ theme }) => theme.text}2f;
     }
   }
 
@@ -240,16 +261,29 @@ export default styled.div`
         border-bottom-width: 1px;
       }
 
-      &:hover {
-        color: ${({ theme }) => theme.primary};
+      &.list-group-item-action {
+        &:hover {
+          color: ${({ theme }) => theme.primary};
+        }
+
+        &.active,
+        &:active {
+          background-image: linear-gradient(
+            rgba(255, 255, 255, 0.05),
+            rgba(255, 255, 255, 0.05)
+          );
+        }
       }
 
-      &.active,
-      &:active {
-        background-image: linear-gradient(
-          rgba(255, 255, 255, 0.05),
-          rgba(255, 255, 255, 0.05)
-        );
+      &.list-group-item-primary {
+        color: ${({ theme }) => theme.text};
+        background-color: ${({ theme }) => theme.primary};
+
+        &.list-group-item-action {
+          &:hover {
+            color: ${({ theme }) => theme.contrastText};
+          }
+        }
       }
     }
   }
