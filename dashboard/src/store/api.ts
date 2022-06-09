@@ -111,7 +111,7 @@ export const apiSlice = createApi({
         { serverId: string; track: TrackList }
       >({
         query: ({ serverId, track }) => ({
-          url: `/server/${serverId}/track`,
+          url: `/servers/${serverId}/track`,
           method: "PUT",
           body: track,
         }),

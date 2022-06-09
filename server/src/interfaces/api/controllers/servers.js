@@ -26,7 +26,18 @@ async function setServerSettings(req, res) {
   return res.send(settings);
 }
 
+async function setServerTrack(req, res) {
+  // TODO: Add authorization guard for Server Owner and Administrators
+
+  const { guildId } = req.params;
+  const track = req.body;
+
+  const settings = await settingsService.setSettings(guildId, { track });
+  return res.send(settings.track);
+}
+
 module.exports = {
   getServer,
   setServerSettings,
+  setServerTrack,
 };

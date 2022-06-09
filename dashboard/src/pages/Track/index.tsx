@@ -46,7 +46,7 @@ const ALLIANCE_LIMIT = 1;
 
 const Track = () => {
   const { serverId = "" } = useParams();
-  const { data: server } = useFetchServerQuery(serverId);
+  const server = useFetchServerQuery(serverId);
   const [dispatchUpdateTrack, updateTrack] = useUpdateTrackMutation();
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
@@ -55,8 +55,8 @@ const Track = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (server?.settings) {
-      dispatch(loadTrack(server.settings.track));
+    if (server?.data?.settings) {
+      dispatch(loadTrack(server.data.settings.track));
     }
   }, [dispatch, server]);
 
@@ -65,9 +65,11 @@ const Track = () => {
       updateTrack.status === QueryStatus.fulfilled ||
       updateTrack.status === QueryStatus.rejected
     ) {
-      setTimeout(updateTrack.reset, 3000);
+      setTimeout(() => {
+        updateTrack.reset();
+      }, 3000);
     }
-  }, [updateTrack.reset, updateTrack.status]);
+  }, [server, updateTrack, updateTrack.reset, updateTrack.status]);
 
   if (updateTrack.isLoading) return <Loader />;
 
@@ -248,8 +250,8 @@ const Track = () => {
               <Button
                 variant="secondary"
                 onClick={() => {
-                  if (server?.settings)
-                    dispatch(loadTrack(server.settings.track));
+                  if (server?.data?.settings)
+                    dispatch(loadTrack(server.data.settings.track));
                 }}
               >
                 Reset

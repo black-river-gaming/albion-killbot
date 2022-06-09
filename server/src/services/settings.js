@@ -68,7 +68,7 @@ async function setSettings(guild, settings) {
   await collection.updateOne(
     { guild },
     {
-      $set: Object.assign({}, DEFAULT_SETTINGS, settings),
+      $set: settings,
     },
     { upsert: true },
   );
