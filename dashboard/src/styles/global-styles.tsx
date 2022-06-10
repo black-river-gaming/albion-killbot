@@ -1,10 +1,12 @@
+import { ThemeProps } from "shared/theme";
 import { createGlobalStyle } from "styled-components";
 
-export default createGlobalStyle`
+export default createGlobalStyle<{ theme: ThemeProps }>`
   html,body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    overflow: overlay
   }
   
   .fill {
@@ -24,5 +26,24 @@ export default createGlobalStyle`
 
   .rounded {
     border-radius: 0.75rem;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: ${({ theme }) => theme.background};
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.primary}aa;
+    border: 2px solid ${({ theme }) => theme.primary}cc;
+    border-radius: 0.25rem;
+  }
+
+  ::-webkit-scrollbar-button {
+    display: none;
   }
 `;
