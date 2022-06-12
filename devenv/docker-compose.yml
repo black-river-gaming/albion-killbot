@@ -78,6 +78,7 @@ services:
       - RABBITMQ_URL=amqp://rabbitmq
     volumes:
       - ../server/migrations:/app/migrations
+      - ../server/bin:/app/bin
       - ../server/src:/app/src
       - type: volume
         source: cache
