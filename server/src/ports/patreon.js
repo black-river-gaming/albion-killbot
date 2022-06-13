@@ -3,26 +3,7 @@ const patreonApiClient = require("../adapters/patreonApiClient");
 
 const isEnabled = patreonApiClient.isEnabled;
 
-async function renewSubscription(subscription) {
-  const { pledges } = await patreonApiClient.fetchPledges();
-
-  const pledge = pledges.find((p) => p.relationships.user.data.id === subscription.patreon);
-
-  if (!pledge) throw new Error(`Couldn't find pledge`);
-  if (pledge.attributes.patron_status !== "active_patron") throw new Error(`Pledge is cancelled`);
-
-  const expires = moment(pledge.attributes.next_charge_date);
-  while (expires.diff(moment(), "days") < 1) {
-    expires.add(1, "months");
-  }
-
-  return {
-    ...subscription,
-    expires: expires.toDate(),
-  };
-}
-
-async function activateSubscription(userId) {
+async function createSubscription(userId) {
   const { pledges, users } = await patreonApiClient.fetchPledges();
 
   if (users.length > 1) {
@@ -61,8 +42,27 @@ async function activateSubscription(userId) {
   throw new Error("PATREON_DISCORD_NOT_FOUND");
 }
 
+async function refreshSubscription(subscription) {
+  const { pledges } = await patreonApiClient.fetchPledges();
+
+  const pledge = pledges.find((p) => p.relationships.user.data.id === subscription.patreon);
+
+  if (!pledge) throw new Error(`Couldn't find pledge`);
+  if (pledge.attributes.patron_status !== "active_patron") throw new Error(`Pledge is cancelled`);
+
+  const expires = moment(pledge.attributes.next_charge_date);
+  while (expires.diff(moment(), "days") < 1) {
+    expires.add(1, "months");
+  }
+
+  return {
+    ...subscription,
+    expires: expires.toDate(),
+  };
+}
+
 module.exports = {
   isEnabled,
-  activateSubscription,
-  renewSubscription,
+  createSubscription,
+  refreshSubscription,
 };
