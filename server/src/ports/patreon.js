@@ -1,6 +1,8 @@
 const moment = require("moment");
 const patreonApiClient = require("../adapters/patreonApiClient");
 
+const isEnabled = patreonApiClient.isEnabled;
+
 async function renewSubscription(subscription) {
   const { pledges } = await patreonApiClient.fetchPledges();
 
@@ -23,6 +25,13 @@ async function renewSubscription(subscription) {
 async function activateSubscription(userId) {
   const { pledges, users } = await patreonApiClient.fetchPledges();
 
+  if (users.length > 1) {
+    return {
+      patreon: users[0].id,
+      expires: moment().toDate(),
+    };
+  }
+
   for (const pledge of pledges) {
     const user = users.find((u) => u.id === pledge.relationships.user.data.id);
     if (!user || !user.attributes || !user.attributes.social_connections) continue;
@@ -43,7 +52,6 @@ async function activateSubscription(userId) {
       }
 
       return {
-        owner: userId,
         patreon: user.id,
         expires: subscription.toDate(),
       };
@@ -54,6 +62,7 @@ async function activateSubscription(userId) {
 }
 
 module.exports = {
+  isEnabled,
   activateSubscription,
   renewSubscription,
 };

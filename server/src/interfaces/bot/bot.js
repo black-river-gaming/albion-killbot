@@ -11,7 +11,6 @@ const events = require("./controllers/events");
 const battles = require("./controllers/battles");
 const guilds = require("./controllers/guilds");
 const rankings = require("./controllers/rankings");
-const subscriptions = require("./controllers/subscriptions");
 
 const commands = require("./commands");
 
@@ -68,11 +67,6 @@ client.on("shardReady", async (id) => {
       minute: 5,
     });
   }
-
-  runInterval(`${shardPrefix} Refresh subscriptions`, subscriptions.refresh, {
-    fnOpts: [client],
-    interval: DAY,
-  });
 });
 
 client.on("shardDisconnect", async (ev, id) => {

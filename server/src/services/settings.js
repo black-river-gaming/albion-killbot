@@ -38,11 +38,6 @@ async function getSettings(guild) {
   return (await collection.findOne({ guild })) || DEFAULT_SETTINGS;
 }
 
-async function getSettingsBySubscriptionOwner(owner) {
-  const collection = getCollection(SETTINGS_COLLECTION);
-  return (await collection.findOne({ "subscription.owner": owner })) || DEFAULT_SETTINGS;
-}
-
 async function getSettingsByGuild(guilds) {
   const collection = getCollection(SETTINGS_COLLECTION);
 
@@ -84,7 +79,6 @@ module.exports = {
   REPORT_MODES,
   DEFAULT_SETTINGS,
   getSettings,
-  getSettingsBySubscriptionOwner,
   getSettingsByGuild,
   getAllSettings,
   setSettings,
