@@ -42,6 +42,7 @@
     "moment": "^2.29.3",
     "mongodb": "^4.6.0",
     "morgan": "^1.10.0",
+    "stripe": "^9.8.0",
     "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.4.0",
     "winston": "^3.7.2"
