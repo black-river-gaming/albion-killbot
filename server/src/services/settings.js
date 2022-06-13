@@ -28,9 +28,6 @@ const DEFAULT_SETTINGS = {
     guilds: [],
     alliances: [],
   },
-  subscription: {
-    expires: null,
-  },
 };
 
 async function getSettings(guild) {
@@ -59,6 +56,10 @@ async function getAllSettings() {
 }
 
 async function setSettings(guild, settings) {
+  for (const key in settings) {
+    if (!(key in DEFAULT_SETTINGS)) delete settings[key];
+  }
+
   const collection = getCollection(SETTINGS_COLLECTION);
   await collection.updateOne(
     { guild },

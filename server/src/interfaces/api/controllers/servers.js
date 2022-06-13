@@ -22,11 +22,6 @@ async function setServerSettings(req, res) {
 
   const newSettings = req.body;
 
-  // Remove non-modifiable fields
-  delete newSettings.guild;
-  delete newSettings.subscription;
-  delete newSettings.track;
-
   const settings = await settingsService.setSettings(guildId, newSettings);
   return res.send(settings);
 }
