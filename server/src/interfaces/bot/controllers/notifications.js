@@ -9,6 +9,7 @@ async function sendNotification(client, channelId, message) {
     // Notify server owner in case of deleted channel?
     return logger.debug(`${channel.guild.name}/${channelId}: Channel not found.`);
   }
+  if (!channel.guild) channel.guild = { name: "Unknown Guild" };
 
   logger.debug(`Sending notification to ${channel.guild.name}/#${channel.name}:`, { metadata: message.embeds });
   try {
