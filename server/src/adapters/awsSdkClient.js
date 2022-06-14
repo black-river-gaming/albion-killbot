@@ -25,23 +25,15 @@ async function getS3Object(name) {
   }).promise();
 }
 
-async function putS3Object(name, data) {
-  return await S3.putObject({
-    Bucket: AWS_BUCKET || "albion-killbot",
-    Key: name,
-    Body: data,
-  }).promise();
-}
-
-async function downloadFromS3(name, writer) {
+async function downloadFromS3(name, writeStream) {
   try {
     logger.verbose(`Downloading "${name}" from AWS Bucket`);
 
     const data = await getS3Object(name);
     return new Promise((resolve) => {
-      writer.on("finish", () => resolve(true));
-      writer.on("error", () => resolve(false));
-      writer.end(data.Body);
+      writeStream.on("finish", () => resolve(true));
+      writeStream.on("error", () => resolve(false));
+      writeStream.end(data.Body);
     });
   } catch (e) {
     logger.error(`Error while downloading ${name} from AWS Bucket:`, e);
@@ -51,7 +43,13 @@ async function downloadFromS3(name, writer) {
 async function uploadToS3(name, readStream) {
   try {
     logger.verbose(`Uploading "${name}" to AWS Bucket`);
-    await putS3Object(name, readStream);
+
+    await S3.putObject({
+      Bucket: AWS_BUCKET || "albion-killbot",
+      Key: name,
+      Body: readStream,
+    }).promise();
+
     return true;
   } catch (e) {
     logger.error(`Failed to upload ${name} from AWS Bucket:`, e);

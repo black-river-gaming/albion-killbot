@@ -55,9 +55,15 @@ function createWriteStream(...file) {
   return writer;
 }
 
+function createReadStream(...file) {
+  const absFilePath = getFile(...file);
+  return fs.createReadStream(absFilePath);
+}
+
 module.exports = {
   getFile,
   hasFile,
   isBusy,
   createWriteStream,
+  createReadStream,
 };

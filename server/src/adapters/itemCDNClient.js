@@ -15,7 +15,7 @@ const CDNS = [
 ];
 
 async function downloadFromCDNs(item, writer) {
-  logger.verbose(`Searching item "${item}" in CDNs...`);
+  logger.verbose(`Searching item "${item.Type}_Q${item.Quality}" in CDNs...`);
 
   for (const cdn of CDNS) {
     // If the CDN does not support quality and item has Quality, skip this cdn
