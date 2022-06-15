@@ -1,8 +1,6 @@
 const moment = require("moment");
-const logger = require("../helpers/logger");
-const patreon = require("../ports/patreon");
+const stripe = require("../ports/stripe");
 const { getCollection } = require("../ports/database");
-const { getAllSettings, setSettings, DEFAULT_SETTINGS } = require("./settings");
 
 const SUBSCRIPTIONS_ONLY = Boolean(process.env.SUBSCRIPTIONS_ONLY);
 const SUBSCRIPTIONS_COLLECTION = "subscriptions";
@@ -11,15 +9,33 @@ function isSubscriptionsEnabled() {
   return SUBSCRIPTIONS_ONLY;
 }
 
-async function getSubscription(guild) {
+async function addSubscription(subscription) {
+  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
+  return await collection.insertOne(subscription).insertedId;
+}
+
+async function assignServerSubscription(_id, guild) {
+  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
+  return await collection.updateOne({ _id }, { $set: { guild } });
+}
+
+async function buySubscription(priceId) {
+  return await stripe.createCheckoutSession(priceId);
+}
+
+async function fetchSubscriptionPrices() {
+  return await stripe.getPrices({});
+}
+
+async function getOwnerSubscriptions(owner) {
+  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
+  return await collection.find({ owner }).toArray();
+}
+
+async function getServerSubscription(guild) {
   if (!isSubscriptionsEnabled()) return null;
   const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
   return await collection.findOne({ guild });
-}
-
-async function getSubscriptionByOwner(owner) {
-  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-  return await collection.findOne({ owner });
 }
 
 async function hasSubscription(guild) {
@@ -30,9 +46,25 @@ async function hasSubscription(guild) {
   return moment(subscription.expires).diff() > 0;
 }
 
+async function removeSubscription(_id) {
+  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
+  return await collection.deleteOne({ _id });
+}
+
+async function unassignServerSubscription(guild) {
+  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
+  return await collection.updateOne({ guild }, { $unset: { guild: "" } });
+}
+
 module.exports = {
-  getSubscription,
-  getSubscriptionByOwner,
+  addSubscription,
+  assignServerSubscription,
+  buySubscription,
+  fetchSubscriptionPrices,
+  getOwnerSubscriptions,
+  getServerSubscription,
   hasSubscription,
   isSubscriptionsEnabled,
+  removeSubscription,
+  unassignServerSubscription,
 };
