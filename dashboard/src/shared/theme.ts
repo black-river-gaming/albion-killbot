@@ -18,7 +18,7 @@ const theme: ThemeProps = {
   secondary: "#69657c",
 
   text: "#ffffff",
-  contrastText: "#000000",
+  contrastText: "#333333",
   mutedText: "#6c757d",
 };
 
