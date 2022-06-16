@@ -115,6 +115,10 @@ export default styled.div`
 
   /* Bootstrap Button overrides */
   .btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     &.btn-icon {
       border-radius: 50%;
     }
@@ -136,6 +140,20 @@ export default styled.div`
 
       &:focus {
         box-shadow: 0 0 0 0.25rem ${({ theme }) => theme.secondary}1a;
+      }
+    }
+
+    svg {
+      &:not(:only-child) {
+        padding: 0rem 0.5rem;
+      }
+
+      &:first-child {
+        padding-left: 0;
+      }
+
+      &:last-child {
+        padding-right: 0;
       }
     }
   }
