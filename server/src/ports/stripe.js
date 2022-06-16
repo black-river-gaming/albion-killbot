@@ -18,7 +18,7 @@ async function getPrices({ currency = "usd", product = STRIPE_PRODUCT }) {
     return prices.data.map((price) => ({
       id: price.id,
       currency,
-      price: price.unit_amout,
+      price: price.unit_amount || Number(price.unit_amount_decimal),
       recurrence: {
         interval: price.recurring.interval,
         count: price.recurring.interval_count,
