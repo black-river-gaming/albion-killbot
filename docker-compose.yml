@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   albion-killbot:
-    image: agnjunio/albion-killbot:latest
+    image: agnjunio/albion-killbot:v3.3.9
     restart: unless-stopped
     depends_on:
       - mongodb
