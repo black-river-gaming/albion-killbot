@@ -47,14 +47,32 @@ async function createCheckoutSession(priceId) {
     return {
       id: checkout.id,
       url: checkout.url,
+      status: checkout.status,
     };
   } catch (error) {
     logger.error("Unable to create checkout session for stripe:", error);
+    return null;
+  }
+}
+
+async function getCheckoutSession(checkoutId) {
+  try {
+    const checkout = await stripe.checkout.sessions.retrieve(checkoutId);
+
+    return {
+      id: checkout.id,
+      url: checkout.url,
+      status: checkout.status,
+    };
+  } catch (error) {
+    logger.error("Unable to retrieve checkout session for stripe:", error);
+    return null;
   }
 }
 
 module.exports = {
   createCheckoutSession,
+  getCheckoutSession,
   getPrices,
   isEnabled,
 };

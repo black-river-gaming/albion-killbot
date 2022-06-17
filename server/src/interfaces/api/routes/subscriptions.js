@@ -78,6 +78,21 @@ router.use(authenticated);
  *               type: number
  *               description: Number of intervals for the subscription
  *               example: 1
+ *
+ *     Checkout:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Checkout session id
+ *           example: "cs_test_a1jlgCy5hgKatrMv8Qj3JiHdG327GR7NqxKH5WnVTa8bpPuaR8Lcc5NnfD"
+ *         url:
+ *           type: string
+ *           description: Full url to perform the checkout
+ *         status:
+ *           type: string
+ *           description: Checkout status
+ *           example: "expired"
  */
 
 /**
@@ -120,16 +135,31 @@ router.get(`/subscriptions`, subscriptionsController.getSubscriptions);
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   description: Checkout session id
- *                   example: "cs_test_a1jlgCy5hgKatrMv8Qj3JiHdG327GR7NqxKH5WnVTa8bpPuaR8Lcc5NnfD"
- *                 url:
- *                   type: string
- *                   description: Full url to perform the checkout
+ *               $ref: '#/components/schemas/Checkout'
  */
 router.post(`/subscriptions/:priceId`, subscriptionsController.buySubscription);
+
+/**
+ * @openapi
+ * /subscriptions/checkout/{checkoutId}:
+ *   get:
+ *     tags: [Subscriptions]
+ *     summary: Retrieve a checkout session by id
+ *     operationId: getBuySubscription
+ *     parameters:
+ *     - name: checkoutId
+ *       in: path
+ *       required: true
+ *       schema:
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Checkout session
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Checkout'
+ */
+router.get(`/subscriptions/checkout/:checkoutId`, subscriptionsController.getBuySubscription);
 
 module.exports = router;

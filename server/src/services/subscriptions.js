@@ -19,12 +19,16 @@ async function assignServerSubscription(_id, guild) {
   return await collection.updateOne({ _id }, { $set: { guild } });
 }
 
+async function fetchSubscriptionPrices() {
+  return await stripe.getPrices({});
+}
+
 async function buySubscription(priceId) {
   return await stripe.createCheckoutSession(priceId);
 }
 
-async function fetchSubscriptionPrices() {
-  return await stripe.getPrices({});
+async function getBuySubscription(checkoutId) {
+  return await stripe.getCheckoutSession(checkoutId);
 }
 
 async function getOwnerSubscriptions(owner) {
@@ -61,6 +65,7 @@ module.exports = {
   assignServerSubscription,
   buySubscription,
   fetchSubscriptionPrices,
+  getBuySubscription,
   getOwnerSubscriptions,
   getServerSubscription,
   hasSubscription,

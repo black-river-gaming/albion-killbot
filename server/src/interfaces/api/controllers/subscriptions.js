@@ -29,8 +29,19 @@ async function buySubscription(req, res) {
   }
 }
 
+async function getBuySubscription(req, res) {
+  try {
+    const { checkoutId } = req.params;
+    const checkout = await subscriptionsService.getBuySubscription(checkoutId);
+    return res.send(checkout);
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+}
+
 module.exports = {
   buySubscription,
+  getBuySubscription,
   getSubscriptions,
   getSubscriptionsPrices,
 };
