@@ -55,6 +55,11 @@ async function removeSubscription(_id) {
   return await collection.deleteOne({ _id });
 }
 
+async function removeSubscriptionByStripeId(stripe) {
+  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
+  return await collection.deleteOne({ stripe });
+}
+
 async function updateSubscriptionByStripeId(stripe, subscription) {
   const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
   return await collection.updateOne({ stripe }, { $set: subscription });
@@ -76,6 +81,7 @@ module.exports = {
   hasSubscription,
   isSubscriptionsEnabled,
   removeSubscription,
+  removeSubscriptionByStripeId,
   unassignServerSubscription,
   updateSubscriptionByStripeId,
 };

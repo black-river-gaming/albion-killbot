@@ -57,6 +57,7 @@ async function stripeWebhook(req, res) {
         stripe: data.object.subscription,
       });
       break;
+
     case "customer.subscription.updated":
       logger.info(`[${data.object.id}] Updating expiration: ${new Date(data.object.current_period_end * 1000)}`, {
         metadata: data,
@@ -65,6 +66,14 @@ async function stripeWebhook(req, res) {
         expires: new Date(data.object.current_period_end * 1000),
       });
       break;
+
+    case "customer.subscription.deleted":
+      logger.info(`[${data.object.id}] Deleting subscription.`, {
+        metadata: data,
+      });
+      await subscriptionsService.removeSubscriptionByStripeId(data.object.id);
+      break;
+
     default:
       logger.debug(`Received stripe webhook event "${type}".`);
   }
