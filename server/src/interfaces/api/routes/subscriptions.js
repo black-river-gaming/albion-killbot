@@ -59,6 +59,10 @@ router.use(authenticated);
  *               type: number
  *               description: Number of intervals for the subscription
  *               example: 1
+ *         metadata:
+ *           type: object
+ *           description: Price metadata
+ *           additionalProperties: true
  *
  *     Checkout:
  *       type: object

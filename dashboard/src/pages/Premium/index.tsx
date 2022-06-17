@@ -5,14 +5,13 @@ import {
   faPeopleGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import banner1 from "assets/subscription_banner_1.png";
-import banner2 from "assets/subscription_banner_2.png";
-import banner3 from "assets/subscription_banner_3.png";
-import banner4 from "assets/subscription_banner_4.png";
 import { Alert, Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import { Link, useSearchParams } from "react-router-dom";
 import Loader from "shared/components/Loader";
-import { isSubscriptionActiveAndUnassiged } from "shared/subscriptions";
+import {
+  getSubscriptionPriceBanner,
+  isSubscriptionActiveAndUnassiged,
+} from "shared/subscriptions";
 import { getCurrency } from "shared/utils";
 import {
   SubscriptionPrice,
@@ -20,8 +19,6 @@ import {
   useFetchPricesQuery,
   useFetchSubscriptionsQuery,
 } from "store/api";
-
-const banners = [banner1, banner2, banner3, banner4];
 
 const Premium = () => {
   const subscriptions = useFetchSubscriptionsQuery();
@@ -44,7 +41,7 @@ const Premium = () => {
         {prices.data?.map((price: SubscriptionPrice, i) => (
           <Col key={price.id} sm={6} lg={4} xxl={3} className="gx-4">
             <Card>
-              <Card.Img variant="top" src={banners[i % banners.length]} />
+              <Card.Img variant="top" src={getSubscriptionPriceBanner(price)} />
               <Card.Body>
                 <div className="d-flex justify-content-end align-items-baseline">
                   <h4>
@@ -97,13 +94,6 @@ const Premium = () => {
       <div className="d-flex justify-content-center">
         <h1 className="py-2">Premium</h1>
       </div>
-      {subscriptions.data?.some(isSubscriptionActiveAndUnassiged) && (
-        <Alert className="mb-4" variant="success">
-          You currently have an active subscription that is not assigned to a
-          server. Please go to the <Link to="/dashboard">Dashboard</Link> to
-          assign it to a server.
-        </Alert>
-      )}
       {status === "cancel" && (
         <Alert className="mb-4" variant="danger">
           Purchase cancelled.
@@ -114,6 +104,13 @@ const Premium = () => {
           Your Premium subscription was successfully purchased! To start using
           it, please go to the <Link to="/dashboard">Dashboard</Link> and assign
           it to a server.
+        </Alert>
+      )}
+      {!status && subscriptions.data?.some(isSubscriptionActiveAndUnassiged) && (
+        <Alert className="mb-4" variant="success">
+          You currently have an active subscription that is not assigned to a
+          server. Please go to the <Link to="/dashboard">Dashboard</Link> to
+          assign it to a server.
         </Alert>
       )}
       {renderPrices()}

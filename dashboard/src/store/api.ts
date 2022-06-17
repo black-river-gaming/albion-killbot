@@ -87,6 +87,9 @@ export interface SubscriptionPrice {
     interval: string;
     count: number;
   };
+  metadata: {
+    banner?: string;
+  };
 }
 
 export interface Checkout {

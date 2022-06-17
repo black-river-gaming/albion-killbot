@@ -23,6 +23,7 @@ async function getPrices({ currency = "usd", product = STRIPE_PRODUCT }) {
         interval: price.recurring.interval,
         count: price.recurring.interval_count,
       },
+      metadata: price.metadata,
     }));
   } catch (e) {
     logger.error("Unable to get prices from stripe:", e);
