@@ -23,7 +23,9 @@ async function getSubscriptionsPrices(req, res) {
 async function buySubscription(req, res) {
   try {
     const { priceId } = req.params;
-    const checkout = await subscriptionsService.buySubscription(priceId);
+    const { user } = req.session.discord;
+
+    const checkout = await subscriptionsService.buySubscription(priceId, user.id);
     return res.send(checkout);
   } catch (error) {
     return res.sendStatus(500);
@@ -42,14 +44,32 @@ async function getBuySubscription(req, res) {
 
 async function stripeWebhook(req, res) {
   const { type, data } = req.body;
-
-  logger.verbose(`Receibed stripe webhook event "${type}".`, { metadata: data });
+  const owner = data.object.client_reference_id;
 
   switch (type) {
-    case "subscription.created":
+    case "checkout.session.completed":
+      logger.info(`[${data.object.subscription}] Creating new subscription for discord user [${owner}].`, {
+        metadata: data,
+      });
+      await subscriptionsService.addSubscription({
+        owner,
+        expires: new Date(),
+        stripe: data.object.subscription,
+      });
+      break;
+    case "customer.subscription.updated":
+      logger.info(`[${data.object.id}] Updating expiration: ${new Date(data.object.current_period_end * 1000)}`, {
+        metadata: data,
+      });
+      await subscriptionsService.updateSubscriptionByStripeId(data.object.id, {
+        expires: new Date(data.object.current_period_end * 1000),
+      });
+      break;
+    default:
+      logger.debug(`Received stripe webhook event "${type}".`);
   }
 
-  return res.send(200);
+  return res.json({ received: true });
 }
 
 module.exports = {

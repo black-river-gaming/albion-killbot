@@ -9,18 +9,8 @@ function isSubscriptionsEnabled() {
   return SUBSCRIPTIONS_ONLY;
 }
 
-async function addSubscription(owner, stripeSubscription) {
+async function addSubscription(subscription) {
   const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-
-  const subscription = {
-    owner,
-    expires: new Date(stripeSubscription.current_period_end * 1000),
-    stripe: {
-      subscription: stripeSubscription.id,
-      customer: stripeSubscription.customer,
-    },
-  };
-
   return await collection.insertOne(subscription).insertedId;
 }
 
@@ -33,8 +23,8 @@ async function fetchSubscriptionPrices() {
   return await stripe.getPrices({});
 }
 
-async function buySubscription(priceId) {
-  return await stripe.createCheckoutSession(priceId);
+async function buySubscription(priceId, owner) {
+  return await stripe.createCheckoutSession(priceId, owner);
 }
 
 async function getBuySubscription(checkoutId) {
@@ -65,6 +55,11 @@ async function removeSubscription(_id) {
   return await collection.deleteOne({ _id });
 }
 
+async function updateSubscriptionByStripeId(stripe, subscription) {
+  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
+  return await collection.updateOne({ stripe }, { $set: subscription });
+}
+
 async function unassignServerSubscription(guild) {
   const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
   return await collection.updateOne({ guild }, { $unset: { guild: "" } });
@@ -82,4 +77,5 @@ module.exports = {
   isSubscriptionsEnabled,
   removeSubscription,
   unassignServerSubscription,
+  updateSubscriptionByStripeId,
 };

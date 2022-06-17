@@ -30,11 +30,12 @@ async function getPrices({ currency = "usd", product = STRIPE_PRODUCT }) {
   }
 }
 
-async function createCheckoutSession(priceId) {
+async function createCheckoutSession(priceId, owner) {
   try {
     const checkout = await stripe.checkout.sessions.create({
       success_url: `${STRIPE_REDIRECT_URL}?status=success&checkout_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${STRIPE_REDIRECT_URL}?status=cancel`,
+      client_reference_id: owner,
       mode: "subscription",
       line_items: [
         {
