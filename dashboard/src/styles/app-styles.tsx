@@ -111,6 +111,17 @@ export default styled.div`
   /* Bootstrap Alert overrides */
   .alert {
     border-radius: 0.75rem;
+
+    &.alert-success {
+      a {
+        color: ${({ theme }) => theme.contrastText};
+        font-weight: 500;
+
+        &:hover {
+          color: ${({ theme }) => theme.primary};
+        }
+      }
+    }
   }
 
   /* Bootstrap Button overrides */
@@ -121,6 +132,8 @@ export default styled.div`
 
     &.btn-icon {
       border-radius: 50%;
+      width: 2rem;
+      height: 2rem;
     }
 
     &.btn-primary {

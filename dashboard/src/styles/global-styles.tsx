@@ -28,6 +28,16 @@ export default createGlobalStyle<{ theme: ThemeProps }>`
     border-radius: 0.75rem;
   }
 
+  .s-1 {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .s-2 {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
   /* Scrollbar */
   ::-webkit-scrollbar {
     width: 0.5rem;

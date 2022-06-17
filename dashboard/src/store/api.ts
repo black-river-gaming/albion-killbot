@@ -71,6 +71,29 @@ export interface TrackList {
 
 export type SearchResults = TrackList;
 
+export interface Subscription {
+  id: string;
+  owner: string;
+  expires: string;
+  server?: string;
+  stripe?: any;
+}
+
+export interface SubscriptionPrice {
+  id: string;
+  currency: string;
+  price: number;
+  recurrence: {
+    interval: string;
+    count: number;
+  };
+}
+
+export interface Checkout {
+  id: string;
+  url: string;
+}
+
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -94,6 +117,15 @@ export const apiSlice = createApi({
         }),
         invalidatesTags: ["User"],
       }),
+      buySubscription: builder.mutation<Checkout, string>({
+        query: (priceId) => ({
+          url: `/subscriptions/${priceId}`,
+          method: "POST",
+        }),
+      }),
+      fetchPrices: builder.query<SubscriptionPrice[], void>({
+        query: () => `/prices`,
+      }),
       fetchUser: builder.query<User, void>({
         query: () => `/users/me`,
       }),
@@ -102,6 +134,9 @@ export const apiSlice = createApi({
       }),
       fetchServer: builder.query<Server, string>({
         query: (serverId) => `/servers/${serverId}`,
+      }),
+      fetchSubscriptions: builder.query<Subscription[], void>({
+        query: () => `/subscriptions`,
       }),
       search: builder.query<SearchResults, string>({
         query: (query) => `/search/${query}`,
@@ -132,12 +167,15 @@ export const apiSlice = createApi({
 
 export const {
   useAuthMutation,
+  useBuySubscriptionMutation,
+  useFetchPricesQuery,
   useFetchServerQuery,
+  useFetchSubscriptionsQuery,
   useFetchUserQuery,
   useFetchUserServersQuery,
   useLazyFetchUserQuery,
   useLazySearchQuery,
   useLogoutMutation,
-  useUpdateTrackMutation,
   useUpdateSettingsMutation,
+  useUpdateTrackMutation,
 } = apiSlice;

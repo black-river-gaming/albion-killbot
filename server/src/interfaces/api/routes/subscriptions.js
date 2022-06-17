@@ -108,6 +108,12 @@ router.get(`/subscriptions`, subscriptionsController.getSubscriptions);
  *     tags: [Subscriptions]
  *     summary: Initiate a checkout session to buy a subcription
  *     operationId: buySubscription
+ *     parameters:
+ *     - name: priceId
+ *       in: path
+ *       required: true
+ *       schema:
+ *         type: string
  *     responses:
  *       200:
  *         description: Checkout session created successfully
@@ -115,7 +121,7 @@ router.get(`/subscriptions`, subscriptionsController.getSubscriptions);
  *           application/json:
  *             schema:
  *               type: object
- *               propeties:
+ *               properties:
  *                 id:
  *                   type: string
  *                   description: Checkout session id
@@ -124,6 +130,6 @@ router.get(`/subscriptions`, subscriptionsController.getSubscriptions);
  *                   type: string
  *                   description: Full url to perform the checkout
  */
-router.post(`/subscriptions/{priceId}`, subscriptionsController.buySubscription);
+router.post(`/subscriptions/:priceId`, subscriptionsController.buySubscription);
 
 module.exports = router;
