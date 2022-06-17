@@ -9,8 +9,18 @@ function isSubscriptionsEnabled() {
   return SUBSCRIPTIONS_ONLY;
 }
 
-async function addSubscription(subscription) {
+async function addSubscription(owner, stripeSubscription) {
   const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
+
+  const subscription = {
+    owner,
+    expires: new Date(stripeSubscription.current_period_end * 1000),
+    stripe: {
+      subscription: stripeSubscription.id,
+      customer: stripeSubscription.customer,
+    },
+  };
+
   return await collection.insertOne(subscription).insertedId;
 }
 

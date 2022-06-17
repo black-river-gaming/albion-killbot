@@ -131,6 +131,9 @@ const battlesController = require("../controllers/battles");
  *       404:
  *         description: Battle not found
  */
-router.get(`/battles/:battleId`, battlesController.getBattle);
+router.get(`/:battleId`, battlesController.getBattle);
 
-module.exports = router;
+module.exports = {
+  path: "/battles",
+  router,
+};

@@ -124,7 +124,7 @@ router.use(disableCache);
  *       403:
  *         description: Unable to authenticate
  */
-router.get(`/users/me`, usersController.getUser);
+router.get(`/me`, usersController.getUser);
 
 /**
  * @openapi
@@ -145,6 +145,9 @@ router.get(`/users/me`, usersController.getUser);
  *       403:
  *         description: Unable to authenticate
  */
-router.get(`/users/me/servers`, usersController.getUserServers);
+router.get(`/me/servers`, usersController.getUserServers);
 
-module.exports = router;
+module.exports = {
+  path: "/users",
+  router,
+};

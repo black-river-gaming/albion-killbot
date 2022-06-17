@@ -187,7 +187,7 @@ router.use(authenticated);
  *             schema:
  *               $ref: '#/components/schemas/Settings'
  */
-router.get(`/servers/:guildId`, serversController.getServer);
+router.get(`/:guildId`, serversController.getServer);
 
 /**
  * @openapi
@@ -215,7 +215,7 @@ router.get(`/servers/:guildId`, serversController.getServer);
  *             schema:
  *               $ref: '#/components/schemas/Settings'
  */
-router.put(`/servers/:guildId/settings`, serversController.setServerSettings);
+router.put(`/:guildId/settings`, serversController.setServerSettings);
 
 /**
  * @openapi
@@ -243,6 +243,9 @@ router.put(`/servers/:guildId/settings`, serversController.setServerSettings);
  *             schema:
  *               $ref: '#/components/schemas/Track'
  */
-router.put(`/servers/:guildId/track`, serversController.setServerTrack);
+router.put(`:guildId/track`, serversController.setServerTrack);
 
-module.exports = router;
+module.exports = {
+  path: "/servers",
+  router,
+};

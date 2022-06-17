@@ -1,3 +1,4 @@
+const logger = require("../../../helpers/logger");
 const subscriptionsService = require("../../../services/subscriptions");
 
 async function getSubscriptions(req, res) {
@@ -39,9 +40,22 @@ async function getBuySubscription(req, res) {
   }
 }
 
+async function stripeWebhook(req, res) {
+  const { type, data } = req.body;
+
+  logger.verbose(`Receibed stripe webhook event "${type}".`, { metadata: data });
+
+  switch (type) {
+    case "subscription.created":
+  }
+
+  return res.send(200);
+}
+
 module.exports = {
   buySubscription,
   getBuySubscription,
   getSubscriptions,
   getSubscriptionsPrices,
+  stripeWebhook,
 };

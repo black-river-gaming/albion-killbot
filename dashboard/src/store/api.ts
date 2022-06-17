@@ -124,7 +124,7 @@ export const apiSlice = createApi({
         }),
       }),
       fetchPrices: builder.query<SubscriptionPrice[], void>({
-        query: () => `/prices`,
+        query: () => `/subscriptions/prices`,
       }),
       fetchUser: builder.query<User, void>({
         query: () => `/users/me`,

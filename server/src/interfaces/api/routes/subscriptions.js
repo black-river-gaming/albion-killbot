@@ -4,26 +4,7 @@ const { disableCache } = require("../middlewares/cache");
 const { authenticated } = require("../middlewares/auth");
 
 router.use(disableCache);
-
-/**
- * @openapi
- * /prices:
- *   get:
- *     tags: [Subscriptions]
- *     summary: Fetches a list of subscriptions prices
- *     operationId: getSubscriptionsPrices
- *     responses:
- *       200:
- *         description: List of subscriptions prices
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/SubscriptionPrice'
- */
-router.get(`/prices`, subscriptionsController.getSubscriptionsPrices);
-
+router.post(`/stripe/webhook`, subscriptionsController.stripeWebhook);
 router.use(authenticated);
 
 /**
@@ -114,7 +95,26 @@ router.use(authenticated);
  *       403:
  *         description: Unable to authenticate
  */
-router.get(`/subscriptions`, subscriptionsController.getSubscriptions);
+router.get(`/`, subscriptionsController.getSubscriptions);
+
+/**
+ * @openapi
+ * /subscriptions/prices:
+ *   get:
+ *     tags: [Subscriptions]
+ *     summary: Fetches a list of subscriptions prices
+ *     operationId: getSubscriptionsPrices
+ *     responses:
+ *       200:
+ *         description: List of subscriptions prices
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/SubscriptionPrice'
+ */
+router.get(`/prices`, subscriptionsController.getSubscriptionsPrices);
 
 /**
  * @openapi
@@ -137,7 +137,7 @@ router.get(`/subscriptions`, subscriptionsController.getSubscriptions);
  *             schema:
  *               $ref: '#/components/schemas/Checkout'
  */
-router.post(`/subscriptions/:priceId`, subscriptionsController.buySubscription);
+router.post(`/:priceId`, subscriptionsController.buySubscription);
 
 /**
  * @openapi
@@ -160,6 +160,9 @@ router.post(`/subscriptions/:priceId`, subscriptionsController.buySubscription);
  *             schema:
  *               $ref: '#/components/schemas/Checkout'
  */
-router.get(`/subscriptions/checkout/:checkoutId`, subscriptionsController.getBuySubscription);
+router.get(`/checkout/:checkoutId`, subscriptionsController.getBuySubscription);
 
-module.exports = router;
+module.exports = {
+  path: "/subscriptions",
+  router,
+};

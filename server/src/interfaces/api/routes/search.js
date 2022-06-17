@@ -73,6 +73,9 @@ const searchController = require("../controllers/search");
  *             schema:
  *               $ref: '#/components/schemas/SearchResults'
  */
-router.get("/search/:query", searchController.search);
+router.get("/:query", searchController.search);
 
-module.exports = router;
+module.exports = {
+  path: "/search",
+  router,
+};

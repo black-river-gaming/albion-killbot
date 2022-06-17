@@ -1,6 +1,7 @@
 const moment = require("moment");
 const authService = require("../../../services/auth");
 const usersService = require("../../../services/users");
+const logger = require("../../../helpers/logger");
 
 const refreshDiscordToken = async (req, _res, next) => {
   const { discord } = req.session;
@@ -33,7 +34,7 @@ const authenticated = async (req, res, next) => {
 
     return next();
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return res.sendStatus(403);
   }
 };

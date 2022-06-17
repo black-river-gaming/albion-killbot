@@ -2,23 +2,23 @@ const { readdirSync } = require("fs");
 const path = require("node:path");
 const logger = require("../../../helpers/logger");
 
-const routers = [];
+const routes = [];
 
 const files = readdirSync(__dirname);
 for (const file of files) {
   if (file === "index.js") continue;
 
   try {
-    const router = require(path.join(__dirname, file));
+    const route = require(path.join(__dirname, file));
     logger.debug(`Router loaded: ${file}`);
-    routers.push(router);
+    routes.push(route);
   } catch (e) {
     logger.error(`Error loading router ${file}:`, e);
   }
 }
 
 function init(app) {
-  routers.forEach((router) => app.use(router));
+  routes.forEach(({ path, router }) => app.use(path, router));
 }
 
 module.exports = {

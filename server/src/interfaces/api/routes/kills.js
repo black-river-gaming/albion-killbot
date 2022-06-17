@@ -192,6 +192,9 @@ const killsController = require("../controllers/kills");
  *       404:
  *         description: Kill not found
  */
-router.get(`/kills/:killId`, killsController.getKill);
+router.get(`/:killId`, killsController.getKill);
 
-module.exports = router;
+module.exports = {
+  path: "/kills",
+  router,
+};

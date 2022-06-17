@@ -25,7 +25,7 @@ router.use(disableCache);
  *       403:
  *         description: Unable to authenticate
  */
-router.post(`/auth`, authController.auth);
+router.post(`/`, authController.auth);
 
 /**
  * @openapi
@@ -40,6 +40,9 @@ router.post(`/auth`, authController.auth);
  *       403:
  *         description: Unable to logout
  */
-router.post(`/auth/logout`, authController.logout);
+router.post(`/logout`, authController.logout);
 
-module.exports = router;
+module.exports = {
+  path: "/auth",
+  router,
+};

@@ -30,7 +30,6 @@ const Premium = () => {
     useBuySubscriptionMutation();
   const [queryParams] = useSearchParams();
   const status = queryParams.get("status");
-  const checkoutId = queryParams.get("checkout_id");
 
   if (subscriptions.isFetching || buySubscription.isLoading) return <Loader />;
   if (buySubscription.isSuccess && buySubscription.data) {
@@ -110,9 +109,11 @@ const Premium = () => {
           Purchase cancelled.
         </Alert>
       )}
-      {status === "success" && checkoutId && (
-        <Alert className="mb-4" variant="secondary">
-          Validating your subscription...
+      {status === "success" && (
+        <Alert className="mb-4" variant="success">
+          Your Premium subscription was successfully purchased! To start using
+          it, please go to the <Link to="/dashboard">Dashboard</Link> and assign
+          it to a server.
         </Alert>
       )}
       {renderPrices()}
