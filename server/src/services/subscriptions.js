@@ -14,9 +14,9 @@ async function addSubscription(subscription) {
   return await collection.insertOne(subscription).insertedId;
 }
 
-async function assignServerSubscription(_id, guild) {
+async function assignSubscription(_id, server) {
   const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-  return await collection.updateOne({ _id }, { $set: { guild } });
+  return await collection.updateOne({ _id }, { $set: { server } });
 }
 
 async function fetchSubscriptionPrices() {
@@ -36,10 +36,23 @@ async function getSubscriptionsByOwner(owner) {
   return await collection.find({ owner }).toArray();
 }
 
-async function getServerSubscription(guild) {
+async function getSubscriptionByServerId(server) {
   if (!isSubscriptionsEnabled()) return null;
   const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-  return await collection.findOne({ guild });
+  return await collection.findOne({ server });
+}
+
+async function getSubscriptionByStripeId(stripe) {
+  if (!isSubscriptionsEnabled()) return null;
+  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
+  return await collection.findOne({ stripe });
+}
+
+async function getSubscriptionByCheckoutId(checkoutId) {
+  if (!isSubscriptionsEnabled()) return null;
+  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
+  const checkout = await stripe.getCheckoutSession(checkoutId);
+  return await collection.findOne({ stripe: checkout.subscription });
 }
 
 async function getStripeSubscription(id) {
@@ -69,24 +82,26 @@ async function updateSubscriptionByStripeId(stripe, subscription) {
   return await collection.updateOne({ stripe }, { $set: subscription });
 }
 
-async function unassignServerSubscription(guild) {
+async function unassignSubscription(_id) {
   const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-  return await collection.updateOne({ guild }, { $unset: { guild: "" } });
+  return await collection.updateOne({ _id }, { $unset: { server: "" } });
 }
 
 module.exports = {
   addSubscription,
-  assignServerSubscription,
+  assignSubscription,
   buySubscription,
   fetchSubscriptionPrices,
   getBuySubscription,
-  getServerSubscription,
   getStripeSubscription,
+  getSubscriptionByCheckoutId,
+  getSubscriptionByServerId,
+  getSubscriptionByStripeId,
   getSubscriptionsByOwner,
   hasSubscription,
   isSubscriptionsEnabled,
   removeSubscription,
   removeSubscriptionByStripeId,
-  unassignServerSubscription,
+  unassignSubscription,
   updateSubscriptionByStripeId,
 };

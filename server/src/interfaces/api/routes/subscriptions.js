@@ -4,7 +4,6 @@ const { disableCache } = require("../middlewares/cache");
 const { authenticated } = require("../middlewares/auth");
 
 router.use(disableCache);
-router.post(`/stripe/webhook`, subscriptionsController.stripeWebhook);
 router.use(authenticated);
 
 /**
@@ -117,22 +116,39 @@ router.get(`/`, subscriptionsController.getSubscriptions);
 
 /**
  * @openapi
- * /subscriptions/prices:
- *   get:
+ * /subscriptions/assign:
+ *   post:
  *     tags: [Subscriptions]
- *     summary: Fetches a list of subscriptions prices
- *     operationId: getSubscriptionsPrices
+ *     summary: Assign a subscription to a server
+ *     operationId: assignSubscription
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               server:
+ *                 type: string
+ *                 description: Discord server id
+ *                 required: true
+ *                 example: "738365346855256107"
+ *               checkoutId:
+ *                 type: string
+ *                 description: Stripe checkout id to fetch subscription if subscription id is absent.
+ *                 example: "cs_a1LPTqnv9fkhFmRNWgBWV18YzbZbZH3IXRkBXTbuxh0jyFvYpMitttI97o"
+ *               subscriptionId:
+ *                 type: string
+ *                 description: Stripe subscription id to fetch subscription.
+ *                 example: "sub_1LBsWDJDAy6upd5xtYnPln1B"
  *     responses:
  *       200:
- *         description: List of subscriptions prices
+ *         description: Assigned subscription successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/SubscriptionPrice'
+ *               $ref: '#/components/schemas/Subscription'
  */
-router.get(`/prices`, subscriptionsController.getSubscriptionsPrices);
+router.post(`/assign`, subscriptionsController.assignSubscription);
 
 /**
  * @openapi
@@ -183,6 +199,25 @@ router.post(`/checkout`, subscriptionsController.buySubscription);
  *               $ref: '#/components/schemas/Checkout'
  */
 router.get(`/checkout/:checkoutId`, subscriptionsController.getBuySubscription);
+
+/**
+ * @openapi
+ * /subscriptions/prices:
+ *   get:
+ *     tags: [Subscriptions]
+ *     summary: Fetches a list of subscriptions prices
+ *     operationId: getSubscriptionsPrices
+ *     responses:
+ *       200:
+ *         description: List of subscriptions prices
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/SubscriptionPrice'
+ */
+router.get(`/prices`, subscriptionsController.getSubscriptionsPrices);
 
 module.exports = {
   path: "/subscriptions",

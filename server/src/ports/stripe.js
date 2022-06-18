@@ -65,6 +65,7 @@ async function getCheckoutSession(id) {
       id: checkout.id,
       url: checkout.url,
       status: checkout.status,
+      subscription: checkout.subscription,
     };
   } catch (error) {
     logger.error("Unable to retrieve checkout session for stripe:", error);

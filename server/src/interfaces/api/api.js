@@ -7,6 +7,7 @@ const { refreshDiscordToken } = require("./middlewares/auth");
 const { session } = require("./middlewares/session");
 const { swaggerSpecs, swaggerUI } = require("./middlewares/swagger");
 const routes = require("./routes");
+const webhooks = require("./webhooks");
 const app = express();
 
 const { NODE_ENV } = process.env;
@@ -14,6 +15,9 @@ const { NODE_ENV } = process.env;
 // Logs
 const logFormat = NODE_ENV == "development" ? "dev" : "tiny";
 app.use(morgan(logFormat, { stream: logger.stream }));
+
+// Webhooks
+webhooks.init(app);
 
 // Body parser
 app.use(
