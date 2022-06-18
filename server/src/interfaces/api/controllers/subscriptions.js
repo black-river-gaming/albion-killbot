@@ -1,5 +1,8 @@
+const stripe = require("stripe");
 const logger = require("../../../helpers/logger");
 const subscriptionsService = require("../../../services/subscriptions");
+
+const { STRIPE_WEBHOOK_SECRET } = process.env;
 
 async function getSubscriptions(req, res) {
   try {
@@ -43,8 +46,25 @@ async function getBuySubscription(req, res) {
 }
 
 async function stripeWebhook(req, res) {
-  const { type, data } = req.body;
+  // Verify webhook secret and construct event
+  let event;
+  if (STRIPE_WEBHOOK_SECRET) {
+    try {
+      const signature = req.headers["stripe-signature"];
+      event = stripe.webhooks.constructEvent(req.body, signature, STRIPE_WEBHOOK_SECRET);
+    } catch (e) {
+      logger.error(`Unable to verify webhook signature`, e);
+      return res.sendStatus(400);
+    }
+  } else {
+    event = req.body;
+  }
+
+  const { type, data } = event;
   const owner = data.object.client_reference_id;
+
+  // Respond quickly to Stripe before processing the Webhook
+  res.json({ received: true });
 
   switch (type) {
     case "checkout.session.completed":
@@ -77,8 +97,6 @@ async function stripeWebhook(req, res) {
     default:
       logger.debug(`Received stripe webhook event "${type}".`);
   }
-
-  return res.json({ received: true });
 }
 
 module.exports = {
