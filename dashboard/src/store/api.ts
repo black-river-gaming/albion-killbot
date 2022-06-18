@@ -76,7 +76,11 @@ export interface Subscription {
   owner: string;
   expires: string;
   server?: string;
-  stripe?: any;
+  stripe?: {
+    id: string;
+    current_period_end: number;
+    price: SubscriptionPrice;
+  };
 }
 
 export interface SubscriptionPrice {
@@ -119,6 +123,16 @@ export const apiSlice = createApi({
           method: "POST",
         }),
         invalidatesTags: ["User"],
+      }),
+      assignSubscription: builder.mutation<
+        Subscription,
+        { server: string; checkoutId?: string }
+      >({
+        query: (body) => ({
+          url: `/subscriptions/assign`,
+          method: "POST",
+          body,
+        }),
       }),
       buySubscription: builder.mutation<Checkout, string>({
         query: (priceId) => ({
@@ -169,6 +183,7 @@ export const apiSlice = createApi({
 });
 
 export const {
+  useAssignSubscriptionMutation,
   useAuthMutation,
   useBuySubscriptionMutation,
   useFetchPricesQuery,

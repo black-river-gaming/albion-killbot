@@ -18,7 +18,8 @@ const ServerCard = ({ server, children }: ServerCardProps) => {
         <Card.Img className="server-img-icon" variant="top" src={serverImg} />
       </div>
       <Card.Body>
-        <Card.Title>{server.name}</Card.Title>
+        <Card.Title className="server-name">{server.name}</Card.Title>
+        <hr />
         {children}
       </Card.Body>
     </StyledServerCard>

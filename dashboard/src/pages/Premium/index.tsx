@@ -7,6 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Alert, Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import { Link, useSearchParams } from "react-router-dom";
+import CheckoutSuccessModal from "shared/components/CheckoutSuccessModal";
 import Loader from "shared/components/Loader";
 import {
   getSubscriptionPriceBanner,
@@ -27,6 +28,7 @@ const Premium = () => {
     useBuySubscriptionMutation();
   const [queryParams] = useSearchParams();
   const status = queryParams.get("status");
+  const checkoutId = queryParams.get("checkout_id");
 
   if (subscriptions.isFetching || buySubscription.isLoading) return <Loader />;
   if (buySubscription.isSuccess && buySubscription.data) {
@@ -99,12 +101,8 @@ const Premium = () => {
           Purchase cancelled.
         </Alert>
       )}
-      {status === "success" && (
-        <Alert className="mb-4" variant="success">
-          Your Premium subscription was successfully purchased! To start using
-          it, please go to the <Link to="/dashboard">Dashboard</Link> and assign
-          it to a server.
-        </Alert>
+      {status === "success" && checkoutId && (
+        <CheckoutSuccessModal checkoutId={checkoutId} />
       )}
       {!status && subscriptions.data?.some(isSubscriptionActiveAndUnassiged) && (
         <Alert className="mb-4" variant="success">

@@ -32,6 +32,13 @@ const StyledServerCard = styled(Card)`
         0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
     }
   }
+
+  .server-name {
+    margin-top: -25px;
+    display: flex;
+    justify-content: center;
+    text-shadow: 2px 2px 5px rgb(0 0 0 / 80%);
+  }
 `;
 
 export default StyledServerCard;
