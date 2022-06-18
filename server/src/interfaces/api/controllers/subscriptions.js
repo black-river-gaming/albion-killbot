@@ -28,10 +28,12 @@ async function getSubscriptionsPrices(req, res) {
 
 async function buySubscription(req, res) {
   try {
-    const { priceId } = req.params;
+    const { priceId } = req.body;
     const { user } = req.session.discord;
 
     const checkout = await subscriptionsService.buySubscription(priceId, user.id);
+    if (!checkout) return res.sendStatus(404);
+
     return res.send(checkout);
   } catch (error) {
     return res.sendStatus(500);

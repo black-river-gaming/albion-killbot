@@ -136,8 +136,11 @@ export const apiSlice = createApi({
       }),
       buySubscription: builder.mutation<Checkout, string>({
         query: (priceId) => ({
-          url: `/subscriptions/${priceId}`,
+          url: `/subscriptions/checkout`,
           method: "POST",
+          body: {
+            priceId,
+          },
         }),
       }),
       fetchPrices: builder.query<SubscriptionPrice[], void>({

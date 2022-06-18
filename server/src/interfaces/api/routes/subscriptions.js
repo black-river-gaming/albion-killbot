@@ -136,17 +136,21 @@ router.get(`/prices`, subscriptionsController.getSubscriptionsPrices);
 
 /**
  * @openapi
- * /subscriptions/{priceId}:
+ * /subscriptions/checkout:
  *   post:
  *     tags: [Subscriptions]
  *     summary: Initiate a checkout session to buy a subcription
  *     operationId: buySubscription
- *     parameters:
- *     - name: priceId
- *       in: path
- *       required: true
- *       schema:
- *         type: string
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               priceId:
+ *                 type: string
+ *                 description: Price id to buy
+ *                 example: "price_1LAjDiJDAy6upd5x99iDefpi"
  *     responses:
  *       200:
  *         description: Checkout session created successfully
@@ -155,7 +159,7 @@ router.get(`/prices`, subscriptionsController.getSubscriptionsPrices);
  *             schema:
  *               $ref: '#/components/schemas/Checkout'
  */
-router.post(`/:priceId`, subscriptionsController.buySubscription);
+router.post(`/checkout`, subscriptionsController.buySubscription);
 
 /**
  * @openapi
