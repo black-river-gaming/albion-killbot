@@ -7,7 +7,10 @@ const { STRIPE_WEBHOOK_SECRET } = process.env;
 async function getSubscriptions(req, res) {
   try {
     const { user } = req.session.discord;
-    const subscriptions = await subscriptionsService.getOwnerSubscriptions(user.id);
+    const subscriptions = await subscriptionsService.getSubscriptionsByOwner(user.id);
+    for (const subscription of subscriptions) {
+      subscription.stripe = await subscriptionsService.getStripeSubscription(subscription.stripe);
+    }
     return res.send(subscriptions);
   } catch (error) {
     return res.sendStatus(403);

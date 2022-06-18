@@ -31,7 +31,7 @@ async function getBuySubscription(checkoutId) {
   return await stripe.getCheckoutSession(checkoutId);
 }
 
-async function getOwnerSubscriptions(owner) {
+async function getSubscriptionsByOwner(owner) {
   const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
   return await collection.find({ owner }).toArray();
 }
@@ -40,6 +40,10 @@ async function getServerSubscription(guild) {
   if (!isSubscriptionsEnabled()) return null;
   const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
   return await collection.findOne({ guild });
+}
+
+async function getStripeSubscription(id) {
+  return await stripe.getSubscription(id);
 }
 
 async function hasSubscription(guild) {
@@ -76,8 +80,9 @@ module.exports = {
   buySubscription,
   fetchSubscriptionPrices,
   getBuySubscription,
-  getOwnerSubscriptions,
   getServerSubscription,
+  getStripeSubscription,
+  getSubscriptionsByOwner,
   hasSubscription,
   isSubscriptionsEnabled,
   removeSubscription,

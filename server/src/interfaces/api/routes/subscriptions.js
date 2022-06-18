@@ -31,6 +31,20 @@ router.use(authenticated);
  *             example: "2022-07-21"
  *           - type: string
  *             example: "never"
+ *         stripe:
+ *           description: Stripe subscription information
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: string
+ *               description: Stripe subscription id
+ *               example: "sub_1LBsWDJDAy6upd5xtYnPln1B"
+ *             current_period_end:
+ *               type: number
+ *               description: Timestamp in seconds for stripe subscription end
+ *               example: 1687059617
+ *             price:
+ *               $ref: "#/components/schemas/SubscriptionPrice"
  *
  *     SubscriptionPrice:
  *       type: object

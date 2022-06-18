@@ -57,9 +57,9 @@ async function createCheckoutSession(priceId, owner) {
   }
 }
 
-async function getCheckoutSession(checkoutId) {
+async function getCheckoutSession(id) {
   try {
-    const checkout = await stripe.checkout.sessions.retrieve(checkoutId);
+    const checkout = await stripe.checkout.sessions.retrieve(id);
 
     return {
       id: checkout.id,
@@ -72,9 +72,35 @@ async function getCheckoutSession(checkoutId) {
   }
 }
 
+async function getSubscription(id) {
+  try {
+    const subscription = await stripe.subscriptions.retrieve(id);
+    const price = subscription.plan;
+
+    return {
+      id: subscription.id,
+      current_period_end: subscription.current_period_end,
+      price: {
+        id: price.id,
+        currency: price.currency,
+        price: price.amount || Number(price.amount_decimal),
+        recurrence: {
+          interval: price.interval,
+          count: price.interval_count,
+        },
+        metadata: price.metadata,
+      },
+    };
+  } catch (error) {
+    logger.error("Unable to retrieve checkout session for stripe:", error);
+    return null;
+  }
+}
+
 module.exports = {
   createCheckoutSession,
   getCheckoutSession,
   getPrices,
+  getSubscription,
   isEnabled,
 };
