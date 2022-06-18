@@ -30,7 +30,7 @@ const Premium = () => {
   const status = queryParams.get("status");
   const checkoutId = queryParams.get("checkout_id");
 
-  if (subscriptions.isFetching || buySubscription.isLoading) return <Loader />;
+  if (buySubscription.isLoading) return <Loader />;
   if (buySubscription.isSuccess && buySubscription.data) {
     window.location.href = buySubscription.data.url;
   }

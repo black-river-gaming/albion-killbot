@@ -11,7 +11,6 @@ const Subscription = () => {
   const [subscription, setSubscription] = useState("");
 
   if (subscriptions.isFetching) return <Loader />;
-
   if (subscriptions.data && subscriptions.data.length === 0)
     return <Navigate to="/premium" />;
 

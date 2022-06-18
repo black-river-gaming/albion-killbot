@@ -106,7 +106,7 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: REACT_APP_API_URL,
   }),
-  tagTypes: ["User"],
+  tagTypes: ["User", "Subscription"],
   endpoints(builder) {
     return {
       auth: builder.mutation<void, string>({
@@ -133,6 +133,7 @@ export const apiSlice = createApi({
           method: "POST",
           body,
         }),
+        invalidatesTags: ["Subscription"],
       }),
       buySubscription: builder.mutation<Checkout, string>({
         query: (priceId) => ({
@@ -148,6 +149,7 @@ export const apiSlice = createApi({
       }),
       fetchUser: builder.query<User, void>({
         query: () => `/users/me`,
+        providesTags: ["User"],
       }),
       fetchUserServers: builder.query<ServerPartial[], void>({
         query: () => `/users/me/servers`,
@@ -157,6 +159,7 @@ export const apiSlice = createApi({
       }),
       fetchSubscriptions: builder.query<Subscription[], void>({
         query: () => `/subscriptions`,
+        providesTags: ["Subscription"],
       }),
       search: builder.query<SearchResults, string>({
         query: (query) => `/search/${query}`,
