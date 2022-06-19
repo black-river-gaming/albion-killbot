@@ -44,6 +44,12 @@ services:
     ports:
       - 80:80
 
+  stripe:
+    image: stripe/stripe-cli:latest
+    env_file:
+      - ../server/.env
+    entrypoint: sh -c 'stripe listen --forward-to http://api/subscriptions/stripe/webhook --api-key $$STRIPE_ACCESS_TOKEN'
+
   crawler:
     build:
       context: ../server
@@ -94,6 +100,8 @@ services:
       mongodb:
         condition: service_healthy
       nginx:
+        condition: service_started
+      stripe:
         condition: service_started
     env_file: ../server/.env
     environment:
