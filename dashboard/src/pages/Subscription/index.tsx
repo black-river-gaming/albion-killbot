@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Card, Form } from "react-bootstrap";
+import { Alert, Card, Col, Form, Row } from "react-bootstrap";
 import { Navigate, useParams } from "react-router-dom";
 import Loader from "shared/components/Loader";
-import ServerSubscription from "shared/components/ServerSubscription";
-import { useFetchSubscriptionsQuery } from "store/api";
+import SubscriptionPriceCard from "shared/components/SubscriptionPriceCard";
+import { Subscription, useFetchSubscriptionsQuery } from "store/api";
 
-const Subscription = () => {
+const SubscriptionPage = () => {
   const { serverId = "" } = useParams();
   const subscriptions = useFetchSubscriptionsQuery();
   const [subscription, setSubscription] = useState("");
@@ -18,12 +18,36 @@ const Subscription = () => {
     (subscription) => subscription.server === serverId
   );
 
+  const renderServerSubscription = (subscription: Subscription | undefined) => {
+    if (!subscription) {
+      return (
+        <Alert variant="dark" className="mx-2">
+          This server doesn't have an active subscription.
+        </Alert>
+      );
+    }
+
+    return (
+      <div className="px-2">
+        <div className="pb-2">
+          Server Status: Active until{" "}
+          {new Date(subscription.expires).toLocaleDateString()}
+        </div>
+        {subscription.stripe?.price && (
+          <Row className="justify-content-center">
+            <Col lg={6}>
+              <SubscriptionPriceCard price={subscription.stripe?.price} />
+            </Col>
+          </Row>
+        )}
+      </div>
+    );
+  };
+
   return (
     <Card>
       <h4 className="d-flex justify-content-center p-2">Subscription</h4>
-      <div className="px-2">
-        <ServerSubscription subscription={serverSubscription} />
-      </div>
+      <div className="px-2">{renderServerSubscription(serverSubscription)}</div>
       <Card.Body>
         <Form onSubmit={() => ""}>
           <Form.Group controlId="subscription">
@@ -55,4 +79,4 @@ const Subscription = () => {
   );
 };
 
-export default Subscription;
+export default SubscriptionPage;
