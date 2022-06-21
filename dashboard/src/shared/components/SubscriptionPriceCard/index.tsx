@@ -28,6 +28,7 @@ const SubscriptionPriceCard = ({
           </div>
         </div>
       </Card.Body>
+      {children && <hr className="mx-2" />}
       {children}
     </Card>
   );

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Card, Col, Form, Row } from "react-bootstrap";
+import { Alert, Button, Card, Col, Row } from "react-bootstrap";
 import { Navigate, useParams } from "react-router-dom";
 import Loader from "shared/components/Loader";
 import SubscriptionPriceCard from "shared/components/SubscriptionPriceCard";
@@ -19,24 +19,26 @@ const SubscriptionPage = () => {
   );
 
   const renderServerSubscription = (subscription: Subscription | undefined) => {
-    if (!subscription) {
-      return (
-        <Alert variant="dark" className="mx-2">
-          This server doesn't have an active subscription.
-        </Alert>
-      );
-    }
-
     return (
-      <div className="px-2">
-        <div className="pb-2">
-          Server Status: Active until{" "}
-          {new Date(subscription.expires).toLocaleDateString()}
-        </div>
-        {subscription.stripe?.price && (
+      <div>
+        <Alert variant="dark" className="d-flex justify-content-start py-2">
+          {subscription ? (
+            <div>
+              Server Status: Active until{" "}
+              {new Date(subscription.expires).toLocaleDateString()}
+            </div>
+          ) : (
+            <div>This server doesn't have an active subscription.</div>
+          )}
+        </Alert>
+        {subscription?.stripe && subscription.stripe?.price && (
           <Row className="justify-content-center">
             <Col lg={6}>
-              <SubscriptionPriceCard price={subscription.stripe?.price} />
+              <SubscriptionPriceCard price={subscription.stripe?.price}>
+                <div className="d-flex justify-content-end px-2 pb-2">
+                  <Button variant="secondary">Transfer</Button>
+                </div>
+              </SubscriptionPriceCard>
             </Col>
           </Row>
         )}
@@ -45,37 +47,18 @@ const SubscriptionPage = () => {
   };
 
   return (
-    <Card>
+    <div>
       <h4 className="d-flex justify-content-center p-2">Subscription</h4>
-      <div className="px-2">{renderServerSubscription(serverSubscription)}</div>
-      <Card.Body>
-        <Form onSubmit={() => ""}>
-          <Form.Group controlId="subscription">
-            <Form.Label>Subscription</Form.Label>
-            <Form.Select
-              aria-label="Subscription select"
-              value={subscription}
-              onChange={(e) => setSubscription(e.target.value)}
-            >
-              {subscriptions.data?.map((subscription) => (
-                <option key={subscription.id} value={subscription.id}>
-                  {subscription.expires}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-        </Form>
+      <div>{renderServerSubscription(serverSubscription)}</div>
+      <Card className="mt-3 p-2">
         {/* <div className="d-flex justify-content-end">
-          <Button variant="secondary" className="mx-2">
-            Transfer
-          </Button>
           <Button className="mx-2">Manage</Button>
           <Link to="/premium" className="mx-2">
             <Button>Buy</Button>
           </Link>
         </div> */}
-      </Card.Body>
-    </Card>
+      </Card>
+    </div>
   );
 };
 
