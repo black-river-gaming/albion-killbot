@@ -126,7 +126,7 @@ export const apiSlice = createApi({
       }),
       assignSubscription: builder.mutation<
         Subscription,
-        { server: string; checkoutId?: string }
+        { server: string; checkoutId?: string; subscriptionId?: string }
       >({
         query: (body) => ({
           url: `/subscriptions/assign`,

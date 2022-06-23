@@ -9,17 +9,24 @@ import {
   useFetchUserServersQuery,
 } from "store/api";
 
-interface CheckoutSuccessModalProps {
-  checkoutId: string;
+interface SubscriptionAssignModalProps {
+  checkoutId?: string;
+  currentServerId?: string;
+  subscriptionId?: string;
 }
 
-const CheckoutSuccessModal = ({ checkoutId }: CheckoutSuccessModalProps) => {
+const SubscriptionAssignModal = ({
+  checkoutId,
+  currentServerId,
+  subscriptionId,
+}: SubscriptionAssignModalProps) => {
   const [show, setShow] = useState(true);
   const servers = useFetchUserServersQuery();
   const [dispatchAssignSubscription, assignSubscription] =
     useAssignSubscriptionMutation();
 
   if (assignSubscription.isSuccess && assignSubscription.data) {
+    console.log(assignSubscription.data);
     return (
       <Navigate
         to={`/dashboard/${assignSubscription.data.server}/subscription`}
@@ -27,11 +34,17 @@ const CheckoutSuccessModal = ({ checkoutId }: CheckoutSuccessModalProps) => {
     );
   }
 
+  const availableServers = servers.data?.filter(
+    (server) => server.bot && server.id !== currentServerId
+  );
+
   return (
     <Modal show={show} centered={true} size="lg">
       <Modal.Header>
         <Modal.Title>
-          Premium subscription successfully purchased. Thank you!
+          {checkoutId
+            ? "Premium subscription successfully purchased. Thank you!"
+            : "Assign Premium subcription"}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -46,9 +59,13 @@ const CheckoutSuccessModal = ({ checkoutId }: CheckoutSuccessModalProps) => {
         </div>
         <Row className="g-4">
           {servers.isFetching && <Loader />}
-          {servers.data
-            ?.filter((server) => server.bot)
-            .map((server) => (
+          {availableServers?.length === 0 && (
+            <h5 className="d-flex justify-content-center py-5">
+              No servers available.
+            </h5>
+          )}
+          {availableServers &&
+            availableServers.map((server) => (
               <Col key={server.id} sm={6} lg={4}>
                 <ServerCard server={server}>
                   <div className="d-flex justify-content-end">
@@ -58,6 +75,7 @@ const CheckoutSuccessModal = ({ checkoutId }: CheckoutSuccessModalProps) => {
                         dispatchAssignSubscription({
                           server: server.id,
                           checkoutId,
+                          subscriptionId,
                         })
                       }
                       disabled={assignSubscription.isLoading}
@@ -90,4 +108,4 @@ const CheckoutSuccessModal = ({ checkoutId }: CheckoutSuccessModalProps) => {
   );
 };
 
-export default CheckoutSuccessModal;
+export default SubscriptionAssignModal;

@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { Alert, Button, Card, Col, Row } from "react-bootstrap";
+import { Alert, Button, Col, Row } from "react-bootstrap";
 import { Navigate, useParams } from "react-router-dom";
 import Loader from "shared/components/Loader";
+import SubscriptionAssignModal from "shared/components/SubscriptionAssignModal";
 import SubscriptionPriceCard from "shared/components/SubscriptionPriceCard";
 import { Subscription, useFetchSubscriptionsQuery } from "store/api";
 
 const SubscriptionPage = () => {
   const { serverId = "" } = useParams();
   const subscriptions = useFetchSubscriptionsQuery();
-  const [subscription, setSubscription] = useState("");
+  const [subscriptionAssignId, setSubscriptionAssignId] = useState("");
 
-  if (subscriptions.isFetching) return <Loader />;
   if (subscriptions.data && subscriptions.data.length === 0)
     return <Navigate to="/premium" />;
 
@@ -36,7 +36,12 @@ const SubscriptionPage = () => {
             <Col lg={6}>
               <SubscriptionPriceCard price={subscription.stripe?.price}>
                 <div className="d-flex justify-content-end px-2 pb-2">
-                  <Button variant="secondary">Transfer</Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => setSubscriptionAssignId(subscription.id)}
+                  >
+                    Transfer
+                  </Button>
                 </div>
               </SubscriptionPriceCard>
             </Col>
@@ -49,15 +54,16 @@ const SubscriptionPage = () => {
   return (
     <div>
       <h4 className="d-flex justify-content-center p-2">Subscription</h4>
-      <div>{renderServerSubscription(serverSubscription)}</div>
-      <Card className="mt-3 p-2">
-        {/* <div className="d-flex justify-content-end">
-          <Button className="mx-2">Manage</Button>
-          <Link to="/premium" className="mx-2">
-            <Button>Buy</Button>
-          </Link>
-        </div> */}
-      </Card>
+      {subscriptions.isFetching && <Loader />}
+      {serverSubscription && (
+        <div>{renderServerSubscription(serverSubscription)}</div>
+      )}
+      {subscriptionAssignId && (
+        <SubscriptionAssignModal
+          currentServerId={serverId}
+          subscriptionId={subscriptionAssignId}
+        />
+      )}
     </div>
   );
 };

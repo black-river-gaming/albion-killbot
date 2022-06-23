@@ -7,8 +7,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Alert, Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import { Link, useSearchParams } from "react-router-dom";
-import CheckoutSuccessModal from "shared/components/CheckoutSuccessModal";
 import Loader from "shared/components/Loader";
+import SubscriptionAssignModal from "shared/components/SubscriptionAssignModal";
 import SubscriptionPriceCard from "shared/components/SubscriptionPriceCard";
 import { isSubscriptionActiveAndUnassiged } from "shared/subscriptions";
 import {
@@ -92,7 +92,7 @@ const Premium = () => {
         </Alert>
       )}
       {status === "success" && checkoutId && (
-        <CheckoutSuccessModal checkoutId={checkoutId} />
+        <SubscriptionAssignModal checkoutId={checkoutId} />
       )}
       {!status && subscriptions.data?.some(isSubscriptionActiveAndUnassiged) && (
         <Alert className="mb-4" variant="success">
