@@ -1,6 +1,6 @@
 const moment = require("moment");
 const stripe = require("../ports/stripe");
-const { getCollection } = require("../ports/database");
+const { getCollection, find, findOne } = require("../ports/database");
 
 const SUBSCRIPTIONS_ONLY = Boolean(process.env.SUBSCRIPTIONS_ONLY);
 const SUBSCRIPTIONS_COLLECTION = "subscriptions";
@@ -32,27 +32,29 @@ async function getBuySubscription(checkoutId) {
 }
 
 async function getSubscriptionsByOwner(owner) {
-  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-  return await collection.find({ owner }).toArray();
+  if (!isSubscriptionsEnabled()) return [];
+  return await find(SUBSCRIPTIONS_COLLECTION, { owner });
+}
+
+async function getSubscriptionById(subscriptionId) {
+  if (!isSubscriptionsEnabled()) return null;
+  return await findOne(SUBSCRIPTIONS_COLLECTION, { _id: subscriptionId });
 }
 
 async function getSubscriptionByServerId(server) {
-  if (!isSubscriptionsEnabled()) return null;
-  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-  return await collection.findOne({ server });
+  if (!isSubscriptionsEnabled()) return [];
+  return await find(SUBSCRIPTIONS_COLLECTION, { server });
 }
 
 async function getSubscriptionByStripeId(stripe) {
   if (!isSubscriptionsEnabled()) return null;
-  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-  return await collection.findOne({ stripe });
+  return await findOne(SUBSCRIPTIONS_COLLECTION, { stripe });
 }
 
 async function getSubscriptionByCheckoutId(checkoutId) {
   if (!isSubscriptionsEnabled()) return null;
-  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
   const checkout = await stripe.getCheckoutSession(checkoutId);
-  return await collection.findOne({ stripe: checkout.subscription });
+  return await findOne(SUBSCRIPTIONS_COLLECTION, { stripe: checkout.subscription });
 }
 
 async function getStripeSubscription(id) {
@@ -61,8 +63,7 @@ async function getStripeSubscription(id) {
 
 async function hasSubscription(guild) {
   if (!isSubscriptionsEnabled()) return true;
-  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-  const subscription = await collection.findOne({ guild });
+  const subscription = await findOne(SUBSCRIPTIONS_COLLECTION, { guild });
   if (!subscription) return false;
   return moment(subscription.expires).diff() > 0;
 }
@@ -95,6 +96,7 @@ module.exports = {
   getBuySubscription,
   getStripeSubscription,
   getSubscriptionByCheckoutId,
+  getSubscriptionById,
   getSubscriptionByServerId,
   getSubscriptionByStripeId,
   getSubscriptionsByOwner,

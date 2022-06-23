@@ -1,4 +1,22 @@
+const { ObjectId } = require("mongodb");
 const dbClient = require("../adapters/mongoDbClient");
+
+// TODO: Extract helper functions
+function convertObjectId(query) {
+  if (query._id && !(query._id instanceof ObjectId)) {
+    query._id = ObjectId(query._id);
+  }
+  return query;
+}
+
+function returnObjectId(document) {
+  if (!document) return null;
+  if (document._id) {
+    document.id = document._id;
+    delete document._id;
+  }
+  return { id: document.id, ...document };
+}
 
 async function init() {
   const { MONGODB_URL } = process.env;
@@ -31,9 +49,23 @@ async function dropColection(collectionName) {
   return true;
 }
 
+async function find(collectionName, query) {
+  const collection = getCollection(collectionName);
+  const result = await collection.find(convertObjectId(query)).toArray();
+  return result.map((document) => returnObjectId(document));
+}
+
+async function findOne(collectionName, query) {
+  const collection = getCollection(collectionName);
+  const document = await collection.findOne(convertObjectId(query));
+  return returnObjectId(document);
+}
+
 module.exports = {
-  init,
   cleanup,
-  getCollection,
   dropColection,
+  find,
+  findOne,
+  getCollection,
+  init,
 };
