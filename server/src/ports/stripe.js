@@ -57,6 +57,23 @@ async function createCheckoutSession(priceId, owner) {
   }
 }
 
+async function createPortalSession(customerId) {
+  try {
+    const session = await stripe.billingPortal.sessions.create({
+      customer: customerId,
+      return_url: STRIPE_REDIRECT_URL,
+    });
+
+    return {
+      id: session.id,
+      url: session.url,
+    };
+  } catch (error) {
+    logger.error("Unable to create portal session for stripe:", error);
+    return null;
+  }
+}
+
 async function getCheckoutSession(id) {
   try {
     const checkout = await stripe.checkout.sessions.retrieve(id);
@@ -80,7 +97,9 @@ async function getSubscription(id) {
 
     return {
       id: subscription.id,
+      cancel_at_period_end: subscription.cancel_at_period_end,
       current_period_end: subscription.current_period_end,
+      customer: subscription.customer,
       price: {
         id: price.id,
         currency: price.currency,
@@ -100,6 +119,7 @@ async function getSubscription(id) {
 
 module.exports = {
   createCheckoutSession,
+  createPortalSession,
   getCheckoutSession,
   getPrices,
   getSubscription,

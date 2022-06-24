@@ -73,10 +73,24 @@ async function getBuySubscription(req, res) {
   }
 }
 
+async function manageSubscription(req, res) {
+  try {
+    const { customerId } = req.body;
+
+    const session = await subscriptionsService.manageSubscription(customerId);
+    if (!session) return res.sendStatus(404);
+
+    return res.send(session);
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+}
+
 module.exports = {
   assignSubscription,
   buySubscription,
   getBuySubscription,
   getSubscriptions,
   getSubscriptionsPrices,
+  manageSubscription,
 };

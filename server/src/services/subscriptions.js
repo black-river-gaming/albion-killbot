@@ -31,6 +31,10 @@ async function getBuySubscription(checkoutId) {
   return await stripe.getCheckoutSession(checkoutId);
 }
 
+async function manageSubscription(customerId) {
+  return await stripe.createPortalSession(customerId);
+}
+
 async function getSubscriptionsByOwner(owner) {
   if (!isSubscriptionsEnabled()) return [];
   return await find(SUBSCRIPTIONS_COLLECTION, { owner });
@@ -102,6 +106,7 @@ module.exports = {
   getSubscriptionsByOwner,
   hasSubscription,
   isSubscriptionsEnabled,
+  manageSubscription,
   removeSubscription,
   removeSubscriptionByStripeId,
   unassignSubscription,

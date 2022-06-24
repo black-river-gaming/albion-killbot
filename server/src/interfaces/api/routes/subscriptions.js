@@ -38,10 +38,18 @@ router.use(authenticated);
  *               type: string
  *               description: Stripe subscription id
  *               example: "sub_1LBsWDJDAy6upd5xtYnPln1B"
+ *             cancel_at_period_end:
+ *               type: boolean
+ *               description: Cancel after subscription period end
+ *               example: false
  *             current_period_end:
  *               type: number
  *               description: Timestamp in seconds for stripe subscription end
  *               example: 1687059617
+ *             customer:
+ *               type: string
+ *               description: Stripe customer id
+ *               example: "cus_Lvvu9FF2ehwSBF"
  *             price:
  *               $ref: "#/components/schemas/SubscriptionPrice"
  *
@@ -130,7 +138,6 @@ router.get(`/`, subscriptionsController.getSubscriptions);
  *               server:
  *                 type: string
  *                 description: Discord server id
- *                 required: true
  *                 example: "738365346855256107"
  *               checkoutId:
  *                 type: string
@@ -199,6 +206,41 @@ router.post(`/checkout`, subscriptionsController.buySubscription);
  *               $ref: '#/components/schemas/Checkout'
  */
 router.get(`/checkout/:checkoutId`, subscriptionsController.getBuySubscription);
+
+/**
+ * @openapi
+ * /subscriptions/manage:
+ *   post:
+ *     tags: [Subscriptions]
+ *     summary: Get a link to manage your subscription in Stripe
+ *     operationId: manageSubscription
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customerId:
+ *                 type: string
+ *                 description: Stripe customer id to manage subscriptions
+ *                 example: "cus_LtfrwncxjVCTTw"
+ *     responses:
+ *       200:
+ *         description: Manage session created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   description: Manage session id
+ *                   example: "bps_1LE4UaJDAy6upd5xYxnTN3yw"
+ *                 url:
+ *                   type: string
+ *                   description: Full url to perform the management
+ */
+router.post(`/manage`, subscriptionsController.manageSubscription);
 
 /**
  * @openapi
