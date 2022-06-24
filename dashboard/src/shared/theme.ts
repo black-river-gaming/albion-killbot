@@ -7,6 +7,7 @@ export interface ThemeProps {
 
   text: string;
   contrastText: string;
+  dangerText: string;
   mutedText: string;
 }
 
@@ -19,6 +20,7 @@ const theme: ThemeProps = {
 
   text: "#ffffff",
   contrastText: "#333333",
+  dangerText: "#c42936",
   mutedText: "#6c757d",
 };
 

@@ -113,7 +113,12 @@ const Premium = () => {
                 className="user-subscription-list-item"
               >
                 <div className="info">
-                  <div className="id-text">#{subscription.id}</div>
+                  <div className="id-text">
+                    <span>#{subscription.id}</span>
+                    {subscription.stripe?.cancel_at_period_end && (
+                      <span className="cancelled-text">cancelled</span>
+                    )}
+                  </div>
                   <div className="active">
                     Active Until:{" "}
                     {new Date(subscription.expires).toLocaleDateString()}

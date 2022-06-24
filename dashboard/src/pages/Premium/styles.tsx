@@ -10,8 +10,16 @@ const StyledPremium = styled.div`
       .info {
         .id-text {
           font-size: 10px;
+          line-height: 10px;
 
           color: ${({ theme }) => theme.mutedText};
+
+          .cancelled-text {
+            font-size: 12px;
+            padding-left: 0.25rem;
+            font-weight: 500;
+            color: ${({ theme }) => theme.dangerText};
+          }
         }
 
         .active {

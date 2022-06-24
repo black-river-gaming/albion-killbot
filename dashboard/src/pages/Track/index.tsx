@@ -31,10 +31,8 @@ import {
 } from "store/api";
 import {
   loadTrack,
-  trackAlliance,
   trackGuild,
   trackPlayer,
-  untrackAlliance,
   untrackGuild,
   untrackPlayer,
 } from "store/track";
@@ -42,7 +40,6 @@ import {
 // Until we have subscriptions working, these limits are constants
 const PLAYER_LIMIT = 10;
 const GUILD_LIMIT = 1;
-const ALLIANCE_LIMIT = 1;
 
 const Track = () => {
   const { serverId = "" } = useParams();
@@ -94,7 +91,7 @@ const Track = () => {
             {title} {limit && `[${list.length}/${limit}]`}
           </ListGroup.Item>
           {list.map(({ id, name }) => (
-            <ListGroup.Item key={id} className="pe-1">
+            <ListGroup.Item key={id} className="paper">
               <div className="d-flex justify-content-between align-items-center">
                 <div>{name}</div>
                 <ButtonGroup size="sm">
@@ -115,7 +112,7 @@ const Track = () => {
 
     return (
       <Row className="p-2 gy-2">
-        <Col sm={4}>
+        <Col sm={6}>
           {renderTrackingList(
             "Players",
             PLAYER_LIMIT,
@@ -123,20 +120,12 @@ const Track = () => {
             untrackPlayer
           )}
         </Col>
-        <Col sm={4}>
+        <Col sm={6}>
           {renderTrackingList(
             "Guilds",
             GUILD_LIMIT,
             track.guilds,
             untrackGuild
-          )}
-        </Col>
-        <Col sm={4}>
-          {renderTrackingList(
-            "Alliances",
-            ALLIANCE_LIMIT,
-            track.alliances,
-            untrackAlliance
           )}
         </Col>
       </Row>
@@ -193,14 +182,6 @@ const Track = () => {
       dispatch(trackGuild(guild));
     };
 
-    const doTrackAlliance = (alliance: SearchResults["alliances"][number]) => {
-      if (track.alliances.length >= ALLIANCE_LIMIT)
-        return setError(
-          `Maximum limit of ${ALLIANCE_LIMIT} alliance(s) achieved.`
-        );
-      dispatch(trackAlliance(alliance));
-    };
-
     if (searchResults.isUninitialized) return;
     if (searchResults.isFetching) return <Loader className="p-2" />;
     if (!searchResults.data)
@@ -210,7 +191,7 @@ const Track = () => {
         </span>
       );
 
-    const { players, guilds, alliances } = searchResults.data;
+    const { players, guilds } = searchResults.data;
 
     return (
       <div className="p-2 pb-0">
@@ -227,13 +208,6 @@ const Track = () => {
             guilds.slice(0, 5),
             track.guilds,
             doTrackGuild
-          )}
-        {alliances.length > 0 &&
-          renderSearchResultsList(
-            "Alliances",
-            alliances.slice(0, 5),
-            track.alliances,
-            doTrackAlliance
           )}
       </div>
     );
@@ -269,7 +243,7 @@ const Track = () => {
         <Col sm={12}>
           <Card className="p-2">
             <h4 className="d-flex justify-content-center p-2">Search</h4>
-            <Form onSubmit={handleSearch}>
+            <Form onSubmit={handleSearch} className="pb-2">
               <Form.Group controlId="search-albion" className="px-2">
                 <Form.Label>Search</Form.Label>
                 <InputGroup>
@@ -284,9 +258,6 @@ const Track = () => {
                     <FontAwesomeIcon icon={faSearch} />
                   </Button>
                 </InputGroup>
-                <Form.Text id="search-help" muted>
-                  For alliances, input the alliance id
-                </Form.Text>
               </Form.Group>
             </Form>
             {renderSearchResults()}

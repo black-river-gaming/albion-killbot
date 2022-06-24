@@ -78,6 +78,7 @@ export interface Subscription {
   server?: string;
   stripe?: {
     id: string;
+    cancel_at_period_end: boolean;
     current_period_end: number;
     customer: string;
     price: SubscriptionPrice;
