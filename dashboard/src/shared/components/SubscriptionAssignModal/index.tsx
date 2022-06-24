@@ -13,12 +13,14 @@ interface SubscriptionAssignModalProps {
   checkoutId?: string;
   currentServerId?: string;
   subscriptionId?: string;
+  onClose?: () => void;
 }
 
 const SubscriptionAssignModal = ({
   checkoutId,
   currentServerId,
   subscriptionId,
+  onClose,
 }: SubscriptionAssignModalProps) => {
   const [show, setShow] = useState(true);
   const servers = useFetchUserServersQuery();
@@ -39,7 +41,14 @@ const SubscriptionAssignModal = ({
   );
 
   return (
-    <Modal show={show} centered={true} size="lg">
+    <Modal
+      show={show}
+      centered={true}
+      size="lg"
+      onExit={() => {
+        if (onClose) onClose();
+      }}
+    >
       <Modal.Header>
         <Modal.Title>
           {checkoutId

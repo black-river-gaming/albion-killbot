@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Alert, Button, Col, Row } from "react-bootstrap";
-import { Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import Loader from "shared/components/Loader";
 import SubscriptionAssignModal from "shared/components/SubscriptionAssignModal";
 import SubscriptionPriceCard from "shared/components/SubscriptionPriceCard";
-import { Subscription, useFetchSubscriptionsQuery } from "store/api";
+import { useFetchSubscriptionsQuery } from "store/api";
 
 const SubscriptionPage = () => {
   const { serverId = "" } = useParams();
@@ -14,11 +14,11 @@ const SubscriptionPage = () => {
   if (subscriptions.data && subscriptions.data.length === 0)
     return <Navigate to="/premium" />;
 
-  const serverSubscription = subscriptions.data?.find(
-    (subscription) => subscription.server === serverId
-  );
+  const renderServerSubscription = () => {
+    const subscription = subscriptions.data?.find(
+      (subscription) => subscription.server === serverId
+    );
 
-  const renderServerSubscription = (subscription: Subscription | undefined) => {
     return (
       <div>
         <Alert variant="dark" className="d-flex justify-content-start py-2">
@@ -28,11 +28,15 @@ const SubscriptionPage = () => {
               {new Date(subscription.expires).toLocaleDateString()}
             </div>
           ) : (
-            <div>This server doesn't have an active subscription.</div>
+            <div>
+              This server doesn't have an active subscription. Please, go to{" "}
+              <Link to="/dashboard">Premium</Link> page to assign a
+              subscription.
+            </div>
           )}
         </Alert>
         {subscription?.stripe && subscription.stripe?.price && (
-          <Row className="justify-content-center">
+          <Row className="justify-content-center pb-3">
             <Col lg={6}>
               <SubscriptionPriceCard price={subscription.stripe?.price}>
                 <div className="d-flex justify-content-end px-2 pb-2">
@@ -52,19 +56,18 @@ const SubscriptionPage = () => {
   };
 
   return (
-    <div>
+    <>
       <h4 className="d-flex justify-content-center p-2">Subscription</h4>
       {subscriptions.isFetching && <Loader />}
-      {serverSubscription && (
-        <div>{renderServerSubscription(serverSubscription)}</div>
-      )}
+      {subscriptions.isSuccess && renderServerSubscription()}
       {subscriptionAssignId && (
         <SubscriptionAssignModal
           currentServerId={serverId}
           subscriptionId={subscriptionAssignId}
+          onClose={() => setSubscriptionAssignId("")}
         />
       )}
-    </div>
+    </>
   );
 };
 

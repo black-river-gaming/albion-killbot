@@ -5,18 +5,21 @@ import {
   faPeopleGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 import { Alert, Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import { Link, useSearchParams } from "react-router-dom";
 import Loader from "shared/components/Loader";
 import SubscriptionAssignModal from "shared/components/SubscriptionAssignModal";
 import SubscriptionPriceCard from "shared/components/SubscriptionPriceCard";
 import { isSubscriptionActiveAndUnassiged } from "shared/subscriptions";
+import { getCurrency } from "shared/utils";
 import {
   SubscriptionPrice,
   useBuySubscriptionMutation,
   useFetchPricesQuery,
   useFetchSubscriptionsQuery,
 } from "store/api";
+import StyledPremium from "./styles";
 
 const Premium = () => {
   const subscriptions = useFetchSubscriptionsQuery();
@@ -26,6 +29,7 @@ const Premium = () => {
   const [queryParams] = useSearchParams();
   const status = queryParams.get("status");
   const checkoutId = queryParams.get("checkout_id");
+  const [subscriptionAssignId, setSubscriptionAssignId] = useState("");
 
   if (buySubscription.isLoading) return <Loader />;
   if (buySubscription.isSuccess && buySubscription.data) {
@@ -81,8 +85,65 @@ const Premium = () => {
     );
   };
 
+  const renderUserSubscriptions = () => {
+    if (subscriptions.data?.length === 0) return;
+
+    return (
+      <Card className="p-2 mt-4 user-subscriptions">
+        <div className="d-flex justify-content-center pb-2">
+          Your Active Subscriptions:
+        </div>
+
+        <ListGroup>
+          {subscriptions.data?.map((subscription) => {
+            const price = subscription.stripe?.price;
+
+            return (
+              <ListGroup.Item
+                key={subscription.id}
+                className="user-subscription-list-item"
+              >
+                <div className="info">
+                  <div className="id-text">#{subscription.id}</div>
+                  <div className="active">
+                    Active Until:{" "}
+                    {new Date(subscription.expires).toLocaleDateString()}
+                    {price && (
+                      <div className="d-flex align-items-baseline price">
+                        (
+                        {getCurrency(price.price / 100, {
+                          currency: price.currency,
+                        })}
+                        /{price.recurrence.count} {price.recurrence.interval})
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="actions">
+                  {subscription.server && (
+                    <Link to={`/dashboard/${subscription.server}/subscription`}>
+                      <Button variant="secondary">Dashboard</Button>
+                    </Link>
+                  )}
+                  {!subscription.server && (
+                    <Button
+                      variant="primary"
+                      onClick={() => setSubscriptionAssignId(subscription.id)}
+                    >
+                      Assign
+                    </Button>
+                  )}
+                </div>
+              </ListGroup.Item>
+            );
+          })}
+        </ListGroup>
+      </Card>
+    );
+  };
+
   return (
-    <div className="py-2">
+    <StyledPremium className="py-2">
       <div className="d-flex justify-content-center">
         <h1 className="py-2">Premium</h1>
       </div>
@@ -97,12 +158,19 @@ const Premium = () => {
       {!status && subscriptions.data?.some(isSubscriptionActiveAndUnassiged) && (
         <Alert className="mb-4" variant="success">
           You currently have an active subscription that is not assigned to a
-          server. Please go to the <Link to="/dashboard">Dashboard</Link> to
-          assign it to a server.
+          server. Make sure to assign it before being able to benefit from the
+          subscription.
         </Alert>
       )}
       {renderPrices()}
-    </div>
+      {renderUserSubscriptions()}
+      {subscriptionAssignId && (
+        <SubscriptionAssignModal
+          subscriptionId={subscriptionAssignId}
+          onClose={() => setSubscriptionAssignId("")}
+        />
+      )}
+    </StyledPremium>
   );
 };
 

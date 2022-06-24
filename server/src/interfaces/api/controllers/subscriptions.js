@@ -27,9 +27,9 @@ async function assignSubscription(req, res) {
     const { server, checkoutId, subscriptionId } = req.body;
     if (!server || (!checkoutId && !subscriptionId)) return res.sendStatus(422);
 
-    const otherSub = await subscriptionsService.getSubscriptionByServerId(server);
-    if (otherSub) {
-      await subscriptionsService.unassignSubscription(otherSub._id);
+    const otherSubs = await subscriptionsService.getSubscriptionByServerId(server);
+    for (const otherSub of otherSubs) {
+      await subscriptionsService.unassignSubscription(otherSub.id);
     }
 
     const subscription = subscriptionId
