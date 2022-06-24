@@ -18,6 +18,7 @@ import {
   useBuySubscriptionMutation,
   useFetchPricesQuery,
   useFetchSubscriptionsQuery,
+  useManageSubscriptionMutation,
 } from "store/api";
 import StyledPremium from "./styles";
 
@@ -26,6 +27,8 @@ const Premium = () => {
   const prices = useFetchPricesQuery();
   const [dispatchBuySubscription, buySubscription] =
     useBuySubscriptionMutation();
+  const [dispatchManageSubscription, manageSubscription] =
+    useManageSubscriptionMutation();
   const [queryParams] = useSearchParams();
   const status = queryParams.get("status");
   const checkoutId = queryParams.get("checkout_id");
@@ -34,6 +37,11 @@ const Premium = () => {
   if (buySubscription.isLoading) return <Loader />;
   if (buySubscription.isSuccess && buySubscription.data) {
     window.location.href = buySubscription.data.url;
+  }
+
+  if (manageSubscription.isLoading) return <Loader />;
+  if (manageSubscription.isSuccess && manageSubscription.data) {
+    window.location.href = manageSubscription.data.url;
   }
 
   const renderPrices = () => {
@@ -86,6 +94,7 @@ const Premium = () => {
   };
 
   const renderUserSubscriptions = () => {
+    if (subscriptions.isFetching) return <Loader />;
     if (subscriptions.data?.length === 0) return;
 
     return (
@@ -131,6 +140,19 @@ const Premium = () => {
                       onClick={() => setSubscriptionAssignId(subscription.id)}
                     >
                       Assign
+                    </Button>
+                  )}
+                  {subscription.stripe?.customer && (
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        if (subscription.stripe?.customer)
+                          dispatchManageSubscription(
+                            subscription.stripe.customer
+                          );
+                      }}
+                    >
+                      Manage
                     </Button>
                   )}
                 </div>

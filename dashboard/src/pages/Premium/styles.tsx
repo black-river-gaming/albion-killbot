@@ -26,6 +26,12 @@ const StyledPremium = styled.div`
       }
 
       .actions {
+        display: flex;
+
+        a:not(:first-child),
+        .btn:not(:first-child) {
+          margin-left: 0.5rem;
+        }
       }
     }
   }

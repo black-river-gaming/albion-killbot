@@ -79,6 +79,7 @@ export interface Subscription {
   stripe?: {
     id: string;
     current_period_end: number;
+    customer: string;
     price: SubscriptionPrice;
   };
 }
@@ -96,7 +97,7 @@ export interface SubscriptionPrice {
   };
 }
 
-export interface Checkout {
+export interface Session {
   id: string;
   url: string;
 }
@@ -135,12 +136,21 @@ export const apiSlice = createApi({
         }),
         invalidatesTags: ["Subscription"],
       }),
-      buySubscription: builder.mutation<Checkout, string>({
+      buySubscription: builder.mutation<Session, string>({
         query: (priceId) => ({
           url: `/subscriptions/checkout`,
           method: "POST",
           body: {
             priceId,
+          },
+        }),
+      }),
+      manageSubscription: builder.mutation<Session, string>({
+        query: (customerId) => ({
+          url: `/subscriptions/manage`,
+          method: "POST",
+          body: {
+            customerId,
           },
         }),
       }),
@@ -200,6 +210,7 @@ export const {
   useLazyFetchUserQuery,
   useLazySearchQuery,
   useLogoutMutation,
+  useManageSubscriptionMutation,
   useUpdateSettingsMutation,
   useUpdateTrackMutation,
 } = apiSlice;
