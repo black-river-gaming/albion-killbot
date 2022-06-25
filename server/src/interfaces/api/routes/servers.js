@@ -34,6 +34,18 @@ router.use(authenticated);
  *            $ref: '#/components/schemas/Channel'
  *        settings:
  *          $ref: '#/components/schemas/Settings'
+ *        limits:
+ *          type: object
+ *          properties:
+ *            players:
+ *              type: number
+ *              default: 10
+ *            guilds:
+ *              type: number
+ *              default: 1
+ *            alliances:
+ *              type: number
+ *              default: 1
  *
  *    Channel:
  *      type: object
@@ -168,11 +180,11 @@ router.use(authenticated);
 
 /**
  * @openapi
- * /servers/{guildId}:
+ * /servers/{serverId}:
  *   get:
  *     tags: [Servers]
  *     parameters:
- *     - name: guildId
+ *     - name: serverId
  *       in: path
  *       required: true
  *       schema:
@@ -181,13 +193,13 @@ router.use(authenticated);
  *     operationId: getServer
  *     responses:
  *       200:
- *         description: Server settings
+ *         description: Server data
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Settings'
+ *               $ref: '#/components/schemas/Server'
  */
-router.get(`/:guildId`, serversController.getServer);
+router.get(`/:serverId`, serversController.getServer);
 
 /**
  * @openapi

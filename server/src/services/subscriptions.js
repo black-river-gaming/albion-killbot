@@ -1,12 +1,14 @@
 const moment = require("moment");
 const stripe = require("../ports/stripe");
 const { getCollection, find, findOne } = require("../ports/database");
+const { getNumber } = require("../helpers/utils");
 
-const SUBSCRIPTIONS_ONLY = Boolean(process.env.SUBSCRIPTIONS_ONLY);
+const { MAX_PLAYERS, MAX_GUILDS, MAX_ALLIANCES, SUB_MAX_PLAYERS, SUB_MAX_GUILDS, SUB_MAX_ALLIANCES } = process.env;
+const SUBSCRIPTIONS_MODE = Boolean(process.env.SUBSCRIPTIONS_MODE);
 const SUBSCRIPTIONS_COLLECTION = "subscriptions";
 
 function isSubscriptionsEnabled() {
-  return SUBSCRIPTIONS_ONLY;
+  return SUBSCRIPTIONS_MODE;
 }
 
 async function addSubscription(subscription) {
@@ -65,10 +67,29 @@ async function getStripeSubscription(id) {
   return await stripe.getSubscription(id);
 }
 
-async function hasSubscription(guild) {
+async function getLimitsByServerId(server) {
+  let players = getNumber(MAX_PLAYERS, 10);
+  let guilds = getNumber(MAX_GUILDS, 1);
+  let alliances = getNumber(MAX_ALLIANCES, 1);
+
+  if (isSubscriptionsEnabled() && (await hasSubscriptionByServerId(server))) {
+    players = getNumber(SUB_MAX_PLAYERS, players);
+    guilds = getNumber(SUB_MAX_GUILDS, guilds);
+    alliances = getNumber(SUB_MAX_ALLIANCES, alliances);
+  }
+
+  return {
+    players,
+    guilds,
+    alliances,
+  };
+}
+
+async function hasSubscriptionByServerId(server) {
   if (!isSubscriptionsEnabled()) return true;
-  const subscription = await findOne(SUBSCRIPTIONS_COLLECTION, { guild });
+  const subscription = await findOne(SUBSCRIPTIONS_COLLECTION, { server });
   if (!subscription) return false;
+  if (subscription.expires === "never") return true;
   return moment(subscription.expires).diff() > 0;
 }
 
@@ -98,13 +119,14 @@ module.exports = {
   buySubscription,
   fetchSubscriptionPrices,
   getBuySubscription,
+  getLimitsByServerId,
   getStripeSubscription,
   getSubscriptionByCheckoutId,
   getSubscriptionById,
   getSubscriptionByServerId,
   getSubscriptionByStripeId,
   getSubscriptionsByOwner,
-  hasSubscription,
+  hasSubscriptionByServerId,
   isSubscriptionsEnabled,
   manageSubscription,
   removeSubscription,

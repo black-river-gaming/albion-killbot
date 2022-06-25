@@ -1,9 +1,9 @@
 const { InteractionType } = require("discord-api-types/v10");
 const { String } = require("discord-api-types/v10").ApplicationCommandOptionType;
 const { getLocale } = require("../../../helpers/locale");
-const { getNumber } = require("../../../helpers/utils");
 const { getAlliance, search } = require("../../../services/search");
 const { setSettings } = require("../../../services/settings");
+const { getLimitsByServerId } = require("../../../services/subscriptions");
 
 const t = getLocale().t;
 
@@ -33,6 +33,7 @@ const command = {
   options,
   handle: async (interaction, settings) => {
     const t = getLocale(settings.lang).t;
+    const limits = await getLimitsByServerId(settings.server);
 
     const playerName = interaction.options.getString("player");
     const guildName = interaction.options.getString("guild");
@@ -98,9 +99,9 @@ const command = {
       }
     };
 
-    if (allianceId) await track("alliances", allianceId, getNumber(process.env.MAX_ALLIANCES, 1));
-    if (playerName) await track("players", playerName, getNumber(process.env.MAX_PLAYERS, 30));
-    if (guildName) await track("guilds", guildName, getNumber(process.env.MAX_GUILDS, 5));
+    if (allianceId) await track("alliances", allianceId, limits.alliances);
+    if (playerName) await track("players", playerName, limits.players);
+    if (guildName) await track("guilds", guildName, limits.guilds);
 
     return await interaction.editReply({ content, ephemeral: true });
   },

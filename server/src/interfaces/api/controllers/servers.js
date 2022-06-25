@@ -1,12 +1,19 @@
 const serversService = require("../../../services/servers");
 const settingsService = require("../../../services/settings");
+const subscriptionService = require("../../../services/subscriptions");
 
 async function getServer(req, res) {
-  const { guildId } = req.params;
-  const server = await serversService.getServer(guildId);
-  const settings = await settingsService.getSettings(guildId);
+  const { serverId } = req.params;
+  const server = await serversService.getServer(serverId);
 
+  const settings = await settingsService.getSettings(serverId);
   server.settings = settings;
+
+  const subscription = await subscriptionService.getSubscriptionByServerId(serverId);
+  server.subscription = subscription;
+
+  const limits = await subscriptionService.getLimitsByServerId(serverId);
+  server.limits = limits;
 
   return res.send(server);
 }

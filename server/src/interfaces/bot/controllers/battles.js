@@ -3,7 +3,6 @@ const { getTrackedBattle } = require("../../../helpers/tracking");
 
 const { subscribeBattles } = require("../../../services/battles");
 const { getSettingsByGuild } = require("../../../services/settings");
-const { hasSubscription } = require("../../../services/subscriptions");
 
 const { embedBattle } = require("../../../helpers/embeds");
 
@@ -20,9 +19,7 @@ async function subscribe(client) {
 
       for (const guild of client.guilds.cache.values()) {
         if (!settingsByGuild[guild.id]) continue;
-
         guild.settings = settingsByGuild[guild.id];
-        if (!hasSubscription(guild.settings)) continue;
 
         const guildBattle = getTrackedBattle(battle, guild.settings);
         if (!guildBattle) continue;

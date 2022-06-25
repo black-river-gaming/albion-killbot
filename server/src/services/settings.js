@@ -44,6 +44,8 @@ async function getSettingsByGuild(guilds) {
   });
 
   await collection.find({}).forEach((settings) => {
+    // TODO: Trim track list if subscription is expired
+    // Better to do when Track list gets refactored
     settingsByGuild[settings.guild] = settings;
   });
 
@@ -60,6 +62,8 @@ async function setSettings(guild, settings) {
     if (!(key in DEFAULT_SETTINGS)) delete settings[key];
   }
 
+  // TODO: Validate track list size is below limits for subscribers
+  // Better to do when Track list gets refactored
   const collection = getCollection(SETTINGS_COLLECTION);
   await collection.updateOne(
     { guild },

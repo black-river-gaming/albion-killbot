@@ -37,10 +37,6 @@ import {
   untrackPlayer,
 } from "store/track";
 
-// Until we have subscriptions working, these limits are constants
-const PLAYER_LIMIT = 10;
-const GUILD_LIMIT = 1;
-
 const Track = () => {
   const { serverId = "" } = useParams();
   const server = useFetchServerQuery(serverId);
@@ -88,7 +84,7 @@ const Track = () => {
             className="d-flex justify-content-center"
             variant="primary"
           >
-            {title} {limit && `[${list.length}/${limit}]`}
+            {title} [{list.length}/{limit}]
           </ListGroup.Item>
           {list.map(({ id, name }) => (
             <ListGroup.Item key={id} className="paper">
@@ -115,7 +111,7 @@ const Track = () => {
         <Col sm={6}>
           {renderTrackingList(
             "Players",
-            PLAYER_LIMIT,
+            server.data?.limits.players,
             track.players,
             untrackPlayer
           )}
@@ -123,7 +119,7 @@ const Track = () => {
         <Col sm={6}>
           {renderTrackingList(
             "Guilds",
-            GUILD_LIMIT,
+            server.data?.limits.guilds,
             track.guilds,
             untrackGuild
           )}
@@ -171,14 +167,18 @@ const Track = () => {
     };
 
     const doTrackPlayer = (player: SearchResults["players"][number]) => {
-      if (track.players.length >= PLAYER_LIMIT)
-        return setError(`Maximum limit of ${PLAYER_LIMIT} player(s) achieved.`);
+      const limit = server.data?.limits.players || 0;
+
+      if (track.players.length >= limit)
+        return setError(`Maximum limit of ${limit} player(s) exceeded.`);
       dispatch(trackPlayer(player));
     };
 
     const doTrackGuild = (guild: SearchResults["guilds"][number]) => {
-      if (track.guilds.length >= GUILD_LIMIT)
-        return setError(`Maximum limit of ${GUILD_LIMIT} guild(s) achieved.`);
+      const limit = server.data?.limits.guilds || 0;
+
+      if (track.guilds.length >= limit)
+        return setError(`Maximum limit of ${limit} guild(s) exceeded.`);
       dispatch(trackGuild(guild));
     };
 

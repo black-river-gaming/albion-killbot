@@ -24,6 +24,11 @@ export interface Server {
   icon: string;
   channels: Channel[];
   settings: Settings;
+  limits: {
+    players: number;
+    guilds: number;
+    alliances: number;
+  };
 }
 
 export interface Channel {
