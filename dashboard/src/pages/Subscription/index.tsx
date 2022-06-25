@@ -24,8 +24,11 @@ const SubscriptionPage = () => {
         <Alert variant="dark" className="d-flex justify-content-start py-2">
           {subscription ? (
             <div>
-              Server Status: Active until{" "}
-              {new Date(subscription.expires).toLocaleDateString()}
+              {subscription.expires === "never"
+                ? `Server Status: Activated`
+                : `Server Status: Active until ${new Date(
+                    subscription.expires
+                  ).toLocaleDateString()}`}
             </div>
           ) : (
             <div>

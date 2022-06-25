@@ -108,10 +108,7 @@
     "SEARCH_FAILED": "Falha ao buscar dados nos servidores do jogo. Por favor, tente novamente.",
     "NOT_FOUND": "Desculpe, não consegui encontrar nada com este nome.",
     "ALREADY_TRACKED": "Já estou rastreando este item.",
-    "LIMIT_REACHED": "Você atingiu o limite de {{ limit }} itens nesta lista.",
-    "ALLIANCE": {
-      "TRACKED": "TRACK.ALLIANCE.TRACKED"
-    }
+    "LIMIT_REACHED": "Você atingiu o limite de {{ limit }} itens nesta lista."
   },
   "MODE": {
     "AVAILABLE": "Modos disponíveis: {{ modes }}",
@@ -126,6 +123,7 @@
   "SUBSCRIPTION": {
     "STATUS": {
       "DAYS_REMAINING": "Sua assinatura possui {{{ days }}} dia(s) restando",
+      "ACTIVE": "Sua assinatura está ativada.",
       "INACTIVE": "Sua assinatura ainda não foi ativada. Por favor contate o administrador do bot.",
       "EXPIRED": "Sua assinatura expirou."
     },

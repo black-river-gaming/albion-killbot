@@ -28,6 +28,13 @@ const command = {
         ephemeral,
       });
 
+    if (subscription.expires === "never") {
+      return await interaction.reply({
+        content: t("SUBSCRIPTION.STATUS.ACTIVE"),
+        ephemeral,
+      });
+    }
+
     const days = moment(subscription.expires).diff(moment(), "days");
     return await interaction.reply({
       content: days <= 0 ? t("SUBSCRIPTION.STATUS.EXPIRED") : t("SUBSCRIPTION.STATUS.DAYS_REMAINING", { days }),

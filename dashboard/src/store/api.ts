@@ -74,7 +74,7 @@ export type SearchResults = TrackList;
 export interface Subscription {
   id: string;
   owner: string;
-  expires: string;
+  expires: string | "never";
   server?: string;
   stripe?: {
     id: string;

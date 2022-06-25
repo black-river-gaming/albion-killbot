@@ -123,6 +123,7 @@
   "SUBSCRIPTION": {
     "STATUS": {
       "DAYS_REMAINING": "Votre souscription contient {{{ days }}} jour(s) restant",
+      "ACTIVE": "Your subscription is active.",
       "INACTIVE": "Votre souscription n'est pas active. Merci de voir avec l'administrateur du bot.",
       "EXPIRED": "Votre souscription a expirée."
     },
