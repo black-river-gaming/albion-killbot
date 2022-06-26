@@ -15,16 +15,18 @@ async function getPrices({ currency = "usd", product = STRIPE_PRODUCT }) {
       product,
     });
     // We can ignore prices.has_more for now, unless price list increases, which isn't expected
-    return prices.data.map((price) => ({
-      id: price.id,
-      currency,
-      price: price.unit_amount || Number(price.unit_amount_decimal),
-      recurrence: {
-        interval: price.recurring.interval,
-        count: price.recurring.interval_count,
-      },
-      metadata: price.metadata,
-    }));
+    return prices.data
+      .map((price) => ({
+        id: price.id,
+        currency,
+        price: price.unit_amount || Number(price.unit_amount_decimal),
+        recurrence: {
+          interval: price.recurring.interval,
+          count: price.recurring.interval_count,
+        },
+        metadata: price.metadata,
+      }))
+      .sort((pa, pb) => pa.price - pb.price);
   } catch (e) {
     logger.error("Unable to get prices from stripe:", e);
     throw e;
