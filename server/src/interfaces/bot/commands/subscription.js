@@ -1,7 +1,7 @@
 const { InteractionType } = require("discord-api-types/v10");
 const moment = require("moment");
 const { getLocale } = require("../../../helpers/locale");
-const { isSubscriptionsEnabled, getServerSubscription } = require("../../../services/subscriptions");
+const { isSubscriptionsEnabled, getSubscriptionByServerId } = require("../../../services/subscriptions");
 
 const t = getLocale().t;
 
@@ -21,7 +21,7 @@ const command = {
         ephemeral,
       });
 
-    const subscription = await getServerSubscription(guild);
+    const subscription = await getSubscriptionByServerId(guild);
     if (!subscription || !subscription.expires)
       return await interaction.reply({
         content: t("SUBSCRIPTION.STATUS.INACTIVE"),
