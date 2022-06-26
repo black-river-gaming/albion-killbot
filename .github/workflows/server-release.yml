@@ -51,8 +51,8 @@ jobs:
           user: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker compose pull
-            docker compose down
+            docker compose --ansi never pull
+            docker compose --ansi never down
             touch migration-state.json
-            docker compose run --rm bot npm run db:migrate
-            docker compose up -d
+            docker compose --ansi never run --rm bot npm run db:migrate
+            docker compose --ansi never up -d
