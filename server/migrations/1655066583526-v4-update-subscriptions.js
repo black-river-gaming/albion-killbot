@@ -11,6 +11,10 @@ async function exportSubscriptionsToCollection() {
   while (setting) {
     if (setting.subscription) {
       const { subscription, guild } = setting;
+
+      subscription.server = subscription.guild;
+      delete subscription.guild;
+
       await subscriptionsCollection.insertOne({ ...subscription, guild });
       await settingsCollection.updateOne(
         { _id: setting._id },
