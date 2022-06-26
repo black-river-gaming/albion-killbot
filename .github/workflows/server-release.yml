@@ -1,4 +1,4 @@
-name: Release Server
+name: Server Release
 
 on:
   push:
