@@ -19,9 +19,9 @@ async function getServer(req, res) {
 }
 
 async function setServerSettings(req, res) {
-  const { guildId } = req.params;
+  const { serverId } = req.params;
   const { user } = req.session.discord;
-  const server = await serversService.getServer(guildId);
+  const server = await serversService.getServer(serverId);
 
   const isOwner = server.owner === user.id;
   // TODO: Get roles for user.id, then check if any of them is & (1 << 3) [Administrator]
@@ -29,14 +29,14 @@ async function setServerSettings(req, res) {
 
   const newSettings = req.body;
 
-  const settings = await settingsService.setSettings(guildId, newSettings);
+  const settings = await settingsService.setSettings(serverId, newSettings);
   return res.send(settings);
 }
 
 async function setServerTrack(req, res) {
-  const { guildId } = req.params;
+  const { serverId } = req.params;
   const { user } = req.session.discord;
-  const server = await serversService.getServer(guildId);
+  const server = await serversService.getServer(serverId);
 
   const isOwner = server.owner === user.id;
   // TODO: Get roles for user.id, then check if any of them is & (1 << 3) [Administrator]
@@ -44,7 +44,7 @@ async function setServerTrack(req, res) {
 
   const track = req.body;
 
-  const settings = await settingsService.setSettings(guildId, { track });
+  const settings = await settingsService.setSettings(serverId, { track });
   return res.send(settings.track);
 }
 

@@ -203,11 +203,11 @@ router.get(`/:serverId`, serversController.getServer);
 
 /**
  * @openapi
- * /servers/{guildId}/settings:
+ * /servers/{serverId}/settings:
  *   put:
  *     tags: [Servers]
  *     parameters:
- *     - name: guildId
+ *     - name: serverId
  *       in: path
  *       required: true
  *       schema:
@@ -227,15 +227,15 @@ router.get(`/:serverId`, serversController.getServer);
  *             schema:
  *               $ref: '#/components/schemas/Settings'
  */
-router.put(`/:guildId/settings`, serversController.setServerSettings);
+router.put(`/:serverId/settings`, serversController.setServerSettings);
 
 /**
  * @openapi
- * /servers/{guildId}/track:
+ * /servers/{serverId}/track:
  *   put:
  *     tags: [Servers]
  *     parameters:
- *     - name: guildId
+ *     - name: serverId
  *       in: path
  *       required: true
  *       schema:
@@ -255,7 +255,7 @@ router.put(`/:guildId/settings`, serversController.setServerSettings);
  *             schema:
  *               $ref: '#/components/schemas/Track'
  */
-router.put(`:guildId/track`, serversController.setServerTrack);
+router.put(`/:serverId/track`, serversController.setServerTrack);
 
 module.exports = {
   path: "/servers",
