@@ -49,7 +49,7 @@ async function getSubscriptionById(subscriptionId) {
 
 async function getSubscriptionByServerId(server) {
   if (!isSubscriptionsEnabled()) return [];
-  return await find(SUBSCRIPTIONS_COLLECTION, { server });
+  return await findOne(SUBSCRIPTIONS_COLLECTION, { server });
 }
 
 async function getSubscriptionByStripeId(stripe) {
