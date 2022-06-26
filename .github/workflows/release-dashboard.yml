@@ -1,4 +1,4 @@
-name: Deploy
+name: Release Dashboard
 
 on:
   push:
@@ -10,7 +10,7 @@ defaults:
     working-directory: dashboard/
 
 jobs:
-  server:
+  deploy:
     name: Deploy dashboard
     runs-on: ubuntu-latest
     environment:
