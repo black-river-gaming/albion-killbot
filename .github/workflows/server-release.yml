@@ -40,6 +40,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - publish
+    environment:
+      name: production
+      url: https://albion-killbot.com/
     steps:
       - name: Execute deploy script on production server
         uses: cross-the-world/ssh-pipeline@master
