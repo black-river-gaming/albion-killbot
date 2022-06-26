@@ -5,7 +5,9 @@ async function getSubscriptions(req, res) {
     const { user } = req.session.discord;
     const subscriptions = await subscriptionsService.getSubscriptionsByOwner(user.id);
     for (const subscription of subscriptions) {
-      subscription.stripe = await subscriptionsService.getStripeSubscription(subscription.stripe);
+      if (subscription.stripe) {
+        subscription.stripe = await subscriptionsService.getStripeSubscription(subscription.stripe);
+      }
     }
     return res.send(subscriptions);
   } catch (error) {
