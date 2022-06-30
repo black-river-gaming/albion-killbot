@@ -15,8 +15,10 @@ export const getUserPictureUrl = (user: User) =>
 export const getServerPictureUrl = (server: ServerPartial | Server) =>
   `https://cdn.discordapp.com/icons/${server.id}/${server.icon}.png`;
 
-export const getServerInviteUrl = (server: ServerPartial | Server) =>
-  `https://discord.com/oauth2/authorize?client_id=${REACT_APP_DISCORD_CLIENT_ID}&guild_id=${server.id}&scope=bot&permissions=2147534848`;
+export const getServerInviteUrl = (server?: ServerPartial | Server) => {
+  const serverParam = server ? `&guild_id=${server.id}` : ``;
+  return `https://discord.com/oauth2/authorize?client_id=${REACT_APP_DISCORD_CLIENT_ID}&scope=bot&permissions=2147534848${serverParam}`;
+};
 
 export const CHANNEL_TYPES = {
   TEXT: 0,

@@ -1,17 +1,24 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Footer from "shared/components/Footer";
 import Header from "shared/components/Header";
 import Paper from "shared/components/Paper";
 import Container from "styles/app-styles";
 
 export const App = () => {
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+
   return (
     <Container>
       <Header />
       <Paper elevation={24} className="content">
-        <div className="container">
+        {isHome ? (
           <Outlet />
-        </div>
+        ) : (
+          <div className="container">
+            <Outlet />
+          </div>
+        )}
       </Paper>
       <Footer />
     </Container>
