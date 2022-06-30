@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   albion-killbot:
-    image: agnjunio/albion-killbot:v3.3.9
+    image: agnjunio/albion-killbot:v3.3.10
     restart: unless-stopped
     depends_on:
       - mongodb
@@ -48,7 +48,7 @@ services:
         target: /var/lib/rabbitmq
     expose:
       - 5672
-      
+
 volumes:
   mongodb:
   configdb:
