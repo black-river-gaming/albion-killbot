@@ -4,13 +4,10 @@ WORKDIR /app
 # Set npm version
 RUN npm i -g npm@8.5.5
 
-# Install node-prune
-RUN npm i -g node-prune
-
 # Install project dependencies and prune unecessary files
 COPY package*.json ./
 RUN npm ci --force
-RUN node-prune
+RUN npx node-prune
 
 # Copy all files except those listed in .dockerignore
 COPY . .
