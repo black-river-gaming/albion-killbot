@@ -1,9 +1,9 @@
+import Loader from "components/Loader";
+import SubscriptionAssignModal from "components/SubscriptionAssignModal";
+import SubscriptionPriceCard from "components/SubscriptionPriceCard";
 import { useState } from "react";
 import { Alert, Button, Col, Row } from "react-bootstrap";
 import { Link, Navigate, useParams } from "react-router-dom";
-import Loader from "shared/components/Loader";
-import SubscriptionAssignModal from "shared/components/SubscriptionAssignModal";
-import SubscriptionPriceCard from "shared/components/SubscriptionPriceCard";
 import { useFetchSubscriptionsQuery } from "store/api";
 
 const SubscriptionPage = () => {

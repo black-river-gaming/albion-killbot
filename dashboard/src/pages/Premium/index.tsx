@@ -5,12 +5,12 @@ import {
   faPeopleGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Loader from "components/Loader";
+import SubscriptionAssignModal from "components/SubscriptionAssignModal";
+import SubscriptionPriceCard from "components/SubscriptionPriceCard";
 import { useState } from "react";
 import { Alert, Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import { Link, useSearchParams } from "react-router-dom";
-import Loader from "shared/components/Loader";
-import SubscriptionAssignModal from "shared/components/SubscriptionAssignModal";
-import SubscriptionPriceCard from "shared/components/SubscriptionPriceCard";
 import { isSubscriptionActiveAndUnassiged } from "shared/subscriptions";
 import { getCurrency } from "shared/utils";
 import {

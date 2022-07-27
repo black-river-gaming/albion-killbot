@@ -1,6 +1,6 @@
 import { faDiscord, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Paper from "shared/components/Paper";
+import Paper from "components/Paper";
 import { DISCORD_SERVER_URL } from "shared/discord";
 import StyledFooter from "./styles";
 

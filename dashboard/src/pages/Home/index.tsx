@@ -9,8 +9,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import screenshot1 from "assets/screenshots/505815101-event.png";
 import screenshot2 from "assets/screenshots/505822850-event.png";
+import Paper from "components/Paper";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
-import Paper from "shared/components/Paper";
 import { getServerInviteUrl } from "shared/discord";
 import StyledHome from "./styles";
 

@@ -7,6 +7,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { QueryStatus } from "@reduxjs/toolkit/dist/query";
+import Loader from "components/Loader";
+import Toast from "components/Toast";
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -19,8 +21,6 @@ import {
   Row,
 } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import Loader from "shared/components/Loader";
-import Toast from "shared/components/Toast";
 import { useAppDispatch, useAppSelector } from "shared/hooks";
 import {
   SearchResults,

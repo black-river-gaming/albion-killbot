@@ -1,9 +1,9 @@
+import ChannelInput from "components/ChannelInput";
+import Loader from "components/Loader";
+import Toast from "components/Toast";
 import { useEffect } from "react";
 import { Accordion, Button, Card, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import ChannelInput from "shared/components/ChannelInput";
-import Loader from "shared/components/Loader";
-import Toast from "shared/components/Toast";
 import { useAppDispatch, useAppSelector } from "shared/hooks";
 import { capitalize, getLocaleName } from "shared/utils";
 import { useFetchServerQuery, useUpdateSettingsMutation } from "store/api";

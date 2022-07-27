@@ -2,11 +2,11 @@ import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "assets/logo_dark.svg";
+import Dropdown from "components/Dropdown";
+import Paper from "components/Paper";
 import { Button, Image, Navbar } from "react-bootstrap";
 import ContentLoader from "react-content-loader";
 import { NavLink } from "react-router-dom";
-import Dropdown from "shared/components/Dropdown";
-import Paper from "shared/components/Paper";
 import {
   DISCORD_OAUTH_URL,
   DISCORD_SERVER_URL,

@@ -1,7 +1,7 @@
+import Loader from "components/Loader";
+import ServerCard from "components/ServerCard";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import Loader from "shared/components/Loader";
-import ServerCard from "shared/components/ServerCard";
 import { getServerInviteUrl } from "shared/discord";
 import { ServerPartial, useFetchUserServersQuery } from "store/api";
 import DashboardStyles from "./styles";

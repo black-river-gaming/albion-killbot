@@ -1,9 +1,9 @@
+import Loader from "components/Loader";
+import ServerCard from "components/ServerCard";
+import Toast from "components/Toast";
 import { useState } from "react";
 import { Alert, Button, Col, Modal, Row } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
-import Loader from "shared/components/Loader";
-import ServerCard from "shared/components/ServerCard";
-import Toast from "shared/components/Toast";
 import {
   useAssignSubscriptionMutation,
   useFetchUserServersQuery,

@@ -1,7 +1,7 @@
+import Loader from "components/Loader";
+import Paper from "components/Paper";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Loader from "shared/components/Loader";
-import Paper from "shared/components/Paper";
 import { useAuthMutation, useLazyFetchUserQuery } from "store/api";
 
 const Auth = () => {
