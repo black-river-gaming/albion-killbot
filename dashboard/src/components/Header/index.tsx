@@ -4,15 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "assets/logo_dark.svg";
 import Dropdown from "components/Dropdown";
 import Paper from "components/Paper";
-import { Button, Image, Navbar } from "react-bootstrap";
-import ContentLoader from "react-content-loader";
-import { NavLink } from "react-router-dom";
 import {
   DISCORD_OAUTH_URL,
   DISCORD_SERVER_URL,
   getUserPictureUrl,
-} from "shared/discord";
-import theme from "shared/theme";
+} from "helpers/discord";
+import theme from "helpers/theme";
+import { Button, Image, Navbar } from "react-bootstrap";
+import ContentLoader from "react-content-loader";
+import { NavLink } from "react-router-dom";
 import { useFetchUserQuery, useLogoutMutation } from "store/api";
 import Container from "./styles";
 

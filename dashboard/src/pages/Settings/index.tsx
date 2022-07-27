@@ -1,11 +1,11 @@
 import ChannelInput from "components/ChannelInput";
 import Loader from "components/Loader";
 import Toast from "components/Toast";
+import { useAppDispatch, useAppSelector } from "helpers/hooks";
+import { capitalize, getLocaleName } from "helpers/utils";
 import { useEffect } from "react";
 import { Accordion, Button, Card, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "shared/hooks";
-import { capitalize, getLocaleName } from "shared/utils";
 import { useFetchServerQuery, useUpdateSettingsMutation } from "store/api";
 import {
   loadSettings,

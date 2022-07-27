@@ -8,11 +8,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
 import SubscriptionAssignModal from "components/SubscriptionAssignModal";
 import SubscriptionPriceCard from "components/SubscriptionPriceCard";
+import { isSubscriptionActiveAndUnassiged } from "helpers/subscriptions";
+import { getCurrency } from "helpers/utils";
 import { useState } from "react";
 import { Alert, Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import { Link, useSearchParams } from "react-router-dom";
-import { isSubscriptionActiveAndUnassiged } from "shared/subscriptions";
-import { getCurrency } from "shared/utils";
 import {
   SubscriptionPrice,
   useBuySubscriptionMutation,

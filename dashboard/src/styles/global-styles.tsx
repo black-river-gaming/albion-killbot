@@ -1,5 +1,5 @@
 import chevronUp from "assets/chevron-up-solid.svg";
-import { ThemeProps } from "shared/theme";
+import { ThemeProps } from "helpers/theme";
 import { createGlobalStyle } from "styled-components";
 
 const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`

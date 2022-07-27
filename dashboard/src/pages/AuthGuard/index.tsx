@@ -1,9 +1,9 @@
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
+import { DISCORD_OAUTH_URL } from "helpers/discord";
 import { Button } from "react-bootstrap";
 import { Navigate, Outlet } from "react-router-dom";
-import { DISCORD_OAUTH_URL } from "shared/discord";
 import { useFetchUserQuery } from "store/api";
 
 interface AuthGuardProps {
