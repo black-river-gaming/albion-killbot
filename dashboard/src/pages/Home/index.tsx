@@ -9,12 +9,23 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import screenshot1 from "assets/screenshots/505815101-event.png";
 import screenshot2 from "assets/screenshots/505822850-event.png";
+import screenshot3 from "assets/screenshots/554963542-event.png";
+import screenshot4 from "assets/screenshots/554987916-event.png";
+import screenshot5 from "assets/screenshots/554998921-event.png";
+import screenshot6 from "assets/screenshots/555017536-event.png";
 import Paper from "components/Paper";
 import { getServerInviteUrl } from "helpers/discord";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import StyledHome from "./styles";
 
-const screenshots = [screenshot1, screenshot2];
+const screenshots = [
+  screenshot1,
+  screenshot2,
+  screenshot3,
+  screenshot4,
+  screenshot5,
+  screenshot6,
+];
 
 const features = [
   {
