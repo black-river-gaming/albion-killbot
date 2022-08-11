@@ -1,9 +1,9 @@
-const jimp = require("jimp");
 const moment = require("moment");
 const path = require("node:path");
 const { createCanvas, registerFont, loadImage } = require("canvas");
 const { getItemFile } = require("../ports/albion");
 
+const { optimizeImage } = require("../helpers/images");
 const { digitsFormatter, fileSizeFormatter } = require("../helpers/utils");
 const logger = require("../helpers/logger");
 
@@ -43,15 +43,6 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
   ctx.strokeText(item.Count, x + block_size * 0.76, y + block_size * 0.73);
   ctx.fillText(item.Count, x + block_size * 0.76, y + block_size * 0.73);
   ctx.restore();
-};
-
-const optimizeImage = async (buffer, w = 640) => {
-  const image = await jimp.read(buffer);
-
-  image.deflateLevel(9);
-  image.deflateStrategy(1);
-  image.resize(w, jimp.AUTO);
-  return await image.getBufferAsync(jimp.MIME_PNG);
 };
 
 async function generateEventImage(event) {
