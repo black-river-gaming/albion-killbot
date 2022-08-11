@@ -2,7 +2,8 @@
 // and flags it as a good event (killed is tracked) or bad event (victim is tracker)
 // and returns a copy of it or null if the event is not tracked at all
 function getTrackedEvent(event, settings) {
-  const { players, guilds, alliances } = settings.track;
+  if (!settings.track) return;
+  const { players = [], guilds = [], alliances = [] } = settings.track;
 
   if (players.length === 0 && guilds.length === 0 && alliances.length === 0) {
     return null;
@@ -37,7 +38,8 @@ function getTrackedEvent(event, settings) {
 // This method checks if a battle is tracked by a discord server
 // and returns the battle or null if the event is not tracked at all
 function getTrackedBattle(battle, settings) {
-  const { players, guilds, alliances } = settings.track;
+  if (!settings.track) return;
+  const { players = [], guilds = [], alliances = [] } = settings.track;
 
   if (players.length === 0 && guilds.length === 0 && alliances.length === 0) {
     return null;
