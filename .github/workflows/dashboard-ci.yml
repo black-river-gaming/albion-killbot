@@ -3,7 +3,7 @@ name: Dashboard CI
 on:
   pull_request:
     branches:
-      - master
+      - main
       - v*
     paths:
       - "dashboard/**"
