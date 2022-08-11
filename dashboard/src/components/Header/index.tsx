@@ -1,5 +1,10 @@
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { faCrown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCrown,
+  faRightFromBracket,
+  faRightToBracket,
+  faTableColumns,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "assets/logo_dark.svg";
 import Dropdown from "components/Dropdown";
@@ -29,7 +34,7 @@ const Header = () => {
     }
   };
 
-  const renderLogin = ({ data, isFetching }: typeof user) => {
+  const renderDesktopLogin = ({ data, isFetching }: typeof user) => {
     if (isFetching) {
       return (
         <ContentLoader
@@ -73,6 +78,43 @@ const Header = () => {
     return <Button href={DISCORD_OAUTH_URL}>Login</Button>;
   };
 
+  const renderMobileLogin = ({ data, isFetching }: typeof user) => {
+    if (isFetching) {
+      return (
+        <ContentLoader
+          className="loader d-lg-none"
+          viewBox="0 0 150 50"
+          height={50}
+          foregroundColor={theme.secondary}
+        >
+          <rect x="15" y="15" rx="3" ry="3" width="150" height="20" />
+        </ContentLoader>
+      );
+    }
+
+    if (data) {
+      return (
+        <>
+          <NavLink to="/dashboard" className="navbar-link d-lg-none">
+            <FontAwesomeIcon icon={faTableColumns} />
+            <div>Dashboard</div>
+          </NavLink>
+          <NavLink to="#" className="navbar-link d-lg-none" onClick={doLogout}>
+            <FontAwesomeIcon icon={faRightFromBracket} />
+            <div>Logout</div>
+          </NavLink>
+        </>
+      );
+    }
+
+    return (
+      <a href={DISCORD_OAUTH_URL} className="navbar-link d-lg-none">
+        <FontAwesomeIcon icon={faRightToBracket} />
+        <div>Login</div>
+      </a>
+    );
+  };
+
   return (
     <Paper elevation={0}>
       <Container>
@@ -96,7 +138,10 @@ const Header = () => {
                 <FontAwesomeIcon icon={faDiscord} />
                 <div>Join Server</div>
               </a>
-              <div className="desktop">{renderLogin(user)}</div>
+              {renderMobileLogin(user)}
+              <div className="d-none d-lg-block">
+                {renderDesktopLogin(user)}
+              </div>
             </div>
           </Navbar.Collapse>
         </Navbar>

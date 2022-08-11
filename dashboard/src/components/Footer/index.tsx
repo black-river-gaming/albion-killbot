@@ -8,7 +8,7 @@ const Footer = () => {
   return (
     <Paper elevation={0} className="d-flex justify-content-center">
       <StyledFooter>
-        <div className="footer-spacing" />
+        <div className="footer-spacing d-none d-lg-flex" />
         <div className="footer-copyright">
           <div>© 2022 Black River Gaming</div>
           <div>All rights reserved</div>

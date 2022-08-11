@@ -59,10 +59,8 @@ const Container = styled.div`
         }
       }
     }
-  }
 
-  @media (max-width: 992px) {
-    nav {
+    @media (max-width: 992px) {
       padding: 0 1rem 0rem;
 
       &.navbar-expand-lg {
@@ -79,21 +77,15 @@ const Container = styled.div`
         padding-bottom: 0.75rem;
         align-items: end;
 
-        a:not(.btn) {
-          padding: 0.85rem 0;
+        svg.loader {
+          padding: 0 0.5rem;
+        }
+
+        .navbar-link:not(.btn) {
+          padding: 0.75rem 0.5rem;
           display: flex;
           justify-content: end;
           width: 100%;
-        }
-
-        a.btn {
-          margin: 0.35rem 0;
-          padding: 0.5rem;
-          width: 25%;
-        }
-
-        .desktop {
-          display: none;
         }
       }
     }
