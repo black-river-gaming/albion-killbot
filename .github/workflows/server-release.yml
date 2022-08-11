@@ -3,6 +3,8 @@ name: Server Release
 on:
   push:
     tags: [v*.*.*]
+    paths:
+      - "server/**"
 
 jobs:
   publish:

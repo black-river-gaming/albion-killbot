@@ -3,6 +3,8 @@ name: Dashboard Release
 on:
   push:
     tags: [v*.*.*]
+    paths:
+      - "dashboard/**"
 
 defaults:
   run:
