@@ -36,7 +36,8 @@ async function downloadFromS3(name, writeStream) {
       writeStream.end(data.Body);
     });
   } catch (e) {
-    logger.error(`Error while downloading ${name} from AWS Bucket:`, e);
+    logger.warn(`Error while downloading ${name} from AWS Bucket:`, e);
+    return null;
   }
 }
 
@@ -52,8 +53,7 @@ async function uploadToS3(name, readStream) {
 
     return true;
   } catch (e) {
-    logger.error(`Failed to upload ${name} from AWS Bucket:`, e);
-
+    logger.warn(`Failed to upload ${name} from AWS Bucket:`, e);
     return false;
   }
 }
