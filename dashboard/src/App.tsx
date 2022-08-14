@@ -1,6 +1,7 @@
 import Footer from "components/Footer";
 import Header from "components/Header";
 import Paper from "components/Paper";
+import CookieNotice from "react-cookienotice";
 import { Outlet, useLocation } from "react-router-dom";
 import Container from "styles/app-styles";
 
@@ -21,6 +22,7 @@ export const App = () => {
         )}
       </Paper>
       <Footer />
+      <CookieNotice hideDeclineButton={true} />
     </Container>
   );
 };

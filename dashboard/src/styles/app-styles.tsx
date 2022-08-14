@@ -1,3 +1,4 @@
+import "react-cookienotice/dist/index.css";
 import styled from "styled-components";
 
 export default styled.div`
