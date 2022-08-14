@@ -1,4 +1,5 @@
 const moment = require("moment");
+const logger = require("../../../helpers/logger");
 const authService = require("../../../services/auth");
 
 async function auth(req, res) {
@@ -15,6 +16,7 @@ async function auth(req, res) {
 
     return res.sendStatus(200);
   } catch (error) {
+    logger.error(`Unable to authenticate with discord:`, error);
     return res.sendStatus(403);
   }
 }
