@@ -35,7 +35,7 @@ async function fetchBattlesTo(latestBattle, { offset = 0 } = {}, battles = []) {
       ? battles.sort((a, b) => a.id - b.id)
       : fetchBattlesTo(latestBattle, { offset: offset + albionBattles.length }, battles);
   } catch (err) {
-    logger.error(`Unable to fetch battle data from API [${err}]. Retrying...`);
+    logger.warn(`Unable to fetch battle data from API [${err}]. Retrying...`);
     await sleep(5000);
     return fetchBattlesTo(latestBattle, { offset }, battles);
   }

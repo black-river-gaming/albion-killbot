@@ -35,7 +35,7 @@ async function fetchEventsTo(latestEvent, { offset = 0 } = {}, events = []) {
       ? events.sort((a, b) => a.EventId - b.EventId)
       : fetchEventsTo(latestEvent, { offset: offset + albionEvents.length }, events);
   } catch (err) {
-    logger.error(`Unable to fetch event data from API [${err}]. Retrying...`);
+    logger.warn(`Unable to fetch event data from API [${err}]. Retrying...`);
     await sleep(5000);
     return fetchEventsTo(latestEvent, { offset }, events);
   }
