@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
 const logger = require("../../helpers/logger");
 const { disableCache } = require("./middlewares/cache");
 const { refreshDiscordToken } = require("./middlewares/auth");
@@ -10,7 +11,15 @@ const routes = require("./routes");
 const webhooks = require("./webhooks");
 const app = express();
 
-const { NODE_ENV } = process.env;
+const { NODE_ENV, RATE_LIMIT_WINDOW = 60000, RATE_LIMIT_REQUESTS = 0 } = process.env;
+
+// Rate limiter
+app.use(
+  rateLimit({
+    windowMs: RATE_LIMIT_WINDOW,
+    max: RATE_LIMIT_REQUESTS,
+  }),
+);
 
 // Logs
 const logFormat = NODE_ENV == "development" ? "dev" : "tiny";
