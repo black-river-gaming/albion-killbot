@@ -49,8 +49,10 @@ function createWriteStream(...file) {
   });
 
   setTimeout(() => {
+    logger.warn(`${absFilePath}: timeout reached. Unlocking...`);
     locks[absFilePath] = false;
-  }, 60000);
+    writer.close();
+  }, 30000);
 
   return writer;
 }
