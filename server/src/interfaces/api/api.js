@@ -39,6 +39,11 @@ if (NODE_ENV == "development") {
   app.use(cors());
 }
 
+// Trust proxy in production
+if (NODE_ENV == "production") {
+  app.set("trust proxy", 1);
+}
+
 // Session
 app.use(session);
 app.use(refreshDiscordToken);
