@@ -1,12 +1,13 @@
 const expressSession = require("express-session");
 const MongoStore = require("connect-mongo");
 
-const { SESSION_SECRET, MONGODB_URL } = process.env;
+const { NODE_ENV, SESSION_SECRET, MONGODB_URL } = process.env;
+const secure = NODE_ENV === "production";
 
 const session = expressSession({
   cookie: {
     maxAge: 604800000, // 7 days
-    secure: "auto",
+    secure,
   },
   name: "albion-killbot",
   proxy: true,
