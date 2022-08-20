@@ -13,7 +13,7 @@ const session = expressSession({
   name: "albion-killbot",
   proxy: true,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   secret: SESSION_SECRET || "defaultSecret",
   store: MongoStore.create({
     mongoUrl: MONGODB_URL,
