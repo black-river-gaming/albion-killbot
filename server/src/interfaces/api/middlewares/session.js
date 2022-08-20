@@ -8,6 +8,7 @@ const session = expressSession({
   cookie: {
     maxAge: 604800000, // 7 days
     secure,
+    sameSite: "none",
   },
   name: "albion-killbot",
   proxy: true,
