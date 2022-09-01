@@ -13,8 +13,8 @@ async function run() {
   logger.verbose(`Api is listening on port ${port}.`);
 }
 
-async function cleanup() {
-  logger.info(`Shutting down Api...`);
+async function cleanup(signal) {
+  logger.info(`Shutting down Api. Signal: ${signal}`);
   if (server) {
     await server.close(() => process.exit(0));
   }
