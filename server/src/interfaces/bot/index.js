@@ -18,6 +18,7 @@ async function run() {
   manager = new ShardingManager(botFile, {
     token: DISCORD_TOKEN,
     totalShards: TOTAL_SHARDS || "auto",
+    respawn: true,
   });
   manager.spawn();
 }
