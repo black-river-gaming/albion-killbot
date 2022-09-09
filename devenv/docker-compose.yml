@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   mongodb:
-    image: mongo:latest
+    image: mongo:5.0.8
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongo mongodb:27017/test --quiet
       interval: 5s
