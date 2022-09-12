@@ -17,7 +17,13 @@ async function getSubscriptions(req, res) {
 }
 
 async function getSubscriptionsPrices(req, res) {
-  throw new Error("test error");
+  try {
+    const prices = await subscriptionsService.fetchSubscriptionPrices();
+    return res.send(prices);
+  } catch (error) {
+    logger.error(error);
+    return res.sendStatus(500);
+  }
 }
 
 async function assignSubscription(req, res) {
