@@ -51,4 +51,12 @@ app.get("/openapi.json", disableCache, (req, res) => res.send(swaggerSpecs));
 app.use("/docs", disableCache, swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
 routes.init(app);
 
+// Uhandled errors
+app.use((error, req, res, next) => {
+  if (error) {
+    logger.error("An unhandled exception ocurred:", error);
+  }
+  next();
+});
+
 module.exports = app;
