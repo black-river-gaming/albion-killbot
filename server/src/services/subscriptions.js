@@ -52,6 +52,10 @@ async function getSubscriptionByServerId(server) {
   return await findOne(SUBSCRIPTIONS_COLLECTION, { server });
 }
 
+async function findSubscriptionsByServerId(server) {
+  return await find(SUBSCRIPTIONS_COLLECTION, { server });
+}
+
 async function getSubscriptionByStripeId(stripe) {
   if (!isSubscriptionsEnabled()) return null;
   return await findOne(SUBSCRIPTIONS_COLLECTION, { stripe });
@@ -118,6 +122,7 @@ module.exports = {
   assignSubscription,
   buySubscription,
   fetchSubscriptionPrices,
+  findSubscriptionsByServerId,
   getBuySubscription,
   getLimitsByServerId,
   getStripeSubscription,

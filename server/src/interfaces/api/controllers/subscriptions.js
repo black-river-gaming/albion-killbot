@@ -1,3 +1,4 @@
+const logger = require("../../../helpers/logger");
 const subscriptionsService = require("../../../services/subscriptions");
 
 async function getSubscriptions(req, res) {
@@ -16,12 +17,7 @@ async function getSubscriptions(req, res) {
 }
 
 async function getSubscriptionsPrices(req, res) {
-  try {
-    const prices = await subscriptionsService.fetchSubscriptionPrices();
-    return res.send(prices);
-  } catch (error) {
-    return res.sendStatus(500);
-  }
+  throw new Error("test error");
 }
 
 async function assignSubscription(req, res) {
@@ -29,7 +25,7 @@ async function assignSubscription(req, res) {
     const { server, checkoutId, subscriptionId } = req.body;
     if (!server || (!checkoutId && !subscriptionId)) return res.sendStatus(422);
 
-    const otherSubs = await subscriptionsService.getSubscriptionByServerId(server);
+    const otherSubs = await subscriptionsService.findSubscriptionsByServerId(server);
     for (const otherSub of otherSubs) {
       await subscriptionsService.unassignSubscription(otherSub.id);
     }
@@ -47,6 +43,7 @@ async function assignSubscription(req, res) {
 
     return res.send(subscription);
   } catch (error) {
+    logger.error(`Error while assigning subscription: `, error);
     return res.sendStatus(500);
   }
 }
