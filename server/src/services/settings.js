@@ -23,11 +23,6 @@ const DEFAULT_SETTINGS = {
     pvpRanking: "daily",
     guildRanking: "daily",
   },
-  track: {
-    players: [],
-    guilds: [],
-    alliances: [],
-  },
 };
 
 async function getSettings(guild) {
