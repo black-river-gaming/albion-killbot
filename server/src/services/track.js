@@ -12,11 +12,15 @@ const DEFAULT_TRACK = {
 };
 
 async function getTrack(server) {
-  return await findOne(TRACK_COLLECTION, { server });
+  const track = await findOne(TRACK_COLLECTION, { server });
+  return {
+    ...DEFAULT_TRACK,
+    ...track,
+  };
 }
 
 async function setTrack(server, track) {
-  await updateOne({ server }, { $set: track }, { upsert: true });
+  await updateOne(TRACK_COLLECTION, { server }, { $set: track }, { upsert: true });
   return await getTrack(server);
 }
 
@@ -39,7 +43,6 @@ async function getLimitsByServerId(server) {
 }
 
 module.exports = {
-  DEFAULT_TRACK,
   getLimitsByServerId,
   getTrack,
   setTrack,

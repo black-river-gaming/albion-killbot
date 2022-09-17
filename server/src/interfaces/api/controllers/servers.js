@@ -1,6 +1,7 @@
 const serversService = require("../../../services/servers");
 const settingsService = require("../../../services/settings");
 const subscriptionService = require("../../../services/subscriptions");
+const trackService = require("../../../services/track");
 
 async function getServer(req, res) {
   const { serverId } = req.params;
@@ -44,8 +45,8 @@ async function setServerTrack(req, res) {
 
   const track = req.body;
 
-  const settings = await settingsService.setSettings(serverId, { track });
-  return res.send(settings.track);
+  const newTrack = await trackService.setTrack(serverId, { track });
+  return res.send(newTrack);
 }
 
 module.exports = {
