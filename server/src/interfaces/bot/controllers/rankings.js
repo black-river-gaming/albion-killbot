@@ -1,6 +1,6 @@
 const logger = require("../../../helpers/logger");
 const { getRanking, deleteRankings } = require("../../../services/rankings");
-const { getSettingsByGuild } = require("../../../services/settings");
+const { getSettingsForServer } = require("../../../services/settings");
 
 const { embedPvpRanking } = require("../../../helpers/embeds");
 
@@ -11,7 +11,7 @@ async function displayRankings(client, { setting }) {
 
   logger.info(`[#${shardId}] Sending pvp ranking on '${setting}' setting to all servers.`);
 
-  const settingsByGuild = await getSettingsByGuild(client.guilds.cache);
+  const settingsByGuild = await getSettingsForServer(client.guilds.cache);
 
   for (const guild of client.guilds.cache.values()) {
     if (!settingsByGuild[guild.id]) continue;

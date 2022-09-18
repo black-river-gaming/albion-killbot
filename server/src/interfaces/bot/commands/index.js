@@ -6,6 +6,7 @@ const { getLocale } = require("../../../helpers/locale");
 
 const logger = require("../../../helpers/logger");
 const { getSettings } = require("../../../services/settings");
+const { getTrack } = require("../../../services/track");
 
 const rest = new REST({ version: "10" });
 let commands = [];
@@ -55,7 +56,8 @@ function getCommands() {
 async function handle(interaction) {
   const prefix = `[#${interaction.id}/${interaction.commandName}]`;
   const settings = await getSettings(interaction.guild.id);
-  const t = getLocale().t;
+  const track = await getTrack(interaction.guild.id);
+  const t = getLocale(settings.lang).t;
 
   try {
     if (!hasCommand(interaction.commandName)) throw new Error("COMMAND_NOT_FOUND");
@@ -70,7 +72,7 @@ async function handle(interaction) {
     });
 
     const command = commands.find((c) => c.name == interaction.commandName);
-    return await command.handle(interaction, settings);
+    return await command.handle(interaction, { settings, track, t });
   } catch (e) {
     logger.error(`${prefix} Error in interaction:`, e);
     const reply = (!interaction.deferred && !interaction.replied ? interaction.reply : interaction.editReply).bind(

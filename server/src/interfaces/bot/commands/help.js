@@ -9,9 +9,7 @@ const command = {
   description: getLocale().t("HELP.HELP"),
   type: InteractionType.Ping,
   default_permission: true,
-  handle: async (interaction, { lang }) => {
-    const t = getLocale(lang).t;
-
+  handle: async (interaction, { t }) => {
     let response = "```\n";
     if (process.env.npm_package_version) {
       response += t("HELP.VERSION", {

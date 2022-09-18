@@ -2,8 +2,7 @@ const { InteractionType } = require("discord-api-types/v10");
 const { String } = require("discord-api-types/v10").ApplicationCommandOptionType;
 const { getLocale } = require("../../../helpers/locale");
 const { getAlliance, search } = require("../../../services/search");
-const { setSettings } = require("../../../services/settings");
-const { getLimitsByServerId } = require("../../../services/subscriptions");
+const { getLimitsByServerId, setTrack } = require("../../../services/track");
 
 const t = getLocale().t;
 
@@ -31,9 +30,8 @@ const command = {
   type: InteractionType.Ping,
   default_member_permissions: "0",
   options,
-  handle: async (interaction, settings) => {
-    const t = getLocale(settings.lang).t;
-    const limits = await getLimitsByServerId(settings.server);
+  handle: async (interaction, { track, t }) => {
+    const limits = await getLimitsByServerId(interaction.guild.id);
 
     const playerName = interaction.options.getString("player");
     const guildName = interaction.options.getString("guild");
@@ -53,34 +51,31 @@ const command = {
       content += msg + "\n";
     };
 
-    const track = async (type, value, limit = 5) => {
+    const addTrack = async (type, value, limit = 5) => {
       if (limit == 0) {
         const trackType = t(`TRACK.${type.toUpperCase()}.DESCRIPTION`).toLowerCase();
         return addContent(t("TRACK.TRACKING_DISABLED", { type: trackType }));
       }
 
-      if (!settings.track) settings.track = {};
-      if (!settings.track[type]) settings.track[type] = [];
+      if (!track) track = {};
+      if (!track[type]) track[type] = [];
 
-      if (settings.track[type].length >= limit) return addContent(t("TRACK.LIMIT_REACHED", { limit }));
+      if (track[type].length >= limit) return addContent(t("TRACK.LIMIT_REACHED", { limit }));
 
       if (type == "alliances") {
-        if (settings.track.alliances.some((a) => a.id === value)) return addContent(t("TRACK.ALREADY_TRACKED"));
+        if (track.alliances.some((a) => a.id === value)) return addContent(t("TRACK.ALREADY_TRACKED"));
 
         const alliance = await getAlliance(value);
         if (!alliance) return addContent(t("TRACK.NOT_FOUND"));
 
-        settings.track.alliances.push({
-          id: alliance.AllianceId,
-          name: alliance.AllianceTag,
-        });
+        track.alliances.push(alliance);
 
-        await setSettings(interaction.guild.id, settings);
-        return addContent(t("TRACK.ALLIANCES.TRACKED", { name: alliance.AllianceTag }));
+        await setTrack(interaction.guild.id, track);
+        return addContent(t("TRACK.ALLIANCES.TRACKED", { name: alliance.name }));
       } else {
         const equalsCaseInsensitive = (a, b) => a && a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
 
-        if (settings.track[type].some((trackEntity) => equalsCaseInsensitive(trackEntity.name, value)))
+        if (track[type].some((trackEntity) => equalsCaseInsensitive(trackEntity.name, value)))
           return addContent(t("TRACK.ALREADY_TRACKED"));
 
         const searchResults = await search(value);
@@ -89,19 +84,16 @@ const command = {
         const entity = searchResults[type].find((searchEntity) => equalsCaseInsensitive(searchEntity.name, value));
         if (!entity) return addContent(t("TRACK.NOT_FOUND"));
 
-        settings.track[type].push({
-          id: entity.id,
-          name: entity.name,
-        });
+        track[type].push(entity);
 
-        await setSettings(interaction.guild.id, settings);
+        await setTrack(interaction.guild.id, track);
         return addContent(t(`TRACK.${type.toUpperCase()}.TRACKED`, { name: entity.name }));
       }
     };
 
-    if (allianceId) await track("alliances", allianceId, limits.alliances);
-    if (playerName) await track("players", playerName, limits.players);
-    if (guildName) await track("guilds", guildName, limits.guilds);
+    if (allianceId) await addTrack("alliances", allianceId, limits.alliances);
+    if (playerName) await addTrack("players", playerName, limits.players);
+    if (guildName) await addTrack("guilds", guildName, limits.guilds);
 
     return await interaction.editReply({ content, ephemeral: true });
   },

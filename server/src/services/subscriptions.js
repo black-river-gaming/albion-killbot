@@ -1,9 +1,7 @@
 const moment = require("moment");
 const stripe = require("../ports/stripe");
 const { getCollection, find, findOne } = require("../ports/database");
-const { getNumber } = require("../helpers/utils");
 
-const { MAX_PLAYERS, MAX_GUILDS, MAX_ALLIANCES, SUB_MAX_PLAYERS, SUB_MAX_GUILDS, SUB_MAX_ALLIANCES } = process.env;
 const SUBSCRIPTIONS_MODE = Boolean(process.env.SUBSCRIPTIONS_MODE);
 const SUBSCRIPTIONS_COLLECTION = "subscriptions";
 
@@ -71,24 +69,6 @@ async function getStripeSubscription(id) {
   return await stripe.getSubscription(id);
 }
 
-async function getLimitsByServerId(server) {
-  let players = getNumber(MAX_PLAYERS, 10);
-  let guilds = getNumber(MAX_GUILDS, 1);
-  let alliances = getNumber(MAX_ALLIANCES, 1);
-
-  if (isSubscriptionsEnabled() && (await hasSubscriptionByServerId(server))) {
-    players = getNumber(SUB_MAX_PLAYERS, players);
-    guilds = getNumber(SUB_MAX_GUILDS, guilds);
-    alliances = getNumber(SUB_MAX_ALLIANCES, alliances);
-  }
-
-  return {
-    players,
-    guilds,
-    alliances,
-  };
-}
-
 async function hasSubscriptionByServerId(server) {
   if (!isSubscriptionsEnabled()) return true;
   const subscription = await findOne(SUBSCRIPTIONS_COLLECTION, { server });
@@ -124,7 +104,6 @@ module.exports = {
   fetchSubscriptionPrices,
   findSubscriptionsByServerId,
   getBuySubscription,
-  getLimitsByServerId,
   getStripeSubscription,
   getSubscriptionByCheckoutId,
   getSubscriptionById,

@@ -149,9 +149,7 @@ const command = {
   type: InteractionType.Ping,
   default_member_permissions: "0",
   options: [kills, battles, rankings, lang],
-  handle: async (interaction, settings) => {
-    const t = getLocale(settings.lang).t;
-
+  handle: async (interaction, { settings, t }) => {
     const reply = async (content, ephemeral = true) => await interaction.reply({ content, ephemeral });
     const editReply = async (content, ephemeral = true) => await interaction.editReply({ content, ephemeral });
 

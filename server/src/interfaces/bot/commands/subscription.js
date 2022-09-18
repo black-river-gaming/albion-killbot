@@ -10,9 +10,7 @@ const command = {
   description: t("HELP.SUBSCRIPTION"),
   type: InteractionType.Ping,
   default_member_permissions: "0",
-  handle: async (interaction, settings) => {
-    const { guild, lang } = settings;
-    const t = getLocale(lang).t;
+  handle: async (interaction, { t }) => {
     const ephemeral = true;
 
     if (!isSubscriptionsEnabled())
@@ -21,7 +19,7 @@ const command = {
         ephemeral,
       });
 
-    const subscription = await getSubscriptionByServerId(guild);
+    const subscription = await getSubscriptionByServerId(interaction.guild.id);
     if (!subscription || !subscription.expires)
       return await interaction.reply({
         content: t("SUBSCRIPTION.STATUS.INACTIVE"),

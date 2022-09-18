@@ -7,9 +7,9 @@ const command = {
   description: getLocale().t("HELP.LIST"),
   type: InteractionType.Ping,
   default_member_permissions: "0",
-  handle: async (interaction, { track, lang }) => {
+  handle: async (interaction, { settings, track }) => {
     await interaction.reply({
-      ...embedTrackList(track, { locale: lang }),
+      ...embedTrackList(track, { locale: settings.lang }),
       ephemeral: true,
     });
   },
