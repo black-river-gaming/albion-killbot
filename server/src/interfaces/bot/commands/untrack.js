@@ -52,13 +52,8 @@ const command = {
       if (!track) track = {};
       if (!track[type]) track[type] = [];
 
-      let entity;
-      if (type == "alliances") {
-        entity = track.alliances.find((a) => a.id === value);
-      } else {
-        const equalsCaseInsensitive = (a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
-        entity = track[type].find((trackEntity) => equalsCaseInsensitive(trackEntity.name, value));
-      }
+      const equalsCaseInsensitive = (a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
+      const entity = track[type].find((trackEntity) => equalsCaseInsensitive(trackEntity.name, value));
 
       if (!entity) return addContent(t("TRACK.NOT_FOUND"));
 
