@@ -2,7 +2,7 @@ import {
   faAdd,
   faCheck,
   faSearch,
-  faTrash
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
@@ -19,7 +19,7 @@ import {
   Form,
   InputGroup,
   ListGroup,
-  Row
+  Row,
 } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import {
@@ -27,14 +27,14 @@ import {
   TrackList,
   useFetchServerQuery,
   useLazySearchQuery,
-  useUpdateTrackMutation
+  useUpdateTrackMutation,
 } from "store/api";
 import {
   loadTrack,
   trackGuild,
   trackPlayer,
   untrackGuild,
-  untrackPlayer
+  untrackPlayer,
 } from "store/track";
 
 const Track = () => {
