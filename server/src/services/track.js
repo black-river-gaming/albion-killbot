@@ -25,7 +25,7 @@ async function getTrackForServer(servers) {
     trackForServer[server] = DEFAULT_TRACK;
   });
 
-  await find(TRACK_COLLECTION, {}).forEach((settings) => {
+  (await find(TRACK_COLLECTION, {})).forEach((settings) => {
     // TODO: Trim track list if subscription is expired
     // Better to do when Track list gets refactored
     trackForServer[settings.guild] = settings;
