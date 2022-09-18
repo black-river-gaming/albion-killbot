@@ -30,21 +30,21 @@ async function getSettings(guild) {
   return (await collection.findOne({ guild })) || DEFAULT_SETTINGS;
 }
 
-async function getSettingsByGuild(guilds) {
+async function getSettingsForServer(servers) {
   const collection = getCollection(SETTINGS_COLLECTION);
 
-  const settingsByGuild = {};
-  guilds.forEach((guild) => {
-    settingsByGuild[guild] = DEFAULT_SETTINGS;
+  const settingsForServer = {};
+  servers.forEach((server) => {
+    settingsForServer[server.id] = DEFAULT_SETTINGS;
   });
 
   await collection.find({}).forEach((settings) => {
     // TODO: Trim track list if subscription is expired
     // Better to do when Track list gets refactored
-    settingsByGuild[settings.guild] = settings;
+    settingsForServer[settings.guild] = settings;
   });
 
-  return settingsByGuild;
+  return settingsForServer;
 }
 
 async function getAllSettings() {
@@ -79,7 +79,7 @@ module.exports = {
   REPORT_MODES,
   DEFAULT_SETTINGS,
   getSettings,
-  getSettingsByGuild,
+  getSettingsForServer,
   getAllSettings,
   setSettings,
   deleteSettings,

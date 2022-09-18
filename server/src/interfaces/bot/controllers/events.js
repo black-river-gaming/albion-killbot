@@ -3,7 +3,7 @@ const { getTrackedEvent } = require("../../../helpers/tracking");
 
 const { subscribeEvents } = require("../../../services/events");
 const { generateEventImage, generateInventoryImage } = require("../../../services/images");
-const { getSettingsByGuild, REPORT_MODES } = require("../../../services/settings");
+const { getSettingsForServer, REPORT_MODES } = require("../../../services/settings");
 const { addRankingKill } = require("../../../services/rankings");
 const { getTrackForServer } = require("../../../services/track");
 
@@ -19,7 +19,7 @@ async function subscribe(client) {
 
     try {
       // TODO: This chunk repeat a lot. Find a way to componentize
-      const settingsByGuild = await getSettingsByGuild(client.guilds.cache);
+      const settingsByGuild = await getSettingsForServer(client.guilds.cache);
       const trackByGuild = await getTrackForServer(client.guilds.cache);
 
       for (const guild of client.guilds.cache.values()) {

@@ -22,13 +22,13 @@ async function getTrack(server) {
 async function getTrackForServer(servers) {
   const trackForServer = {};
   servers.forEach((server) => {
-    trackForServer[server] = DEFAULT_TRACK;
+    trackForServer[server.id] = DEFAULT_TRACK;
   });
 
-  (await find(TRACK_COLLECTION, {})).forEach((settings) => {
+  (await find(TRACK_COLLECTION, {})).forEach((track) => {
     // TODO: Trim track list if subscription is expired
     // Better to do when Track list gets refactored
-    trackForServer[settings.guild] = settings;
+    trackForServer[track.server] = track;
   });
 
   return trackForServer;

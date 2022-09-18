@@ -6,7 +6,7 @@ const { embedGuildRanking } = require("../../../helpers/embeds");
 const logger = require("../../../helpers/logger");
 
 const { getAllGuilds, updateGuild } = require("../../../services/guilds");
-const { getSettingsByGuild } = require("../../../services/settings");
+const { getSettingsForServer } = require("../../../services/settings");
 const { getTrackForServer } = require("../../../services/track");
 
 async function updateGuilds(client) {
@@ -38,7 +38,7 @@ async function displayRankings(client, { setting }) {
 
   logger.info(`[#${shardId}] Sending guild ranking on '${setting}' setting to all servers.`);
 
-  const settingsByGuild = await getSettingsByGuild(client.guilds.cache);
+  const settingsByGuild = await getSettingsForServer(client.guilds.cache);
   const trackForServer = await getTrackForServer(client.guilds.cache);
   const albionGuilds = await getAllGuilds();
 

@@ -2,7 +2,7 @@ const logger = require("../../../helpers/logger");
 const { getTrackedBattle } = require("../../../helpers/tracking");
 
 const { subscribeBattles } = require("../../../services/battles");
-const { getSettingsByGuild } = require("../../../services/settings");
+const { getSettingsForServer } = require("../../../services/settings");
 const { getTrackForServer } = require("../../../services/track");
 
 const { embedBattle } = require("../../../helpers/embeds");
@@ -16,7 +16,7 @@ async function subscribe(client) {
     logger.debug(`Received battle: ${battle.id}`);
 
     try {
-      const settingsByGuild = await getSettingsByGuild(client.guilds.cache);
+      const settingsByGuild = await getSettingsForServer(client.guilds.cache);
       const trackByGuild = await getTrackForServer(client.guilds.cache);
 
       for (const guild of client.guilds.cache.values()) {
