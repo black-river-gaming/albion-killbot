@@ -32,7 +32,7 @@ const command = {
   type: InteractionType.Ping,
   default_permission: true,
   options,
-  handle: async (interaction, settings) => {
+  handle: async (interaction, { settings, track, t }) => {
     const rankingType = interaction.options.getString("ranking");
 
     const rankings = {
@@ -43,7 +43,9 @@ const command = {
       },
       guildRanking: async () => {
         await interaction.deferReply({ ephemeral: false });
-        for (const trackGuild of settings.track.guilds) {
+        if (!track.guilds || track.guilds.length === 0)
+          return await interaction.editReply({ content: "No tracked guilds to display rankings.", ephemeral: true });
+        for (const trackGuild of track.guilds) {
           const albionGuild = await getGuild(trackGuild.id);
           if (!albionGuild) await interaction.followUp(t("RANKING.NO_DATA", { guild: trackGuild.name }));
           else await interaction.followUp(embedGuildRanking(albionGuild, { locale: settings.lang }));

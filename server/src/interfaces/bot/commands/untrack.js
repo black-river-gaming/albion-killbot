@@ -1,7 +1,7 @@
 const { InteractionType } = require("discord-api-types/v10");
 const { String } = require("discord-api-types/v10").ApplicationCommandOptionType;
 const { getLocale } = require("../../../helpers/locale");
-const { setSettings } = require("../../../services/settings");
+const { setTrack } = require("../../../services/track");
 
 const t = getLocale().t;
 
@@ -29,9 +29,7 @@ const command = {
   type: InteractionType.Ping,
   default_member_permissions: "0",
   options,
-  handle: async (interaction, settings) => {
-    const t = getLocale(settings.lang).t;
-
+  handle: async (interaction, { track, t }) => {
     const playerName = interaction.options.getString("player");
     const guildName = interaction.options.getString("guild");
     const allianceId = interaction.options.getString("alliance");
@@ -51,22 +49,22 @@ const command = {
     };
 
     const untrack = async (type, value) => {
-      if (!settings.track) settings.track = {};
-      if (!settings.track[type]) settings.track[type] = [];
+      if (!track) track = {};
+      if (!track[type]) track[type] = [];
 
       let entity;
       if (type == "alliances") {
-        entity = settings.track.alliances.find((a) => a.id === value);
+        entity = track.alliances.find((a) => a.id === value);
       } else {
         const equalsCaseInsensitive = (a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
-        entity = settings.track[type].find((trackEntity) => equalsCaseInsensitive(trackEntity.name, value));
+        entity = track[type].find((trackEntity) => equalsCaseInsensitive(trackEntity.name, value));
       }
 
       if (!entity) return addContent(t("TRACK.NOT_FOUND"));
 
-      settings.track[type] = settings.track[type].filter((e) => e != entity);
+      track[type] = track[type].filter((e) => e != entity);
 
-      await setSettings(interaction.guild.id, settings);
+      await setTrack(interaction.guild.id, track);
       return addContent(t(`TRACK.${type.toUpperCase()}.UNTRACKED`, { name: entity.name }));
     };
 
