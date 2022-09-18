@@ -29,6 +29,7 @@ export interface Server {
     guilds: number;
     alliances: number;
   };
+  track: TrackList;
 }
 
 export interface Channel {
@@ -56,7 +57,6 @@ export interface Settings {
     pvpRanking: string;
     guildRanking: string;
   };
-  track: TrackList;
 }
 
 export interface TrackList {
