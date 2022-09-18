@@ -13,8 +13,11 @@ async function getServer(req, res) {
   const subscription = await subscriptionService.getSubscriptionByServerId(serverId);
   server.subscription = subscription;
 
-  const limits = await subscriptionService.getLimitsByServerId(serverId);
+  const limits = await trackService.getLimitsByServerId(serverId);
   server.limits = limits;
+
+  const track = await trackService.getTrack(serverId);
+  server.track = track;
 
   return res.send(server);
 }
@@ -44,8 +47,9 @@ async function setServerTrack(req, res) {
   if (!isOwner) return res.sendStatus(403);
 
   const track = req.body;
+  // TODO: Validate schema
 
-  const newTrack = await trackService.setTrack(serverId, { track });
+  const newTrack = await trackService.setTrack(serverId, track);
   return res.send(newTrack);
 }
 

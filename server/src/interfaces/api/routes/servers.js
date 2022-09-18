@@ -46,6 +46,9 @@ router.use(authenticated);
  *            alliances:
  *              type: number
  *              default: 1
+ *        track:
+ *          readOnly: true
+ *          $ref: '#/components/schemas/Track'
  *
  *    Channel:
  *      type: object
@@ -132,9 +135,6 @@ router.use(authenticated);
  *              type: string
  *              description: Patreon user id of the subscription owner
  *              example: "17225165"
- *        track:
- *          readOnly: true
- *          $ref: '#/components/schemas/Track'
  *
  *    Category:
  *      type: object
