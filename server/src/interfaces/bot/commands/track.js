@@ -68,13 +68,10 @@ const command = {
         const alliance = await getAlliance(value);
         if (!alliance) return addContent(t("TRACK.NOT_FOUND"));
 
-        track.alliances.push({
-          id: alliance.AllianceId,
-          name: alliance.AllianceTag,
-        });
+        track.alliances.push(alliance);
 
         await setTrack(interaction.guild.id, track);
-        return addContent(t("TRACK.ALLIANCES.TRACKED", { name: alliance.AllianceTag }));
+        return addContent(t("TRACK.ALLIANCES.TRACKED", { name: alliance.name }));
       } else {
         const equalsCaseInsensitive = (a, b) => a && a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
 
@@ -87,10 +84,7 @@ const command = {
         const entity = searchResults[type].find((searchEntity) => equalsCaseInsensitive(searchEntity.name, value));
         if (!entity) return addContent(t("TRACK.NOT_FOUND"));
 
-        track[type].push({
-          id: entity.id,
-          name: entity.name,
-        });
+        track[type].push(entity);
 
         await setTrack(interaction.guild.id, track);
         return addContent(t(`TRACK.${type.toUpperCase()}.TRACKED`, { name: entity.name }));
