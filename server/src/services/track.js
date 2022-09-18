@@ -1,4 +1,4 @@
-const { findOne, updateOne } = require("../ports/database");
+const { find, findOne, updateOne } = require("../ports/database");
 const { getNumber } = require("../helpers/utils");
 const { hasSubscriptionByServerId } = require("./subscriptions");
 
@@ -17,6 +17,21 @@ async function getTrack(server) {
     ...DEFAULT_TRACK,
     ...track,
   };
+}
+
+async function getTrackForServer(servers) {
+  const trackForServer = {};
+  servers.forEach((server) => {
+    trackForServer[server] = DEFAULT_TRACK;
+  });
+
+  await find(TRACK_COLLECTION, {}).forEach((settings) => {
+    // TODO: Trim track list if subscription is expired
+    // Better to do when Track list gets refactored
+    trackForServer[settings.guild] = settings;
+  });
+
+  return trackForServer;
 }
 
 async function setTrack(server, track) {
@@ -45,5 +60,6 @@ async function getLimitsByServerId(server) {
 module.exports = {
   getLimitsByServerId,
   getTrack,
+  getTrackForServer,
   setTrack,
 };
