@@ -51,9 +51,9 @@ function createWriteStream(...file) {
   setTimeout(() => {
     if (locks[absFilePath]) {
       logger.warn(`${absFilePath}: timeout reached. Forcibly closing.`);
-      writer.close();
+      writer.destroy();
     }
-  }, 30000);
+  }, 600000);
 
   return writer;
 }

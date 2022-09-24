@@ -25,15 +25,17 @@ async function getS3Object(name) {
   }).promise();
 }
 
-async function downloadFromS3(name, writeStream) {
+async function downloadFromS3(name, writer) {
   try {
     logger.verbose(`Downloading "${name}" from AWS Bucket`);
 
     const data = await getS3Object(name);
     return new Promise((resolve) => {
-      writeStream.on("finish", () => resolve(true));
-      writeStream.on("error", () => resolve(false));
-      writeStream.end(data.Body);
+      writer.on("finish", () => resolve(true));
+      writer.on("error", () => resolve(false));
+      writer.end(data.Body);
+      // Emergency timeout
+      setTimeout(() => resolve(false), 60000);
     });
   } catch (e) {
     logger.warn(`Error while downloading ${name} from AWS Bucket:`, e);

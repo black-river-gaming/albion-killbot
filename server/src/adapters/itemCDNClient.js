@@ -37,6 +37,8 @@ async function downloadFromCDNs(item, writer) {
       return new Promise((resolve) => {
         writer.on("finish", () => resolve(true));
         writer.on("error", () => resolve(false));
+        // Emergency timeout
+        setTimeout(() => resolve(false), 30000);
       });
     } catch (e) {
       logger.debug(`Unable to download ${url}:`, e);
