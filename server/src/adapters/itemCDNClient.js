@@ -42,7 +42,6 @@ async function downloadFromCDNs(item, writer) {
       });
     } catch (e) {
       logger.debug(`Unable to download ${url}:`, e);
-      return false;
     }
   }
 
