@@ -3,6 +3,7 @@ const logger = require("../helpers/logger");
 
 const { AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_REGION, AWS_BUCKET } = process.env;
 
+const isEnabled = !!AWS_ACCESS_KEY && !!AWS_SECRET_KEY;
 const S3 = new AWS.S3({
   apiVersion: "2006-03-01",
   accessKeyId: AWS_ACCESS_KEY,
@@ -13,10 +14,6 @@ const S3 = new AWS.S3({
     timeout: 60000,
   },
 });
-
-function isEnabled() {
-  return AWS_ACCESS_KEY && AWS_ACCESS_KEY;
-}
 
 async function getS3Object(name) {
   return await S3.getObject({
@@ -61,8 +58,8 @@ async function uploadToS3(name, readStream) {
 }
 
 module.exports = {
+  isEnabled,
   downloadFromS3,
   getS3Object,
-  isEnabled,
   uploadToS3,
 };

@@ -72,6 +72,7 @@ const getItemFile = async (item, tries = 0) => {
     return cache.getFile(ITEMS_DIR, filename);
   }
 
+  if (!writer.closed) writer.close();
   await sleep(5000);
   return getItemFile(item, tries + 1);
 };

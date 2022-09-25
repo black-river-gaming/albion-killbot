@@ -91,6 +91,11 @@ async function run() {
   await client.login();
 }
 
+//since each bot spawns in it's own process, we need this to catch uncaught exceptions
+process.on("uncaughtException", async (error) => {
+  logger.error(`[#${client.shardId}] Uncaught exception: `, error);
+});
+
 // If the file is called directly instead of required, run it
 if (require.main == module) {
   (async () => {

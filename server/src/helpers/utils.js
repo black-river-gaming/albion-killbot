@@ -12,15 +12,10 @@ process.once("SIGINT", clean);
 // catches "kill pid" (for example: nodemon restart)
 process.on("SIGUSR1", clean);
 process.on("SIGUSR2", clean);
-//catches uncaught exceptions
-process.on("uncaughtException", clean);
 
 function sleep(milliseconds) {
-  return new Promise((resolve) =>
-    setTimeout(() => {
-      if (!running) return;
-      resolve();
-    }, milliseconds),
+  return new Promise((resolve, reject) =>
+    setTimeout(() => (running ? resolve() : reject(new Error("Sleep trigger after program exited."))), milliseconds),
   );
 }
 
@@ -28,7 +23,7 @@ function timeout(fn, milliseconds) {
   const timeout = new Promise((resolve, reject) => {
     const id = setTimeout(() => {
       clearTimeout(id);
-      reject(`Operation timeout (${milliseconds} ms)`);
+      reject(new Error(`Operation timeout (${milliseconds} ms)`));
     }, milliseconds);
   });
 
