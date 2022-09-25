@@ -59,13 +59,11 @@ function getTrackedBattle(battle, { players = [], guilds = [], alliances = [] })
   return null;
 }
 
-async function isPlayerTracked(player, settings) {
-  const { track } = settings;
-
+async function isPlayerTracked(player, { players = [], guilds = [], alliances = [] }) {
   return (
-    track.players.some((t) => t.id === player.Id) ||
-    track.guilds.some((t) => t.id === player.GuildId) ||
-    track.alliances.some((t) => t.id === player.AllianceId)
+    players.some((t) => t.id === player.Id) ||
+    guilds.some((t) => t.id === player.GuildId) ||
+    alliances.some((t) => t.id === player.AllianceId)
   );
 }
 

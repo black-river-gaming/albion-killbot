@@ -28,7 +28,7 @@ async function subscribe(client) {
 
         const guildEvent = getTrackedEvent(event, trackByGuild[guild.id]);
         if (!guildEvent) continue;
-        addRankingKill(guild.id, guildEvent, guild.settings);
+        addRankingKill(guild.id, guildEvent, trackByGuild[guild.id]);
 
         const { enabled, channel, mode } = guild.settings.kills;
         if (!enabled || !channel) continue;

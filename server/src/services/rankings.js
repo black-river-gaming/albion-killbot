@@ -1,19 +1,19 @@
 const { isPlayerTracked } = require("../helpers/tracking");
 const { getCollection } = require("../ports/database");
-const { getSettings } = require("./settings");
+const { getTrack } = require("../services/track");
 
 const RANKINGS_COLLECTION = "rankings";
 
-async function addRankingKill(guildId, event, settings) {
+async function addRankingKill(guildId, event, track) {
   const collection = getCollection(RANKINGS_COLLECTION);
   if (!collection) throw new Error("Not connected to the database");
 
-  if (!settings) settings = await getSettings(guildId);
+  if (!track) track = await getTrack(guildId);
 
   if (event.good) {
     // Player kill
     for (const player of event.GroupMembers) {
-      if (!isPlayerTracked(player, settings)) continue;
+      if (!isPlayerTracked(player, track)) continue;
       const killFame = Math.max(0, player.KillFame);
       await collection.updateOne(
         {
@@ -36,7 +36,7 @@ async function addRankingKill(guildId, event, settings) {
   } else {
     // Player death
     const player = event.Victim;
-    if (!isPlayerTracked(player, settings)) return; // Should never happen
+    if (!isPlayerTracked(player, track)) return; // Should never happen
 
     const deathFame = Math.max(0, event.TotalVictimKillFame);
     await collection.updateOne(
