@@ -34,7 +34,7 @@ Stop() {
 }
 
 Restart() {
-  Stop; Start $@
+  docker compose $ARGS restart $component $@
 }
 
 Logs() {
