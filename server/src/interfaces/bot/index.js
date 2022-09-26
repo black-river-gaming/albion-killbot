@@ -23,11 +23,8 @@ async function run() {
   manager.spawn();
 }
 
-async function cleanup(e) {
-  if (e) {
-    logger.error(e.stack);
-  }
-  logger.info(`Shutting down Bot...`);
+async function cleanup(reason) {
+  logger.info(`Shutting down Bot. Reason: ${reason}`);
 
   for (const shard of manager.shards.values()) {
     logger.verbose(`Killing shard #${shard.id}`);

@@ -13,8 +13,8 @@ async function run() {
   runInterval("Fetch battles", fetchBattles, { interval: 45 * SECOND });
 }
 
-async function cleanup(signal) {
-  logger.info(`Shutting down Crawler. Signal: ${signal}`);
+async function cleanup(reason) {
+  logger.info(`Shutting down Crawler. Reason: ${reason}`);
   clearAllIntervals();
 }
 
