@@ -10,9 +10,7 @@ const { getSettingsForServer } = require("../../../services/settings");
 const { getTrackForServer } = require("../../../services/track");
 
 async function updateGuilds(client) {
-  const { shardId } = client;
-
-  logger.verbose(`[#${shardId}] Updating albion guild data`);
+  logger.verbose(`Updating albion guild data`);
 
   const trackForServer = await getTrackForServer(client.guilds.cache);
   const albionGuilds = await getAllGuilds();
@@ -25,18 +23,16 @@ async function updateGuilds(client) {
       const albionGuild = albionGuilds[trackedGuild.id];
       if (!!albionGuild && moment().diff(moment(albionGuild.updatedAt), "days") < 1) continue;
 
-      logger.verbose(`[#${shardId}] Updating guild "${trackedGuild.name}" data`);
+      logger.verbose(`Updating guild "${trackedGuild.name}" data`);
       await updateGuild(trackedGuild.id);
     }
   }
 
-  logger.verbose(`[#${shardId}] Update albion guild data complete`);
+  logger.verbose(`Update albion guild data complete`);
 }
 
 async function displayRankings(client, { setting }) {
-  const { shardId } = client;
-
-  logger.info(`[#${shardId}] Sending guild ranking on '${setting}' setting to all servers.`);
+  logger.info(`Sending guild ranking on '${setting}' setting to all servers.`);
 
   const settingsByGuild = await getSettingsForServer(client.guilds.cache);
   const trackForServer = await getTrackForServer(client.guilds.cache);
@@ -54,7 +50,7 @@ async function displayRankings(client, { setting }) {
     for (const trackedGuild of track.guilds) {
       const trackedGuildData = albionGuilds[trackedGuild.id];
       if (!trackedGuildData || !trackedGuildData.rankings) {
-        logger.verbose(`[#${shardId}] No data available for guild "${trackedGuild.name}"`);
+        logger.verbose(`No data available for guild "${trackedGuild.name}"`);
         continue;
       }
 
@@ -62,7 +58,7 @@ async function displayRankings(client, { setting }) {
     }
   }
 
-  logger.verbose(`[#${shardId}] Displaying guild rankings to all servers complete`);
+  logger.verbose(`Displaying guild rankings to all servers complete`);
 }
 
 module.exports = {

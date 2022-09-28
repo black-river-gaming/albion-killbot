@@ -7,9 +7,7 @@ const { embedPvpRanking } = require("../../../helpers/embeds");
 const { sendNotification } = require("./notifications");
 
 async function displayRankings(client, { setting }) {
-  const { shardId } = client;
-
-  logger.info(`[#${shardId}] Sending pvp ranking on '${setting}' setting to all servers.`);
+  logger.info(`Sending pvp ranking on '${setting}' setting to all servers.`);
 
   const settingsByGuild = await getSettingsForServer(client.guilds.cache);
 
@@ -35,12 +33,10 @@ async function displayRankings(client, { setting }) {
   }
 }
 
-async function clearRankings(client) {
-  const { shardId } = client;
-
-  logger.info(`[#${shardId}] Clearing rankings.`);
+async function clearRankings() {
+  logger.info(`Clearing rankings.`);
   await deleteRankings();
-  logger.verbose(`[#${shardId}] Ranking cleared!`);
+  logger.verbose(`Ranking cleared!`);
 }
 
 module.exports = {

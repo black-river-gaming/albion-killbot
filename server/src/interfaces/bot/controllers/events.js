@@ -12,8 +12,6 @@ const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../..
 const { sendNotification } = require("./notifications");
 
 async function subscribe(client) {
-  const { shardId } = client;
-
   const cb = async (event) => {
     logger.debug(`Received event: ${event.EventId}`);
 
@@ -33,7 +31,7 @@ async function subscribe(client) {
         const { enabled, channel, mode } = guild.settings.kills;
         if (!enabled || !channel) continue;
 
-        logger.info(`[#${shardId}] Sending event ${event.EventId} to "${guild.name}".`);
+        logger.info(`Sending event ${event.EventId} to "${guild.name}".`);
         const locale = guild.settings.lang;
 
         if (mode === REPORT_MODES.IMAGE) {
@@ -61,13 +59,13 @@ async function subscribe(client) {
         }
       }
     } catch (e) {
-      logger.error(`[#${shardId}] Error processing event ${event.EventId}:`, e);
+      logger.error(`Error processing event ${event.EventId}:`, e);
     }
 
     return true;
   };
 
-  return await subscribeEvents(shardId, cb);
+  return await subscribeEvents(process.env.SHARD, cb);
 }
 
 module.exports = {
