@@ -20,41 +20,42 @@ const client = new Client({
 });
 
 client.on("shardReady", async (id) => {
-  await commands.init(client.application.id);
+  process.env.SHARD = id;
+  logger.info(`Shard online! Bot user: ${client.user.tag}. Guild count: ${client.guilds.cache.size}`);
 
-  client.shardId = id;
-  const shardPrefix = `[#${id}]`;
-  logger.info(`${shardPrefix} Shard ready as ${client.user.tag}. Guild count: ${client.guilds.cache.size}`);
+  await database.init();
+  await queue.init();
+  await commands.init(client.application.id);
 
   try {
     await events.subscribe(client);
-    logger.info(`${shardPrefix} Subscribed to events queue.`);
+    logger.info(`Subscribed to events queue.`);
 
     await battles.subscribe(client);
-    logger.info(`${shardPrefix} Subscribed to battles queue.`);
+    logger.info(`Subscribed to battles queue.`);
   } catch (e) {
     logger.error(`Error in subscriptions:`, e);
   }
 
-  runInterval(`${shardPrefix} Collect Guild data`, guilds.updateGuilds, {
+  runInterval(`Collect Guild data`, guilds.updateGuilds, {
     fnOpts: [client],
     interval: DAY / 4,
   });
 
-  runDaily(`${shardPrefix} Display guild rankings for daily setting`, guilds.displayRankings, {
+  runDaily(`Display guild rankings for daily setting`, guilds.displayRankings, {
     fnOpts: [client, { setting: "daily" }],
   });
-  runInterval(`${shardPrefix} Display guild rankings for hourly setting`, guilds.displayRankings, {
+  runInterval(`Display guild rankings for hourly setting`, guilds.displayRankings, {
     fnOpts: [client, { setting: "hourly" }],
     interval: HOUR,
   });
 
-  runDaily(`${shardPrefix} Display pvp ranking for daily setting`, rankings.displayRankings, {
+  runDaily(`Display pvp ranking for daily setting`, rankings.displayRankings, {
     fnOpts: [client, { setting: "daily" }],
     hour: 0,
     minute: 0,
   });
-  runInterval(`${shardPrefix} Display pvp ranking for hourly setting`, rankings.displayRankings, {
+  runInterval(`Display pvp ranking for hourly setting`, rankings.displayRankings, {
     fnOpts: [client, { setting: "hourly" }],
     interval: HOUR,
   });
@@ -62,21 +63,18 @@ client.on("shardReady", async (id) => {
   // Only one shard needs to run this
   if (id == 0) {
     runDaily(`Clear rankings data`, rankings.clearRankings, {
-      fnOpts: [client],
       hour: 0,
       minute: 5,
     });
   }
 });
 
-client.on("shardDisconnect", async (ev, id) => {
-  logger.info(`[#${id}] Disconnected from Discord: [${ev.code}] ${ev.reason}`);
-  queue.unsubscribeAll();
+client.on("shardDisconnect", async (ev) => {
+  logger.info(`Disconnected from Discord: [${ev.code}] ${ev.reason}`);
 });
 
-client.on("shardReconnecting", async (id) => {
-  logger.info(`[#${id}] Trying to reconnect to Discord.`);
-  queue.unsubscribeAll();
+client.on("shardReconnecting", async () => {
+  logger.info(`Trying to reconnect to Discord.`);
 });
 
 client.on("error", async (e) => {
@@ -86,14 +84,12 @@ client.on("error", async (e) => {
 client.on("interactionCreate", commands.handle);
 
 async function run() {
-  await queue.init();
-  await database.init();
   await client.login();
 }
 
 //since each bot spawns in it's own process, we need this to catch uncaught exceptions
 process.on("uncaughtException", async (error) => {
-  logger.error(`[#${client.shardId}] Uncaught exception: `, error);
+  logger.error(`Uncaught exception: `, error);
 });
 
 // If the file is called directly instead of required, run it

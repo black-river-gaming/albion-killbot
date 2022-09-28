@@ -8,7 +8,12 @@ const level = DEBUG_LEVEL || "info";
 const logger = createLogger({
   level: "debug",
   format: format.combine(format.timestamp(), format.errors({ stack: true }), format.json()),
-  defaultMeta: { service: MODE },
+  defaultMeta: {
+    service: MODE,
+    get shard() {
+      return process.env.SHARD;
+    },
+  },
   transports: [
     new transports.File({
       filename: path.join("logs", "debug.log"),
@@ -27,12 +32,15 @@ const logger = createLogger({
   ],
 });
 
-const consoleFormat = format.printf(({ level, message, timestamp, metadata, [Symbol.for("level")]: logLevel }) => {
-  const metadataStr = metadata ? JSON.stringify(metadata) : "";
-  const maxLen = "verbose".length;
-  const spacing = " ".repeat(Math.max(0, maxLen - logLevel.length));
-  return `${timestamp} [${level}] ${spacing}: ${message} ${metadataStr}`;
-});
+const consoleFormat = format.printf(
+  ({ level, message, timestamp, metadata, [Symbol.for("level")]: logLevel, shard }) => {
+    const metadataStr = metadata ? JSON.stringify(metadata) : "";
+    const maxLen = "verbose".length;
+    const spacing = " ".repeat(Math.max(0, maxLen - logLevel.length));
+    const shardStr = shard ? `[#${shard}] ` : "";
+    return `${timestamp} [${level}] ${spacing}: ${shardStr}${message} ${metadataStr}`;
+  },
+);
 
 logger.add(
   new transports.Console({

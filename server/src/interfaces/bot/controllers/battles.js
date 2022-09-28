@@ -10,8 +10,6 @@ const { embedBattle } = require("../../../helpers/embeds");
 const { sendNotification } = require("./notifications");
 
 async function subscribe(client) {
-  const { shardId } = client;
-
   const cb = async (battle) => {
     logger.debug(`Received battle: ${battle.id}`);
 
@@ -29,17 +27,17 @@ async function subscribe(client) {
         const { enabled, channel } = guild.settings.battles;
         if (!enabled || !channel) continue;
 
-        logger.info(`[#${shardId}] Sending battle ${battle.id} to "${guild.name}".`);
+        logger.info(`Sending battle ${battle.id} to "${guild.name}".`);
         await sendNotification(client, channel, embedBattle(battle, guild.settings.lang));
       }
     } catch (e) {
-      logger.error(`[#${shardId}] Error while processing battle ${battle.id}:`, e);
+      logger.error(`Error while processing battle ${battle.id}:`, e);
     }
 
     return true;
   };
 
-  return await subscribeBattles(shardId, cb);
+  return await subscribeBattles(process.env.SHARD, cb);
 }
 
 module.exports = {

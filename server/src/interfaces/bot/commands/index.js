@@ -54,7 +54,6 @@ function getCommands() {
 }
 
 async function handle(interaction) {
-  const prefix = `[#${interaction.id}/${interaction.commandName}]`;
   const settings = await getSettings(interaction.guild.id);
   const track = await getTrack(interaction.guild.id);
   const t = getLocale(settings.lang).t;
@@ -67,14 +66,14 @@ async function handle(interaction) {
       return this.toString();
     };
 
-    logger.debug(`${prefix} Interaction received`, {
+    logger.debug(`Interaction received`, {
       metadata: interaction.toJSON(),
     });
 
     const command = commands.find((c) => c.name == interaction.commandName);
     return await command.handle(interaction, { settings, track, t });
   } catch (e) {
-    logger.error(`${prefix} Error in interaction:`, e);
+    logger.error(`Error in interaction:`, e);
     const reply = (!interaction.deferred && !interaction.replied ? interaction.reply : interaction.editReply).bind(
       interaction,
     );
