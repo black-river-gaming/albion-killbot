@@ -8,16 +8,9 @@ const command = {
   name: "help",
   description: getLocale().t("HELP.HELP"),
   type: InteractionType.Ping,
-  default_permission: true,
+  default_member_permissions: "0",
   handle: async (interaction, { t }) => {
     let response = "```\n";
-    if (process.env.npm_package_version) {
-      response += t("HELP.VERSION", {
-        version: process.env.npm_package_version,
-      });
-      response += "\n\n";
-    }
-
     const commands = getCommands();
     for (const command of commands) {
       const commandKey = `/${command.name}`;
