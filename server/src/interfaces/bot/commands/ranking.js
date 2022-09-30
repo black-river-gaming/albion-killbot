@@ -30,7 +30,7 @@ const command = {
   name: "ranking",
   description: t("HELP.RANKING"),
   type: InteractionType.Ping,
-  default_permission: true,
+  default_member_permissions: "0",
   options,
   handle: async (interaction, { settings, track, t }) => {
     const rankingType = interaction.options.getString("ranking");
