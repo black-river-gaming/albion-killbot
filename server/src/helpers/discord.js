@@ -13,16 +13,12 @@ const transformGuild = (guild) => {
     owner: guild.owner,
   };
 
-  if (guild.permissions) {
-    transformedGuild.admin = isAdmin(guild.permissions);
+  if (guild.owner) {
+    transformGuild.owner = guild.owner;
   }
 
-  if (guild.roles) {
-    transformedGuild.roles = guild.roles.map((role) => ({
-      id: role.id,
-      name: role.name,
-      permission: role.permissions,
-    }));
+  if (guild.permissions) {
+    transformedGuild.admin = isAdmin(guild.permissions);
   }
 
   return transformedGuild;

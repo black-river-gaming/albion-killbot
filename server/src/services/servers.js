@@ -23,7 +23,6 @@ async function getServer(serverId) {
     const guild = await discord.getGuild(serverId);
     const channels = await discord.getGuildChannels(serverId);
 
-    guild.bot = true;
     guild.channels = channels;
 
     return guild;

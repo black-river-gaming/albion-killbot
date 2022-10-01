@@ -10,7 +10,7 @@ router.use(authenticated);
  * @openapi
  * components:
  *  schemas:
- *    ServerPartial:
+ *    ServerBase:
  *      type: object
  *      properties:
  *        id:
@@ -28,29 +28,38 @@ router.use(authenticated);
  *          description: Discord server icon, to be used with the default icon url.
  *          readOnly: true
  *          example: "a_70cacbcd2ce03227ca160f18d250c868"
- *        owner:
- *          type: boolean
- *          description: If the current user is the server owner
- *          readOnly: true
- *          example: true
- *        admin:
- *          type: boolean
- *          description: If the current user is the server admin
- *          readOnly: true
- *          example: true
- *        bot:
- *          type: boolean
- *          description: If the current bot is present on the server
- *          readOnly: true
- *          example: true
+ *
+ *    ServerPartial:
+ *      allOf:
+ *        - $ref: '#components/schemas/ServerBase'
+ *        - type: object
+ *          properties:
+ *            owner:
+ *              type: boolean
+ *              description: If the current user is the server owner
+ *              readOnly: true
+ *              example: true
+ *            admin:
+ *              type: boolean
+ *              description: If the current user is the server admin
+ *              readOnly: true
+ *              example: true
+ *            bot:
+ *              type: boolean
+ *              description: If the current bot is present on the server
+ *              readOnly: true
+ *              example: true
  *
  *    Server:
  *      allOf:
- *        - $ref: '#components/schemas/ServerPartial'
+ *        - $ref: '#components/schemas/ServerBase'
  *        - type: object
  *          properties:
- *            settings:
- *              $ref: '#/components/schemas/Settings'
+ *            channels:
+ *              type: array
+ *              readOnly: true
+ *              items:
+ *                $ref: '#/components/schemas/Channel'
  *            limits:
  *              type: object
  *              properties:
@@ -63,9 +72,13 @@ router.use(authenticated);
  *                alliances:
  *                  type: number
  *                  default: 1
+ *            settings:
+ *              $ref: '#/components/schemas/Settings'
+ *            subscription:
+ *              $ref: '#/components/schemas/Subscription'
  *            track:
- *              readOnly: true
  *              $ref: '#/components/schemas/Track'
+ *
  *
  *    Channel:
  *      type: object
@@ -136,22 +149,6 @@ router.use(authenticated);
  *                type: string
  *                description: Setting for Guild Rankings
  *                default: "daily"
- *        subscription:
- *          type: object
- *          readOnly: true
- *          properties:
- *            expires:
- *              type: string
- *              format: date-time
- *              description: Subscription expiration date
- *            owner:
- *              type: string
- *              description: Discord user id of the subscription owner
- *              example: "796813403200028682"
- *            patreon:
- *              type: string
- *              description: Patreon user id of the subscription owner
- *              example: "17225165"
  *
  *    Category:
  *      type: object
