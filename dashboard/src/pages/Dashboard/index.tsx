@@ -1,7 +1,7 @@
 import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
 import { getServerInviteUrl } from "helpers/discord";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Alert, Button, Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { ServerPartial, useFetchServersQuery } from "store/api";
 import DashboardStyles from "./styles";
@@ -66,12 +66,21 @@ const Dashboard = () => {
 
   return (
     <DashboardStyles>
+      <Alert variant="info" className="m-0 mb-2">
+        <b>Can't find your server?</b> Please check if you are a server owner or
+        have the Administrator permissions.
+      </Alert>
       <div className="dashboard-title">
         <h1>Discord Servers</h1>
       </div>
       <Container fluid className="pt-4">
         <Row className="g-4">
           {servers.data && servers.data.map(renderServer)}
+          {servers.data?.length === 0 && (
+            <h5 className="d-flex justify-content-center py-5">
+              No servers available.
+            </h5>
+          )}
         </Row>
       </Container>
     </DashboardStyles>
