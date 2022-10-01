@@ -18,10 +18,7 @@ export interface ServerPartial {
   bot: boolean;
 }
 
-export interface Server {
-  id: string;
-  name: string;
-  icon: string;
+export interface Server extends ServerPartial {
   channels: Channel[];
   settings: Settings;
   limits: {
@@ -167,8 +164,8 @@ export const apiSlice = createApi({
         query: () => `/users/me`,
         providesTags: ["User"],
       }),
-      fetchUserServers: builder.query<ServerPartial[], void>({
-        query: () => `/users/me/servers`,
+      fetchServers: builder.query<ServerPartial[], void>({
+        query: () => `/servers`,
       }),
       fetchServer: builder.query<Server, string>({
         query: (serverId) => `/servers/${serverId}`,
@@ -210,9 +207,9 @@ export const {
   useBuySubscriptionMutation,
   useFetchPricesQuery,
   useFetchServerQuery,
+  useFetchServersQuery,
   useFetchSubscriptionsQuery,
   useFetchUserQuery,
-  useFetchUserServersQuery,
   useLazyFetchUserQuery,
   useLazySearchQuery,
   useLogoutMutation,

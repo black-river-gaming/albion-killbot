@@ -3,13 +3,13 @@ import ServerCard from "components/ServerCard";
 import { getServerInviteUrl } from "helpers/discord";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { ServerPartial, useFetchUserServersQuery } from "store/api";
+import { ServerPartial, useFetchServersQuery } from "store/api";
 import DashboardStyles from "./styles";
 
 const Dashboard = () => {
-  const userServers = useFetchUserServersQuery();
+  const servers = useFetchServersQuery();
 
-  if (userServers.isFetching) {
+  if (servers.isFetching) {
     return (
       <Loader width={500} height={500}>
         <rect x="160" y="15" rx="0" ry="0" width="210" height="20" />
@@ -33,7 +33,7 @@ const Dashboard = () => {
       const invitePopupTick = setInterval(function () {
         if (invitePopup.closed) {
           clearInterval(invitePopupTick);
-          userServers.refetch();
+          servers.refetch();
         }
       }, 1000);
     } else {
@@ -41,7 +41,7 @@ const Dashboard = () => {
     }
   };
 
-  const renderUserServer = (server: ServerPartial) => {
+  const renderServer = (server: ServerPartial) => {
     return (
       <Col sm={6} lg={4} key={server.id}>
         <ServerCard server={server}>
@@ -71,7 +71,7 @@ const Dashboard = () => {
       </div>
       <Container fluid className="pt-4">
         <Row className="g-4">
-          {userServers.data && userServers.data.map(renderUserServer)}
+          {servers.data && servers.data.map(renderServer)}
         </Row>
       </Container>
     </DashboardStyles>
