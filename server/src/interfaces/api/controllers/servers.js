@@ -1,38 +1,48 @@
+const logger = require("../../../helpers/logger");
 const serversService = require("../../../services/servers");
 const settingsService = require("../../../services/settings");
 const subscriptionService = require("../../../services/subscriptions");
 const trackService = require("../../../services/track");
-const usersService = require("../../../services/users");
 
 async function getServers(req, res) {
   try {
     const { accessToken } = req.session.discord;
+    if (!accessToken) return res.sendStatus(403);
 
-    const userServers = await usersService.getCurrentUserServers(accessToken);
+    const userServers = await serversService.getServers(accessToken);
 
     return res.send(userServers);
   } catch (error) {
-    return res.sendStatus(403);
+    logger.error(`Unknown error:`, error);
+    return res.sendStatus(500);
   }
 }
 
 async function getServer(req, res) {
-  const { serverId } = req.params;
-  const server = await serversService.getServer(serverId);
+  try {
+    const { accessToken } = req.session.discord;
+    if (!accessToken) return res.sendStatus(403);
 
-  const settings = await settingsService.getSettings(serverId);
-  server.settings = settings;
+    const { serverId } = req.params;
+    const server = await serversService.getServer(serverId);
 
-  const subscription = await subscriptionService.getSubscriptionByServerId(serverId);
-  server.subscription = subscription;
+    const settings = await settingsService.getSettings(serverId);
+    server.settings = settings;
 
-  const limits = await trackService.getLimitsByServerId(serverId);
-  server.limits = limits;
+    const subscription = await subscriptionService.getSubscriptionByServerId(serverId);
+    server.subscription = subscription;
 
-  const track = await trackService.getTrack(serverId);
-  server.track = track;
+    const limits = await trackService.getLimitsByServerId(serverId);
+    server.limits = limits;
 
-  return res.send(server);
+    const track = await trackService.getTrack(serverId);
+    server.track = track;
+
+    return res.send(server);
+  } catch (error) {
+    logger.error(`Unknown error:`, error);
+    return res.sendStatus(500);
+  }
 }
 
 async function setServerSettings(req, res) {
