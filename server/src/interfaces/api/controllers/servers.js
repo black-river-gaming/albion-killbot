@@ -1,36 +1,64 @@
+const logger = require("../../../helpers/logger");
 const serversService = require("../../../services/servers");
 const settingsService = require("../../../services/settings");
 const subscriptionService = require("../../../services/subscriptions");
 const trackService = require("../../../services/track");
 
-async function getServer(req, res) {
+async function isServerAdmin(req, res, next) {
+  const { accessToken } = req.session.discord;
+  if (!accessToken) return res.sendStatus(403);
+
   const { serverId } = req.params;
-  const server = await serversService.getServer(serverId);
+  const server = (await serversService.getServers(accessToken)).find((server) => server.id === serverId);
+  if (!server) return res.sendStatus(403);
+  if (!server.owner && !server.admin) return res.sendStatus(403);
 
-  const settings = await settingsService.getSettings(serverId);
-  server.settings = settings;
+  return next();
+}
 
-  const subscription = await subscriptionService.getSubscriptionByServerId(serverId);
-  server.subscription = subscription;
+async function getServers(req, res) {
+  try {
+    const { accessToken } = req.session.discord;
+    if (!accessToken) return res.sendStatus(403);
 
-  const limits = await trackService.getLimitsByServerId(serverId);
-  server.limits = limits;
+    const userServers = await serversService.getServers(accessToken);
 
-  const track = await trackService.getTrack(serverId);
-  server.track = track;
+    return res.send(userServers);
+  } catch (error) {
+    logger.error(`Unknown error:`, error);
+    return res.sendStatus(500);
+  }
+}
 
-  return res.send(server);
+async function getServer(req, res) {
+  try {
+    const { accessToken } = req.session.discord;
+    if (!accessToken) return res.sendStatus(403);
+
+    const { serverId } = req.params;
+    const server = await serversService.getServer(serverId);
+
+    const settings = await settingsService.getSettings(serverId);
+    server.settings = settings;
+
+    const subscription = await subscriptionService.getSubscriptionByServerId(serverId);
+    server.subscription = subscription;
+
+    const limits = await trackService.getLimitsByServerId(serverId);
+    server.limits = limits;
+
+    const track = await trackService.getTrack(serverId);
+    server.track = track;
+
+    return res.send(server);
+  } catch (error) {
+    logger.error(`Unknown error:`, error);
+    return res.sendStatus(500);
+  }
 }
 
 async function setServerSettings(req, res) {
   const { serverId } = req.params;
-  const { user } = req.session.discord;
-  const server = await serversService.getServer(serverId);
-
-  const isOwner = server.owner === user.id;
-  // TODO: Get roles for user.id, then check if any of them is & (1 << 3) [Administrator]
-  if (!isOwner) return res.sendStatus(403);
-
   const newSettings = req.body;
 
   const settings = await settingsService.setSettings(serverId, newSettings);
@@ -39,22 +67,17 @@ async function setServerSettings(req, res) {
 
 async function setServerTrack(req, res) {
   const { serverId } = req.params;
-  const { user } = req.session.discord;
-  const server = await serversService.getServer(serverId);
-
-  const isOwner = server.owner === user.id;
-  // TODO: Get roles for user.id, then check if any of them is & (1 << 3) [Administrator]
-  if (!isOwner) return res.sendStatus(403);
-
-  const track = req.body;
+  const newTrack = req.body;
   // TODO: Validate schema
 
-  const newTrack = await trackService.setTrack(serverId, track);
-  return res.send(newTrack);
+  const track = await trackService.setTrack(serverId, newTrack);
+  return res.send(track);
 }
 
 module.exports = {
+  isServerAdmin,
   getServer,
+  getServers,
   setServerSettings,
   setServerTrack,
 };

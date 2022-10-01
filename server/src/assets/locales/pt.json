@@ -54,7 +54,6 @@
     "NO_DATA_SHORT": "Sem dados"
   },
   "HELP": {
-    "VERSION": "Albion Killbot v{{ version }}",
     "HELP": "Mostra a lista de comandos do bot.",
     "CHANNEL": "Define o canal para mostrar as notificações.",
     "LANGUAGE": "Define o idioma do bot.",
@@ -68,7 +67,12 @@
     "RANKING": "Mostra os rankings.",
     "SUBSCRIPTION": "Verifica ou ativa sua assinatura.",
     "PREFIX": "Muda o prefixo do bot.",
-    "SETTINGS": "Mudar as configurações do seu servidor."
+    "SETTINGS": "Mudar as configurações do seu servidor.",
+    "VERSION": "Verifica a versão do bot."
+  },
+  "VERSION": {
+    "PACKAGE_VERSION": "Albion Killbot v{{ version }}",
+    "VERSION_NOT_FOUND": "Não foi possível carregar a versão do bot."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",

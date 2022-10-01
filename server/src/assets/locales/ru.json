@@ -54,7 +54,6 @@
     "NO_DATA_SHORT": "No data available"
   },
   "HELP": {
-    "VERSION": "Анонсер версии {{ version }}",
     "HELP": "Показать список команд бота.",
     "CHANNEL": "Задает канал для отправки уведомлений.",
     "LANGUAGE": "Установить язык бота.",
@@ -68,7 +67,12 @@
     "RANKING": "Display rankings.",
     "SUBSCRIPTION": "Check or activate your subscription.",
     "PREFIX": "Change bot prefix.",
-    "SETTINGS": "Change settings for your server."
+    "SETTINGS": "Change settings for your server.",
+    "VERSION": "Check bot version."
+  },
+  "VERSION": {
+    "PACKAGE_VERSION": "Albion Killbot v{{ version }}",
+    "VERSION_NOT_FOUND": "Unable to retrieve bot version."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Пожалуйста, введите канал для уведомлений.",

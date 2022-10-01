@@ -1,4 +1,5 @@
 const discordApiClient = require("../adapters/discordApiClient");
+const discordHelper = require("../helpers/discord");
 
 const { DISCORD_TOKEN } = process.env;
 
@@ -16,12 +17,7 @@ async function getMe(accessToken) {
 
 async function getMeGuilds(accessToken) {
   const guilds = await discordApiClient.getMeGuilds(`Bearer ${accessToken}`);
-  return guilds.map((guild) => ({
-    id: guild.id,
-    name: guild.name,
-    icon: guild.icon,
-    owner: guild.owner,
-  }));
+  return guilds.map(discordHelper.transformGuild);
 }
 
 async function getBotGuilds() {
@@ -30,27 +26,12 @@ async function getBotGuilds() {
 
 async function getGuild(guildId) {
   const guild = await discordApiClient.getGuild(`Bot ${DISCORD_TOKEN}`, guildId);
-  return {
-    id: guild.id,
-    name: guild.name,
-    icon: guild.icon,
-    owner: guild.owner_id,
-    roles: guild.roles.map((role) => ({
-      id: role.id,
-      name: role.name,
-      permission: role.permissions,
-    })),
-  };
+  return discordHelper.transformGuild(guild);
 }
 
 async function getGuildChannels(guildId) {
   const channels = await discordApiClient.getGuildChannels(`Bot ${DISCORD_TOKEN}`, guildId);
-  return channels.map((channel) => ({
-    id: channel.id,
-    name: channel.name,
-    type: channel.type,
-    parentId: channel.parent_id,
-  }));
+  return channels.map(discordHelper.transformChannel);
 }
 
 module.exports = {

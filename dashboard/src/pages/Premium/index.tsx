@@ -12,7 +12,7 @@ import { isSubscriptionActiveAndUnassiged } from "helpers/subscriptions";
 import { getCurrency } from "helpers/utils";
 import { useState } from "react";
 import { Alert, Button, Card, Col, ListGroup, Row } from "react-bootstrap";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
   SubscriptionPrice,
   useBuySubscriptionMutation,
@@ -137,22 +137,15 @@ const Premium = () => {
                   </div>
                 </div>
                 <div className="actions">
-                  {subscription.server && (
-                    <Link to={`/dashboard/${subscription.server}/subscription`}>
-                      <Button variant="secondary">Dashboard</Button>
-                    </Link>
-                  )}
-                  {!subscription.server && (
-                    <Button
-                      variant="primary"
-                      onClick={() => setSubscriptionAssignId(subscription.id)}
-                    >
-                      Assign
-                    </Button>
-                  )}
+                  <Button
+                    variant="primary"
+                    onClick={() => setSubscriptionAssignId(subscription.id)}
+                  >
+                    {subscription.server ? "Transfer" : "Assign"}
+                  </Button>
                   {subscription.stripe?.customer && (
                     <Button
-                      variant="primary"
+                      variant="danger"
                       onClick={() => {
                         if (subscription.stripe?.customer)
                           dispatchManageSubscription(
@@ -160,7 +153,7 @@ const Premium = () => {
                           );
                       }}
                     >
-                      Manage
+                      Cancel
                     </Button>
                   )}
                 </div>

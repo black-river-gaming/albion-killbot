@@ -4,10 +4,7 @@ import Toast from "components/Toast";
 import { useState } from "react";
 import { Alert, Button, Col, Modal, Row } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
-import {
-  useAssignSubscriptionMutation,
-  useFetchUserServersQuery,
-} from "store/api";
+import { useAssignSubscriptionMutation, useFetchServersQuery } from "store/api";
 
 interface SubscriptionAssignModalProps {
   checkoutId?: string;
@@ -23,12 +20,11 @@ const SubscriptionAssignModal = ({
   onClose,
 }: SubscriptionAssignModalProps) => {
   const [show, setShow] = useState(true);
-  const servers = useFetchUserServersQuery();
+  const servers = useFetchServersQuery();
   const [dispatchAssignSubscription, assignSubscription] =
     useAssignSubscriptionMutation();
 
   if (assignSubscription.isSuccess && assignSubscription.data) {
-    console.log(assignSubscription.data);
     return (
       <Navigate
         to={`/dashboard/${assignSubscription.data.server}/subscription`}

@@ -71,40 +71,6 @@ router.use(disableCache);
  *          description: User has multi-factor enabled
  *          readOnly: true
  *          example: false
- *
- *    ServerPartial:
- *      type: object
- *      properties:
- *        id:
- *          type: string
- *          description: Discord server id.
- *          readOnly: true
- *          example: "159962941502783488"
- *        name:
- *          type: string
- *          description: Server name.
- *          readOnly: true
- *          example: "Discord Server Name"
- *        icon:
- *          type: string
- *          description: Discord server icon, to be used with the default icon url.
- *          readOnly: true
- *          example: "a_70cacbcd2ce03227ca160f18d250c868"
- *        owner:
- *          type: boolean
- *          description: If the current user is the server owner
- *          readOnly: true
- *          example: true
- *        admin:
- *          type: boolean
- *          description: If the current user is the server admin
- *          readOnly: true
- *          example: true
- *        bot:
- *          type: boolean
- *          description: If the current bot is present on the server
- *          readOnly: true
- *          example: true
  */
 
 /**
@@ -125,27 +91,6 @@ router.use(disableCache);
  *         description: Unable to authenticate
  */
 router.get(`/me`, usersController.getUser);
-
-/**
- * @openapi
- * /users/me/servers:
- *   get:
- *     tags: [Users]
- *     summary: Return list of servers for current user
- *     operationId: getUserServers
- *     responses:
- *       200:
- *         description: List of user servers
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/ServerPartial'
- *       403:
- *         description: Unable to authenticate
- */
-router.get(`/me/servers`, usersController.getUserServers);
 
 module.exports = {
   path: "/users",

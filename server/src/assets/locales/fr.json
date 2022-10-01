@@ -54,7 +54,6 @@
     "NO_DATA_SHORT": "Aucune donnée disponible"
   },
   "HELP": {
-    "VERSION": "Albion Killbot v{{ version }}",
     "HELP": "Afficher la liste des commandes du bot.",
     "CHANNEL": "Définir le channel pour envoyer les notifications.",
     "LANGUAGE": "Définir la langue du bot.",
@@ -68,7 +67,12 @@
     "RANKING": "Affiche les classements.",
     "SUBSCRIPTION": "Vérifie ou active votre Souscription.",
     "PREFIX": "Change le prefixe du bot.",
-    "SETTINGS": "Change settings for your server."
+    "SETTINGS": "Change settings for your server.",
+    "VERSION": "Check bot version."
+  },
+  "VERSION": {
+    "PACKAGE_VERSION": "Albion Killbot v{{ version }}",
+    "VERSION_NOT_FOUND": "Unable to retrieve bot version."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Veuillez sélectionner un canal dans lequel les notifications seront envoyées.",

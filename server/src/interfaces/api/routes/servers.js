@@ -10,7 +10,7 @@ router.use(authenticated);
  * @openapi
  * components:
  *  schemas:
- *    Server:
+ *    ServerBase:
  *      type: object
  *      properties:
  *        id:
@@ -28,27 +28,57 @@ router.use(authenticated);
  *          description: Discord server icon, to be used with the default icon url.
  *          readOnly: true
  *          example: "a_70cacbcd2ce03227ca160f18d250c868"
- *        channels:
- *          type: array
- *          items:
- *            $ref: '#/components/schemas/Channel'
- *        settings:
- *          $ref: '#/components/schemas/Settings'
- *        limits:
- *          type: object
+ *
+ *    ServerPartial:
+ *      allOf:
+ *        - $ref: '#components/schemas/ServerBase'
+ *        - type: object
  *          properties:
- *            players:
- *              type: number
- *              default: 10
- *            guilds:
- *              type: number
- *              default: 1
- *            alliances:
- *              type: number
- *              default: 1
- *        track:
- *          readOnly: true
- *          $ref: '#/components/schemas/Track'
+ *            owner:
+ *              type: boolean
+ *              description: If the current user is the server owner
+ *              readOnly: true
+ *              example: true
+ *            admin:
+ *              type: boolean
+ *              description: If the current user is the server admin
+ *              readOnly: true
+ *              example: true
+ *            bot:
+ *              type: boolean
+ *              description: If the current bot is present on the server
+ *              readOnly: true
+ *              example: true
+ *
+ *    Server:
+ *      allOf:
+ *        - $ref: '#components/schemas/ServerBase'
+ *        - type: object
+ *          properties:
+ *            channels:
+ *              type: array
+ *              readOnly: true
+ *              items:
+ *                $ref: '#/components/schemas/Channel'
+ *            limits:
+ *              type: object
+ *              properties:
+ *                players:
+ *                  type: number
+ *                  default: 10
+ *                guilds:
+ *                  type: number
+ *                  default: 1
+ *                alliances:
+ *                  type: number
+ *                  default: 1
+ *            settings:
+ *              $ref: '#/components/schemas/Settings'
+ *            subscription:
+ *              $ref: '#/components/schemas/Subscription'
+ *            track:
+ *              $ref: '#/components/schemas/Track'
+ *
  *
  *    Channel:
  *      type: object
@@ -119,22 +149,6 @@ router.use(authenticated);
  *                type: string
  *                description: Setting for Guild Rankings
  *                default: "daily"
- *        subscription:
- *          type: object
- *          readOnly: true
- *          properties:
- *            expires:
- *              type: string
- *              format: date-time
- *              description: Subscription expiration date
- *            owner:
- *              type: string
- *              description: Discord user id of the subscription owner
- *              example: "796813403200028682"
- *            patreon:
- *              type: string
- *              description: Patreon user id of the subscription owner
- *              example: "17225165"
  *
  *    Category:
  *      type: object
@@ -177,6 +191,27 @@ router.use(authenticated);
  *          description: Albion name
  *          example: "Gray Death"
  */
+
+/**
+ * @openapi
+ * /users/me/servers:
+ *   get:
+ *     tags: [Servers]
+ *     summary: Return list of servers for current user
+ *     operationId: getServers
+ *     responses:
+ *       200:
+ *         description: List of servers
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ServerPartial'
+ *       403:
+ *         description: Unable to authenticate
+ */
+router.get(`/`, serversController.getServers);
 
 /**
  * @openapi
@@ -227,7 +262,7 @@ router.get(`/:serverId`, serversController.getServer);
  *             schema:
  *               $ref: '#/components/schemas/Settings'
  */
-router.put(`/:serverId/settings`, serversController.setServerSettings);
+router.put(`/:serverId/settings`, serversController.isServerAdmin, serversController.setServerSettings);
 
 /**
  * @openapi
@@ -255,7 +290,7 @@ router.put(`/:serverId/settings`, serversController.setServerSettings);
  *             schema:
  *               $ref: '#/components/schemas/Track'
  */
-router.put(`/:serverId/track`, serversController.setServerTrack);
+router.put(`/:serverId/track`, serversController.isServerAdmin, serversController.setServerTrack);
 
 module.exports = {
   path: "/servers",
