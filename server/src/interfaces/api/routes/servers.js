@@ -10,7 +10,7 @@ router.use(authenticated);
  * @openapi
  * components:
  *  schemas:
- *    Server:
+ *    ServerPartial:
  *      type: object
  *      properties:
  *        id:
@@ -28,27 +28,44 @@ router.use(authenticated);
  *          description: Discord server icon, to be used with the default icon url.
  *          readOnly: true
  *          example: "a_70cacbcd2ce03227ca160f18d250c868"
- *        channels:
- *          type: array
- *          items:
- *            $ref: '#/components/schemas/Channel'
- *        settings:
- *          $ref: '#/components/schemas/Settings'
- *        limits:
- *          type: object
- *          properties:
- *            players:
- *              type: number
- *              default: 10
- *            guilds:
- *              type: number
- *              default: 1
- *            alliances:
- *              type: number
- *              default: 1
- *        track:
+ *        owner:
+ *          type: boolean
+ *          description: If the current user is the server owner
  *          readOnly: true
- *          $ref: '#/components/schemas/Track'
+ *          example: true
+ *        admin:
+ *          type: boolean
+ *          description: If the current user is the server admin
+ *          readOnly: true
+ *          example: true
+ *        bot:
+ *          type: boolean
+ *          description: If the current bot is present on the server
+ *          readOnly: true
+ *          example: true
+ *
+ *    Server:
+ *      allOf:
+ *        - $ref: '#components/schemas/ServerPartial'
+ *        - type: object
+ *          properties:
+ *            settings:
+ *              $ref: '#/components/schemas/Settings'
+ *            limits:
+ *              type: object
+ *              properties:
+ *                players:
+ *                  type: number
+ *                  default: 10
+ *                guilds:
+ *                  type: number
+ *                  default: 1
+ *                alliances:
+ *                  type: number
+ *                  default: 1
+ *            track:
+ *              readOnly: true
+ *              $ref: '#/components/schemas/Track'
  *
  *    Channel:
  *      type: object
@@ -177,6 +194,27 @@ router.use(authenticated);
  *          description: Albion name
  *          example: "Gray Death"
  */
+
+/**
+ * @openapi
+ * /users/me/servers:
+ *   get:
+ *     tags: [Servers]
+ *     summary: Return list of servers for current user
+ *     operationId: getServers
+ *     responses:
+ *       200:
+ *         description: List of servers
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ServerPartial'
+ *       403:
+ *         description: Unable to authenticate
+ */
+router.get(`/`, serversController.getServers);
 
 /**
  * @openapi

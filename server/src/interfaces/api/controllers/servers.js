@@ -2,6 +2,19 @@ const serversService = require("../../../services/servers");
 const settingsService = require("../../../services/settings");
 const subscriptionService = require("../../../services/subscriptions");
 const trackService = require("../../../services/track");
+const usersService = require("../../../services/users");
+
+async function getServers(req, res) {
+  try {
+    const { accessToken } = req.session.discord;
+
+    const userServers = await usersService.getCurrentUserServers(accessToken);
+
+    return res.send(userServers);
+  } catch (error) {
+    return res.sendStatus(403);
+  }
+}
 
 async function getServer(req, res) {
   const { serverId } = req.params;
@@ -55,6 +68,7 @@ async function setServerTrack(req, res) {
 
 module.exports = {
   getServer,
+  getServers,
   setServerSettings,
   setServerTrack,
 };
