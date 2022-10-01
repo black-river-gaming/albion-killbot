@@ -33,8 +33,7 @@ const SubscriptionPage = () => {
           ) : (
             <div>
               This server doesn't have an active subscription. Please, go to{" "}
-              <Link to="/dashboard">Premium</Link> page to assign a
-              subscription.
+              <Link to="/premium">Premium</Link> page to assign a subscription.
             </div>
           )}
         </Alert>
