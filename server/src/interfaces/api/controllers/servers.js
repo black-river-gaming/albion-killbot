@@ -4,6 +4,18 @@ const settingsService = require("../../../services/settings");
 const subscriptionService = require("../../../services/subscriptions");
 const trackService = require("../../../services/track");
 
+async function isServerAdmin(req, res, next) {
+  const { accessToken } = req.session.discord;
+  if (!accessToken) return res.sendStatus(403);
+
+  const { serverId } = req.params;
+  const server = (await serversService.getServers(accessToken)).find((server) => server.id === serverId);
+  if (!server) return res.sendStatus(403);
+  if (!server.owner && !server.admin) return res.sendStatus(403);
+
+  return next();
+}
+
 async function getServers(req, res) {
   try {
     const { accessToken } = req.session.discord;
@@ -47,13 +59,6 @@ async function getServer(req, res) {
 
 async function setServerSettings(req, res) {
   const { serverId } = req.params;
-  const { user } = req.session.discord;
-  const server = await serversService.getServer(serverId);
-
-  const isOwner = server.owner === user.id;
-  // TODO: Get roles for user.id, then check if any of them is & (1 << 3) [Administrator]
-  if (!isOwner) return res.sendStatus(403);
-
   const newSettings = req.body;
 
   const settings = await settingsService.setSettings(serverId, newSettings);
@@ -62,21 +67,15 @@ async function setServerSettings(req, res) {
 
 async function setServerTrack(req, res) {
   const { serverId } = req.params;
-  const { user } = req.session.discord;
-  const server = await serversService.getServer(serverId);
-
-  const isOwner = server.owner === user.id;
-  // TODO: Get roles for user.id, then check if any of them is & (1 << 3) [Administrator]
-  if (!isOwner) return res.sendStatus(403);
-
-  const track = req.body;
+  const newTrack = req.body;
   // TODO: Validate schema
 
-  const newTrack = await trackService.setTrack(serverId, track);
-  return res.send(newTrack);
+  const track = await trackService.setTrack(serverId, newTrack);
+  return res.send(track);
 }
 
 module.exports = {
+  isServerAdmin,
   getServer,
   getServers,
   setServerSettings,
