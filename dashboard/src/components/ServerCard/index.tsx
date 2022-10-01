@@ -9,13 +9,18 @@ interface ServerCardProps {
 }
 
 const ServerCard = ({ server, children }: ServerCardProps) => {
-  const serverImg = getServerPictureUrl(server);
-
   return (
     <StyledServerCard>
       <div className="server-img-container">
-        <Card.Img className="server-img-blurred" src={serverImg} />
-        <Card.Img className="server-img-icon" variant="top" src={serverImg} />
+        <Card.Img
+          className="server-img-blurred"
+          src={getServerPictureUrl(server, false)}
+        />
+        <Card.Img
+          className="server-img-icon"
+          variant="top"
+          src={getServerPictureUrl(server, true)}
+        />
       </div>
       <Card.Body>
         <Card.Title className="server-name">{server.name}</Card.Title>
