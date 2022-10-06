@@ -72,7 +72,7 @@
   },
   "VERSION": {
     "PACKAGE_VERSION": "Albion Killbot v{{ version }}",
-    "VERSION_NOT_FOUND": "Não foi possível carregar a versão do bot."
+    "NOT_FOUND": "Não foi possível carregar a versão do bot."
   },
   "CHANNEL": {
     "NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",

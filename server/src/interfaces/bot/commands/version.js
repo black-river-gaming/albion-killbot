@@ -1,6 +1,8 @@
 const { InteractionType } = require("discord-api-types/v10");
 const { getLocale } = require("../../../helpers/locale");
 
+const version = process.env.npm_package_version;
+
 const command = {
   name: "version",
   description: getLocale().t("HELP.VERSION"),
@@ -8,9 +10,9 @@ const command = {
   default_permission: true,
   handle: async (interaction, { t }) => {
     let response = "```\n";
-    if (process.env.npm_package_version) {
+    if (version) {
       response += t("VERSION.PACKAGE_VERSION", {
-        version: process.env.npm_package_version,
+        version,
       });
     } else {
       response += t("VERSION.NOT_FOUND");
