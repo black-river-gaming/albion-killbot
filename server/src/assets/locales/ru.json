@@ -147,6 +147,7 @@
   },
   "SETTINGS": {
     "KILLS": "Change settings for kill notifications.",
+    "DEATHS": "Change settings for death notifications.",
     "BATTLES": "Change settings for battle notifications.",
     "RANKINGS": "Change settings for ranking notifications.",
     "ENABLED": "Enable",
