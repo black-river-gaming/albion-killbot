@@ -59,7 +59,6 @@ const SubscriptionPage = () => {
 
   return (
     <>
-      <h4 className="d-flex justify-content-center p-2">Subscription</h4>
       {subscriptions.isFetching && <Loader />}
       {subscriptions.isSuccess && renderServerSubscription()}
       {subscriptionAssignId && (

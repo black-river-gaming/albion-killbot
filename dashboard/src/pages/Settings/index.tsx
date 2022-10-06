@@ -85,8 +85,7 @@ const Settings = () => {
           await dispatchUpdateSettings({ serverId, settings });
         }}
       >
-        <h4 className="d-flex justify-content-center py-2">Settings</h4>
-        <Tabs>
+        <Tabs fill={true}>
           <Tab eventKey="general" title="General" className="px-3">
             <Form.Group controlId="language" className="mt-3">
               <Form.Label>Language</Form.Label>
