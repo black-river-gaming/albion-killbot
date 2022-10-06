@@ -44,6 +44,11 @@ export interface Settings {
     channel: string;
     mode: string;
   };
+  deaths: {
+    enabled: boolean;
+    channel: string;
+    mode: string;
+  };
   battles: {
     enabled: boolean;
     channel: string;
