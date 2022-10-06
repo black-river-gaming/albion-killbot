@@ -136,7 +136,7 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
 
   /* Bootstrap Alert overrides */
   .alert {
-    border-radius: 0.75rem;
+    border-radius: 0.5rem;
 
       a {
         color: ${({ theme }) => theme.contrastText};
@@ -221,7 +221,7 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
     );
     box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%),
       0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
-    border-radius: 0.6rem;
+    border-radius: 0.5rem;
     color: ${({ theme }) => theme.text};
 
     .list-group {
@@ -298,7 +298,6 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
     );
     box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%),
       0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
-    border-radius: 0.75rem;
     color: ${({ theme }) => theme.text};
 
     .list-group-item {
@@ -310,6 +309,16 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
       a {
         background-color: inherit;
         color: inherit;
+      }
+
+      &:first-child {
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+      }
+
+      &:last-child {
+        border-bottom-left-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
       }
 
       &:not(:last-child) {
@@ -357,6 +366,35 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
       .modal-body,
       .modal-footer {
         border-color: ${({ theme }) => theme.background}66;
+      }
+    }
+  }
+
+  /* Bootstrap Tabs overrides */
+  .nav-tabs {
+    border-bottom: 1px solid;
+    border-color: ${({ theme }) => theme.background}77;
+
+    .nav-item {
+      .nav-link {
+        border: none;
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+        color:  ${({ theme }) => theme.text};
+        margin-bottom: 0;
+
+        &.active {
+          background: none;
+          background-image: linear-gradient(
+            rgba(255, 255, 255, 0.05),
+            rgba(255, 255, 255, 0.05)
+          );
+        }
+
+        &:hover {
+          border: none;
+          color: ${({ theme }) => theme.primary};
+        }
       }
     }
   }

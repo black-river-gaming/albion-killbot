@@ -146,21 +146,22 @@
     "SET_PREFIX": "O prefixo foi definido para '{{ prefix }}'. Seus comandos serão chamado usando {{prefix}}commando a partir de agora."
   },
   "SETTINGS": {
-    "KILLS": "Change settings for kill notifications.",
-    "BATTLES": "Change settings for battle notifications.",
-    "RANKINGS": "Change settings for ranking notifications.",
-    "ENABLED": "Enable",
-    "CHANNEL": "Channel",
+    "KILLS": "Mudar configurações de abates.",
+    "DEATHS": "Mudar configurações de mortes.",
+    "BATTLES": "Mudar configurações de batalhas.",
+    "RANKINGS": "Mudar configurações de rankings.",
+    "ENABLED": "Ativado",
+    "CHANNEL": "Canal",
     "MODE": {
-      "IMAGE": "Image",
-      "TEXT": "Text"
+      "IMAGE": "Imagem",
+      "TEXT": "Texto"
     },
-    "PVP_RANKING": "PvP Ranking",
-    "GUILD_RANKING": "Guild Ranking",
+    "PVP_RANKING": "Ranking PvP",
+    "GUILD_RANKING": "Ranking de Guilda",
     "FREQUENCIES": {
-      "OFF": "Off",
-      "HOURLY": "Every hour",
-      "DAILY": "Daily"
+      "OFF": "Desligado",
+      "HOURLY": "A cada hora",
+      "DAILY": "Diariamente"
     },
     "LANG": "Alterar idioma."
   }

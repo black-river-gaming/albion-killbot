@@ -40,6 +40,39 @@ const kills = {
   ],
 };
 
+const deaths = {
+  name: "deaths",
+  description: t("SETTINGS.DEATHS"),
+  type: Subcommand,
+  options: [
+    {
+      name: "enabled",
+      description: t("SETTINGS.ENABLED"),
+      type: Boolean,
+    },
+    {
+      name: "channel",
+      description: t("SETTINGS.CHANNEL"),
+      type: Channel,
+    },
+    {
+      name: "mode",
+      description: t("SETTINGS.CHANNEL"),
+      type: String,
+      choices: [
+        {
+          name: t("SETTINGS.MODE.IMAGE"),
+          value: "image",
+        },
+        {
+          name: t("SETTINGS.MODE.TEXT"),
+          value: "text",
+        },
+      ],
+    },
+  ],
+};
+
 const battles = {
   name: "battles",
   description: t("SETTINGS.BATTLES"),
@@ -148,7 +181,7 @@ const command = {
   description: t("HELP.SETTINGS"),
   type: InteractionType.Ping,
   default_member_permissions: "0",
-  options: [kills, battles, rankings, lang],
+  options: [kills, deaths, battles, rankings, lang],
   handle: async (interaction, { settings, t }) => {
     const reply = async (content, ephemeral = true) => await interaction.reply({ content, ephemeral });
     const editReply = async (content, ephemeral = true) => await interaction.editReply({ content, ephemeral });
@@ -156,6 +189,20 @@ const command = {
     const subcommands = {
       kills: async () => {
         const category = "kills";
+        settings = getCommonOptions(settings, category, interaction);
+
+        const mode = interaction.options.getString("mode");
+        if (mode != null) settings[category].mode = mode;
+
+        await interaction.deferReply({ ephemeral: true });
+        await setSettings(interaction.guild.id, settings);
+
+        let reply = printCommonOptions(settings, category, interaction, t);
+        reply += t("MODE.SET", { mode: settings[category].mode }) + "\n";
+        return await editReply(reply);
+      },
+      deaths: async () => {
+        const category = "deaths";
         settings = getCommonOptions(settings, category, interaction);
 
         const mode = interaction.options.getString("mode");

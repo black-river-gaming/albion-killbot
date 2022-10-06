@@ -218,7 +218,6 @@ const Track = () => {
       <Row className="g-3">
         <Col sm={12}>
           <Card>
-            <h4 className="d-flex justify-content-center p-2">Tracking List</h4>
             {renderTracking()}
             <div className="d-flex justify-content-end align-items-center p-3">
               <Button

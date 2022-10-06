@@ -13,6 +13,11 @@ const DEFAULT_SETTINGS = {
     channel: null,
     mode: REPORT_MODES.IMAGE,
   },
+  deaths: {
+    enabled: true,
+    channel: null,
+    mode: REPORT_MODES.IMAGE,
+  },
   battles: {
     enabled: true,
     channel: null,

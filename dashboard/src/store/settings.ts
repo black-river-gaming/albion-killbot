@@ -8,6 +8,11 @@ const initialState = {
     channel: "",
     mode: "image",
   },
+  deaths: {
+    enabled: true,
+    channel: "",
+    mode: "image",
+  },
   battles: {
     enabled: true,
     channel: "",
@@ -27,6 +32,7 @@ export const settingsSlice = createSlice({
     loadSettings: (state, { payload }: PayloadAction<Settings>) => {
       state.lang = payload.lang;
       state.kills = payload.kills;
+      state.deaths = payload.deaths;
       state.battles = payload.battles;
       state.rankings = payload.rankings;
     },
@@ -41,6 +47,15 @@ export const settingsSlice = createSlice({
     },
     setKillsMode: (state, action: PayloadAction<string>) => {
       state.kills.mode = action.payload;
+    },
+    setDeathsEnabled: (state, action: PayloadAction<boolean>) => {
+      state.deaths.enabled = action.payload;
+    },
+    setDeathsChannel: (state, action: PayloadAction<string>) => {
+      state.deaths.channel = action.payload;
+    },
+    setDeathsMode: (state, action: PayloadAction<string>) => {
+      state.deaths.mode = action.payload;
     },
     setBattlesEnabled: (state, action: PayloadAction<boolean>) => {
       state.battles.enabled = action.payload;
@@ -69,6 +84,9 @@ export const {
   setKillsEnabled,
   setKillsChannel,
   setKillsMode,
+  setDeathsEnabled,
+  setDeathsChannel,
+  setDeathsMode,
   setBattlesEnabled,
   setBattlesChannel,
   setRankingsEnabled,
