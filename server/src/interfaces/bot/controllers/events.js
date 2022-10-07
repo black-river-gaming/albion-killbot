@@ -21,7 +21,7 @@ async function subscribe(client) {
       const trackByGuild = await getTrackForServer(client.guilds.cache);
 
       for (const guild of client.guilds.cache.values()) {
-        if (!settingsByGuild[guild.id]) continue;
+        if (!settingsByGuild[guild.id] || !trackByGuild[guild.id]) continue;
         guild.settings = settingsByGuild[guild.id];
 
         const guildEvent = getTrackedEvent(event, trackByGuild[guild.id]);

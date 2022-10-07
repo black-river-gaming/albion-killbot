@@ -21,6 +21,7 @@ async function getTrack(server) {
 
 async function getTrackForServer(servers) {
   const trackForServer = {};
+
   servers.forEach((server) => {
     trackForServer[server.id] = DEFAULT_TRACK;
   });

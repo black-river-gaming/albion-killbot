@@ -1,4 +1,4 @@
-const { getCollection } = require("../ports/database");
+const { find, findOne, updateOne, deleteOne } = require("../ports/database");
 
 const SETTINGS_COLLECTION = "settings";
 const REPORT_MODES = {
@@ -31,19 +31,20 @@ const DEFAULT_SETTINGS = {
 };
 
 async function getSettings(guild) {
-  const collection = getCollection(SETTINGS_COLLECTION);
-  return (await collection.findOne({ guild })) || DEFAULT_SETTINGS;
+  const settings = await findOne(SETTINGS_COLLECTION, { guild });
+  return {
+    ...DEFAULT_SETTINGS,
+    ...settings,
+  };
 }
 
 async function getSettingsForServer(servers) {
-  const collection = getCollection(SETTINGS_COLLECTION);
-
   const settingsForServer = {};
   servers.forEach((server) => {
     settingsForServer[server.id] = DEFAULT_SETTINGS;
   });
 
-  await collection.find({}).forEach((settings) => {
+  (await find(SETTINGS_COLLECTION, {})).forEach((settings) => {
     // TODO: Trim track list if subscription is expired
     // Better to do when Track list gets refactored
     settingsForServer[settings.guild] = settings;
@@ -53,8 +54,7 @@ async function getSettingsForServer(servers) {
 }
 
 async function getAllSettings() {
-  const collection = getCollection(SETTINGS_COLLECTION);
-  return await collection.find({}).toArray();
+  return await find(SETTINGS_COLLECTION, {}).toArray();
 }
 
 async function setSettings(guild, settings) {
@@ -64,20 +64,12 @@ async function setSettings(guild, settings) {
 
   // TODO: Validate track list size is below limits for subscribers
   // Better to do when Track list gets refactored
-  const collection = getCollection(SETTINGS_COLLECTION);
-  await collection.updateOne(
-    { guild },
-    {
-      $set: settings,
-    },
-    { upsert: true },
-  );
+  await updateOne(SETTINGS_COLLECTION, { guild }, { $set: settings }, { upsert: true });
   return await getSettings(guild);
 }
 
 async function deleteSettings(guild) {
-  const collection = getCollection(SETTINGS_COLLECTION);
-  return await collection.deleteOne({ guild });
+  return await deleteOne(SETTINGS_COLLECTION, { guild });
 }
 
 module.exports = {

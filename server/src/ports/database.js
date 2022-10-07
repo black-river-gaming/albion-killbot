@@ -12,7 +12,7 @@ function convertObjectId(query) {
 function returnObjectId(document) {
   if (!document) return null;
   if (document._id) {
-    document.id = document._id;
+    document.id = document._id.toString();
     delete document._id;
   }
   return { id: document.id, ...document };
@@ -67,8 +67,15 @@ async function updateOne(collectionName, filter, update, options) {
   return returnObjectId(document);
 }
 
+async function deleteOne(collectionName, filter) {
+  const collection = getCollection(collectionName);
+  const result = await collection.deleteOne(convertObjectId(filter));
+  return returnObjectId(result);
+}
+
 module.exports = {
   cleanup,
+  deleteOne,
   dropColection,
   find,
   findOne,
