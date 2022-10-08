@@ -8,11 +8,16 @@ async function sendNotification(client, channelId, message) {
   if (!channel || !channel.send) return;
   if (!channel.guild) channel.guild = { name: "Unknown Guild" };
 
-  logger.debug(`Sending notification to "${channel.guild.name}/#${channel.name}".`, { metadata: message.embeds });
+  logger.debug(`Sending notification to "${channel.guild.name}/#${channel.name}".`, { message });
   try {
     await timeout(channel.send(message), NOTIFICATION_TIMEOUT);
   } catch (e) {
-    logger.warn(`Unable to send notification to "${channel.guild.name}/#${channel.name}".`, e);
+    logger.warn(`Unable to send notification to "${channel.guild.name}/#${channel.name}".`, {
+      error: {
+        message: e.message,
+        stack: e.stack,
+      },
+    });
   }
 }
 
