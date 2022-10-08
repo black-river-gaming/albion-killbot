@@ -16,17 +16,22 @@ const Container = styled.div`
       max-width: 100%;
     }
 
-    .navbar-items {
+    .navbar-nav {
       flex-basis: 100%;
       display: flex;
       align-items: center;
       justify-content: end;
 
-      .navbar-link:not(.btn),
+      .nav-link:not(.btn),
       svg.loader {
         padding: 0 1.5rem;
         display: flex;
         align-items: center;
+        color: ${({ theme }) => theme.text};
+
+        &:hover {
+          color: ${({ theme }) => theme.primary};
+        }
 
         img,
         svg {
@@ -72,7 +77,7 @@ const Container = styled.div`
         margin: 0;
       }
 
-      .navbar-items {
+      .navbar-nav {
         flex-direction: column;
         padding-bottom: 0.75rem;
         align-items: end;
@@ -81,7 +86,7 @@ const Container = styled.div`
           padding: 0 0.5rem;
         }
 
-        .navbar-link:not(.btn) {
+        .nav-link:not(.btn) {
           padding: 0.75rem 0.5rem;
           display: flex;
           justify-content: end;

@@ -15,7 +15,7 @@ import {
   getUserPictureUrl,
 } from "helpers/discord";
 import theme from "helpers/theme";
-import { Button, Image, Navbar } from "react-bootstrap";
+import { Button, Image, Nav, Navbar } from "react-bootstrap";
 import ContentLoader from "react-content-loader";
 import { NavLink } from "react-router-dom";
 import { useFetchUserQuery, useLogoutMutation } from "store/api";
@@ -52,7 +52,7 @@ const Header = () => {
     if (data) {
       return (
         <Dropdown>
-          <Dropdown.Toggle as="a" className="navbar-link">
+          <Dropdown.Toggle as="a" className="nav-link">
             <div>
               {data.username}#{data.discriminator}
             </div>
@@ -95,20 +95,31 @@ const Header = () => {
     if (data) {
       return (
         <>
-          <NavLink to="/dashboard" className="navbar-link d-lg-none">
+          <Nav.Link
+            as={NavLink}
+            eventKey="dashboard"
+            to="/dashboard"
+            className="nav-link d-lg-none"
+          >
             <FontAwesomeIcon icon={faTableColumns} />
             <div>Dashboard</div>
-          </NavLink>
-          <NavLink to="#" className="navbar-link d-lg-none" onClick={doLogout}>
+          </Nav.Link>
+          <Nav.Link
+            as={NavLink}
+            eventKey="logout"
+            to="#"
+            className="nav-link d-lg-none"
+            onClick={doLogout}
+          >
             <FontAwesomeIcon icon={faRightFromBracket} />
             <div>Logout</div>
-          </NavLink>
+          </Nav.Link>
         </>
       );
     }
 
     return (
-      <a href={DISCORD_OAUTH_URL} className="navbar-link d-lg-none">
+      <a href={DISCORD_OAUTH_URL} className="nav-link d-lg-none">
         <FontAwesomeIcon icon={faRightToBracket} />
         <div>Login</div>
       </a>
@@ -118,31 +129,35 @@ const Header = () => {
   return (
     <Paper elevation={0}>
       <Container>
-        <Navbar expand="lg" variant="dark">
+        <Navbar collapseOnSelect expand="lg" variant="dark">
           <Navbar.Brand as={NavLink} to="/">
             <img src={logo} alt="Albion Killbot" className="logo" />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <div className="navbar-items">
-              <NavLink to="/premium" className="navbar-link">
+            <Nav>
+              <Nav.Link
+                as={NavLink}
+                eventKey="premium"
+                to="/premium"
+                className="nav-link"
+              >
                 <FontAwesomeIcon icon={faCrown} style={{ paddingBottom: 4 }} />
                 <div>Premium</div>
-              </NavLink>
-              <a
+              </Nav.Link>
+              <Nav.Link
                 href={DISCORD_SERVER_URL}
                 target="_blank"
-                className="navbar-link"
                 rel="noreferrer"
               >
                 <FontAwesomeIcon icon={faDiscord} />
                 <div>Join Server</div>
-              </a>
+              </Nav.Link>
               {renderMobileLogin(user)}
               <div className="d-none d-lg-block">
                 {renderDesktopLogin(user)}
               </div>
-            </div>
+            </Nav>
           </Navbar.Collapse>
         </Navbar>
       </Container>
