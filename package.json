@@ -7,5 +7,12 @@
   "license": "MIT",
   "bin": {
     "ctl": "./devenv/ctl.sh"
-  }
+  },
+  "scripts": {
+    "version": "npm version $npm_package_version --workspaces --no-git-commit-tag && git add **/package*.json && echo 'albion-killbot'"
+  },
+  "workspaces": [
+    "dashboard",
+    "server"
+  ]
 }
