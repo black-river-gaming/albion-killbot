@@ -23,8 +23,9 @@ async function subscribe(client) {
       for (const guild of client.guilds.cache.values()) {
         if (!settingsByGuild[guild.id] || !trackByGuild[guild.id]) continue;
         const settings = settingsByGuild[guild.id];
+        const track = trackByGuild[guild.id];
 
-        const guildEvent = getTrackedEvent(event, trackByGuild[guild.id]);
+        const guildEvent = getTrackedEvent(event, track);
         if (!guildEvent) continue;
 
         const { enabled, channel, mode } = guildEvent.good ? settings.kills : settings.deaths;
@@ -33,14 +34,17 @@ async function subscribe(client) {
             `Skipping sending ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${
               guild.name
             }" (disabled or no channel).`,
-            { settings },
+            { settings, track },
           );
           continue;
         }
 
         addRankingKill(guild.id, guildEvent, trackByGuild[guild.id]);
 
-        logger.info(`Sending  ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`);
+        logger.info(`Sending  ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
+          settings,
+          track,
+        });
         const locale = settings.lang;
 
         if (mode === REPORT_MODES.IMAGE) {
