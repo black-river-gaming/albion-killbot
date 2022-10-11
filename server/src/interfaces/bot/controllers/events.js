@@ -22,17 +22,18 @@ async function subscribe(client) {
 
       for (const guild of client.guilds.cache.values()) {
         if (!settingsByGuild[guild.id] || !trackByGuild[guild.id]) continue;
-        guild.settings = settingsByGuild[guild.id];
+        const settings = settingsByGuild[guild.id];
 
         const guildEvent = getTrackedEvent(event, trackByGuild[guild.id]);
         if (!guildEvent) continue;
 
-        const { enabled, channel, mode } = guildEvent.good ? guild.settings.kills : guild.settings.deaths;
+        const { enabled, channel, mode } = guildEvent.good ? settings.kills : settings.deaths;
         if (!enabled || !channel) {
           logger.verbose(
             `Skipping sending ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${
               guild.name
             }" (disabled or no channel).`,
+            { settings },
           );
           continue;
         }
@@ -40,11 +41,11 @@ async function subscribe(client) {
         addRankingKill(guild.id, guildEvent, trackByGuild[guild.id]);
 
         logger.info(`Sending  ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`);
-        const locale = guild.settings.lang;
+        const locale = settings.lang;
 
         if (mode === REPORT_MODES.IMAGE) {
           const inventory = guildEvent.Victim.Inventory.filter((i) => i != null);
-          const eventImage = await generateEventImage(guildEvent, guild.settings.lang);
+          const eventImage = await generateEventImage(guildEvent, settings.lang);
           await sendNotification(
             client,
             channel,
@@ -53,7 +54,7 @@ async function subscribe(client) {
             }),
           );
           if (inventory.length > 0) {
-            const inventoryImage = await generateInventoryImage(inventory, guild.settings.lang);
+            const inventoryImage = await generateInventoryImage(inventory, settings.lang);
             await sendNotification(
               client,
               channel,
@@ -63,7 +64,7 @@ async function subscribe(client) {
             );
           }
         } else if (mode === REPORT_MODES.TEXT) {
-          await sendNotification(client, channel, embedEvent(guildEvent, { locale: guild.settings.lang }));
+          await sendNotification(client, channel, embedEvent(guildEvent, { locale: settings.lang }));
         }
       }
     } catch (e) {

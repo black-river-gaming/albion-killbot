@@ -32,15 +32,12 @@ const logger = createLogger({
   ],
 });
 
-const consoleFormat = format.printf(
-  ({ level, message, timestamp, metadata, [Symbol.for("level")]: logLevel, shard }) => {
-    const metadataStr = metadata ? JSON.stringify(metadata) : "";
-    const maxLen = "verbose".length;
-    const spacing = " ".repeat(Math.max(0, maxLen - logLevel.length));
-    const shardStr = shard ? `[#${shard}] ` : "";
-    return `${timestamp} [${level}] ${spacing}: ${shardStr}${message} ${metadataStr}`;
-  },
-);
+const consoleFormat = format.printf(({ level, message, timestamp, [Symbol.for("level")]: logLevel, shard }) => {
+  const maxLen = "verbose".length;
+  const spacing = " ".repeat(Math.max(0, maxLen - logLevel.length));
+  const shardStr = shard ? `[#${shard}] ` : "";
+  return `${timestamp} [${level}] ${spacing}: ${shardStr}${message}`;
+});
 
 logger.add(
   new transports.Console({

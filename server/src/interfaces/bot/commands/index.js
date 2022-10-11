@@ -67,7 +67,7 @@ async function handle(interaction) {
     };
 
     logger.debug(`Interaction received`, {
-      metadata: interaction.toJSON(),
+      interaction: interaction.toJSON(),
     });
 
     const command = commands.find((c) => c.name == interaction.commandName);
