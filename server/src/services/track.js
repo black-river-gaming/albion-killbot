@@ -23,7 +23,7 @@ async function getTrackForServer(servers) {
   const trackForServer = {};
 
   servers.forEach((server) => {
-    trackForServer[server.id] = DEFAULT_TRACK;
+    trackForServer[server.id] = { ...DEFAULT_TRACK };
   });
 
   (await find(TRACK_COLLECTION, {})).forEach((track) => {

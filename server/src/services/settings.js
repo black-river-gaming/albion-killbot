@@ -41,7 +41,7 @@ async function getSettings(guild) {
 async function getSettingsForServer(servers) {
   const settingsForServer = {};
   servers.forEach((server) => {
-    settingsForServer[server.id] = DEFAULT_SETTINGS;
+    settingsForServer[server.id] = { ...DEFAULT_SETTINGS };
   });
 
   (await find(SETTINGS_COLLECTION, {})).forEach((settings) => {
