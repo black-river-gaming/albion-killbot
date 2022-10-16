@@ -13,7 +13,6 @@ async function getBotServers({ limit = 200, after, before }) {
 
 async function getServers(accessToken) {
   try {
-    // FIXME: This will not account for all bot servers once we get past 200+ servers
     const botServerIds = (await discord.getBotGuilds()).map((s) => s.id);
     const servers = await discord.getUserGuilds(accessToken);
 
