@@ -7,6 +7,7 @@ export interface User {
   username: string;
   avatar: string;
   discriminator: string;
+  admin: boolean;
 }
 
 export interface ServerPartial {
