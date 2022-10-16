@@ -17,7 +17,8 @@ const session = expressSession({
   store: MongoStore.create({
     client,
     mongoUrl: MONGODB_URL,
-    touchAfter: 24 * 3600,
+    stringify: false,
+    touchAfter: 24 * 60 * 60, // 1 day
   }),
   unset: "destroy",
 });
