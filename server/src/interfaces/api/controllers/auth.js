@@ -2,6 +2,8 @@ const moment = require("moment");
 const logger = require("../../../helpers/logger");
 const authService = require("../../../services/auth");
 
+const { SESSION_COOKIE_NAME = "albion-killbot" } = process.env;
+
 async function auth(req, res) {
   try {
     const { code } = req.body;
@@ -23,6 +25,7 @@ async function auth(req, res) {
 
 async function logout(req, res) {
   delete req.session.discord;
+  res.clearCookie(SESSION_COOKIE_NAME);
   return res.sendStatus(200);
 }
 
