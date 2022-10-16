@@ -11,8 +11,9 @@ async function refreshToken(refreshToken) {
   return await discordApiClient.refreshToken(refreshToken);
 }
 
-async function getMe(accessToken) {
-  return await discordApiClient.getMe(`Bearer ${accessToken}`);
+async function getUser(accessToken) {
+  const user = await discordApiClient.getCurrentUser(`Bearer ${accessToken}`);
+  return discordHelper.transformUser(user);
 }
 
 async function getUserServers(accessToken) {
@@ -38,8 +39,8 @@ module.exports = {
   getBotGuilds,
   getGuild,
   getGuildChannels,
-  getMe,
   getToken,
+  getUser,
   getUserServers,
   refreshToken,
 };

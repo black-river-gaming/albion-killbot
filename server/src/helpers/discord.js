@@ -1,6 +1,24 @@
 const { Permissions } = require("discord.js");
 
-const isAdmin = (permissions) => {
+const { DISCORD_COMMUNITY_ADMINS = "" } = process.env;
+
+const isCommunityAdmin = (id) => {
+  const communityAdmins = DISCORD_COMMUNITY_ADMINS.split(",");
+  return communityAdmins.includes(id);
+};
+
+const transformUser = (user) => {
+  return {
+    id: user.id,
+    username: user.username,
+    discriminator: user.discriminator,
+    avatar: user.avatar,
+    locale: user.locale,
+    admin: isCommunityAdmin(user.id),
+  };
+};
+
+const isServerAdmin = (permissions) => {
   const bitPermissions = new Permissions(permissions);
   return bitPermissions.has(Permissions.FLAGS.ADMINISTRATOR);
 };
@@ -18,7 +36,7 @@ const transformGuild = (guild) => {
   }
 
   if (guild.permissions) {
-    transformedGuild.admin = isAdmin(guild.permissions);
+    transformedGuild.admin = isServerAdmin(guild.permissions);
   }
 
   return transformedGuild;
@@ -32,7 +50,9 @@ const transformChannel = (channel) => ({
 });
 
 module.exports = {
-  isAdmin,
+  isCommunityAdmin,
+  isServerAdmin,
   transformChannel,
   transformGuild,
+  transformUser,
 };

@@ -34,7 +34,7 @@ async function refreshToken(refreshToken) {
 }
 
 // Users
-async function getMe(Authorization) {
+async function getCurrentUser(Authorization) {
   const res = await discordApiClient.get(`${USERS_ENDPOINT}/@me`, {
     headers: {
       Authorization,
@@ -82,10 +82,10 @@ async function getGuildChannels(Authorization, guildId) {
 
 module.exports = {
   exchangeCode,
+  getCurrentUser,
+  getCurrentUserGuilds,
   getGuild,
   getGuildChannels,
-  getMe,
-  getCurrentUserGuilds,
   leaveGuild,
   refreshToken,
 };
