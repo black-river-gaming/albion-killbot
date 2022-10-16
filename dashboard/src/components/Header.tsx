@@ -4,6 +4,7 @@ import {
   faRightFromBracket,
   faRightToBracket,
   faTableColumns,
+  faUserGear,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "assets/logo_dark.svg";
@@ -32,6 +33,17 @@ const Header = () => {
     } catch (e) {
       console.log(`Error on logout: ${e}`);
     }
+  };
+
+  const renderAdmin = ({ data }: typeof user) => {
+    if (!data?.admin) return;
+
+    return (
+      <Nav.Link as={NavLink} eventKey="admin" to="/admin" className="nav-link">
+        <FontAwesomeIcon icon={faUserGear} />
+        <div>Admin</div>
+      </Nav.Link>
+    );
   };
 
   const renderDesktopLogin = ({ data, isFetching }: typeof user) => {
@@ -138,6 +150,7 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav>
+              {renderAdmin(user)}
               <Nav.Link
                 as={NavLink}
                 eventKey="premium"
