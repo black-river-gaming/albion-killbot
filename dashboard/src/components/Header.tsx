@@ -19,7 +19,7 @@ import { Button, Image, Nav, Navbar } from "react-bootstrap";
 import ContentLoader from "react-content-loader";
 import { NavLink } from "react-router-dom";
 import { useFetchUserQuery, useLogoutMutation } from "store/api";
-import Container from "./styles";
+import StyledHeader from "../styles/Header";
 
 const Header = () => {
   const user = useFetchUserQuery();
@@ -128,7 +128,7 @@ const Header = () => {
 
   return (
     <Paper elevation={0}>
-      <Container>
+      <StyledHeader>
         <Navbar collapseOnSelect expand="lg" variant="dark">
           <Navbar.Brand as={NavLink} to="/">
             <img src={logo} alt="Albion Killbot" className="logo" />
@@ -160,7 +160,7 @@ const Header = () => {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-      </Container>
+      </StyledHeader>
     </Paper>
   );
 };

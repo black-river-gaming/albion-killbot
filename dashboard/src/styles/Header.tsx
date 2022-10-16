@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Container = styled.div`
+const StyledHeader = styled.div`
   color: ${({ theme }) => theme.text};
 
   nav {
@@ -97,4 +97,4 @@ const Container = styled.div`
   }
 `;
 
-export default Container;
+export default StyledHeader;
