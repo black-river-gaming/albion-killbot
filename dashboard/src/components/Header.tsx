@@ -130,8 +130,10 @@ const Header = () => {
     <Paper elevation={0}>
       <StyledHeader>
         <Navbar collapseOnSelect expand="lg" variant="dark">
-          <Navbar.Brand as={NavLink} to="/">
-            <img src={logo} alt="Albion Killbot" className="logo" />
+          <Navbar.Brand>
+            <Nav.Link as={NavLink} to="/" eventKey="home">
+              <img src={logo} alt="Albion Killbot" className="logo" />
+            </Nav.Link>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">

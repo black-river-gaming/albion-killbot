@@ -10,10 +10,16 @@ const StyledHeader = styled.div`
       justify-content: space-between;
     }
 
-    .logo {
-      width: auto;
-      height: 5rem;
-      max-width: 100%;
+    .navbar-brand {
+      .nav-link {
+        padding: 0;
+
+        .logo {
+          width: auto;
+          height: 5rem;
+          max-width: 100%;
+        }
+      }
     }
 
     .navbar-nav {
