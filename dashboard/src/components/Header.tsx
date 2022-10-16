@@ -20,7 +20,7 @@ import { Button, Image, Nav, Navbar } from "react-bootstrap";
 import ContentLoader from "react-content-loader";
 import { NavLink } from "react-router-dom";
 import { useFetchUserQuery, useLogoutMutation } from "store/api";
-import StyledHeader from "../styles/Header";
+import StyledHeader from "./styles/Header";
 
 const Header = () => {
   const user = useFetchUserQuery();
