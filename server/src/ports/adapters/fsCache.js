@@ -1,7 +1,7 @@
 const path = require("node:path");
 const os = require("node:os");
 const fs = require("node:fs");
-const logger = require("../helpers/logger");
+const logger = require("../../helpers/logger");
 
 const TMPDIR = path.join(os.tmpdir(), "albion-killbot-cache");
 const locks = {};

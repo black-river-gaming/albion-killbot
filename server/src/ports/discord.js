@@ -1,4 +1,4 @@
-const discordApiClient = require("../adapters/discordApiClient");
+const discordApiClient = require("./adapters/discordApiClient");
 const discordHelper = require("../helpers/discord");
 
 const { DISCORD_TOKEN } = process.env;

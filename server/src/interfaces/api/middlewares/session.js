@@ -1,6 +1,6 @@
 const expressSession = require("express-session");
 const MongoStore = require("connect-mongo");
-const { client } = require("../../../adapters/mongoDbClient");
+const { client } = require("../../../ports/database");
 
 const { SESSION_COOKIE_NAME = "albion-killbot", SESSION_SECRET = "defaultSecret", MONGODB_URL } = process.env;
 

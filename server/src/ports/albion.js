@@ -1,7 +1,7 @@
-const albionApiClient = require("../adapters/albionApiClient");
-const itemCDNClient = require("../adapters/itemCDNClient");
-const awsSdkClient = require("../adapters/awsSdkClient");
-const cache = require("../adapters/fsCache");
+const albionApiClient = require("./adapters/albionApiClient");
+const itemCDNClient = require("./adapters/itemCDNClient");
+const awsSdkClient = require("./adapters/awsSdkClient");
+const cache = require("./adapters/fsCache");
 
 const { sleep } = require("../helpers/utils");
 const logger = require("../helpers/logger");

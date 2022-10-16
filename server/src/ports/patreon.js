@@ -1,5 +1,5 @@
 const moment = require("moment");
-const patreonApiClient = require("../adapters/patreonApiClient");
+const patreonApiClient = require("./adapters/patreonApiClient");
 
 const isEnabled = patreonApiClient.isEnabled;
 
