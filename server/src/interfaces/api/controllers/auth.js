@@ -2,8 +2,6 @@ const moment = require("moment");
 const logger = require("../../../helpers/logger");
 const authService = require("../../../services/auth");
 
-const { SESSION_COOKIE_NAME = "albion-killbot" } = process.env;
-
 async function auth(req, res) {
   try {
     const { code } = req.body;
@@ -24,9 +22,13 @@ async function auth(req, res) {
 }
 
 async function logout(req, res) {
-  delete req.session.discord;
-  res.clearCookie(SESSION_COOKIE_NAME);
-  return res.sendStatus(200);
+  req.session.destroy((error) => {
+    if (error) {
+      logger.error(`Unable to unset user session.`, { error, session: req.session });
+      return res.sendStatus(500);
+    }
+    return res.sendStatus(200);
+  });
 }
 
 module.exports = {
