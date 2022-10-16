@@ -1,10 +1,10 @@
-const discord = require("../ports/discord");
+const { getBotGuilds, getUserServers, getGuild, getGuildChannels } = require("../ports/discord");
 const logger = require("../helpers/logger");
 
 async function getServers(accessToken) {
   try {
-    const botServerIds = (await discord.getBotGuilds()).map((s) => s.id);
-    const servers = await discord.getMeGuilds(accessToken);
+    const botServerIds = (await getBotGuilds()).map((s) => s.id);
+    const servers = await getUserServers(accessToken);
 
     return servers
       .filter((server) => server.owner || server.admin)
@@ -20,8 +20,8 @@ async function getServers(accessToken) {
 
 async function getServer(serverId) {
   try {
-    const guild = await discord.getGuild(serverId);
-    const channels = await discord.getGuildChannels(serverId);
+    const guild = await getGuild(serverId);
+    const channels = await getGuildChannels(serverId);
 
     guild.channels = channels;
 

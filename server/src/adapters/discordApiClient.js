@@ -33,6 +33,7 @@ async function refreshToken(refreshToken) {
   return res.data;
 }
 
+// Users
 async function getMe(Authorization) {
   const res = await discordApiClient.get(`${USERS_ENDPOINT}/@me`, {
     headers: {
@@ -42,7 +43,7 @@ async function getMe(Authorization) {
   return res.data;
 }
 
-async function getMeGuilds(Authorization) {
+async function getCurrentUserGuilds(Authorization) {
   const res = await discordApiClient.get(`${USERS_ENDPOINT}/@me/guilds`, {
     headers: {
       Authorization,
@@ -51,6 +52,16 @@ async function getMeGuilds(Authorization) {
   return res.data;
 }
 
+async function leaveGuild(Authorization, guildId) {
+  const res = await discordApiClient.delete(`${USERS_ENDPOINT}/@me/guilds/${guildId}`, {
+    headers: {
+      Authorization,
+    },
+  });
+  return res.data;
+}
+
+// Guilds
 async function getGuild(Authorization, guildId) {
   const res = await discordApiClient.get(`${GUILDS_ENDPOINT}/${guildId}`, {
     headers: {
@@ -74,6 +85,7 @@ module.exports = {
   getGuild,
   getGuildChannels,
   getMe,
-  getMeGuilds,
+  getCurrentUserGuilds,
+  leaveGuild,
   refreshToken,
 };

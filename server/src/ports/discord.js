@@ -15,13 +15,13 @@ async function getMe(accessToken) {
   return await discordApiClient.getMe(`Bearer ${accessToken}`);
 }
 
-async function getMeGuilds(accessToken) {
-  const guilds = await discordApiClient.getMeGuilds(`Bearer ${accessToken}`);
+async function getUserServers(accessToken) {
+  const guilds = await discordApiClient.getCurrentUserGuilds(`Bearer ${accessToken}`);
   return guilds.map(discordHelper.transformGuild);
 }
 
 async function getBotGuilds() {
-  return await discordApiClient.getMeGuilds(`Bot ${DISCORD_TOKEN}`);
+  return await discordApiClient.getCurrentUserGuilds(`Bot ${DISCORD_TOKEN}`);
 }
 
 async function getGuild(guildId) {
@@ -39,7 +39,7 @@ module.exports = {
   getGuild,
   getGuildChannels,
   getMe,
-  getMeGuilds,
   getToken,
+  getUserServers,
   refreshToken,
 };
