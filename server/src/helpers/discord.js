@@ -32,7 +32,7 @@ const transformGuild = (guild) => {
   };
 
   if (guild.owner) {
-    transformGuild.owner = guild.owner;
+    transformedGuild.owner = guild.owner;
   }
 
   if (guild.permissions) {

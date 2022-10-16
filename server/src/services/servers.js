@@ -1,10 +1,21 @@
-const { getBotGuilds, getUserServers, getGuild, getGuildChannels } = require("../ports/discord");
+const discord = require("../ports/discord");
 const logger = require("../helpers/logger");
+
+async function getBotServers({ limit = 200, after, before }) {
+  try {
+    const servers = await discord.getBotGuilds({ limit, after, before });
+    return servers;
+  } catch (error) {
+    logger.error(`Error while retrieving bot servers: ${error.message}`, { error });
+    throw error;
+  }
+}
 
 async function getServers(accessToken) {
   try {
-    const botServerIds = (await getBotGuilds()).map((s) => s.id);
-    const servers = await getUserServers(accessToken);
+    // FIXME: This will not account for all bot servers once we get past 200+ servers
+    const botServerIds = (await discord.getBotGuilds()).map((s) => s.id);
+    const servers = await discord.getUserGuilds(accessToken);
 
     return servers
       .filter((server) => server.owner || server.admin)
@@ -20,8 +31,8 @@ async function getServers(accessToken) {
 
 async function getServer(serverId) {
   try {
-    const guild = await getGuild(serverId);
-    const channels = await getGuildChannels(serverId);
+    const guild = await discord.getGuild(serverId);
+    const channels = await discord.getGuildChannels(serverId);
 
     guild.channels = channels;
 
@@ -33,6 +44,7 @@ async function getServer(serverId) {
 }
 
 module.exports = {
+  getBotServers,
   getServer,
   getServers,
 };

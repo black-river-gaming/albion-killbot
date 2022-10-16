@@ -44,7 +44,6 @@ async function getCurrentUser(Authorization) {
 }
 
 async function getCurrentUserGuilds(Authorization, params) {
-  console.log(params);
   const res = await discordApiClient.get(`${USERS_ENDPOINT}/@me/guilds`, {
     headers: {
       Authorization,

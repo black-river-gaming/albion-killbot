@@ -39,7 +39,21 @@ const authenticated = async (req, res, next) => {
   }
 };
 
+const admin = async (req, res, next) => {
+  try {
+    const currentUser = await usersService.getCurrentUser(req.session.discord.accessToken);
+    if (!currentUser.admin) throw new Error("Unauthorized");
+    req.session.discord.user = currentUser;
+
+    return next();
+  } catch (error) {
+    logger.error(`Failed to validate admin: ${error.message}`, { error });
+    return res.sendStatus(403);
+  }
+};
+
 module.exports = {
+  admin,
   authenticated,
   refreshDiscordToken,
 };

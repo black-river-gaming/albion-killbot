@@ -16,13 +16,14 @@ async function getUser(accessToken) {
   return discordHelper.transformUser(user);
 }
 
-async function getUserServers(accessToken) {
-  const guilds = await discordApiClient.getCurrentUserGuilds(`Bearer ${accessToken}`);
+async function getUserGuilds(accessToken, params) {
+  const guilds = await discordApiClient.getCurrentUserGuilds(`Bearer ${accessToken}`, params);
   return guilds.map(discordHelper.transformGuild);
 }
 
-async function getBotGuilds() {
-  return await discordApiClient.getCurrentUserGuilds(`Bot ${DISCORD_TOKEN}`);
+async function getBotGuilds(params) {
+  const guilds = await discordApiClient.getCurrentUserGuilds(`Bot ${DISCORD_TOKEN}`, params);
+  return guilds.map(discordHelper.transformGuild);
 }
 
 async function getGuild(guildId) {
@@ -41,6 +42,6 @@ module.exports = {
   getGuildChannels,
   getToken,
   getUser,
-  getUserServers,
+  getUserGuilds,
   refreshToken,
 };
