@@ -45,6 +45,7 @@ function getCollection(collection) {
 }
 
 module.exports = {
+  client,
   connect,
   close,
   isConnected,
