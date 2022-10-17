@@ -18,7 +18,7 @@ export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: REACT_APP_API_URL,
   }),
-  tagTypes: ["User", "Subscription"],
+  tagTypes: ["Admin", "User", "Subscription"],
   endpoints(builder) {
     return {
       auth: builder.mutation<void, string>({
@@ -67,12 +67,14 @@ export const api = createApi({
       }),
       fetchAdminServers: builder.query<ServerPartial[], void>({
         query: () => `/admin/servers`,
+        providesTags: ["Admin"],
       }),
       doLeaveServer: builder.mutation<void, { serverId: string }>({
         query: ({ serverId }) => ({
           url: `/admin/servers/${serverId}`,
           method: "DELETE",
         }),
+        invalidatesTags: ["Admin"],
       }),
       fetchPrices: builder.query<SubscriptionPrice[], void>({
         query: () => `/subscriptions/prices`,

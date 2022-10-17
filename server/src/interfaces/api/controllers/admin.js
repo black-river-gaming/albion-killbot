@@ -15,7 +15,7 @@ async function leaveServer(req, res) {
     const { serverId } = req.params;
     await serversService.leaveServer(serverId);
 
-    return res.sendStatus(200);
+    return res.send({});
   } catch (error) {
     return res.sendStatus(500);
   }

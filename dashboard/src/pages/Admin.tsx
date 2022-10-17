@@ -1,5 +1,6 @@
 import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
+import Toast from "components/Toast";
 import { useState } from "react";
 import { Button, Container, Modal, Row, Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -14,12 +15,16 @@ const Admin = () => {
   if (servers.isFetching) {
     return (
       <Loader width={500} height={500}>
-        <rect x="160" y="15" rx="0" ry="0" width="210" height="20" />
-        <rect x="15" y="55" rx="5" ry="5" width="475" height="50" />
-        <rect x="15" y="115" rx="5" ry="5" width="475" height="50" />
-        <rect x="15" y="175" rx="5" ry="5" width="475" height="50" />
-        <rect x="15" y="235" rx="5" ry="5" width="475" height="50" />
-        <rect x="15" y="295" rx="5" ry="5" width="475" height="50" />
+        <rect x="160" y="10" rx="0" ry="0" width="210" height="15" />
+        <rect x="15" y="45" rx="5" ry="5" width="475" height="40" />
+        <rect x="15" y="95" rx="5" ry="5" width="475" height="40" />
+        <rect x="15" y="145" rx="5" ry="5" width="475" height="40" />
+        <rect x="15" y="195" rx="5" ry="5" width="475" height="40" />
+        <rect x="15" y="245" rx="5" ry="5" width="475" height="40" />
+        <rect x="15" y="295" rx="5" ry="5" width="475" height="40" />
+        <rect x="15" y="345" rx="5" ry="5" width="475" height="40" />
+        <rect x="15" y="395" rx="5" ry="5" width="475" height="40" />
+        <rect x="15" y="445" rx="5" ry="5" width="475" height="40" />
       </Loader>
     );
   }
@@ -75,14 +80,32 @@ const Admin = () => {
           </Button>
           <Button
             variant="primary"
-            onClick={() =>
-              leaveServer && dispatchLeaveServer({ serverId: leaveServer.id })
-            }
+            onClick={() => {
+              if (leaveServer) {
+                dispatchLeaveServer({ serverId: leaveServer.id });
+                setLeaveServer(undefined);
+              }
+            }}
           >
             Leave
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Toast
+        bg="success"
+        show={leaveServerResult.isSuccess}
+        onClose={() => leaveServerResult.reset()}
+      >
+        Left server.
+      </Toast>
+      <Toast
+        bg="danger"
+        show={leaveServerResult.isError}
+        onClose={() => leaveServerResult.reset()}
+      >
+        Failed to leave server. Please try again later.
+      </Toast>
     </>
   );
 };
