@@ -48,6 +48,11 @@ async function getGuildChannels(guildId) {
   return channels.map(discordHelper.transformChannel);
 }
 
+async function leaveGuild(guildId) {
+  await discordApiClient.leaveGuild(`Bot ${DISCORD_TOKEN}`, guildId);
+  return true;
+}
+
 module.exports = {
   getBotGuilds,
   getGuild,
@@ -55,5 +60,6 @@ module.exports = {
   getToken,
   getUser,
   getUserGuilds,
+  leaveGuild,
   refreshToken,
 };

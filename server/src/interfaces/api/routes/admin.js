@@ -14,25 +14,6 @@ router.use(admin);
  *     summary: Return list of servers for the bot
  *     operationId: getServers
  *     parameters:
- *     - in: query
- *       name: limit
- *       schema:
- *         type: integer
- *       description: Number of servers to lookup
- *       required: false
- *       default: 200
- *     - in: query
- *       name: after
- *       schema:
- *         type: string
- *       description: Server id to paginate after
- *       required: false
- *     - in: query
- *       name: before
- *       schema:
- *         type: string
- *       description: Server id to paginate before
- *       required: false
  *     responses:
  *       200:
  *         description: List of servers
@@ -44,8 +25,34 @@ router.use(admin);
  *                 $ref: '#/components/schemas/ServerPartial'
  *       403:
  *         description: Unable to authenticate
+ *       500:
+ *         description: Internal error
  */
 router.get(`/servers`, adminController.getServers);
+
+/**
+ * @openapi
+ * /admin/servers/{serverId}:
+ *   delete:
+ *     tags: [Admin]
+ *     summary: Leave a server
+ *     operationId: leaveServer
+ *     parameters:
+ *     - in: path
+ *       name: serverId
+ *       schema:
+ *         type: integer
+ *       description: Server Id to leave
+ *       required: true
+ *     responses:
+ *       200:
+ *         description: Server left successfully
+ *       403:
+ *         description: Unable to authenticate
+ *       500:
+ *         description: Internal error
+ */
+router.delete(`/servers/:serverId`, adminController.leaveServer);
 
 module.exports = {
   path: "/admin",
