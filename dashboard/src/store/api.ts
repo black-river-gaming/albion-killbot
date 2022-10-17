@@ -163,6 +163,9 @@ export const apiSlice = createApi({
           },
         }),
       }),
+      fetchAdminServers: builder.query<ServerPartial[], void>({
+        query: () => `/admin/servers`,
+      }),
       fetchPrices: builder.query<SubscriptionPrice[], void>({
         query: () => `/subscriptions/prices`,
       }),
@@ -211,6 +214,7 @@ export const {
   useAssignSubscriptionMutation,
   useAuthMutation,
   useBuySubscriptionMutation,
+  useFetchAdminServersQuery,
   useFetchPricesQuery,
   useFetchServerQuery,
   useFetchServersQuery,

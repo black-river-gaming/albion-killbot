@@ -1,7 +1,7 @@
 import { faCrown, faGear, faList } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
-import ServerCard from "components/ServerCard";
+import ServerCard from "components/styles/ServerCard";
 import { Button, Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import { Link, Navigate, NavLink, Outlet, useParams } from "react-router-dom";
 import { useFetchServerQuery } from "store/api";

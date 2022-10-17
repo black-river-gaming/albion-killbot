@@ -1,14 +1,19 @@
 import { getServerPictureUrl } from "helpers/discord";
 import { Card } from "react-bootstrap";
 import { Server, ServerPartial } from "store/api";
-import StyledServerCard from "./styles";
+import StyledServerCard from "./styles/ServerCard";
 
 interface ServerCardProps {
   server: ServerPartial | Server;
+  list?: boolean;
   children?: JSX.Element | string | number;
 }
 
-const ServerCard = ({ server, children }: ServerCardProps) => {
+const ServerCard = ({ server, list, children }: ServerCardProps) => {
+  if (list) {
+    return <StyledServerCard>{server.name}</StyledServerCard>;
+  }
+
   return (
     <StyledServerCard>
       <div className="server-img-container">

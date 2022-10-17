@@ -1,5 +1,5 @@
 import Loader from "components/Loader";
-import ServerCard from "components/ServerCard";
+import ServerCard from "components/styles/ServerCard";
 import Toast from "components/Toast";
 import { useState } from "react";
 import { Alert, Button, Col, Modal, Row } from "react-bootstrap";
