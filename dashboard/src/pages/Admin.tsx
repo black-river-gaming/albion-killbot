@@ -22,7 +22,7 @@ const Admin = () => {
   const renderServer = (server: ServerPartial) => {
     return (
       <ServerCard key={server.id} server={server} list>
-        {server.id}
+        Dashboard | Sair
       </ServerCard>
     );
   };

@@ -9,9 +9,26 @@ interface ServerCardProps {
   children?: JSX.Element | string | number;
 }
 
-const ServerCard = ({ server, list, children }: ServerCardProps) => {
+const ServerCard = ({ server, list = false, children }: ServerCardProps) => {
   if (list) {
-    return <StyledServerCard>{server.name}</StyledServerCard>;
+    return (
+      <StyledServerCard className="list">
+        <div className="d-flex align-items-center">
+          <div className="server-img-container">
+            <Card.Img
+              className="server-img-icon"
+              variant="top"
+              src={getServerPictureUrl(server, true)}
+            />
+          </div>
+          <div className="px-4">
+            <div className="server-id">#{server.id}</div>
+            <div className="server-name">{server.name}</div>
+          </div>
+        </div>
+        <div>{children}</div>
+      </StyledServerCard>
+    );
   }
 
   return (

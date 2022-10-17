@@ -1,5 +1,5 @@
 import Loader from "components/Loader";
-import ServerCard from "components/styles/ServerCard";
+import ServerCard from "components/ServerCard";
 import { getServerInviteUrl } from "helpers/discord";
 import { Alert, Button, Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
