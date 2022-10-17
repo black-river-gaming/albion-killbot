@@ -3,11 +3,13 @@ import ServerCard from "components/ServerCard";
 import { useState } from "react";
 import { Button, Container, Modal, Row, Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { ServerPartial, useFetchAdminServersQuery } from "store/api";
+import { useDoLeaveServerMutation, useFetchAdminServersQuery } from "store/api";
+import { ServerPartial } from "types";
 
 const Admin = () => {
   const [leaveServer, setLeaveServer] = useState<ServerPartial>();
   const servers = useFetchAdminServersQuery();
+  const [dispatchLeaveServer, leaveServerResult] = useDoLeaveServerMutation();
 
   if (servers.isFetching) {
     return (
@@ -56,7 +58,10 @@ const Admin = () => {
         </Row>
       </Container>
 
-      <Modal show={!!leaveServer} onHide={() => setLeaveServer(undefined)}>
+      <Modal
+        show={leaveServer !== undefined}
+        onHide={() => setLeaveServer(undefined)}
+      >
         <Modal.Header>
           <Modal.Title>Leave Server</Modal.Title>
         </Modal.Header>
@@ -70,7 +75,9 @@ const Admin = () => {
           </Button>
           <Button
             variant="primary"
-            onClick={() => console.log(`Leave server: ${leaveServer?.id}`)}
+            onClick={() =>
+              leaveServer && dispatchLeaveServer({ serverId: leaveServer.id })
+            }
           >
             Leave
           </Button>
