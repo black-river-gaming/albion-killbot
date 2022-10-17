@@ -6,9 +6,11 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
   :root {
     --bs-primary: ${({ theme }) => theme.primary};
     --bs-secondary: ${({ theme }) => theme.secondary};
+    --bs-danger: ${({ theme }) => theme.danger};
 
-    --bs-primary-rgb: ${({ theme }) => theme.rgb.primary};
-    --bs-secondary-rgb: ${({ theme }) => theme.rgb.secondary};
+    --bs-primary-rgb: ${({ theme }) => theme.rgb?.primary};
+    --bs-secondary-rgb: ${({ theme }) => theme.rgb?.secondary};
+    --bs-danger-rgb: ${({ theme }) => theme.rgb?.danger};
   }
 
   html,

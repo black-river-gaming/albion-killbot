@@ -5,10 +5,10 @@ export interface ThemeProps {
 
   primary: string;
   secondary: string;
+  danger: string;
 
   text: string;
   contrastText: string;
-  dangerText: string;
   mutedText: string;
 
   rgb?: {
@@ -16,10 +16,10 @@ export interface ThemeProps {
 
     primary?: string;
     secondary?: string;
+    danger?: string;
 
     text?: string;
     contrastText?: string;
-    dangerText?: string;
     mutedText?: string;
   };
 }
@@ -28,12 +28,13 @@ const theme: ThemeProps = {
   name: "dark",
 
   background: "#1c1c1c",
+
   primary: "#ffbd59",
   secondary: "#69657c",
+  danger: "#c42936",
 
   text: "#ffffff",
   contrastText: "#333333",
-  dangerText: "#c42936",
   mutedText: "#6c757d",
 
   rgb: {
