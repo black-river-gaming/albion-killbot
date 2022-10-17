@@ -3,7 +3,8 @@ import ServerCard from "components/ServerCard";
 import { getServerInviteUrl } from "helpers/discord";
 import { Alert, Button, Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { ServerPartial, useFetchServersQuery } from "store/api";
+import { useFetchServersQuery } from "store/api";
+import { ServerPartial } from "types";
 import DashboardStyles from "./styles";
 
 const Dashboard = () => {

@@ -1,4 +1,4 @@
-const rabbitMQClient = require("../adapters/rabbitMQClient");
+const rabbitMQClient = require("./adapters/rabbitMQClient");
 const logger = require("../helpers/logger");
 
 const PREFETCH_COUNT = 1;

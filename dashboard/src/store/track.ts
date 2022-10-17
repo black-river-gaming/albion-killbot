@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { TrackList } from "./api";
+import { TrackList } from "types";
 
 const initialState: TrackList = {
   players: [],

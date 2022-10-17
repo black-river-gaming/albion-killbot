@@ -33,11 +33,36 @@ const StyledServerCard = styled(Card)`
     }
   }
 
+  .server-id {
+    font-size: 10px;
+    line-height: 10px;
+    color: ${({ theme }) => theme.mutedText};
+  }
+
   .server-name {
     margin-top: -25px;
     display: flex;
     justify-content: center;
     text-shadow: 2px 2px 5px rgb(0 0 0 / 80%);
+  }
+
+  &.list {
+    padding: 0.5rem 1rem;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .server-img-container {
+      width: 75px;
+      height: 75px;
+    }
+
+    .server-name {
+      margin: 0;
+      display: block;
+    }
   }
 `;
 

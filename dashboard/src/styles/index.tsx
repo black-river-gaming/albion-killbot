@@ -3,6 +3,16 @@ import { ThemeProps } from "helpers/theme";
 import { createGlobalStyle } from "styled-components";
 
 const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
+  :root {
+    --bs-primary: ${({ theme }) => theme.primary};
+    --bs-secondary: ${({ theme }) => theme.secondary};
+    --bs-danger: ${({ theme }) => theme.danger};
+
+    --bs-primary-rgb: ${({ theme }) => theme.rgb?.primary};
+    --bs-secondary-rgb: ${({ theme }) => theme.rgb?.secondary};
+    --bs-danger-rgb: ${({ theme }) => theme.rgb?.danger};
+  }
+
   html,
   body {
     margin: 0;
@@ -366,6 +376,13 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
       .modal-body,
       .modal-footer {
         border-color: ${({ theme }) => theme.background}66;
+      }
+
+      .modal-body {
+      background-image: linear-gradient(
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.05)
+      );
       }
     }
   }

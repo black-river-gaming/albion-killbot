@@ -1,5 +1,5 @@
 const axios = require("axios");
-const logger = require("../helpers/logger");
+const logger = require("../../helpers/logger");
 
 const CDNS = [
   {

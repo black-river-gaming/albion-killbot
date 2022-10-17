@@ -18,7 +18,7 @@ const StyledPremium = styled.div`
             font-size: 12px;
             padding-left: 0.25rem;
             font-weight: 500;
-            color: ${({ theme }) => theme.dangerText};
+            color: ${({ theme }) => theme.danger};
           }
         }
 

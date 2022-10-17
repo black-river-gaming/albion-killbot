@@ -3,7 +3,7 @@ import StyledToast from "./style";
 
 const CustomToast = (props: ToastProps) => {
   return (
-    <StyledToast {...props}>
+    <StyledToast {...props} autohide>
       <Toast.Body>{props.children}</Toast.Body>
     </StyledToast>
   );

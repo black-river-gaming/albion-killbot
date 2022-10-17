@@ -4,6 +4,7 @@ import {
   faRightFromBracket,
   faRightToBracket,
   faTableColumns,
+  faUserGear,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "assets/logo_dark.svg";
@@ -19,7 +20,7 @@ import { Button, Image, Nav, Navbar } from "react-bootstrap";
 import ContentLoader from "react-content-loader";
 import { NavLink } from "react-router-dom";
 import { useFetchUserQuery, useLogoutMutation } from "store/api";
-import Container from "./styles";
+import StyledHeader from "./styles/Header";
 
 const Header = () => {
   const user = useFetchUserQuery();
@@ -32,6 +33,17 @@ const Header = () => {
     } catch (e) {
       console.log(`Error on logout: ${e}`);
     }
+  };
+
+  const renderAdmin = ({ data }: typeof user) => {
+    if (!data?.admin) return;
+
+    return (
+      <Nav.Link as={NavLink} eventKey="admin" to="/admin" className="nav-link">
+        <FontAwesomeIcon icon={faUserGear} />
+        <div>Admin</div>
+      </Nav.Link>
+    );
   };
 
   const renderDesktopLogin = ({ data, isFetching }: typeof user) => {
@@ -128,14 +140,17 @@ const Header = () => {
 
   return (
     <Paper elevation={0}>
-      <Container>
+      <StyledHeader>
         <Navbar collapseOnSelect expand="lg" variant="dark">
-          <Navbar.Brand as={NavLink} to="/">
-            <img src={logo} alt="Albion Killbot" className="logo" />
+          <Navbar.Brand>
+            <Nav.Link as={NavLink} to="/" eventKey="home">
+              <img src={logo} alt="Albion Killbot" className="logo" />
+            </Nav.Link>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav>
+              {renderAdmin(user)}
               <Nav.Link
                 as={NavLink}
                 eventKey="premium"
@@ -160,7 +175,7 @@ const Header = () => {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-      </Container>
+      </StyledHeader>
     </Paper>
   );
 };

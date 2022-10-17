@@ -194,7 +194,7 @@ router.use(authenticated);
 
 /**
  * @openapi
- * /users/me/servers:
+ * /servers:
  *   get:
  *     tags: [Servers]
  *     summary: Return list of servers for current user

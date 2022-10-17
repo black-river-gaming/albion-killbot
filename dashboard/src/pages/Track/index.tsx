@@ -23,8 +23,6 @@ import {
 } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import {
-  SearchResults,
-  TrackList,
   useFetchServerQuery,
   useLazySearchQuery,
   useUpdateTrackMutation,
@@ -36,6 +34,7 @@ import {
   untrackGuild,
   untrackPlayer,
 } from "store/track";
+import { SearchResults, TrackList } from "types";
 
 const Track = () => {
   const { serverId = "" } = useParams();

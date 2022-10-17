@@ -3,7 +3,7 @@ import Header from "components/Header";
 import Paper from "components/Paper";
 import CookieNotice from "react-cookienotice";
 import { Outlet, useLocation } from "react-router-dom";
-import Container from "styles/app-styles";
+import Container from "styles/App";
 
 export const App = () => {
   const location = useLocation();

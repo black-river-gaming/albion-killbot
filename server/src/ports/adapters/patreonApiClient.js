@@ -1,6 +1,6 @@
 const axios = require("axios");
 const moment = require("moment");
-const logger = require("../helpers/logger");
+const logger = require("../../helpers/logger");
 
 const { PATREON_ACCESS_TOKEN } = process.env;
 

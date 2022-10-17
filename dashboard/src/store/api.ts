@@ -1,121 +1,24 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+  SearchResults,
+  Server,
+  ServerPartial,
+  Session,
+  Settings,
+  Subscription,
+  SubscriptionPrice,
+  TrackList,
+  User,
+} from "types";
 
 const { REACT_APP_API_URL = "/api" } = process.env;
 
-export interface User {
-  id: string;
-  username: string;
-  avatar: string;
-  discriminator: string;
-}
-
-export interface ServerPartial {
-  id: string;
-  name: string;
-  icon: string;
-  owner: boolean;
-  admin: boolean;
-  bot: boolean;
-}
-
-export interface Server extends ServerPartial {
-  channels: Channel[];
-  settings: Settings;
-  limits: {
-    players: number;
-    guilds: number;
-    alliances: number;
-  };
-  track: TrackList;
-}
-
-export interface Channel {
-  id: string;
-  name: string;
-  type: number;
-  parentId?: string;
-}
-
-export interface Settings {
-  guild: string;
-  lang: string;
-  kills: {
-    enabled: boolean;
-    channel: string;
-    mode: string;
-  };
-  deaths: {
-    enabled: boolean;
-    channel: string;
-    mode: string;
-  };
-  battles: {
-    enabled: boolean;
-    channel: string;
-  };
-  rankings: {
-    enabled: boolean;
-    channel: string;
-    pvpRanking: string;
-    guildRanking: string;
-  };
-}
-
-export interface TrackList {
-  players: {
-    id: string;
-    name: string;
-  }[];
-  guilds: {
-    id: string;
-    name: string;
-  }[];
-  alliances: {
-    id: string;
-    name: string;
-  }[];
-}
-
-export type SearchResults = TrackList;
-
-export interface Subscription {
-  id: string;
-  owner: string;
-  expires: string | "never";
-  server?: string;
-  stripe?: {
-    id: string;
-    cancel_at_period_end: boolean;
-    current_period_end: number;
-    customer: string;
-    price: SubscriptionPrice;
-  };
-}
-
-export interface SubscriptionPrice {
-  id: string;
-  currency: string;
-  price: number;
-  recurrence: {
-    interval: string;
-    count: number;
-  };
-  metadata: {
-    banner?: string;
-  };
-}
-
-export interface Session {
-  id: string;
-  url: string;
-}
-
-export const apiSlice = createApi({
+export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: REACT_APP_API_URL,
   }),
-  tagTypes: ["User", "Subscription"],
+  tagTypes: ["Admin", "User", "Subscription"],
   endpoints(builder) {
     return {
       auth: builder.mutation<void, string>({
@@ -161,6 +64,17 @@ export const apiSlice = createApi({
             customerId,
           },
         }),
+      }),
+      fetchAdminServers: builder.query<ServerPartial[], void>({
+        query: () => `/admin/servers`,
+        providesTags: ["Admin"],
+      }),
+      doLeaveServer: builder.mutation<void, { serverId: string }>({
+        query: ({ serverId }) => ({
+          url: `/admin/servers/${serverId}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Admin"],
       }),
       fetchPrices: builder.query<SubscriptionPrice[], void>({
         query: () => `/subscriptions/prices`,
@@ -210,6 +124,8 @@ export const {
   useAssignSubscriptionMutation,
   useAuthMutation,
   useBuySubscriptionMutation,
+  useDoLeaveServerMutation,
+  useFetchAdminServersQuery,
   useFetchPricesQuery,
   useFetchServerQuery,
   useFetchServersQuery,
@@ -221,4 +137,4 @@ export const {
   useManageSubscriptionMutation,
   useUpdateSettingsMutation,
   useUpdateTrackMutation,
-} = apiSlice;
+} = api;

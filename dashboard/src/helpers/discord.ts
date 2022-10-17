@@ -1,4 +1,4 @@
-import { Server, ServerPartial, User } from "store/api";
+import { Server, ServerPartial, User } from "types";
 
 const { REACT_APP_DISCORD_CLIENT_ID, REACT_APP_DISCORD_REDIRECT_URI = "" } =
   process.env;

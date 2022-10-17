@@ -2,11 +2,12 @@ const usersService = require("../../../services/users");
 
 async function getUser(req, res) {
   try {
+    if (!req.session.discord) return res.sendStatus(401);
+
     const { accessToken } = req.session.discord;
-    if (!accessToken) return res.sendStatus(404);
     return res.send(await usersService.getCurrentUser(accessToken));
   } catch (error) {
-    return res.sendStatus(403);
+    return res.sendStatus(401);
   }
 }
 

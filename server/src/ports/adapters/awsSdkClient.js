@@ -1,5 +1,5 @@
 const AWS = require("aws-sdk");
-const logger = require("../helpers/logger");
+const logger = require("../../helpers/logger");
 
 const { AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_REGION, AWS_BUCKET } = process.env;
 

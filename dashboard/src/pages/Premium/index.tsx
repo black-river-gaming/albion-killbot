@@ -14,12 +14,12 @@ import { useState } from "react";
 import { Alert, Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import {
-  SubscriptionPrice,
   useBuySubscriptionMutation,
   useFetchPricesQuery,
   useFetchSubscriptionsQuery,
   useManageSubscriptionMutation,
 } from "store/api";
+import { SubscriptionPrice } from "types";
 import StyledPremium from "./styles";
 
 const Premium = () => {

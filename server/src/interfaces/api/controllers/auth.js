@@ -22,8 +22,13 @@ async function auth(req, res) {
 }
 
 async function logout(req, res) {
-  delete req.session.discord;
-  return res.sendStatus(200);
+  req.session.destroy((error) => {
+    if (error) {
+      logger.error(`Unable to unset user session.`, { error, session: req.session });
+      return res.sendStatus(500);
+    }
+    return res.sendStatus(200);
+  });
 }
 
 module.exports = {

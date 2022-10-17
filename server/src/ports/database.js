@@ -1,5 +1,7 @@
 const { ObjectId } = require("mongodb");
-const dbClient = require("../adapters/mongoDbClient");
+const dbClient = require("./adapters/mongoDbClient");
+
+const { client } = dbClient;
 
 // TODO: Extract helper functions
 function convertObjectId(query) {
@@ -74,6 +76,7 @@ async function deleteOne(collectionName, filter) {
 }
 
 module.exports = {
+  client,
   cleanup,
   deleteOne,
   dropColection,

@@ -8,11 +8,11 @@
   "bin": {
     "ctl": "./devenv/ctl.sh"
   },
-  "scripts": {
-    "version": "npm version $npm_package_version --workspaces --no-git-commit-tag && git add **/package*.json && echo 'albion-killbot'"
-  },
-  "workspaces": [
+  "projects": [
     "dashboard",
     "server"
-  ]
+  ],
+  "scripts": {
+    "version": "node version.js"
+  }
 }

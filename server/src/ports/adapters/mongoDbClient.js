@@ -1,6 +1,6 @@
 const MongoClient = require("mongodb").MongoClient;
-const logger = require("../helpers/logger");
-const { sleep } = require("../helpers/utils");
+const logger = require("../../helpers/logger");
+const { sleep } = require("../../helpers/utils");
 
 let client;
 let db;
@@ -45,6 +45,7 @@ function getCollection(collection) {
 }
 
 module.exports = {
+  client,
   connect,
   close,
   isConnected,

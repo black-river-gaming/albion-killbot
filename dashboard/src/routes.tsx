@@ -1,4 +1,6 @@
 import App from "App";
+import Admin from "pages/Admin";
+import AdminGuard from "pages/AdminGuard";
 import Auth from "pages/Auth";
 import AuthGuard from "pages/AuthGuard";
 import Dashboard from "pages/Dashboard";
@@ -29,6 +31,11 @@ function MainRoutes() {
                 <Route path="track" element={<Track />} />
                 <Route path="subscription" element={<Subscription />} />
               </Route>
+            </Route>
+          </Route>
+          <Route element={<AdminGuard redirectTo="/" />}>
+            <Route path="admin">
+              <Route index element={<Admin />} />
             </Route>
           </Route>
           <Route

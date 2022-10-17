@@ -27,6 +27,7 @@ try {
         },
       ],
       tags: [
+        { name: "Admin", description: "Admin operation" },
         { name: "Auth", description: "Authentication methods" },
         { name: "Battles", description: "Battle data" },
         { name: "Kills", description: "Kill data" },
