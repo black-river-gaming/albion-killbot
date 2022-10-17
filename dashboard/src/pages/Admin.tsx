@@ -1,18 +1,43 @@
+import { faRefresh } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
 import Toast from "components/Toast";
-import { useState } from "react";
-import { Button, Container, Modal, Row, Stack } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import {
+  Button,
+  Card,
+  Container,
+  Form,
+  InputGroup,
+  Modal,
+  Row,
+  Stack,
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDoLeaveServerMutation, useFetchAdminServersQuery } from "store/api";
 import { ServerPartial } from "types";
 
 const Admin = () => {
+  const serversQuery = useFetchAdminServersQuery();
   const [leaveServer, setLeaveServer] = useState<ServerPartial>();
-  const servers = useFetchAdminServersQuery();
   const [dispatchLeaveServer, leaveServerResult] = useDoLeaveServerMutation();
+  const [servers, setServers] = useState<ServerPartial[]>([]);
+  const [searchServer, setSearchServer] = useState("");
 
-  if (servers.isFetching) {
+  useEffect(() => {
+    if (serversQuery.data) {
+      setServers(
+        serversQuery.data.filter(
+          (server) =>
+            server.id.includes(searchServer.replace("#", "")) ||
+            server.name.includes(searchServer)
+        )
+      );
+    }
+  }, [searchServer, serversQuery]);
+
+  if (serversQuery.isFetching) {
     return (
       <Loader width={500} height={500}>
         <rect x="160" y="10" rx="0" ry="0" width="210" height="15" />
@@ -52,12 +77,33 @@ const Admin = () => {
       <div className="d-flex justify-content-center pt-3">
         <h1>Discord Servers</h1>
       </div>
-      <Container fluid className="pt-4">
+
+      <Card className="p-2">
+        <Form onSubmit={() => serversQuery.refetch()}>
+          <Form.Group controlId="search">
+            <Form.Label>Search</Form.Label>
+            <InputGroup>
+              <Form.Control
+                type="text"
+                aria-describedby="search-help"
+                placeholder="Search servers"
+                value={searchServer}
+                onChange={(e) => setSearchServer(e.target.value)}
+              />
+              <Button variant="primary" type="submit">
+                <FontAwesomeIcon icon={faRefresh} />
+              </Button>
+            </InputGroup>
+          </Form.Group>
+        </Form>
+      </Card>
+
+      <Container fluid className="py-4">
         <Row className="g-4">
-          {servers.data && servers.data.map(renderServer)}
-          {servers.data?.length === 0 && (
+          {servers.map(renderServer)}
+          {servers.length === 0 && (
             <h5 className="d-flex justify-content-center py-5">
-              No servers available.
+              No servers to display.
             </h5>
           )}
         </Row>

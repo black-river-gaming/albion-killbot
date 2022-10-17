@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { api } from "./api";
-import settingsReducer from "./settings";
-import trackReducer from "./track";
+import settings from "./settings";
+import track from "./track";
 
 export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
-    settings: settingsReducer,
-    track: trackReducer,
+    settings,
+    track,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(api.middleware),
