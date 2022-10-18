@@ -31,7 +31,9 @@ const Admin = () => {
         serversQuery.data.filter(
           (server) =>
             server.id.includes(searchServer.replace("#", "")) ||
-            server.name.includes(searchServer)
+            server.name
+              .toLocaleLowerCase()
+              .includes(searchServer.toLocaleLowerCase())
         )
       );
     }
