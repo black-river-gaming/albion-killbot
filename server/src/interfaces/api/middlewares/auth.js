@@ -47,11 +47,11 @@ const serverAdmin = async (req, res, next) => {
 
     if (!user) throw new Error("Not authenticated");
     if (!serverId) throw new Error("Missing parameter serverId");
+    if (user.admin) return next();
 
     const servers = await serversService.getServers(req.session.discord.accessToken);
     const server = servers.find((s) => s.id === serverId);
-    if (!server) throw new Error("Server not found");
-    if (!server.admin && !server.owner && !user.admin) throw new Error("Unauthorized");
+    if (!server.admin && !server.owner) throw new Error("Unauthorized");
 
     return next();
   } catch (error) {
