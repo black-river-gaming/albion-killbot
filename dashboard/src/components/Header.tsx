@@ -157,7 +157,7 @@ const Header = () => {
                 to="/premium"
                 className="nav-link"
               >
-                <FontAwesomeIcon icon={faCrown} style={{ paddingBottom: 4 }} />
+                <FontAwesomeIcon icon={faCrown} />
                 <div>Premium</div>
               </Nav.Link>
               <Nav.Link
