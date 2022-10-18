@@ -43,6 +43,9 @@ async function getServer(req, res) {
 
     const subscription = await subscriptionService.getSubscriptionByServerId(serverId);
     server.subscription = subscription;
+    if (server.subscription.stripe) {
+      server.subscription.stripe = await subscriptionService.getStripeSubscription(server.subscription.stripe);
+    }
 
     const limits = await trackService.getLimitsByServerId(serverId);
     server.limits = limits;

@@ -8,7 +8,7 @@ import Home from "pages/Home";
 import Premium from "pages/Premium";
 import Server from "pages/Server";
 import Settings from "pages/Settings";
-import Subscription from "pages/Subscription";
+import SubscriptionPage from "pages/Subscription";
 import Track from "pages/Track";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
@@ -29,7 +29,7 @@ function MainRoutes() {
                 />
                 <Route path="settings" element={<Settings />} />
                 <Route path="track" element={<Track />} />
-                <Route path="subscription" element={<Subscription />} />
+                <Route path="subscription" element={<SubscriptionPage />} />
               </Route>
             </Route>
           </Route>

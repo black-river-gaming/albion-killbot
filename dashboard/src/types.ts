@@ -23,6 +23,7 @@ export interface Server extends ServerPartial {
     guilds: number;
     alliances: number;
   };
+  subscription: Subscription;
   track: TrackList;
 }
 

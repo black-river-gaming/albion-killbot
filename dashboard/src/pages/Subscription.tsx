@@ -2,33 +2,30 @@ import Loader from "components/Loader";
 import SubscriptionAssignModal from "components/SubscriptionAssignModal";
 import SubscriptionPriceCard from "components/SubscriptionPriceCard";
 import { useState } from "react";
-import { Alert, Button, Col, Row } from "react-bootstrap";
-import { Link, Navigate, useParams } from "react-router-dom";
-import { useFetchSubscriptionsQuery } from "store/api";
+import { Button, Card, Col, Row } from "react-bootstrap";
+import { Link, useParams } from "react-router-dom";
+import { useFetchServerQuery } from "store/api";
+import { Subscription } from "types";
 
 const SubscriptionPage = () => {
   const { serverId = "" } = useParams();
-  const subscriptions = useFetchSubscriptionsQuery();
+  const server = useFetchServerQuery(serverId);
   const [subscriptionAssignId, setSubscriptionAssignId] = useState("");
 
-  if (subscriptions.data && subscriptions.data.length === 0)
-    return <Navigate to="/premium" />;
-
-  const renderServerSubscription = () => {
-    const subscription = subscriptions.data?.find(
-      (subscription) => subscription.server === serverId
-    );
-
+  const renderServerSubscription = (subscription?: Subscription) => {
     return (
       <div>
-        <Alert variant="dark" className="d-flex justify-content-start py-2">
+        <Card className="d-flex justify-content-start p-2">
           {subscription ? (
             <div>
-              {subscription.expires === "never"
-                ? `Server Status: Activated`
-                : `Server Status: Active until ${new Date(
-                    subscription.expires
-                  ).toLocaleDateString()}`}
+              <span>Server Status: </span>
+              <span className="text-primary">
+                {subscription.expires === "never"
+                  ? `Activated`
+                  : `Active until ${new Date(
+                      subscription.expires
+                    ).toLocaleDateString()}`}
+              </span>
             </div>
           ) : (
             <div>
@@ -36,9 +33,9 @@ const SubscriptionPage = () => {
               <Link to="/premium">Premium</Link> page to assign a subscription.
             </div>
           )}
-        </Alert>
+        </Card>
         {subscription?.stripe && subscription.stripe?.price && (
-          <Row className="justify-content-center pb-3">
+          <Row className="justify-content-center my-3">
             <Col lg={6}>
               <SubscriptionPriceCard price={subscription.stripe?.price}>
                 <div className="d-flex justify-content-end px-2 pb-2">
@@ -59,8 +56,9 @@ const SubscriptionPage = () => {
 
   return (
     <>
-      {subscriptions.isFetching && <Loader />}
-      {subscriptions.isSuccess && renderServerSubscription()}
+      {server.isFetching && <Loader />}
+      {!server.data && <div>No data found.</div>}
+      {renderServerSubscription(server.data?.subscription)}
       {subscriptionAssignId && (
         <SubscriptionAssignModal
           currentServerId={serverId}
