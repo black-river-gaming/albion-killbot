@@ -24,8 +24,9 @@ async function getServer(req, res) {
     if (!accessToken) return res.sendStatus(403);
 
     const { serverId } = req.params;
-    const server = await serversService.getServer(serverId);
 
+    const server = await serversService.getServer(serverId);
+    server.channels = await serversService.getServerChannels(serverId);
     server.settings = await settingsService.getSettings(serverId);
     server.subscription = await subscriptionService.getSubscriptionByServerId(serverId);
     if (server.subscription && server.subscription.stripe) {

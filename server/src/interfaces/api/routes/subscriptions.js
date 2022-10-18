@@ -30,6 +30,12 @@ router.use(authenticated);
  *             example: "2022-07-21"
  *           - type: string
  *             example: "never"
+ *         server:
+ *             oneOf:
+ *             - $ref: '#/components/schemas/ServerBase'
+ *             - type: string
+ *               description: Discord server id
+ *               example: "738365346855256107"
  *         stripe:
  *           description: Stripe subscription information
  *           type: object

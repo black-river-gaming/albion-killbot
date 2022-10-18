@@ -30,15 +30,19 @@ async function getServers(accessToken) {
 
 async function getServer(serverId) {
   try {
-    const guild = await discord.getGuild(serverId);
-    const channels = await discord.getGuildChannels(serverId);
+    return await discord.getGuild(serverId);
+  } catch (error) {
+    logger.error(`Error while retrieving discord server: ${error.message}`, { error });
+    throw error;
+  }
+}
 
-    guild.channels = channels;
-
-    return guild;
-  } catch (e) {
-    logger.error(`Error while retrieving discord server:`, e);
-    throw e;
+async function getServerChannels(serverId) {
+  try {
+    return await discord.getGuildChannels(serverId);
+  } catch (error) {
+    logger.error(`Error while retrieving discord channels: ${error.message}`, { error });
+    throw error;
   }
 }
 
@@ -54,6 +58,7 @@ async function leaveServer(serverId) {
 module.exports = {
   getBotServers,
   getServer,
+  getServerChannels,
   getServers,
   leaveServer,
 };
