@@ -20,7 +20,7 @@ import {
   useManageSubscriptionMutation,
 } from "store/api";
 import { SubscriptionPrice } from "types";
-import StyledPremium from "./styles";
+import StyledPremium from "./styles/Premium";
 
 const Premium = () => {
   const subscriptions = useFetchSubscriptionsQuery();
@@ -95,7 +95,12 @@ const Premium = () => {
 
   const renderUserSubscriptions = () => {
     if (subscriptions.isFetching) return <Loader />;
-    if (subscriptions.data?.length === 0) return;
+    if (!subscriptions.data) return;
+    const activeSubscriptions = subscriptions.data.filter(
+      (subscription) =>
+        new Date(subscription.expires).getTime() > new Date().getTime()
+    );
+    if (activeSubscriptions.length === 0) return;
 
     return (
       <Card className="p-2 mt-4 user-subscriptions">
@@ -104,7 +109,7 @@ const Premium = () => {
         </div>
 
         <ListGroup>
-          {subscriptions.data?.map((subscription) => {
+          {activeSubscriptions.map((subscription) => {
             const price = subscription.stripe?.price;
 
             return (
@@ -153,7 +158,9 @@ const Premium = () => {
                           );
                       }}
                     >
-                      Cancel
+                      {subscription.stripe?.cancel_at_period_end
+                        ? "Renew"
+                        : "Cancel"}
                     </Button>
                   )}
                 </div>
