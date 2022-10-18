@@ -114,6 +114,7 @@ const Premium = () => {
     if (!subscriptions.data) return;
     const activeSubscriptions = subscriptions.data.filter(
       (subscription) =>
+        subscription.expires === "never" ||
         new Date(subscription.expires).getTime() > new Date().getTime()
     );
     if (activeSubscriptions.length === 0) return;
