@@ -5,7 +5,7 @@ import { SubscriptionPrice } from "types";
 
 interface SubscriptionPriceCardProps {
   price: SubscriptionPrice;
-  children?: JSX.Element | string | number;
+  children?: JSX.Element | string | number | false;
 }
 
 const SubscriptionPriceCard = ({

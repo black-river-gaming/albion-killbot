@@ -4,15 +4,18 @@ import SubscriptionPriceCard from "components/SubscriptionPriceCard";
 import { useState } from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import { useFetchServerQuery } from "store/api";
+import { useFetchServerQuery, useFetchUserQuery } from "store/api";
 import { Subscription } from "types";
 
 const SubscriptionPage = () => {
   const { serverId = "" } = useParams();
+  const user = useFetchUserQuery();
   const server = useFetchServerQuery(serverId);
   const [subscriptionAssignId, setSubscriptionAssignId] = useState("");
 
   const renderServerSubscription = (subscription?: Subscription) => {
+    const isSubscriptionOwner = subscription?.owner === user.data?.id;
+
     return (
       <div>
         <Card className="d-flex justify-content-start p-2">
@@ -38,14 +41,16 @@ const SubscriptionPage = () => {
           <Row className="justify-content-center my-3">
             <Col lg={6}>
               <SubscriptionPriceCard price={subscription.stripe?.price}>
-                <div className="d-flex justify-content-end px-2 pb-2">
-                  <Button
-                    variant="secondary"
-                    onClick={() => setSubscriptionAssignId(subscription.id)}
-                  >
-                    Transfer
-                  </Button>
-                </div>
+                {isSubscriptionOwner && (
+                  <div className="d-flex justify-content-end px-2 pb-2">
+                    <Button
+                      variant="secondary"
+                      onClick={() => setSubscriptionAssignId(subscription.id)}
+                    >
+                      Transfer
+                    </Button>
+                  </div>
+                )}
               </SubscriptionPriceCard>
             </Col>
           </Row>
