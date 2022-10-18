@@ -6,16 +6,19 @@ export interface User {
   admin: boolean;
 }
 
-export interface ServerPartial {
+export interface ServerBase {
   id: string;
   name: string;
   icon: string;
+}
+
+export interface ServerPartial extends ServerBase {
   owner: boolean;
   admin: boolean;
   bot: boolean;
 }
 
-export interface Server extends ServerPartial {
+export interface Server extends ServerBase {
   channels: Channel[];
   settings: Settings;
   limits: {
@@ -80,7 +83,7 @@ export interface Subscription {
   id: string;
   owner: string;
   expires: string | "never";
-  server?: string;
+  server?: string | ServerBase;
   stripe?: {
     id: string;
     cancel_at_period_end: boolean;

@@ -1,4 +1,4 @@
-import { Server, ServerPartial, User } from "types";
+import { ServerBase, User } from "types";
 
 const { REACT_APP_DISCORD_CLIENT_ID, REACT_APP_DISCORD_REDIRECT_URI = "" } =
   process.env;
@@ -17,10 +17,7 @@ export const getUserPictureUrl = (user: User) => {
     return `${DISCORD_CDN_URL}/embed/avatars/${Number(user.id) % 5}.png`;
 };
 
-export const getServerPictureUrl = (
-  server: ServerPartial | Server,
-  animated?: boolean
-) => {
+export const getServerPictureUrl = (server: ServerBase, animated?: boolean) => {
   if (server.icon) {
     const ext = animated && server.icon.startsWith("a_") ? "gif" : "png";
     return `${DISCORD_CDN_URL}/icons/${server.id}/${server.icon}.${ext}`;
@@ -30,7 +27,7 @@ export const getServerPictureUrl = (
     return `${DISCORD_CDN_URL}/embed/avatars/${Number(server.id) % 5}.png`;
 };
 
-export const getServerInviteUrl = (server?: ServerPartial | Server) => {
+export const getServerInviteUrl = (server?: ServerBase) => {
   const serverParam = server ? `&guild_id=${server.id}` : ``;
   return `https://discord.com/oauth2/authorize?client_id=${REACT_APP_DISCORD_CLIENT_ID}&scope=bot&permissions=2147534848${serverParam}`;
 };

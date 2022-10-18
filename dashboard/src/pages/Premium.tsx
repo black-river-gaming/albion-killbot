@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
 import SubscriptionAssignModal from "components/SubscriptionAssignModal";
 import SubscriptionPriceCard from "components/SubscriptionPriceCard";
+import { getServerPictureUrl } from "helpers/discord";
 import { isSubscriptionActiveAndUnassiged } from "helpers/subscriptions";
 import { getCurrency } from "helpers/utils";
 import { useState } from "react";
@@ -19,7 +20,7 @@ import {
   useFetchSubscriptionsQuery,
   useManageSubscriptionMutation,
 } from "store/api";
-import { SubscriptionPrice } from "types";
+import { ServerBase, SubscriptionPrice } from "types";
 import StyledPremium from "./styles/Premium";
 
 const Premium = () => {
@@ -94,6 +95,21 @@ const Premium = () => {
   };
 
   const renderUserSubscriptions = () => {
+    const renderSubscriptionServer = (server: string | ServerBase) => {
+      if (typeof server === "string") return;
+
+      return (
+        <div className="d-flex align-items-center">
+          <img
+            src={getServerPictureUrl(server, true)}
+            style={{ width: 30, height: 30 }}
+            alt={server.name}
+          />
+          <div className="px-2">{server.name}</div>
+        </div>
+      );
+    };
+
     if (subscriptions.isFetching) return <Loader />;
     if (!subscriptions.data) return;
     const activeSubscriptions = subscriptions.data.filter(
@@ -141,6 +157,10 @@ const Premium = () => {
                     )}
                   </div>
                 </div>
+
+                {subscription.server &&
+                  renderSubscriptionServer(subscription.server)}
+
                 <div className="actions">
                   <Button
                     variant="primary"
