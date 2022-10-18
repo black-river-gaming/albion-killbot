@@ -51,6 +51,7 @@ const serverAdmin = async (req, res, next) => {
 
     const servers = await serversService.getServers(req.session.discord.accessToken);
     const server = servers.find((s) => s.id === serverId);
+    if (!server) throw new Error("User not on Server");
     if (!server.admin && !server.owner) throw new Error("Unauthorized");
 
     return next();

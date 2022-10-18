@@ -4,18 +4,6 @@ const settingsService = require("../../../services/settings");
 const subscriptionService = require("../../../services/subscriptions");
 const trackService = require("../../../services/track");
 
-async function isServerAdmin(req, res, next) {
-  const { accessToken } = req.session.discord;
-  if (!accessToken) return res.sendStatus(403);
-
-  const { serverId } = req.params;
-  const server = (await serversService.getServers(accessToken)).find((server) => server.id === serverId);
-  if (!server) return res.sendStatus(403);
-  if (!server.owner && !server.admin) return res.sendStatus(403);
-
-  return next();
-}
-
 async function getServers(req, res) {
   try {
     const { accessToken } = req.session.discord;
@@ -71,7 +59,6 @@ async function setServerTrack(req, res) {
 }
 
 module.exports = {
-  isServerAdmin,
   getServer,
   getServers,
   setServerSettings,

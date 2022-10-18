@@ -263,7 +263,7 @@ router.get(`/:serverId`, serversController.getServer);
  *             schema:
  *               $ref: '#/components/schemas/Settings'
  */
-router.put(`/:serverId/settings`, serversController.isServerAdmin, serversController.setServerSettings);
+router.put(`/:serverId/settings`, serversController.setServerSettings);
 
 /**
  * @openapi
@@ -291,7 +291,7 @@ router.put(`/:serverId/settings`, serversController.isServerAdmin, serversContro
  *             schema:
  *               $ref: '#/components/schemas/Track'
  */
-router.put(`/:serverId/track`, serversController.isServerAdmin, serversController.setServerTrack);
+router.put(`/:serverId/track`, serversController.setServerTrack);
 
 module.exports = {
   path: "/servers",
