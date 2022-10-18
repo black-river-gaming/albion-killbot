@@ -31,11 +31,6 @@ async function assignSubscription(req, res) {
     const { server, checkoutId, subscriptionId } = req.body;
     if (!server || (!checkoutId && !subscriptionId)) return res.sendStatus(422);
 
-    const otherSubs = await subscriptionsService.findSubscriptionsByServerId(server);
-    for (const otherSub of otherSubs) {
-      await subscriptionsService.unassignSubscription(otherSub.id);
-    }
-
     const subscription = subscriptionId
       ? await subscriptionsService.getSubscriptionById(subscriptionId)
       : await subscriptionsService.getSubscriptionByCheckoutId(checkoutId);
@@ -44,6 +39,7 @@ async function assignSubscription(req, res) {
     const { user } = req.session.discord;
     if (subscription.owner !== user.id) return res.sendStatus(403);
 
+    await subscriptionsService.unassignSubscriptionsByServerId(server);
     await subscriptionsService.assignSubscription(subscription.id, server);
     subscription.server = server;
 

@@ -1,6 +1,6 @@
 const moment = require("moment");
 const stripe = require("../ports/stripe");
-const { getCollection, find, findOne } = require("../ports/database");
+const { getCollection, find, findOne, updateOne, update, deleteOne } = require("../ports/database");
 
 const SUBSCRIPTIONS_MODE = Boolean(process.env.SUBSCRIPTIONS_MODE);
 const SUBSCRIPTIONS_COLLECTION = "subscriptions";
@@ -15,8 +15,7 @@ async function addSubscription(subscription) {
 }
 
 async function assignSubscription(_id, server) {
-  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-  return await collection.updateOne({ _id }, { $set: { server } });
+  return await updateOne(SUBSCRIPTIONS_COLLECTION, { _id }, { $set: { server } });
 }
 
 async function fetchSubscriptionPrices() {
@@ -40,9 +39,9 @@ async function getSubscriptionsByOwner(owner) {
   return await find(SUBSCRIPTIONS_COLLECTION, { owner });
 }
 
-async function getSubscriptionById(subscriptionId) {
+async function getSubscriptionById(_id) {
   if (!isSubscriptionsEnabled()) return null;
-  return await findOne(SUBSCRIPTIONS_COLLECTION, { _id: subscriptionId });
+  return await findOne(SUBSCRIPTIONS_COLLECTION, { _id });
 }
 
 async function getSubscriptionByServerId(server) {
@@ -78,8 +77,7 @@ async function hasSubscriptionByServerId(server) {
 }
 
 async function removeSubscription(_id) {
-  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-  return await collection.deleteOne({ _id });
+  return await deleteOne(SUBSCRIPTIONS_COLLECTION, { _id });
 }
 
 async function removeSubscriptionByStripeId(stripe) {
@@ -93,8 +91,11 @@ async function updateSubscriptionByStripeId(stripe, subscription) {
 }
 
 async function unassignSubscription(_id) {
-  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-  return await collection.updateOne({ _id }, { $unset: { server: "" } });
+  return await updateOne(SUBSCRIPTIONS_COLLECTION, { _id }, { $unset: { server: "" } });
+}
+
+async function unassignSubscriptionsByServerId(server) {
+  return await update(SUBSCRIPTIONS_COLLECTION, { server }, { $unset: { server: "" } });
 }
 
 module.exports = {
@@ -116,5 +117,6 @@ module.exports = {
   removeSubscription,
   removeSubscriptionByStripeId,
   unassignSubscription,
+  unassignSubscriptionsByServerId,
   updateSubscriptionByStripeId,
 };
