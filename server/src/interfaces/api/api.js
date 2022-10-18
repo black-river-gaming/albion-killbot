@@ -4,7 +4,7 @@ const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const logger = require("../../helpers/logger");
 const { disableCache } = require("./middlewares/cache");
-const { refreshDiscordToken } = require("./middlewares/auth");
+const { discordSession } = require("./middlewares/auth");
 const { session } = require("./middlewares/session");
 const { swaggerSpecs, swaggerUI } = require("./middlewares/swagger");
 const routes = require("./routes");
@@ -44,7 +44,7 @@ if (NODE_ENV == "development") {
 
 // Session
 app.use(session);
-app.use(refreshDiscordToken);
+app.use(discordSession);
 
 // Routes
 app.get("/openapi.json", disableCache, (req, res) => res.send(swaggerSpecs));

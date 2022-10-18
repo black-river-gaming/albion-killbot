@@ -1,9 +1,10 @@
 const moment = require("moment");
 const authService = require("../../../services/auth");
 const usersService = require("../../../services/users");
+const serversService = require("../../../services/servers");
 const logger = require("../../../helpers/logger");
 
-const refreshDiscordToken = async (req, _res, next) => {
+const discordSession = async (req, _res, next) => {
   const { discord } = req.session;
   if (!discord) return next();
   if (moment(discord.expires).diff(moment(), "days") > 3) return next();
@@ -15,6 +16,7 @@ const refreshDiscordToken = async (req, _res, next) => {
       accessToken: token.access_token,
       refreshToken: token.refresh_token,
       expires: moment().add(token.expires_in, "seconds"),
+      user: await usersService.getCurrentUser(req.session.discord.accessToken),
     };
 
     return next();
@@ -29,21 +31,41 @@ const refreshDiscordToken = async (req, _res, next) => {
 
 const authenticated = async (req, res, next) => {
   try {
-    const currentUser = await usersService.getCurrentUser(req.session.discord.accessToken);
-    req.session.discord.user = currentUser;
+    if (!req.session.discord.user) throw new Error("Not authenticated");
 
     return next();
   } catch (error) {
-    logger.error(error);
+    logger.error(`Failed to authenticate user: ${error.message}`, { error });
+    return res.sendStatus(403);
+  }
+};
+
+const serverAdmin = async (req, res, next) => {
+  try {
+    const { serverId } = req.params;
+    const { user } = req.session.discord;
+
+    if (!user) throw new Error("Not authenticated");
+    if (!serverId) throw new Error("Missing parameter serverId");
+
+    const servers = await serversService.getServers(req.session.discord.accessToken);
+    const server = servers.find((s) => s.id === serverId);
+    if (!server) throw new Error("Server not found");
+    if (!server.admin && !server.owner && !user.admin) throw new Error("Unauthorized");
+
+    return next();
+  } catch (error) {
+    logger.error(`Failed to authenticate server admin: ${error.message}`, { error });
     return res.sendStatus(403);
   }
 };
 
 const admin = async (req, res, next) => {
   try {
-    const currentUser = await usersService.getCurrentUser(req.session.discord.accessToken);
-    if (!currentUser.admin) throw new Error("Unauthorized");
-    req.session.discord.user = currentUser;
+    const { user } = req.session.discord;
+
+    if (!user) throw new Error("Not authenticated");
+    if (!user.admin) throw new Error("Unauthorized");
 
     return next();
   } catch (error) {
@@ -55,5 +77,6 @@ const admin = async (req, res, next) => {
 module.exports = {
   admin,
   authenticated,
-  refreshDiscordToken,
+  discordSession,
+  serverAdmin,
 };

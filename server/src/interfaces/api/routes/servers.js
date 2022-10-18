@@ -1,10 +1,11 @@
 const router = require("express").Router();
 const serversController = require("../controllers/servers");
 const { disableCache } = require("../middlewares/cache");
-const { authenticated } = require("../middlewares/auth");
+const { serverAdmin, authenticated } = require("../middlewares/auth");
 
 router.use(disableCache);
 router.use(authenticated);
+router.use(`/:serverId`, serverAdmin);
 
 /**
  * @openapi
