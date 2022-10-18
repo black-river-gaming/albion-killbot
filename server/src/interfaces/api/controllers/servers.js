@@ -38,24 +38,17 @@ async function getServer(req, res) {
     const { serverId } = req.params;
     const server = await serversService.getServer(serverId);
 
-    const settings = await settingsService.getSettings(serverId);
-    server.settings = settings;
-
-    const subscription = await subscriptionService.getSubscriptionByServerId(serverId);
-    server.subscription = subscription;
-    if (server.subscription.stripe) {
+    server.settings = await settingsService.getSettings(serverId);
+    server.subscription = await subscriptionService.getSubscriptionByServerId(serverId);
+    if (server.subscription && server.subscription.stripe) {
       server.subscription.stripe = await subscriptionService.getStripeSubscription(server.subscription.stripe);
     }
-
-    const limits = await trackService.getLimitsByServerId(serverId);
-    server.limits = limits;
-
-    const track = await trackService.getTrack(serverId);
-    server.track = track;
+    server.limits = await trackService.getLimitsByServerId(serverId);
+    server.track = await trackService.getTrack(serverId);
 
     return res.send(server);
   } catch (error) {
-    logger.error(`Unknown error:`, error);
+    logger.error(`Error while retrieving server data: ${error.message}`, { error });
     return res.sendStatus(500);
   }
 }
