@@ -7,19 +7,25 @@ const logger = require("../../../helpers/logger");
 const discordSession = async (req, _res, next) => {
   const { discord } = req.session;
   if (!discord) return next();
-  if (moment(discord.expires).diff(moment(), "days") > 3) return next();
 
   try {
-    const token = await authService.refresh(discord.refreshToken);
+    const willExpire = moment(discord.expires).diff(moment(), "days") <= 3;
 
-    req.session.discord = {
-      accessToken: token.access_token,
-      refreshToken: token.refresh_token,
-      expires: moment().add(token.expires_in, "seconds"),
-      user: await usersService.getCurrentUser(req.session.discord.accessToken),
-    };
+    if (willExpire) {
+      const token = await authService.refresh(discord.refreshToken);
 
-    return next();
+      req.session.discord = {
+        accessToken: token.access_token,
+        refreshToken: token.refresh_token,
+        expires: moment().add(token.expires_in, "seconds"),
+        user: await usersService.getCurrentUser(discord.accessToken),
+      };
+
+      return next();
+    } else {
+      req.session.discord.user = await usersService.getCurrentUser(discord.accessToken);
+      return next();
+    }
   } catch (e) {
     if (e.response.status === 400) {
       delete req.session.discord;
