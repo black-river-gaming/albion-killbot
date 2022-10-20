@@ -1,4 +1,5 @@
 const { find, findOne, updateOne, deleteOne } = require("../ports/database");
+const logger = require("../helpers/logger");
 
 const SETTINGS_COLLECTION = "settings";
 const REPORT_MODES = {
@@ -47,6 +48,10 @@ async function getSettingsForServer(servers) {
   (await find(SETTINGS_COLLECTION, {})).forEach((settings) => {
     // TODO: Trim track list if subscription is expired
     // Better to do when Track list gets refactored
+    if (settingsForServer[settings.guild] && settingsForServer[settings.guild].guild) {
+      logger.warn(`WARNING: Duplicate track settings for server ${settings.guild}.`, { settings });
+      return;
+    }
     settingsForServer[settings.guild] = settings;
   });
 

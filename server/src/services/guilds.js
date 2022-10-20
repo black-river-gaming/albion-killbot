@@ -1,18 +1,19 @@
 const { getCollection } = require("../ports/database");
 const albion = require("../ports/albion");
 
+const { GUILD_RANKINGS } = process.env;
 const GUILDS_COLLECTION = "guilds";
 
 async function updateGuild(guildId) {
   const collection = getCollection(GUILDS_COLLECTION);
   if (!collection) return;
 
-  const guild = await albion.getGuild(guildId, { rankings: true });
+  const guild = await albion.getGuild(guildId, { rankings: GUILD_RANKINGS });
   if (!guild) return;
 
   guild.updatedAt = new Date();
 
-  return await collection.replaceOne({ _id: guild._id }, guild, { upsert: true });
+  return await collection.replaceOne({ Id: guild.Id }, guild, { upsert: true });
 }
 
 async function getAllGuilds() {

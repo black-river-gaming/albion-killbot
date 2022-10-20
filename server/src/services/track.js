@@ -1,6 +1,7 @@
 const { find, findOne, updateOne } = require("../ports/database");
 const { getNumber } = require("../helpers/utils");
 const { hasSubscriptionByServerId } = require("./subscriptions");
+const logger = require("../helpers/logger");
 
 const { MAX_PLAYERS, MAX_GUILDS, MAX_ALLIANCES, SUB_MAX_PLAYERS, SUB_MAX_GUILDS, SUB_MAX_ALLIANCES } = process.env;
 const TRACK_COLLECTION = "track";
@@ -29,6 +30,10 @@ async function getTrackForServer(servers) {
   (await find(TRACK_COLLECTION, {})).forEach((track) => {
     // TODO: Trim track list if subscription is expired
     // Better to do when Track list gets refactored
+    if (trackForServer[track.server] && trackForServer[track.server].server) {
+      logger.warn(`WARNING: Duplicate track settings for server ${track.server}.`, { track });
+      return;
+    }
     trackForServer[track.server] = track;
   });
 
