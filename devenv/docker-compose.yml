@@ -120,8 +120,6 @@ services:
     tty: true
     command: npm start
     depends_on:
-      api:
-        condition: service_started
       nginx:
         condition: service_started
     environment:
