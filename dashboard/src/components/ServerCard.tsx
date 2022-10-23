@@ -1,5 +1,5 @@
 import { getServerPictureUrl } from "helpers/discord";
-import { Card } from "react-bootstrap";
+import { Card, Col, Row } from "react-bootstrap";
 import { ServerBase } from "types";
 import StyledServerCard from "./styles/ServerCard";
 
@@ -13,20 +13,28 @@ const ServerCard = ({ server, list = false, children }: ServerCardProps) => {
   if (list) {
     return (
       <StyledServerCard className="list">
-        <div className="d-flex align-items-center">
-          <div className="server-img-container">
-            <Card.Img
-              className="server-img-icon"
-              variant="top"
-              src={getServerPictureUrl(server, true)}
-            />
-          </div>
-          <div className="px-4">
-            <div className="server-id">#{server.id}</div>
-            <div className="server-name">{server.name}</div>
-          </div>
-        </div>
-        <div>{children}</div>
+        <Row className="gy-2">
+          <Col xs={12} md={6} className="d-flex align-items-center">
+            <div className="server-img-container">
+              <Card.Img
+                className="server-img-icon"
+                variant="top"
+                src={getServerPictureUrl(server, true)}
+              />
+            </div>
+            <div className="px-4">
+              <div className="server-id">#{server.id}</div>
+              <div className="server-name">{server.name}</div>
+            </div>
+          </Col>
+          <Col
+            xs={12}
+            md={6}
+            className="d-flex align-items-center justify-content-end"
+          >
+            {children}
+          </Col>
+        </Row>
       </StyledServerCard>
     );
   }
