@@ -22,6 +22,14 @@ const StyledHeader = styled.div`
       }
     }
 
+    .navbar-toggler {
+      color: ${({ theme }) => theme.primary};
+
+      &:focus {
+        box-shadow: 0 0 0 0.07rem;
+      }
+    }
+
     .navbar-nav {
       flex-basis: 100%;
       display: flex;
