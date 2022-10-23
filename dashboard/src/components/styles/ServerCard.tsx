@@ -49,11 +49,6 @@ const StyledServerCard = styled(Card)`
   &.list {
     padding: 0.5rem 1rem;
 
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-
     .server-img-container {
       width: 75px;
       height: 75px;

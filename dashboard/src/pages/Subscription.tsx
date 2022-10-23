@@ -14,7 +14,8 @@ const SubscriptionPage = () => {
   const [subscriptionAssignId, setSubscriptionAssignId] = useState("");
 
   const renderServerSubscription = (subscription?: Subscription) => {
-    const isSubscriptionOwner = subscription?.owner === user.data?.id;
+    const isSubscriptionOwner =
+      subscription?.owner === user.data?.id || user.data?.admin;
 
     return (
       <div>

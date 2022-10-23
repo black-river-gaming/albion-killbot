@@ -12,7 +12,15 @@ import { getServerPictureUrl } from "helpers/discord";
 import { isSubscriptionActiveAndUnassiged } from "helpers/subscriptions";
 import { getCurrency } from "helpers/utils";
 import { useState } from "react";
-import { Alert, Button, Card, Col, ListGroup, Row } from "react-bootstrap";
+import {
+  Alert,
+  Button,
+  Card,
+  Col,
+  ListGroup,
+  Row,
+  Stack,
+} from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import {
   useBuySubscriptionMutation,
@@ -99,14 +107,18 @@ const Premium = () => {
       if (typeof server === "string") return;
 
       return (
-        <div className="d-flex align-items-center">
+        <Stack
+          className="d-flex align-items-center"
+          direction="horizontal"
+          gap={2}
+        >
           <img
             src={getServerPictureUrl(server, true)}
             style={{ width: 30, height: 30 }}
             alt={server.name}
           />
-          <div className="px-2">{server.name}</div>
-        </div>
+          <div>{server.name}</div>
+        </Stack>
       );
     };
 
@@ -121,74 +133,90 @@ const Premium = () => {
 
     return (
       <Card className="p-2 mt-4 user-subscriptions">
-        <div className="d-flex justify-content-center pb-2">
-          Your Active Subscriptions:
-        </div>
+        <Card.Header>Your Active Subscriptions:</Card.Header>
 
-        <ListGroup>
-          {activeSubscriptions.map((subscription) => {
-            const price = subscription.stripe?.price;
+        <Card.Body>
+          <Stack direction="vertical" gap={4}>
+            {activeSubscriptions.map((subscription) => {
+              const price = subscription.stripe?.price;
 
-            return (
-              <ListGroup.Item
-                key={subscription.id}
-                className="user-subscription-list-item"
-              >
-                <div className="info">
-                  <div className="id-text">
-                    <span>#{subscription.id}</span>
-                    {subscription.stripe?.cancel_at_period_end && (
-                      <span className="cancelled-text">cancelled</span>
-                    )}
-                  </div>
-                  <div className="active">
-                    {subscription.expires === "never"
-                      ? `Activated`
-                      : `Active until ${new Date(
-                          subscription.expires
-                        ).toLocaleDateString()}`}
-                    {price && (
-                      <div className="d-flex align-items-baseline price">
-                        (
-                        {getCurrency(price.price / 100, {
-                          currency: price.currency,
-                        })}
-                        /{price.recurrence.count} {price.recurrence.interval})
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {subscription.server &&
-                  renderSubscriptionServer(subscription.server)}
-
-                <div className="actions">
-                  <Button
-                    variant="primary"
-                    onClick={() => setSubscriptionAssignId(subscription.id)}
+              return (
+                <Row
+                  key={subscription.id}
+                  className="user-subscription-list-item gy-2"
+                >
+                  <Col
+                    xs={12}
+                    xl={4}
+                    className="info d-flex flex-column justify-content-center"
                   >
-                    {subscription.server ? "Transfer" : "Assign"}
-                  </Button>
-                  {subscription.stripe?.customer && (
+                    <div className="id-text">
+                      <span>#{subscription.id}</span>
+                      {subscription.stripe?.cancel_at_period_end && (
+                        <span className="cancelled-text">cancelled</span>
+                      )}
+                    </div>
+                    <div className="active">
+                      {subscription.expires === "never"
+                        ? `Activated`
+                        : `Active until ${new Date(
+                            subscription.expires
+                          ).toLocaleDateString()}`}
+                      {price && (
+                        <div className="d-flex align-items-baseline price">
+                          (
+                          {getCurrency(price.price / 100, {
+                            currency: price.currency,
+                          })}
+                          /{price.recurrence.count} {price.recurrence.interval})
+                        </div>
+                      )}
+                    </div>
+                  </Col>
+
+                  <Col
+                    xs={12}
+                    md={6}
+                    xl={4}
+                    className="d-flex align-items-center pt-xl-2"
+                  >
+                    {subscription.server &&
+                      renderSubscriptionServer(subscription.server)}
+                  </Col>
+
+                  <Col
+                    xs={12}
+                    md={6}
+                    xl={4}
+                    className="actions d-flex align-items-center justify-content-end"
+                  >
                     <Button
-                      variant="danger"
-                      onClick={() => {
-                        if (subscription.stripe?.customer)
-                          dispatchManageSubscription(
-                            subscription.stripe.customer
-                          );
-                      }}
+                      variant="primary"
+                      onClick={() => setSubscriptionAssignId(subscription.id)}
                     >
-                      {subscription.stripe?.cancel_at_period_end
-                        ? "Renew"
-                        : "Cancel"}
+                      {subscription.server ? "Transfer" : "Assign"}
                     </Button>
-                  )}
-                </div>
-              </ListGroup.Item>
-            );
-          })}
-        </ListGroup>
+                    {subscription.stripe?.customer && (
+                      <Button
+                        variant="danger"
+                        onClick={() => {
+                          if (subscription.stripe?.customer)
+                            dispatchManageSubscription(
+                              subscription.stripe.customer
+                            );
+                        }}
+                      >
+                        {subscription.stripe?.cancel_at_period_end
+                          ? "Renew"
+                          : "Cancel"}
+                      </Button>
+                    )}
+                  </Col>
+                </Row>
+              );
+            })}
+          </Stack>
+        </Card.Body>
       </Card>
     );
   };

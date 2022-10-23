@@ -234,6 +234,10 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
     border-radius: 0.5rem;
     color: ${({ theme }) => theme.text};
 
+    .card-header {
+      background: none;
+    }
+
     .list-group {
       border-radius: inherit;
       background-color: transparent;
