@@ -3,9 +3,10 @@ import styled from "styled-components";
 const StyledPremium = styled.div`
   .user-subscriptions {
     .user-subscription-list-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      :not(:first-child) {
+        padding-top: 0.5rem;
+        border-top: 1px solid ${({ theme }) => theme.background}77;
+      }
 
       .info {
         .id-text {
