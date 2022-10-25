@@ -29,8 +29,10 @@ import {
 } from "store/api";
 import {
   loadTrack,
+  trackAlliance,
   trackGuild,
   trackPlayer,
+  untrackAlliance,
   untrackGuild,
   untrackPlayer,
 } from "store/track";
@@ -107,7 +109,7 @@ const Track = () => {
 
     return (
       <Row className="p-2 gy-2">
-        <Col sm={6}>
+        <Col xl={4}>
           {renderTrackingList(
             "Players",
             server.data?.limits.players,
@@ -115,12 +117,20 @@ const Track = () => {
             untrackPlayer
           )}
         </Col>
-        <Col sm={6}>
+        <Col xl={4}>
           {renderTrackingList(
             "Guilds",
             server.data?.limits.guilds,
             track.guilds,
             untrackGuild
+          )}
+        </Col>
+        <Col xl={4}>
+          {renderTrackingList(
+            "Alliances",
+            server.data?.limits.alliances,
+            track.alliances,
+            untrackAlliance
           )}
         </Col>
       </Row>
@@ -181,6 +191,14 @@ const Track = () => {
       dispatch(trackGuild(guild));
     };
 
+    const doTrackAlliance = (alliance: SearchResults["alliances"][number]) => {
+      const limit = server.data?.limits.alliances || 0;
+
+      if (track.alliances.length >= limit)
+        return setError(`Maximum limit of ${limit} alliances(s) exceeded.`);
+      dispatch(trackAlliance(alliance));
+    };
+
     if (searchResults.isUninitialized) return;
     if (searchResults.isFetching) return <Loader className="p-2" />;
     if (!searchResults.data)
@@ -190,7 +208,7 @@ const Track = () => {
         </span>
       );
 
-    const { players, guilds } = searchResults.data;
+    const { players, guilds, alliances } = searchResults.data;
 
     return (
       <div className="p-2 pb-0">
@@ -207,6 +225,13 @@ const Track = () => {
             guilds.slice(0, 5),
             track.guilds,
             doTrackGuild
+          )}
+        {alliances.length > 0 &&
+          renderSearchResultsList(
+            "Alliances",
+            alliances.slice(0, 5),
+            track.alliances,
+            doTrackAlliance
           )}
       </div>
     );
@@ -248,7 +273,7 @@ const Track = () => {
                   <Form.Control
                     type="text"
                     aria-describedby="search-help"
-                    placeholder="Search in Albion Online for name or id"
+                    placeholder="Search in Albion Online for name or ID"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                   />
@@ -256,6 +281,9 @@ const Track = () => {
                     <FontAwesomeIcon icon={faSearch} />
                   </Button>
                 </InputGroup>
+                <Form.Text id="search-help" muted>
+                  For alliances, only search by <b>ID</b> is working
+                </Form.Text>
               </Form.Group>
             </Form>
             {renderSearchResults()}
