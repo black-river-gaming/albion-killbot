@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useDoLeaveServerMutation } from "store/api";
 import { ServerBase } from "types";
-import Toast from "./Toast";
 
 interface LeaveServerProps {
   server: ServerBase;
@@ -48,21 +47,6 @@ const LeaveServer = ({ server, onLeave }: LeaveServerProps) => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      <Toast
-        bg="success"
-        show={leaveServer.isSuccess}
-        onClose={() => leaveServer.reset()}
-      >
-        Left server.
-      </Toast>
-      <Toast
-        bg="danger"
-        show={leaveServer.isError}
-        onClose={() => leaveServer.reset()}
-      >
-        Failed to leave server. Please try again later.
-      </Toast>
     </>
   );
 };

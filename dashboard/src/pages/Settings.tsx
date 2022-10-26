@@ -1,6 +1,5 @@
 import ChannelInput from "components/ChannelInput";
 import Loader from "components/Loader";
-import Toast from "components/Toast";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { capitalize, getLocaleName } from "helpers/utils";
 import { useEffect } from "react";
@@ -21,7 +20,7 @@ import {
   setRankingsChannel,
   setRankingsEnabled,
   setRankingsGuildRanking,
-  setRankingsPvpRanking,
+  setRankingsPvpRanking
 } from "store/settings";
 
 const languages = ["en", "pt", "es", "fr", "ru"];
@@ -40,10 +39,6 @@ const Settings = () => {
       dispatch(loadSettings(server.data.settings));
     }
   }, [dispatch, server.data]);
-
-  useEffect(() => {
-    setTimeout(updateSettings.reset, 5000);
-  }, [updateSettings.reset, updateSettings.isSuccess, updateSettings.isError]);
 
   if (server.isFetching || updateSettings.isLoading) return <Loader />;
   if (!server.data || !server.data.settings)
@@ -263,13 +258,6 @@ const Settings = () => {
             </Button>
           </div>
         </div>
-
-        <Toast bg="success" show={updateSettings.isSuccess}>
-          Settings saved.
-        </Toast>
-        <Toast bg="danger" show={updateSettings.isError}>
-          Failed to save settings. Please try again later.
-        </Toast>
       </Form>
     </Card>
   );

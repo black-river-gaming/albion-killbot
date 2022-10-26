@@ -1,6 +1,5 @@
 import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
-import Toast from "components/Toast";
 import { useState } from "react";
 import { Alert, Button, Col, Modal, Row } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
@@ -100,15 +99,6 @@ const SubscriptionAssignModal = ({
           </Button>
         </div>
       </Modal.Footer>
-      <Toast
-        bg="danger"
-        show={assignSubscription.isError}
-        onClose={() => assignSubscription.reset()}
-        delay={3000}
-        autohide
-      >
-        Failed to assign subscription. Please try again later.
-      </Toast>
     </Modal>
   );
 };
