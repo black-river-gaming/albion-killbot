@@ -236,6 +236,11 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
 
     .card-header {
       background: none;
+      padding-top: 0.7rem;
+      padding-bottom: 0.7rem;
+
+      font-size: 1.15rem;
+      font-weight: 500;
     }
 
     .list-group {

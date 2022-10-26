@@ -1,18 +1,9 @@
-import { faCrown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LeaveServer from "components/LeaveServer";
 import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
-import {
-  Button,
-  Card,
-  Col,
-  Container,
-  ListGroup,
-  Row,
-  Stack,
-} from "react-bootstrap";
-import { Link, Navigate, NavLink, Outlet, useParams } from "react-router-dom";
+import SubscriptionPriceCard from "components/SubscriptionPriceCard";
+import { Button, Card, Container, Stack } from "react-bootstrap";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { useFetchServerQuery } from "store/api";
 
 const AdminServer = () => {
@@ -22,40 +13,65 @@ const AdminServer = () => {
   if (server.isFetching) return <Loader />;
   if (!server.data) return <Navigate to=".." replace={true} />;
 
+  const { subscription, limits } = server.data;
+
   return (
-    <Container fluid className="py-3">
-      <Row className="g-3">
-        <Col md={4}>
-          <ServerCard server={server.data}>
+    <Container fluid className="py-2">
+      <Stack gap={2}>
+        <ServerCard server={server.data} list>
+          <Stack direction="horizontal" gap={2} className="justify-content-end">
+            <Link to="..">
+              <Button variant="secondary">Change Server</Button>
+            </Link>
+            <LeaveServer server={server.data} />
+          </Stack>
+        </ServerCard>
+
+        <Card>
+          <Card.Header>Subscription</Card.Header>
+          <Card.Body>
+            <Stack gap={2}>
+              {subscription?.stripe && subscription.stripe?.price && (
+                <div className="d-flex justify-content-center justify-content-md-start">
+                  <SubscriptionPriceCard price={subscription.stripe?.price} />
+                </div>
+              )}
+              <Stack direction="horizontal" gap={1}>
+                <span>Status: </span>
+                <span className="text-primary">
+                  {subscription.expires === "never"
+                    ? `Never expires`
+                    : `Active until ${new Date(
+                        subscription.expires
+                      ).toLocaleString()}`}
+                </span>
+                {subscription?.stripe && <span>(Auto-managed by Stripe)</span>}
+              </Stack>
+
+              <hr />
+              <div>
+                <div>Track Limits:</div>
+                <ul>
+                  <li>Players: {limits.players}</li>
+                  <li>Guilds: {limits.guilds}</li>
+                  <li>Alliances: {limits.alliances}</li>
+                </ul>
+              </div>
+            </Stack>
+          </Card.Body>
+          <Card.Footer>
             <Stack
               direction="horizontal"
               gap={2}
               className="justify-content-end"
             >
-              <Link to="..">
-                <Button variant="secondary">Change Server</Button>
-              </Link>
-              <LeaveServer server={server.data} />
+              <Button variant="primary">Edit Expiration</Button>
+              <Button variant="primary">Edit Limits</Button>
+              <Button variant="danger">Cancel</Button>
             </Stack>
-          </ServerCard>
-          <Card className="mt-3">
-            <ListGroup>
-              <NavLink
-                to="subscription"
-                className="list-group-item list-group-item-action"
-              >
-                <Stack direction="horizontal" gap={2}>
-                  <FontAwesomeIcon icon={faCrown} size="sm" />
-                  <div>Subscription</div>
-                </Stack>
-              </NavLink>
-            </ListGroup>
-          </Card>
-        </Col>
-        <Col md={8}>
-          <Outlet />
-        </Col>
-      </Row>
+          </Card.Footer>
+        </Card>
+      </Stack>
     </Container>
   );
 };
