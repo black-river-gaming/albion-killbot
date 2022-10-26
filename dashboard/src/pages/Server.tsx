@@ -5,7 +5,7 @@ import ServerCard from "components/ServerCard";
 import { Button, Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import { Link, Navigate, NavLink, Outlet, useParams } from "react-router-dom";
 import { useFetchServerQuery } from "store/api";
-import StyledServer from "./styles";
+import StyledServer from "./styles/Server";
 
 const Server = () => {
   const { serverId = "" } = useParams();

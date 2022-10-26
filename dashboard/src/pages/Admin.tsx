@@ -60,6 +60,10 @@ const Admin = () => {
     return (
       <ServerCard key={server.id} server={server} list>
         <Stack gap={2} direction="horizontal">
+          <Link to={`/admin/${server.id}`}>
+            <Button variant="primary">Manage</Button>
+          </Link>
+
           <Link to={`/dashboard/${server.id}`}>
             <Button variant="primary">Dashboard</Button>
           </Link>

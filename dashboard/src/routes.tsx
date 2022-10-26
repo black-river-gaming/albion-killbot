@@ -36,6 +36,9 @@ function MainRoutes() {
           <Route element={<AdminGuard redirectTo="/" />}>
             <Route path="admin">
               <Route index element={<Admin />} />
+              <Route path=":serverId" element={<Server />}>
+                <Route path="subscription" element={<SubscriptionPage />} />
+              </Route>
             </Route>
           </Route>
           <Route
