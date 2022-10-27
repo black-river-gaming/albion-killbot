@@ -62,17 +62,7 @@ router.use(`/:serverId`, serverAdmin);
  *              items:
  *                $ref: '#/components/schemas/Channel'
  *            limits:
- *              type: object
- *              properties:
- *                players:
- *                  type: number
- *                  default: 10
- *                guilds:
- *                  type: number
- *                  default: 1
- *                alliances:
- *                  type: number
- *                  default: 1
+ *              $ref: "#/components/schemas/Limits"
  *            settings:
  *              $ref: '#/components/schemas/Settings'
  *            subscription:

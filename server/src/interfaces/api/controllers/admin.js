@@ -10,6 +10,16 @@ async function getServers(req, res) {
   }
 }
 
+async function editServerSubscription(req, res) {
+  try {
+    const { serverId } = req.params;
+
+    return res.send({});
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+}
+
 async function leaveServer(req, res) {
   try {
     const { serverId } = req.params;
@@ -22,6 +32,7 @@ async function leaveServer(req, res) {
 }
 
 module.exports = {
+  editServerSubscription,
   getServers,
   leaveServer,
 };

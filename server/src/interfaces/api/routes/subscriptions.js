@@ -21,7 +21,15 @@ router.use(authenticated);
  *         owner:
  *           type: string
  *           description: Discord user id that owns the subscription
+ *           readOnly: true
  *           example: "155377266568855552"
+ *         server:
+ *             readOnly: true
+ *             oneOf:
+ *             - $ref: '#/components/schemas/ServerBase'
+ *             - type: string
+ *               description: Discord server id
+ *               example: "738365346855256107"
  *         expires:
  *           description: Expiration date for a given subscription
  *           oneOf:
@@ -30,15 +38,12 @@ router.use(authenticated);
  *             example: "2022-07-21"
  *           - type: string
  *             example: "never"
- *         server:
- *             oneOf:
- *             - $ref: '#/components/schemas/ServerBase'
- *             - type: string
- *               description: Discord server id
- *               example: "738365346855256107"
+ *         limits:
+ *           $ref: "#/components/schemas/Limits"
  *         stripe:
- *           description: Stripe subscription information
  *           type: object
+ *           description: Stripe subscription information
+ *           readOnly: true
  *           properties:
  *             id:
  *               type: string
@@ -58,6 +63,19 @@ router.use(authenticated);
  *               example: "cus_Lvvu9FF2ehwSBF"
  *             price:
  *               $ref: "#/components/schemas/SubscriptionPrice"
+ *
+ *     Limits:
+ *       type: object
+ *       properties:
+ *         players:
+ *           type: number
+ *           default: 10
+ *         guilds:
+ *           type: number
+ *           default: 1
+ *         alliances:
+ *           type: number
+ *           default: 1
  *
  *     SubscriptionPrice:
  *       type: object

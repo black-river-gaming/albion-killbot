@@ -13,7 +13,6 @@ router.use(admin);
  *     tags: [Admin]
  *     summary: Return list of servers for the bot
  *     operationId: getServers
- *     parameters:
  *     responses:
  *       200:
  *         description: List of servers
@@ -29,6 +28,41 @@ router.use(admin);
  *         description: Internal error
  */
 router.get(`/servers`, adminController.getServers);
+
+/**
+ * @openapi
+ * /admin/servers/{serverId}/subscription:
+ *   put:
+ *     tags: [Admin]
+ *     summary: Edit a server subscription
+ *     operationId: editSubscription
+ *     parameters:
+ *     - in: path
+ *       name: serverId
+ *       schema:
+ *         type: integer
+ *       description: Server Id to leave
+ *       required: true
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Subscription'
+ *     responses:
+ *       200:
+ *         description: Updated server subscription
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Subscription'
+ *       403:
+ *         description: Unable to authenticate
+ *       500:
+ *         description: Internal error
+ */
+router.put(`/servers/:serverId/subscription`, adminController.editServerSubscription);
 
 /**
  * @openapi
