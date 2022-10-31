@@ -85,9 +85,14 @@ async function removeSubscriptionByStripeId(stripe) {
   return await collection.deleteOne({ stripe });
 }
 
-async function updateSubscriptionByStripeId(stripe, subscription) {
-  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-  return await collection.updateOne({ stripe }, { $set: subscription });
+async function updateSubscriptionByServerId(serverId, subscription) {
+  await updateOne(SUBSCRIPTIONS_COLLECTION, { server: serverId }, { $set: subscription });
+  return await getSubscriptionByServerId(serverId);
+}
+
+async function updateSubscriptionByStripeId(stripeId, subscription) {
+  await updateOne(SUBSCRIPTIONS_COLLECTION, { stripe: stripeId }, { $set: subscription });
+  return await getSubscriptionByStripeId(stripeId);
 }
 
 async function unassignSubscription(_id) {
@@ -118,5 +123,6 @@ module.exports = {
   removeSubscriptionByStripeId,
   unassignSubscription,
   unassignSubscriptionsByServerId,
+  updateSubscriptionByServerId,
   updateSubscriptionByStripeId,
 };
