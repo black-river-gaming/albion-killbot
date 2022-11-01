@@ -6,6 +6,12 @@ export interface User {
   admin: boolean;
 }
 
+export interface Limits {
+  players: number;
+  guilds: number;
+  alliances: number;
+}
+
 export interface ServerBase {
   id: string;
   name: string;
@@ -21,11 +27,7 @@ export interface ServerPartial extends ServerBase {
 export interface Server extends ServerBase {
   channels: Channel[];
   settings: Settings;
-  limits: {
-    players: number;
-    guilds: number;
-    alliances: number;
-  };
+  limits: Limits;
   subscription: Subscription;
   track: TrackList;
 }
@@ -91,6 +93,7 @@ export interface Subscription {
     customer: string;
     price: SubscriptionPrice;
   };
+  limits?: Limits;
 }
 
 export interface SubscriptionPrice {

@@ -74,6 +74,28 @@ export const toastSlice = createSlice({
         message: "Failed to save track list. Please try again later.",
       });
     });
+
+    builder.addMatcher(
+      api.endpoints.updateSubscription.matchFulfilled,
+      (state) => {
+        state.push({
+          id: uid(),
+          theme: "success",
+          message: "Server subscription updated.",
+        });
+      }
+    );
+    builder.addMatcher(
+      api.endpoints.updateSubscription.matchRejected,
+      (state) => {
+        state.push({
+          id: uid(),
+          theme: "danger",
+          message:
+            "Failed to update server subscription. Please try again later.",
+        });
+      }
+    );
   },
 });
 
