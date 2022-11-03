@@ -89,19 +89,19 @@
     "LIST": "Список отслеживаемых",
     "NONE": "Никто",
     "PLAYERS": {
-      "NAME": "Игроки",
+      "NAME": "Игроки ({{ actual }}/{{ max }})",
       "DESCRIPTION": "Player name",
       "TRACKED": "Отслеживание игрока: {{ name }}.",
       "UNTRACKED": "Прекращение отслеживание игрока: {{ name }}."
     },
     "GUILDS": {
-      "NAME": "Гильдии",
+      "NAME": "Гильдии ({{ actual }}/{{ max }})",
       "DESCRIPTION": "Guild name",
       "TRACKED": "Отслеживание гильдии: {{ name }}.",
       "UNTRACKED": "Прекращение отслеживание гильдии: {{ name }}."
     },
     "ALLIANCES": {
-      "NAME": "Альянсы",
+      "NAME": "Альянсы ({{ actual }}/{{ max }})",
       "DESCRIPTION": "Alliance ID",
       "TRACKED": "Отслеживание альянса: {{ name }}.",
       "UNTRACKED": "Прекращение отслеживание альянса: {{ name }}."

@@ -1,6 +1,6 @@
 const { find, findOne, updateOne } = require("../ports/database");
 const { getNumber } = require("../helpers/utils");
-const { hasSubscriptionByServerId } = require("./subscriptions");
+const { hasSubscriptionByServerId, getSubscriptionByServerId } = require("./subscriptions");
 const logger = require("../helpers/logger");
 
 const { MAX_PLAYERS, MAX_GUILDS, MAX_ALLIANCES, SUB_MAX_PLAYERS, SUB_MAX_GUILDS, SUB_MAX_ALLIANCES } = process.env;
@@ -45,15 +45,22 @@ async function setTrack(server, track) {
   return await getTrack(server);
 }
 
-async function getLimitsByServerId(server) {
+async function getLimits(serverId) {
   let players = getNumber(MAX_PLAYERS, 10);
   let guilds = getNumber(MAX_GUILDS, 1);
   let alliances = getNumber(MAX_ALLIANCES, 1);
 
-  if (await hasSubscriptionByServerId(server)) {
-    players = getNumber(SUB_MAX_PLAYERS, players);
-    guilds = getNumber(SUB_MAX_GUILDS, guilds);
-    alliances = getNumber(SUB_MAX_ALLIANCES, alliances);
+  if (await hasSubscriptionByServerId(serverId)) {
+    const subscription = await getSubscriptionByServerId(serverId);
+    if (subscription.limits) {
+      players = getNumber(subscription.limits.players, players);
+      guilds = getNumber(subscription.limits.guilds, guilds);
+      alliances = getNumber(subscription.limits.alliances, alliances);
+    } else {
+      players = getNumber(SUB_MAX_PLAYERS, players);
+      guilds = getNumber(SUB_MAX_GUILDS, guilds);
+      alliances = getNumber(SUB_MAX_ALLIANCES, alliances);
+    }
   }
 
   return {
@@ -64,7 +71,7 @@ async function getLimitsByServerId(server) {
 }
 
 module.exports = {
-  getLimitsByServerId,
+  getLimits,
   getTrack,
   getTrackForServer,
   setTrack,

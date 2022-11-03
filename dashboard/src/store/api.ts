@@ -18,7 +18,7 @@ export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: REACT_APP_API_URL,
   }),
-  tagTypes: ["Admin", "User", "Subscription"],
+  tagTypes: ["Admin", "User", "Subscription", "Server"],
   endpoints(builder) {
     return {
       auth: builder.mutation<void, string>({
@@ -76,6 +76,19 @@ export const api = createApi({
         }),
         invalidatesTags: ["Admin"],
       }),
+      updateSubscription: builder.mutation<
+        Subscription,
+        { serverId: string; subscription: Subscription }
+      >({
+        query: ({ serverId, subscription }) => ({
+          url: `/admin/servers/${serverId}/subscription`,
+          method: "PUT",
+          body: {
+            ...subscription,
+          },
+        }),
+        invalidatesTags: ["Admin", "Server", "Subscription"],
+      }),
       fetchPrices: builder.query<SubscriptionPrice[], void>({
         query: () => `/subscriptions/prices`,
       }),
@@ -88,6 +101,7 @@ export const api = createApi({
       }),
       fetchServer: builder.query<Server, string>({
         query: (serverId) => `/servers/${serverId}`,
+        providesTags: ["Server"],
       }),
       fetchSubscriptions: builder.query<Subscription[], void>({
         query: () => `/subscriptions`,
@@ -136,5 +150,6 @@ export const {
   useLogoutMutation,
   useManageSubscriptionMutation,
   useUpdateSettingsMutation,
+  useUpdateSubscriptionMutation,
   useUpdateTrackMutation,
 } = api;

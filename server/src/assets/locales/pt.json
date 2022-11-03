@@ -89,19 +89,19 @@
     "LIST": "Lista de rastreamentos",
     "NONE": "Nenhum(a)",
     "PLAYERS": {
-      "NAME": "Jogadores",
+      "NAME": "Jogadores ({{ actual }}/{{ max }})",
       "DESCRIPTION": "Nome do jogador",
       "TRACKED": "Rastreando jogador: {{ name }}.",
       "UNTRACKED": "Parando de rastrear jogador: {{ name }}."
     },
     "GUILDS": {
-      "NAME": "Guildas",
+      "NAME": "Guildas ({{ actual }}/{{ max }})",
       "DESCRIPTION": "Nome da guilda",
       "TRACKED": "Rastreando guilda: {{ name }}.",
       "UNTRACKED": "Parando de rastrear guilda: {{ name }}."
     },
     "ALLIANCES": {
-      "NAME": "Alianças",
+      "NAME": "Alianças ({{ actual }}/{{ max }})",
       "DESCRIPTION": "ID da aliança",
       "TRACKED": "Rastreando aliança: {{ name }}.",
       "UNTRACKED": "Parando de rastrear aliança: {{ name }}."

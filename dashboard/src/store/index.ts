@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { api } from "./api";
 import settings from "./settings";
+import toast from "./toast";
 import track from "./track";
 
 export const store = configureStore({
@@ -8,6 +9,7 @@ export const store = configureStore({
     [api.reducerPath]: api.reducer,
     settings,
     track,
+    [toast.name]: toast.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(api.middleware),

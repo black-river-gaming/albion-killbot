@@ -2,7 +2,7 @@ const { InteractionType } = require("discord-api-types/v10");
 const { String } = require("discord-api-types/v10").ApplicationCommandOptionType;
 const { getLocale } = require("../../../helpers/locale");
 const { getAlliance, search } = require("../../../services/search");
-const { getLimitsByServerId, setTrack } = require("../../../services/track");
+const { getLimits, setTrack } = require("../../../services/track");
 
 const t = getLocale().t;
 
@@ -31,7 +31,7 @@ const command = {
   default_member_permissions: "0",
   options,
   handle: async (interaction, { track, t }) => {
-    const limits = await getLimitsByServerId(interaction.guild.id);
+    const limits = await getLimits(interaction.guild.id);
 
     const playerName = interaction.options.getString("player");
     const guildName = interaction.options.getString("guild");

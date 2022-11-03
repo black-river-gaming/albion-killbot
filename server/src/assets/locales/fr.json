@@ -89,19 +89,19 @@
     "LIST": "Liste des suivis",
     "NONE": "Aucun",
     "PLAYERS": {
-      "NAME": "Joueurs",
+      "NAME": "Joueurs ({{ actual }}/{{ max }})",
       "DESCRIPTION": "Player name",
       "TRACKED": "Suivi du joueur: {{ name }}.",
       "UNTRACKED": "Désactivation de la suivi du joueur: {{ name }}."
     },
     "GUILDS": {
-      "NAME": "Guildes",
+      "NAME": "Guildes ({{ actual }}/{{ max }})",
       "DESCRIPTION": "Guild name",
       "TRACKED": "Suivi de la guilde: {{ name }}.",
       "UNTRACKED": "Désactivation de la suivi de la guilde: {{ name }}."
     },
     "ALLIANCES": {
-      "NAME": "Alliances",
+      "NAME": "Alliances ({{ actual }}/{{ max }})",
       "DESCRIPTION": "Alliance ID",
       "TRACKED": "Suivi de l'alliance: {{ name }}.",
       "UNTRACKED": "Désactivation de la suivi de l'alliance: {{ name }}."

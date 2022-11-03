@@ -1,8 +1,8 @@
 import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import LeaveServer from "components/LeaveServer";
 import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
-import Toast from "components/Toast";
 import { useEffect, useState } from "react";
 import {
   Button,
@@ -10,18 +10,15 @@ import {
   Container,
   Form,
   InputGroup,
-  Modal,
   Row,
   Stack,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useDoLeaveServerMutation, useFetchAdminServersQuery } from "store/api";
+import { useFetchAdminServersQuery } from "store/api";
 import { ServerPartial } from "types";
 
 const Admin = () => {
   const serversQuery = useFetchAdminServersQuery();
-  const [leaveServer, setLeaveServer] = useState<ServerPartial>();
-  const [dispatchLeaveServer, leaveServerResult] = useDoLeaveServerMutation();
   const [servers, setServers] = useState<ServerPartial[]>([]);
   const [searchServer, setSearchServer] = useState("");
 
@@ -60,22 +57,22 @@ const Admin = () => {
     return (
       <ServerCard key={server.id} server={server} list>
         <Stack gap={2} direction="horizontal">
+          <Link to={`/admin/${server.id}`}>
+            <Button variant="primary">Manage</Button>
+          </Link>
+
           <Link to={`/dashboard/${server.id}`}>
             <Button variant="primary">Dashboard</Button>
           </Link>
 
-          <div>
-            <Button variant="danger" onClick={() => setLeaveServer(server)}>
-              Leave
-            </Button>
-          </div>
+          <LeaveServer server={server} />
         </Stack>
       </ServerCard>
     );
   };
 
   return (
-    <>
+    <div>
       <div className="d-flex justify-content-center pt-3">
         <h1>Discord Servers</h1>
       </div>
@@ -110,51 +107,7 @@ const Admin = () => {
           )}
         </Row>
       </Container>
-
-      <Modal
-        show={leaveServer !== undefined}
-        onHide={() => setLeaveServer(undefined)}
-      >
-        <Modal.Header>
-          <Modal.Title>Leave Server</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to leave{" "}
-          <span className="text-primary">{leaveServer?.name}</span>?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setLeaveServer(undefined)}>
-            Close
-          </Button>
-          <Button
-            variant="primary"
-            onClick={() => {
-              if (leaveServer) {
-                dispatchLeaveServer({ serverId: leaveServer.id });
-                setLeaveServer(undefined);
-              }
-            }}
-          >
-            Leave
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Toast
-        bg="success"
-        show={leaveServerResult.isSuccess}
-        onClose={() => leaveServerResult.reset()}
-      >
-        Left server.
-      </Toast>
-      <Toast
-        bg="danger"
-        show={leaveServerResult.isError}
-        onClose={() => leaveServerResult.reset()}
-      >
-        Failed to leave server. Please try again later.
-      </Toast>
-    </>
+    </div>
   );
 };
 

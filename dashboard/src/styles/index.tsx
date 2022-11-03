@@ -236,6 +236,11 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
 
     .card-header {
       background: none;
+      padding-top: 0.7rem;
+      padding-bottom: 0.7rem;
+
+      font-size: 1.15rem;
+      font-weight: 500;
     }
 
     .list-group {
@@ -417,6 +422,41 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
           color: ${({ theme }) => theme.primary};
         }
       }
+    }
+  }
+
+  /* Bootstrap Toast overrides */
+  .toast-container {
+    position: fixed;
+    left: 0;
+    bottom: 1rem;
+
+    transform: translateX(calc(50vw - 50%));
+
+    z-index: 1100;
+  }
+
+  .toast {
+    animation: 1s slideUp ease-in-out;
+
+    .toast-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      color: ${({ theme }) => theme.background}
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(1rem);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0rem);
+      opacity: 1;
     }
   }
 `;

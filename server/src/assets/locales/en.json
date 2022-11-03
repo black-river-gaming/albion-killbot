@@ -89,19 +89,19 @@
     "LIST": "Tracking list",
     "NONE": "None",
     "PLAYERS": {
-      "NAME": "Players",
+      "NAME": "Players ({{ actual }}/{{ max }})",
       "DESCRIPTION": "Player name",
       "TRACKED": "Tracking player: {{ name }}.",
       "UNTRACKED": "Untracking player: {{ name }}."
     },
     "GUILDS": {
-      "NAME": "Guilds",
+      "NAME": "Guilds ({{ actual }}/{{ max }})",
       "DESCRIPTION": "Guild name",
       "TRACKED": "Tracking guild: {{ name }}.",
       "UNTRACKED": "Untracking guild: {{ name }}."
     },
     "ALLIANCES": {
-      "NAME": "Alliances",
+      "NAME": "Alliances ({{ actual }}/{{ max }})",
       "DESCRIPTION": "Alliance ID",
       "TRACKED": "Tracking alliance: {{ name }}.",
       "UNTRACKED": "Untracking alliance: {{ name }}."
