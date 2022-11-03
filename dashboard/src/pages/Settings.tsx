@@ -20,7 +20,7 @@ import {
   setRankingsChannel,
   setRankingsEnabled,
   setRankingsGuildRanking,
-  setRankingsPvpRanking
+  setRankingsPvpRanking,
 } from "store/settings";
 
 const languages = ["en", "pt", "es", "fr", "ru"];
