@@ -89,19 +89,19 @@
     "LIST": "Lista de rastreo",
     "NONE": "Ninguna",
     "PLAYERS": {
-      "NAME": "Jugadores",
+      "NAME": "Jugadores ({{ actual }}/{{ max }})",
       "DESCRIPTION": "Player name",
       "TRACKED": "Jugador rastreado: {{ name }}.",
       "UNTRACKED": "Dejar de rastrear Jugador: {{ name }}."
     },
     "GUILDS": {
-      "NAME": "Gremios",
+      "NAME": "Gremios ({{ actual }}/{{ max }})",
       "DESCRIPTION": "Guild name",
       "TRACKED": "Gremio rastreado: {{ name }}.",
       "UNTRACKED": "Dejar de rastrear gremio: {{ name }}."
     },
     "ALLIANCES": {
-      "NAME": "Alianzas",
+      "NAME": "Alianzas ({{ actual }}/{{ max }})",
       "DESCRIPTION": "Alliance ID",
       "TRACKED": "Alianza rastreada: {{ name }}.",
       "UNTRACKED": "Dejar de rastrear Alianza: {{ name }}."

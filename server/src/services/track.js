@@ -45,7 +45,7 @@ async function setTrack(server, track) {
   return await getTrack(server);
 }
 
-async function getLimitsByServerId(serverId) {
+async function getLimits(serverId) {
   let players = getNumber(MAX_PLAYERS, 10);
   let guilds = getNumber(MAX_GUILDS, 1);
   let alliances = getNumber(MAX_ALLIANCES, 1);
@@ -71,7 +71,7 @@ async function getLimitsByServerId(serverId) {
 }
 
 module.exports = {
-  getLimitsByServerId,
+  getLimits,
   getTrack,
   getTrackForServer,
   setTrack,
