@@ -1,5 +1,5 @@
 import Loader from "components/Loader";
-import SubscriptionAssignModal from "components/SubscriptionAssignModal";
+import SubscriptionAssign from "components/SubscriptionAssign";
 import SubscriptionPriceCard from "components/SubscriptionPriceCard";
 import { useState } from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
@@ -66,7 +66,7 @@ const SubscriptionPage = () => {
       {!server.data && <div>No data found.</div>}
       {renderServerSubscription(server.data?.subscription)}
       {subscriptionAssignId && (
-        <SubscriptionAssignModal
+        <SubscriptionAssign
           currentServerId={serverId}
           subscriptionId={subscriptionAssignId}
           onClose={() => setSubscriptionAssignId("")}
