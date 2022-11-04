@@ -1,7 +1,7 @@
 import LeaveServer from "components/LeaveServer";
 import Loader from "components/Loader";
-import ManageSubscription from "components/ManageSubscription";
 import ServerCard from "components/ServerCard";
+import SubscriptionEdit from "components/SubscriptionEdit";
 import SubscriptionPriceCard from "components/SubscriptionPriceCard";
 import { Button, Card, Container, Stack } from "react-bootstrap";
 import { Link, Navigate, useParams } from "react-router-dom";
@@ -77,8 +77,14 @@ const AdminServer = () => {
                 gap={2}
                 className="justify-content-end"
               >
-                <ManageSubscription subscription={subscription} />
-                <Button variant="danger">Cancel</Button>
+                {subscription ? (
+                  <>
+                    <SubscriptionEdit subscription={subscription} />
+                    <Button variant="danger">Cancel</Button>
+                  </>
+                ) : (
+                  <Button variant="primary">Add subscription</Button>
+                )}
               </Stack>
             </Card.Footer>
           </Card>
