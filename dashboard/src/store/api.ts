@@ -45,7 +45,7 @@ export const api = createApi({
           method: "POST",
           body,
         }),
-        invalidatesTags: ["Subscription"],
+        invalidatesTags: ["Server", "Subscription"],
       }),
       buySubscription: builder.mutation<Session, string>({
         query: (priceId) => ({
