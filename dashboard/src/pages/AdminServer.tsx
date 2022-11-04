@@ -47,11 +47,13 @@ const AdminServer = () => {
                 <Stack direction="horizontal" gap={1}>
                   <span>Status: </span>
                   <span className="text-primary">
-                    {subscription.expires === "never"
-                      ? `Never expires`
-                      : `Active until ${new Date(
-                          subscription.expires
-                        ).toLocaleString()}`}
+                    {subscription
+                      ? subscription.expires === "never"
+                        ? `Never expires`
+                        : `Active until ${new Date(
+                            subscription.expires
+                          ).toLocaleString()}`
+                      : "Free user "}
                   </span>
                   {subscription?.stripe && (
                     <span>(Auto-managed by Stripe)</span>
@@ -61,7 +63,7 @@ const AdminServer = () => {
                 <Stack direction="horizontal" gap={2}>
                   <div>Track Limits:</div>
                   <div className="text-primary">
-                    {subscription.limits ? "Custom" : "Default"}
+                    {subscription?.limits ? "Custom" : "Default"}
                   </div>
                 </Stack>
 
