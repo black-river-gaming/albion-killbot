@@ -28,6 +28,29 @@ router.use(admin);
  *         description: Internal error
  */
 router.get(`/servers`, adminController.getServers);
+/**
+ * @openapi
+ * /admin/servers/{serverId}:
+ *   delete:
+ *     tags: [Admin]
+ *     summary: Leave a server
+ *     operationId: leaveServer
+ *     parameters:
+ *     - in: path
+ *       name: serverId
+ *       schema:
+ *         type: integer
+ *       description: Server Id to leave
+ *       required: true
+ *     responses:
+ *       200:
+ *         description: Server left successfully
+ *       403:
+ *         description: Unable to authenticate
+ *       500:
+ *         description: Internal error
+ */
+router.delete(`/servers/:serverId`, adminController.leaveServer);
 
 /**
  * @openapi
@@ -35,7 +58,7 @@ router.get(`/servers`, adminController.getServers);
  *   put:
  *     tags: [Admin]
  *     summary: Edit a server subscription
- *     operationId: editSubscription
+ *     operationId: updateServerSubscription
  *     parameters:
  *     - in: path
  *       name: serverId
@@ -62,15 +85,15 @@ router.get(`/servers`, adminController.getServers);
  *       500:
  *         description: Internal error
  */
-router.put(`/servers/:serverId/subscription`, adminController.editServerSubscription);
+router.put(`/servers/:serverId/subscription`, adminController.setServerSubscription);
 
 /**
  * @openapi
- * /admin/servers/{serverId}:
+ * /admin/servers/{serverId}/subscription:
  *   delete:
  *     tags: [Admin]
- *     summary: Leave a server
- *     operationId: leaveServer
+ *     summary: Delete a server subscription
+ *     operationId: removeServerSubscription
  *     parameters:
  *     - in: path
  *       name: serverId
@@ -80,13 +103,13 @@ router.put(`/servers/:serverId/subscription`, adminController.editServerSubscrip
  *       required: true
  *     responses:
  *       200:
- *         description: Server left successfully
+ *         description: Subscription deleted
  *       403:
  *         description: Unable to authenticate
  *       500:
  *         description: Internal error
  */
-router.delete(`/servers/:serverId`, adminController.leaveServer);
+router.delete(`/servers/:serverId/subscription`, adminController.removeServerSubscription);
 
 module.exports = {
   path: "/admin",
