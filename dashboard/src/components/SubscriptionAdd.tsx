@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Modal, Stack } from "react-bootstrap";
-import { useAddSubscriptionMutation } from "store/api";
+import { useUpdateSubscriptionMutation } from "store/api";
 
 interface ManageSubscriptionProps {
   serverId: string;
@@ -27,15 +27,15 @@ const SubscriptionEdit = ({ serverId }: ManageSubscriptionProps) => {
   const [players, setPlayers] = useState(0);
   const [guilds, setGuilds] = useState(0);
   const [alliances, setAlliances] = useState(0);
-  const [dispatchAddSubscription, addSubscription] =
-    useAddSubscriptionMutation();
+  const [dispatchUpdateSubscription, updateSubscription] =
+    useUpdateSubscriptionMutation();
 
   useEffect(() => {
-    if (addSubscription.isSuccess) setShow(false);
-  }, [addSubscription.isSuccess]);
+    if (updateSubscription.isSuccess) setShow(false);
+  }, [updateSubscription.isSuccess]);
 
   const handleSubscriptionForm = async () => {
-    dispatchAddSubscription({
+    dispatchUpdateSubscription({
       serverId,
       subscription: {
         owner,

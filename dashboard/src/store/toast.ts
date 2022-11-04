@@ -75,13 +75,6 @@ export const toastSlice = createSlice({
       });
     });
 
-    builder.addMatcher(api.endpoints.addSubscription.matchRejected, (state) => {
-      state.push({
-        id: uid(),
-        theme: "danger",
-        message: "Failed to add server subscription. Please try again later.",
-      });
-    });
     builder.addMatcher(
       api.endpoints.updateSubscription.matchRejected,
       (state) => {

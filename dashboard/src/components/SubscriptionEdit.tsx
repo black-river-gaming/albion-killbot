@@ -12,7 +12,10 @@ const SubscriptionEdit = ({ subscription }: ManageSubscriptionProps) => {
 
   const [owner, setOwner] = useState(subscription.owner);
   const [expires, setExpires] = useState(
-    new Date(subscription.expires)
+    (subscription.expires === "never"
+      ? new Date()
+      : new Date(subscription.expires)
+    )
       .toLocaleString("sv-SE", {
         year: "numeric",
         month: "2-digit",
@@ -48,7 +51,6 @@ const SubscriptionEdit = ({ subscription }: ManageSubscriptionProps) => {
     dispatchUpdateSubscription({
       serverId: subscription.server,
       subscription: {
-        id: subscription.id,
         owner,
         expires: expiresNever ? "never" : new Date(expires).toISOString(),
         limits: limits

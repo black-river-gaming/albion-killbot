@@ -61,6 +61,13 @@ const AdminServer = () => {
                   )}
                 </Stack>
 
+                {subscription?.owner && (
+                  <Stack direction="horizontal" gap={1}>
+                    <span>Owner: </span>
+                    <span className="text-primary">{subscription.owner}</span>
+                  </Stack>
+                )}
+
                 <Stack direction="horizontal" gap={2}>
                   <div>Track Limits:</div>
                   <div className="text-primary">
