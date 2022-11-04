@@ -1,6 +1,7 @@
 import LeaveServer from "components/LeaveServer";
 import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
+import SubscriptionAdd from "components/SubscriptionAdd";
 import SubscriptionDelete from "components/SubscriptionDelete";
 import SubscriptionEdit from "components/SubscriptionEdit";
 import SubscriptionPriceCard from "components/SubscriptionPriceCard";
@@ -86,7 +87,7 @@ const AdminServer = () => {
                     <SubscriptionDelete subscription={subscription} />
                   </>
                 ) : (
-                  <Button variant="primary">Add subscription</Button>
+                  <SubscriptionAdd serverId={serverId} />
                 )}
               </Stack>
             </Card.Footer>

@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
+  AddSubscription,
   SearchResults,
   Server,
   ServerPartial,
@@ -76,6 +77,20 @@ export const api = createApi({
         }),
         invalidatesTags: ["Admin"],
       }),
+
+      addSubscription: builder.mutation<
+        Subscription,
+        { serverId: string; subscription: AddSubscription }
+      >({
+        query: ({ serverId, subscription }) => ({
+          url: `/admin/servers/${serverId}/subscription`,
+          method: "POST",
+          body: {
+            ...subscription,
+          },
+        }),
+        invalidatesTags: ["Admin", "Server", "Subscription"],
+      }),
       updateSubscription: builder.mutation<
         Subscription,
         { serverId: string; subscription: Subscription }
@@ -96,6 +111,7 @@ export const api = createApi({
         }),
         invalidatesTags: ["Admin", "Server", "Subscription"],
       }),
+
       fetchPrices: builder.query<SubscriptionPrice[], void>({
         query: () => `/subscriptions/prices`,
       }),
@@ -142,6 +158,7 @@ export const api = createApi({
 });
 
 export const {
+  useAddSubscriptionMutation,
   useAssignSubscriptionMutation,
   useAuthMutation,
   useBuySubscriptionMutation,
