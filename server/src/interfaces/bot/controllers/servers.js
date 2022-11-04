@@ -4,13 +4,15 @@ const { runInterval } = require("../../../helpers/utils");
 const { updateSettingsCache } = require("../../../services/settings");
 const { updateTrackCache } = require("../../../services/track");
 
+const REFRESH_INTERVAL = 60000;
+
 async function refreshServerCache() {
   logger.debug(`Refreshing servers cache.`);
 
   try {
-    await Promise.all([updateSettingsCache(), updateTrackCache()]);
+    await Promise.all([updateSettingsCache(REFRESH_INTERVAL + 30000), updateTrackCache(REFRESH_INTERVAL + 30000)]);
   } catch (error) {
-    logger.error(`Uanble to refresh servers cache: ${error.message}`, {
+    logger.error(`Unable to refresh servers cache: ${error.message}`, {
       error,
     });
   }
@@ -18,7 +20,7 @@ async function refreshServerCache() {
 
 async function init() {
   runInterval("Refresh cache for server settings", refreshServerCache, {
-    interval: 60000,
+    interval: REFRESH_INTERVAL,
     runOnStart: true,
   });
 }

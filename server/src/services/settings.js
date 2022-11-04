@@ -53,13 +53,13 @@ async function deleteSettings(guild) {
   return await deleteOne(SETTINGS_COLLECTION, { guild });
 }
 
-async function updateSettingsCache() {
+async function updateSettingsCache(timeout) {
   const settings = await find(SETTINGS_COLLECTION, {});
   settings.forEach((settings) => {
     if (!settings.guild) return;
 
     const serverId = settings.guild;
-    set(`settings-${serverId}`, settings);
+    set(`settings-${serverId}`, settings, { timeout });
   });
 }
 

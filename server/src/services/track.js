@@ -50,13 +50,13 @@ async function getLimits(serverId) {
   };
 }
 
-async function updateTrackCache() {
+async function updateTrackCache(timeout) {
   const tracks = await find(TRACK_COLLECTION, {});
   tracks.forEach((track) => {
     if (!track.server) return;
 
     const serverId = track.server;
-    set(`settings-${serverId}`, track);
+    set(`settings-${serverId}`, track, { timeout });
   });
 }
 

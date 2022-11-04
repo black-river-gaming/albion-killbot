@@ -58,7 +58,7 @@ const set = (key, value, { timeout = 60000, timeoutCallback, debug = false } = {
 
 const memoize = async (key, promise, { timeout, timeoutCallback, debug } = {}) => {
   // If entry exists, return it
-  if (cache.has(key)) return get(key, { debug: true });
+  if (cache.has(key)) return get(key, { debug: false });
 
   if (timeout && typeof timeout !== "number") throw new Error("Timeout for cache must be a valid number.");
   if (timeoutCallback && typeof timeoutCallback !== "function")
