@@ -7,8 +7,6 @@ const { DAY, HOUR } = require("../../helpers/constants");
 const database = require("../../ports/database");
 const queue = require("../../ports/queue");
 
-const battles = require("./controllers/battles");
-const events = require("./controllers/events");
 const guilds = require("./controllers/guilds");
 const rankings = require("./controllers/rankings");
 
@@ -28,16 +26,6 @@ client.on("shardReady", async (id) => {
   await queue.init();
   await commands.init(client.application.id);
   await controllers.init(client);
-
-  try {
-    await events.subscribe(client);
-    logger.info(`Subscribed to events queue.`);
-
-    await battles.subscribe(client);
-    logger.info(`Subscribed to battles queue.`);
-  } catch (e) {
-    logger.error(`Error in subscriptions:`, e);
-  }
 
   runInterval(`Collect Guild data`, guilds.updateGuilds, {
     fnOpts: [client],

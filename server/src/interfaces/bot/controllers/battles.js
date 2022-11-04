@@ -38,6 +38,17 @@ async function subscribe(client) {
   return await subscribeBattles(process.env.SHARD, cb);
 }
 
+async function init(client) {
+  try {
+    await subscribe(client);
+    logger.info(`Subscribed to battles queue.`);
+  } catch (error) {
+    logger.error(`Error in subscription to battles queue: ${error.message}`, { error });
+  }
+}
+
 module.exports = {
+  name: "battles",
+  init,
   subscribe,
 };

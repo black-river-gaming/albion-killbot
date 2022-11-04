@@ -33,8 +33,8 @@ const DEFAULT_SETTINGS = Object.freeze({
 });
 
 async function getSettings(serverId) {
-  return await memoize(`settings-${serverId}`, () => {
-    const settings = findOne(SETTINGS_COLLECTION, { guild: serverId });
+  return await memoize(`settings-${serverId}`, async () => {
+    const settings = await findOne(SETTINGS_COLLECTION, { guild: serverId });
     return Object.assign({}, DEFAULT_SETTINGS, settings);
   });
 }

@@ -56,7 +56,7 @@ const set = (key, value, { timeout = 60000, timeoutCallback, debug = false } = {
   return value;
 };
 
-const memoize = async (key, promise, { timeout, timeoutCallback, debug } = {}) => {
+const memoize = async (key, fn, { timeout, timeoutCallback, debug } = {}) => {
   // If entry exists, return it
   if (cache.has(key)) return get(key, { debug: false });
 
@@ -64,7 +64,7 @@ const memoize = async (key, promise, { timeout, timeoutCallback, debug } = {}) =
   if (timeoutCallback && typeof timeoutCallback !== "function")
     throw new Error("Timeout callback for cache must be a valid function.");
 
-  const value = await promise;
+  const value = await fn();
   return set(key, value, { timeout, timeoutCallback, debug });
 };
 

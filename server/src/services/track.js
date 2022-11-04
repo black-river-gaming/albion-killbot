@@ -13,8 +13,8 @@ const DEFAULT_TRACK = Object.freeze({
 });
 
 async function getTrack(serverId) {
-  return await memoize(`track-${serverId}`, () => {
-    const track = findOne(TRACK_COLLECTION, { server: serverId });
+  return await memoize(`track-${serverId}`, async () => {
+    const track = await findOne(TRACK_COLLECTION, { server: serverId });
     return Object.assign({}, DEFAULT_TRACK, track);
   });
 }

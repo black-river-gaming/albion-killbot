@@ -1,13 +1,12 @@
 const logger = require("../../../helpers/logger");
+const { getTrackedEvent } = require("../../../helpers/tracking");
+const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../../../helpers/embeds");
 
 const { subscribeEvents } = require("../../../services/events");
 const { generateEventImage, generateInventoryImage } = require("../../../services/images");
 const { REPORT_MODES, getSettings } = require("../../../services/settings");
 const { addRankingKill } = require("../../../services/rankings");
 const { getTrack } = require("../../../services/track");
-
-const { getTrackedEvent } = require("../../../helpers/tracking");
-const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../../../helpers/embeds");
 
 const { sendNotification } = require("./notifications");
 
@@ -77,6 +76,17 @@ async function subscribe(client) {
   return await subscribeEvents(process.env.SHARD, cb);
 }
 
+async function init(client) {
+  try {
+    await subscribe(client);
+    logger.info(`Subscribed to events queue.`);
+  } catch (error) {
+    logger.error(`Error in subscription to events queue: ${error.message}`, { error });
+  }
+}
+
 module.exports = {
+  name: "events",
+  init,
   subscribe,
 };

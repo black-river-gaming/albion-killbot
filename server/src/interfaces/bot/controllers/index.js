@@ -16,7 +16,7 @@ const init = async (client) => {
       const name = controller.name || controllerFile.replace(/\.[^.]*$/, "");
       logger.debug(`Controller loaded: ${name}`);
 
-      if (controller.init) await controller.init({ client });
+      if (controller.init) await controller.init(client);
 
       controllers.set(name, controller);
     } catch (error) {
