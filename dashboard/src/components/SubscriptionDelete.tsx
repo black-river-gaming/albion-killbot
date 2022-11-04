@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Modal, Stack } from "react-bootstrap";
-import { useUpdateSubscriptionMutation } from "store/api";
+import { Button, Modal } from "react-bootstrap";
+import { useDeleteSubscriptionMutation } from "store/api";
 import { Subscription } from "types";
 
 interface ManageSubscriptionProps {
@@ -8,157 +8,45 @@ interface ManageSubscriptionProps {
 }
 
 const ManageSubscription = ({ subscription }: ManageSubscriptionProps) => {
-  const [showManage, setShowManage] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
 
-  const [owner, setOwner] = useState(subscription.owner);
-  const [expires, setExpires] = useState(
-    new Date(subscription.expires)
-      .toLocaleString("sv-SE", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      })
-      .replace(" ", "T")
-  );
-  const [expiresNever, setExpiresNever] = useState(
-    subscription.expires === "never"
-  );
-  const [limits, setLimits] = useState(!!subscription.limits);
-  const [players, setPlayers] = useState(subscription.limits?.players || 0);
-  const [guilds, setGuilds] = useState(subscription.limits?.guilds || 0);
-  const [alliances, setAlliances] = useState(
-    subscription.limits?.alliances || 0
-  );
-  const [dispatchUpdateSubscription, updateSubscription] =
-    useUpdateSubscriptionMutation();
+  const [dispatchDeleteSubscription, deleteSubscription] =
+    useDeleteSubscriptionMutation();
 
   useEffect(() => {
-    if (updateSubscription.isSuccess) setShowManage(false);
-  }, [updateSubscription.isSuccess]);
+    if (deleteSubscription.isSuccess) setShowDelete(false);
+  }, [deleteSubscription.isSuccess]);
 
-  if (!subscription.server) return null;
-
-  const handleSubscriptionForm = async () => {
-    if (!subscription.server) return;
-    if (typeof subscription.server !== "string") return;
-
-    dispatchUpdateSubscription({
-      serverId: subscription.server,
-      subscription: {
-        id: subscription.id,
-        owner,
-        expires: expiresNever ? "never" : new Date(expires).toISOString(),
-        limits: limits
-          ? {
-              players,
-              guilds,
-              alliances,
-            }
-          : undefined,
-      },
-    });
-  };
+  const serverId = subscription.server as string;
+  if (!serverId) return null;
 
   return (
     <>
-      <Button variant="primary" onClick={() => setShowManage(true)}>
-        Edit
+      <Button variant="danger" onClick={() => setShowDelete(true)}>
+        Delete
       </Button>
 
-      <Modal show={showManage} onHide={() => setShowManage(false)}>
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubscriptionForm();
-          }}
-        >
-          <Modal.Header>
-            <Modal.Title>Manage Subscription</Modal.Title>
-          </Modal.Header>
+      <Modal show={showDelete} onHide={() => setShowDelete(false)}>
+        <Modal.Header>
+          <Modal.Title>Delete Subscription</Modal.Title>
+        </Modal.Header>
 
-          <Modal.Body>
-            <Stack gap={2}>
-              <Form.Group controlId="owner">
-                <Form.Label>Owner</Form.Label>
-                <Form.Control
-                  value={owner}
-                  onChange={(e) => setOwner(e.target.value)}
-                />
-              </Form.Group>
+        <Modal.Body>
+          Are you sure you want to delete this subscription?
+        </Modal.Body>
 
-              <Form.Group controlId="expires">
-                <Form.Label>Expires</Form.Label>
-                <Form.Control
-                  disabled={expiresNever}
-                  type="datetime-local"
-                  value={expires}
-                  onChange={(e) => setExpires(e.target.value)}
-                />
-                <Form.Check
-                  type="switch"
-                  label="Never"
-                  checked={expiresNever}
-                  onChange={(e) => setExpiresNever(e.target.checked)}
-                />
-              </Form.Group>
-
-              <hr />
-
-              <Form.Group controlId="limits-enabled">
-                <Form.Check
-                  type="switch"
-                  label="Custom Limits"
-                  checked={limits}
-                  onChange={(e) => setLimits(e.target.checked)}
-                />
-              </Form.Group>
-
-              {limits && (
-                <>
-                  <Form.Group controlId="players">
-                    <Form.Label>Players</Form.Label>
-                    <Form.Control
-                      disabled={!limits}
-                      type="number"
-                      value={players}
-                      onChange={(e) => setPlayers(Number(e.target.value))}
-                    />
-                  </Form.Group>
-                  <Form.Group controlId="guilds">
-                    <Form.Label>Guilds</Form.Label>
-                    <Form.Control
-                      disabled={!limits}
-                      type="number"
-                      value={guilds}
-                      onChange={(e) => setGuilds(Number(e.target.value))}
-                    />
-                  </Form.Group>
-                  <Form.Group controlId="alliances">
-                    <Form.Label>Alliances</Form.Label>
-                    <Form.Control
-                      disabled={!limits}
-                      type="number"
-                      value={alliances}
-                      onChange={(e) => setAlliances(Number(e.target.value))}
-                    />
-                  </Form.Group>
-                </>
-              )}
-            </Stack>
-          </Modal.Body>
-
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowManage(false)}>
-              Close
-            </Button>
-            <Button type="submit" variant="primary">
-              Save
-            </Button>
-          </Modal.Footer>
-        </Form>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDelete(false)}>
+            Close
+          </Button>
+          <Button
+            type="submit"
+            variant="danger"
+            onClick={() => dispatchDeleteSubscription({ serverId })}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );

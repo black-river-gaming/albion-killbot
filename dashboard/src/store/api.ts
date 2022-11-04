@@ -89,6 +89,13 @@ export const api = createApi({
         }),
         invalidatesTags: ["Admin", "Server", "Subscription"],
       }),
+      deleteSubscription: builder.mutation<void, { serverId: string }>({
+        query: ({ serverId }) => ({
+          url: `/admin/servers/${serverId}/subscription`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Admin", "Server", "Subscription"],
+      }),
       fetchPrices: builder.query<SubscriptionPrice[], void>({
         query: () => `/subscriptions/prices`,
       }),
@@ -138,6 +145,7 @@ export const {
   useAssignSubscriptionMutation,
   useAuthMutation,
   useBuySubscriptionMutation,
+  useDeleteSubscriptionMutation,
   useDoLeaveServerMutation,
   useFetchAdminServersQuery,
   useFetchPricesQuery,

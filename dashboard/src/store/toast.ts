@@ -76,16 +76,6 @@ export const toastSlice = createSlice({
     });
 
     builder.addMatcher(
-      api.endpoints.updateSubscription.matchFulfilled,
-      (state) => {
-        state.push({
-          id: uid(),
-          theme: "success",
-          message: "Server subscription updated.",
-        });
-      }
-    );
-    builder.addMatcher(
       api.endpoints.updateSubscription.matchRejected,
       (state) => {
         state.push({
@@ -93,6 +83,18 @@ export const toastSlice = createSlice({
           theme: "danger",
           message:
             "Failed to update server subscription. Please try again later.",
+        });
+      }
+    );
+
+    builder.addMatcher(
+      api.endpoints.deleteSubscription.matchRejected,
+      (state) => {
+        state.push({
+          id: uid(),
+          theme: "danger",
+          message:
+            "Failed to delete server subscription. Please try again later.",
         });
       }
     );

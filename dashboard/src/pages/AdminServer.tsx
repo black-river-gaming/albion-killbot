@@ -1,6 +1,7 @@
 import LeaveServer from "components/LeaveServer";
 import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
+import SubscriptionDelete from "components/SubscriptionDelete";
 import SubscriptionEdit from "components/SubscriptionEdit";
 import SubscriptionPriceCard from "components/SubscriptionPriceCard";
 import { Button, Card, Container, Stack } from "react-bootstrap";
@@ -80,7 +81,7 @@ const AdminServer = () => {
                 {subscription ? (
                   <>
                     <SubscriptionEdit subscription={subscription} />
-                    <Button variant="danger">Cancel</Button>
+                    <SubscriptionDelete subscription={subscription} />
                   </>
                 ) : (
                   <Button variant="primary">Add subscription</Button>
