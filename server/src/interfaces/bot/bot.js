@@ -7,11 +7,12 @@ const { DAY, HOUR } = require("../../helpers/constants");
 const database = require("../../ports/database");
 const queue = require("../../ports/queue");
 
-const events = require("./controllers/events");
 const battles = require("./controllers/battles");
+const events = require("./controllers/events");
 const guilds = require("./controllers/guilds");
 const rankings = require("./controllers/rankings");
 
+const controllers = require("./controllers");
 const commands = require("./commands");
 
 const client = new Client({
@@ -26,6 +27,7 @@ client.on("shardReady", async (id) => {
   await database.init();
   await queue.init();
   await commands.init(client.application.id);
+  await controllers.init(client);
 
   try {
     await events.subscribe(client);

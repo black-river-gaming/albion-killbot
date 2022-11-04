@@ -1,48 +1,28 @@
 const { find, findOne, updateOne } = require("../ports/database");
 const { getNumber } = require("../helpers/utils");
 const { hasSubscriptionByServerId, getSubscriptionByServerId } = require("./subscriptions");
-const logger = require("../helpers/logger");
+const { memoize, set, remove } = require("../helpers/cache");
 
 const { MAX_PLAYERS, MAX_GUILDS, MAX_ALLIANCES, SUB_MAX_PLAYERS, SUB_MAX_GUILDS, SUB_MAX_ALLIANCES } = process.env;
 const TRACK_COLLECTION = "track";
 
-const DEFAULT_TRACK = {
+const DEFAULT_TRACK = Object.freeze({
   players: [],
   guilds: [],
   alliances: [],
-};
+});
 
-async function getTrack(server) {
-  const track = await findOne(TRACK_COLLECTION, { server });
-  return {
-    ...DEFAULT_TRACK,
-    ...track,
-  };
+async function getTrack(serverId) {
+  return await memoize(`track-${serverId}`, () => {
+    const track = findOne(TRACK_COLLECTION, { server: serverId });
+    return Object.assign({}, DEFAULT_TRACK, track);
+  });
 }
 
-async function getTrackForServer(servers) {
-  const trackForServer = {};
-
-  servers.forEach((server) => {
-    trackForServer[server.id] = { ...DEFAULT_TRACK };
-  });
-
-  (await find(TRACK_COLLECTION, {})).forEach((track) => {
-    // TODO: Trim track list if subscription is expired
-    // Better to do when Track list gets refactored
-    if (trackForServer[track.server] && trackForServer[track.server].server) {
-      logger.warn(`WARNING: Duplicate track settings for server ${track.server}.`, { track });
-      return;
-    }
-    trackForServer[track.server] = track;
-  });
-
-  return trackForServer;
-}
-
-async function setTrack(server, track) {
-  await updateOne(TRACK_COLLECTION, { server }, { $set: track }, { upsert: true });
-  return await getTrack(server);
+async function setTrack(serverId, track) {
+  await updateOne(TRACK_COLLECTION, { server: serverId }, { $set: track }, { upsert: true });
+  remove(`track-${serverId}`);
+  return await getTrack(serverId);
 }
 
 async function getLimits(serverId) {
@@ -70,9 +50,19 @@ async function getLimits(serverId) {
   };
 }
 
+async function updateTrackCache() {
+  const tracks = await find(TRACK_COLLECTION, {});
+  tracks.forEach((track) => {
+    if (!track.server) return;
+
+    const serverId = track.server;
+    set(`settings-${serverId}`, track);
+  });
+}
+
 module.exports = {
   getLimits,
   getTrack,
-  getTrackForServer,
   setTrack,
+  updateTrackCache,
 };

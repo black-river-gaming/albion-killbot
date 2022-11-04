@@ -1,12 +1,12 @@
 const logger = require("../../../helpers/logger");
-const { getTrackedEvent } = require("../../../helpers/tracking");
 
 const { subscribeEvents } = require("../../../services/events");
 const { generateEventImage, generateInventoryImage } = require("../../../services/images");
-const { getSettingsForServer, REPORT_MODES } = require("../../../services/settings");
+const { REPORT_MODES, getSettings } = require("../../../services/settings");
 const { addRankingKill } = require("../../../services/rankings");
-const { getTrackForServer } = require("../../../services/track");
+const { getTrack } = require("../../../services/track");
 
+const { getTrackedEvent } = require("../../../helpers/tracking");
 const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../../../helpers/embeds");
 
 const { sendNotification } = require("./notifications");
@@ -16,14 +16,10 @@ async function subscribe(client) {
     logger.debug(`Received event: ${event.EventId}`);
 
     try {
-      // TODO: This chunk repeat a lot. Find a way to componentize
-      const settingsByGuild = await getSettingsForServer(client.guilds.cache);
-      const trackByGuild = await getTrackForServer(client.guilds.cache);
-
       for (const guild of client.guilds.cache.values()) {
-        if (!settingsByGuild[guild.id] || !trackByGuild[guild.id]) continue;
-        const settings = settingsByGuild[guild.id];
-        const track = trackByGuild[guild.id];
+        const settings = await getSettings(guild.id);
+        const track = await getTrack(guild.id);
+        if (!settings || !track) continue;
 
         const guildEvent = getTrackedEvent(event, track);
         if (!guildEvent) continue;
@@ -39,7 +35,7 @@ async function subscribe(client) {
           continue;
         }
 
-        addRankingKill(guild.id, guildEvent, trackByGuild[guild.id]);
+        addRankingKill(guild.id, guildEvent, track.guilds[guild.id]);
 
         logger.info(`Sending  ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
           settings,
