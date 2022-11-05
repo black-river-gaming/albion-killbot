@@ -13,8 +13,8 @@ async function refreshServerCache() {
   try {
     await Promise.all([
       updateLimitsCache(REFRESH_INTERVAL + 30000),
-      updateSettingsCache(REFRESH_INTERVAL + 30000), 
-      updateTrackCache(REFRESH_INTERVAL + 30000)
+      updateSettingsCache(REFRESH_INTERVAL + 30000),
+      updateTrackCache(REFRESH_INTERVAL + 30000),
     ]);
   } catch (error) {
     logger.error(`Unable to refresh servers cache: ${error.message}`, {
