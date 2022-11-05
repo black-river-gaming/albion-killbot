@@ -56,7 +56,7 @@ async function updateTrackCache(timeout) {
     if (!track.server) return;
 
     const serverId = track.server;
-    set(`settings-${serverId}`, track, { timeout });
+    set(`track-${serverId}`, track, { timeout });
   });
 }
 

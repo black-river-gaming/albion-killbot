@@ -10,7 +10,6 @@ const command = {
   default_member_permissions: "0",
   handle: async (interaction, { settings, track }) => {
     const limits = await getLimits(interaction.guild.id);
-    console.log(track);
 
     await interaction.reply({
       ...embedTrackList(track, limits, { locale: settings.lang }),

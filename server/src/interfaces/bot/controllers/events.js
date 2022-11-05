@@ -36,7 +36,7 @@ async function subscribe(client) {
 
         addRankingKill(guild.id, guildEvent, track.guilds[guild.id]);
 
-        logger.info(`Sending  ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
+        logger.info(`Sending ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
           settings,
           track,
         });
@@ -66,8 +66,9 @@ async function subscribe(client) {
           await sendNotification(client, channel, embedEvent(guildEvent, { locale: settings.lang }));
         }
       }
-    } catch (e) {
-      logger.error(`Error processing event ${event.EventId}:`, e);
+    } catch (error) {
+      logger.error(`Error processing event ${event.EventId}: `, { error });
+      logger.error(error);
     }
 
     return true;

@@ -28,8 +28,8 @@ async function subscribe(client) {
         logger.info(`Sending battle ${battle.id} to "${guild.name}".`);
         await sendNotification(client, channel, embedBattle(battle, guild.settings.lang));
       }
-    } catch (e) {
-      logger.error(`Error while processing battle ${battle.id}:`, e);
+    } catch (error) {
+      logger.error(`Error processing battle ${battle.id}: `, { error });
     }
 
     return true;
