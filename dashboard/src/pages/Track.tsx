@@ -74,10 +74,10 @@ const Track = () => {
           >
             {title} [{list.length}/{limit}]
           </ListGroup.Item>
-          {list.map(({ id, name }) => (
+          {list.map(({ id, name }, i) => (
             <ListGroup.Item key={id} className="paper">
               <div className="d-flex justify-content-between align-items-center">
-                <div>{name}</div>
+                <div className={i >= limit ? "text-danger" : ""}>{name}</div>
                 <ButtonGroup size="sm">
                   <Button
                     variant="danger"
