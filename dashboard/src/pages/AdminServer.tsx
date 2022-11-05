@@ -31,6 +31,9 @@ const AdminServer = () => {
               <Link to="..">
                 <Button variant="secondary">Change Server</Button>
               </Link>
+              <Link to={`/dashboard/${serverId}`}>
+                <Button variant="primary">Dashboard</Button>
+              </Link>
               <LeaveServer server={server.data} />
             </Stack>
           </ServerCard>
