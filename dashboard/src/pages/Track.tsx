@@ -57,9 +57,9 @@ const Track = () => {
 
   const limits = server.data?.limits;
   const hasOverLimitItems =
-    (limits?.players && track.players.length >= limits.players) ||
-    (limits?.guilds && track.guilds.length >= limits.guilds) ||
-    (limits?.alliances && track.alliances.length >= limits.alliances);
+    (limits?.players && track.players.length > limits.players) ||
+    (limits?.guilds && track.guilds.length > limits.guilds) ||
+    (limits?.alliances && track.alliances.length > limits.alliances);
 
   const subscription = server.data?.subscription;
   const isPremium =
