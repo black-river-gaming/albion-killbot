@@ -7,6 +7,7 @@ const { generateEventImage, generateInventoryImage } = require("../../../service
 const { REPORT_MODES, getSettings } = require("../../../services/settings");
 const { addRankingKill } = require("../../../services/rankings");
 const { getTrack } = require("../../../services/track");
+const { getLimits } = require("../../../services/limits");
 
 const { sendNotification } = require("./notifications");
 
@@ -18,9 +19,10 @@ async function subscribe(client) {
       for (const guild of client.guilds.cache.values()) {
         const settings = await getSettings(guild.id);
         const track = await getTrack(guild.id);
-        if (!settings || !track) continue;
+        const limits = await getLimits(guild.id);
+        if (!settings || !track || !limits) continue;
 
-        const guildEvent = getTrackedEvent(event, track);
+        const guildEvent = getTrackedEvent(event, track, limits);
         if (!guildEvent) continue;
 
         const { enabled, channel, mode } = guildEvent.good ? settings.kills : settings.deaths;
@@ -37,8 +39,11 @@ async function subscribe(client) {
         addRankingKill(guild.id, guildEvent, track.guilds[guild.id]);
 
         logger.info(`Sending ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
-          settings,
-          track,
+          metadata: {
+            settings,
+            track,
+            limits,
+          },
         });
         const locale = settings.lang;
 
@@ -67,7 +72,7 @@ async function subscribe(client) {
         }
       }
     } catch (error) {
-      logger.error(`Error processing event ${event.EventId}: `, { error });
+      logger.error(`Error processing event ${event.EventId}: ${error.message}`, { error });
       logger.error(error);
     }
 

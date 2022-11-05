@@ -1,7 +1,26 @@
+const applyLimits = (track, limits) => {
+  let players = track.players || [];
+  if (!isNaN(limits.players)) players = players.slice(0, Math.max(0, limits.players));
+
+  let guilds = track.guilds || [];
+  if (!isNaN(limits.guilds)) guilds = guilds.slice(0, Math.max(0, limits.guilds));
+
+  let alliances = track.alliances || [];
+  if (!isNaN(limits.alliances)) alliances = alliances.slice(0, Math.max(0, limits.alliances));
+
+  return {
+    players,
+    guilds,
+    alliances,
+  };
+};
+
 // This method checks if an event is tracked by a discord server
 // and flags it as a good event (killed is tracked) or bad event (victim is tracker)
 // and returns a copy of it or null if the event is not tracked at all
-function getTrackedEvent(event, { players = [], guilds = [], alliances = [] }) {
+function getTrackedEvent(event, track, limits) {
+  const { players, guilds, alliances } = applyLimits(track, limits);
+
   if (players.length === 0 && guilds.length === 0 && alliances.length === 0) {
     return null;
   }
@@ -34,7 +53,9 @@ function getTrackedEvent(event, { players = [], guilds = [], alliances = [] }) {
 
 // This method checks if a battle is tracked by a discord server
 // and returns the battle or null if the event is not tracked at all
-function getTrackedBattle(battle, { players = [], guilds = [], alliances = [] }) {
+function getTrackedBattle(battle, track, limits) {
+  const { players, guilds, alliances } = applyLimits(track, limits);
+
   if (players.length === 0 && guilds.length === 0 && alliances.length === 0) {
     return null;
   }
