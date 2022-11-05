@@ -19,7 +19,10 @@ async function sendNotification(client, channelId, message) {
     });
   } catch (error) {
     logger.warn(`Unable to send notification to ${channel.guild.name}/#${channel.name}: ${error.message}.`, {
-      error,
+      error: {
+        message: error.message,
+        stack: error.stack,
+      },
     });
   }
 }
