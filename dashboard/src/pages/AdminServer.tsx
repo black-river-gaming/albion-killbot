@@ -51,9 +51,14 @@ const AdminServer = () => {
                     {subscription
                       ? subscription.expires === "never"
                         ? `Never expires`
-                        : `Active until ${new Date(
-                            subscription.expires
-                          ).toLocaleString()}`
+                        : `
+                        ${
+                          new Date(subscription.expires).getTime() >
+                          new Date().getTime()
+                            ? `Active until `
+                            : `Expired at `
+                        }
+                         ${new Date(subscription.expires).toLocaleString()}`
                       : "Free user "}
                   </span>
                   {subscription?.stripe && (

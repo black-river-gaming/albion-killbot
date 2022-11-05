@@ -26,9 +26,12 @@ const SubscriptionPage = () => {
               <span className="text-primary">
                 {subscription.expires === "never"
                   ? `Activated`
-                  : `Active until ${new Date(
-                      subscription.expires
-                    ).toLocaleDateString()}`}
+                  : `${
+                      new Date(subscription.expires).getTime() >
+                      new Date().getTime()
+                        ? `Active until `
+                        : `Expired at `
+                    } ${new Date(subscription.expires).toLocaleString()}`}
               </span>
             </div>
           ) : (

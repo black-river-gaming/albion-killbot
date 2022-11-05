@@ -159,9 +159,12 @@ const Premium = () => {
                     <div className="active">
                       {subscription.expires === "never"
                         ? `Activated`
-                        : `Active until ${new Date(
-                            subscription.expires
-                          ).toLocaleDateString()}`}
+                        : `${
+                            new Date(subscription.expires).getTime() >
+                            new Date().getTime()
+                              ? `Active until `
+                              : `Expired at `
+                          } ${new Date(subscription.expires).toLocaleString()}`}
                       {price && (
                         <div className="d-flex align-items-baseline price">
                           (
