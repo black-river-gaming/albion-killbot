@@ -1,5 +1,5 @@
 const { getNumber } = require("../helpers/utils");
-const { memoize, set, remove } = require("../helpers/cache");
+const { memoize, set } = require("../helpers/cache");
 const { hasSubscriptionByServerId, getSubscriptionByServerId, fetchAllSubscriptions } = require("./subscriptions");
 
 const { MAX_PLAYERS, MAX_GUILDS, MAX_ALLIANCES, SUB_MAX_PLAYERS, SUB_MAX_GUILDS, SUB_MAX_ALLIANCES } = process.env;
