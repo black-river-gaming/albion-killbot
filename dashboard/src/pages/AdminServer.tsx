@@ -1,7 +1,9 @@
 import LeaveServer from "components/LeaveServer";
 import Loader from "components/Loader";
-import ManageSubscription from "components/ManageSubscription";
 import ServerCard from "components/ServerCard";
+import SubscriptionAdd from "components/SubscriptionAdd";
+import SubscriptionDelete from "components/SubscriptionDelete";
+import SubscriptionEdit from "components/SubscriptionEdit";
 import SubscriptionPriceCard from "components/SubscriptionPriceCard";
 import { Button, Card, Container, Stack } from "react-bootstrap";
 import { Link, Navigate, useParams } from "react-router-dom";
@@ -46,21 +48,35 @@ const AdminServer = () => {
                 <Stack direction="horizontal" gap={1}>
                   <span>Status: </span>
                   <span className="text-primary">
-                    {subscription.expires === "never"
-                      ? `Never expires`
-                      : `Active until ${new Date(
-                          subscription.expires
-                        ).toLocaleString()}`}
+                    {subscription
+                      ? subscription.expires === "never"
+                        ? `Never expires`
+                        : `
+                        ${
+                          new Date(subscription.expires).getTime() >
+                          new Date().getTime()
+                            ? `Active until `
+                            : `Expired at `
+                        }
+                         ${new Date(subscription.expires).toLocaleString()}`
+                      : "Free user "}
                   </span>
                   {subscription?.stripe && (
                     <span>(Auto-managed by Stripe)</span>
                   )}
                 </Stack>
 
+                {subscription?.owner && (
+                  <Stack direction="horizontal" gap={1}>
+                    <span>Owner: </span>
+                    <span className="text-primary">{subscription.owner}</span>
+                  </Stack>
+                )}
+
                 <Stack direction="horizontal" gap={2}>
                   <div>Track Limits:</div>
                   <div className="text-primary">
-                    {subscription.limits ? "Custom" : "Default"}
+                    {subscription?.limits ? "Custom" : "Default"}
                   </div>
                 </Stack>
 
@@ -77,8 +93,14 @@ const AdminServer = () => {
                 gap={2}
                 className="justify-content-end"
               >
-                <ManageSubscription subscription={subscription} />
-                <Button variant="danger">Cancel</Button>
+                {subscription ? (
+                  <>
+                    <SubscriptionEdit subscription={subscription} />
+                    <SubscriptionDelete subscription={subscription} />
+                  </>
+                ) : (
+                  <SubscriptionAdd serverId={serverId} />
+                )}
               </Stack>
             </Card.Footer>
           </Card>

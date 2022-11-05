@@ -37,6 +37,7 @@ async function reload(clientId) {
       }
     }
 
+    // TODO: Use Discord port instead of directly calling the API
     logger.info(`Refreshing application slash commands...`);
     await rest.put(Routes.applicationCommands(clientId), { body: commands });
     logger.verbose(`Successfully reloaded slash commands.`);

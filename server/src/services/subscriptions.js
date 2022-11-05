@@ -1,6 +1,7 @@
 const moment = require("moment");
 const stripe = require("../ports/stripe");
-const { getCollection, find, findOne, updateOne, update, deleteOne } = require("../ports/database");
+const { getCollection, find, findOne, insertOne, updateOne, update, deleteOne } = require("../ports/database");
+const { remove } = require("../helpers/cache");
 
 const SUBSCRIPTIONS_MODE = Boolean(process.env.SUBSCRIPTIONS_MODE);
 const SUBSCRIPTIONS_COLLECTION = "subscriptions";
@@ -10,8 +11,7 @@ function isSubscriptionsEnabled() {
 }
 
 async function addSubscription(subscription) {
-  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-  return await collection.insertOne(subscription).insertedId;
+  return await insertOne(SUBSCRIPTIONS_COLLECTION, subscription);
 }
 
 async function assignSubscription(_id, server) {
@@ -32,6 +32,10 @@ async function getBuySubscription(checkoutId) {
 
 async function manageSubscription(customerId) {
   return await stripe.createPortalSession(customerId);
+}
+
+async function fetchAllSubscriptions() {
+  return await find(SUBSCRIPTIONS_COLLECTION, {});
 }
 
 async function getSubscriptionsByOwner(owner) {
@@ -68,16 +72,25 @@ async function getStripeSubscription(id) {
   return await stripe.getSubscription(id);
 }
 
-async function hasSubscriptionByServerId(server) {
-  if (!isSubscriptionsEnabled()) return true;
-  const subscription = await findOne(SUBSCRIPTIONS_COLLECTION, { server });
+function isActiveSubscription(subscription) {
+  if (!isSubscriptionsEnabled()) return false;
   if (!subscription) return false;
   if (subscription.expires === "never") return true;
   return moment(subscription.expires).diff() > 0;
 }
 
+async function hasSubscriptionByServerId(server) {
+  const subscription = await findOne(SUBSCRIPTIONS_COLLECTION, { server });
+  return isActiveSubscription(subscription);
+}
+
 async function removeSubscription(_id) {
   return await deleteOne(SUBSCRIPTIONS_COLLECTION, { _id });
+}
+
+async function removeSubscriptionByServerId(serverId) {
+  remove(`limits-${serverId}`);
+  return await deleteOne(SUBSCRIPTIONS_COLLECTION, { server: serverId });
 }
 
 async function removeSubscriptionByStripeId(stripe) {
@@ -86,7 +99,8 @@ async function removeSubscriptionByStripeId(stripe) {
 }
 
 async function updateSubscriptionByServerId(serverId, subscription) {
-  await updateOne(SUBSCRIPTIONS_COLLECTION, { server: serverId }, { $set: subscription });
+  await updateOne(SUBSCRIPTIONS_COLLECTION, { server: serverId }, { $set: subscription }, { upsert: true });
+  remove(`limits-${serverId}`);
   return await getSubscriptionByServerId(serverId);
 }
 
@@ -107,6 +121,7 @@ module.exports = {
   addSubscription,
   assignSubscription,
   buySubscription,
+  fetchAllSubscriptions,
   fetchSubscriptionPrices,
   findSubscriptionsByServerId,
   getBuySubscription,
@@ -117,9 +132,11 @@ module.exports = {
   getSubscriptionByStripeId,
   getSubscriptionsByOwner,
   hasSubscriptionByServerId,
+  isActiveSubscription,
   isSubscriptionsEnabled,
   manageSubscription,
   removeSubscription,
+  removeSubscriptionByServerId,
   removeSubscriptionByStripeId,
   unassignSubscription,
   unassignSubscriptionsByServerId,

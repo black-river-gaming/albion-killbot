@@ -10,6 +10,7 @@ import Loader from "components/Loader";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Button,
   ButtonGroup,
   Card,
@@ -19,7 +20,7 @@ import {
   ListGroup,
   Row,
 } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   useFetchServerQuery,
   useLazySearchQuery,
@@ -54,6 +55,18 @@ const Track = () => {
 
   if (updateTrack.isLoading) return <Loader />;
 
+  const limits = server.data?.limits;
+  const hasOverLimitItems =
+    (limits?.players && track.players.length >= limits.players) ||
+    (limits?.guilds && track.guilds.length >= limits.guilds) ||
+    (limits?.alliances && track.alliances.length >= limits.alliances);
+
+  const subscription = server.data?.subscription;
+  const isPremium =
+    subscription &&
+    (subscription.expires === "never" ||
+      new Date(subscription.expires).getTime() > new Date().getTime());
+
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
     search(query, true);
@@ -74,10 +87,10 @@ const Track = () => {
           >
             {title} [{list.length}/{limit}]
           </ListGroup.Item>
-          {list.map(({ id, name }) => (
+          {list.map(({ id, name }, i) => (
             <ListGroup.Item key={id} className="paper">
               <div className="d-flex justify-content-between align-items-center">
-                <div>{name}</div>
+                <div className={i >= limit ? "text-danger" : ""}>{name}</div>
                 <ButtonGroup size="sm">
                   <Button
                     variant="danger"
@@ -230,6 +243,24 @@ const Track = () => {
   return (
     <Row className="g-3">
       <Col sm={12}>
+        {hasOverLimitItems ? (
+          <Alert variant="danger">
+            Items <span className="text-danger">over the limit</span> will not
+            generate notifications. To increase your limits, please check the
+            <Link to="/premium"> Premium</Link> page to buy assign a
+            subscription.
+          </Alert>
+        ) : (
+          !isPremium && (
+            <Alert variant="info">
+              Want to have more slots to track? To increase your limits, please
+              check the
+              <Link to="/premium"> Premium</Link> page to buy assign a
+              subscription.
+            </Alert>
+          )
+        )}
+
         <Card>
           {renderTracking()}
           <div className="d-flex justify-content-end align-items-center p-3">

@@ -1,7 +1,7 @@
 const { InteractionType } = require("discord-api-types/v10");
 const { getLocale } = require("../../../helpers/locale");
 const { embedTrackList } = require("../../../helpers/embeds");
-const { getLimits } = require("../../../services/track");
+const { getLimits } = require("../../../services/limits");
 
 const command = {
   name: "list",

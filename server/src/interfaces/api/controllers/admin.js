@@ -13,7 +13,7 @@ async function getServers(req, res) {
   }
 }
 
-async function editServerSubscription(req, res) {
+async function setServerSubscription(req, res) {
   const { serverId } = req.params;
   const { owner, limits } = req.body;
   let { expires } = req.body;
@@ -36,6 +36,19 @@ async function editServerSubscription(req, res) {
   }
 }
 
+async function removeServerSubscription(req, res) {
+  const { serverId } = req.params;
+
+  try {
+    await subscriptionsService.removeSubscriptionByServerId(serverId);
+
+    return res.sendStatus(200);
+  } catch (error) {
+    logger.error(`Unable to delete subscription for server #${serverId}: ${error.message}`, error);
+    return res.sendStatus(500);
+  }
+}
+
 async function leaveServer(req, res) {
   const { serverId } = req.params;
 
@@ -50,7 +63,8 @@ async function leaveServer(req, res) {
 }
 
 module.exports = {
-  editServerSubscription,
   getServers,
   leaveServer,
+  removeServerSubscription,
+  setServerSubscription,
 };

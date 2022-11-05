@@ -1,5 +1,5 @@
 import Loader from "components/Loader";
-import SubscriptionAssignModal from "components/SubscriptionAssignModal";
+import SubscriptionAssign from "components/SubscriptionAssign";
 import SubscriptionPriceCard from "components/SubscriptionPriceCard";
 import { useState } from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
@@ -26,9 +26,12 @@ const SubscriptionPage = () => {
               <span className="text-primary">
                 {subscription.expires === "never"
                   ? `Activated`
-                  : `Active until ${new Date(
-                      subscription.expires
-                    ).toLocaleDateString()}`}
+                  : `${
+                      new Date(subscription.expires).getTime() >
+                      new Date().getTime()
+                        ? `Active until `
+                        : `Expired at `
+                    } ${new Date(subscription.expires).toLocaleString()}`}
               </span>
             </div>
           ) : (
@@ -66,7 +69,7 @@ const SubscriptionPage = () => {
       {!server.data && <div>No data found.</div>}
       {renderServerSubscription(server.data?.subscription)}
       {subscriptionAssignId && (
-        <SubscriptionAssignModal
+        <SubscriptionAssign
           currentServerId={serverId}
           subscriptionId={subscriptionAssignId}
           onClose={() => setSubscriptionAssignId("")}

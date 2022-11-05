@@ -51,6 +51,12 @@ async function dropColection(collectionName) {
   return true;
 }
 
+async function insertOne(collectionName, query) {
+  const collection = getCollection(collectionName);
+  const result = await collection.insertOne(convertObjectId(query));
+  return returnObjectId(result).insertedId;
+}
+
 async function find(collectionName, query) {
   const collection = getCollection(collectionName);
   const result = await collection.find(convertObjectId(query)).toArray();
@@ -90,6 +96,7 @@ module.exports = {
   findOne,
   getCollection,
   init,
+  insertOne,
   update,
   updateOne,
 };

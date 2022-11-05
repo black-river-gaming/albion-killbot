@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
-import SubscriptionAssignModal from "components/SubscriptionAssignModal";
+import SubscriptionAssign from "components/SubscriptionAssign";
 import SubscriptionPriceCard from "components/SubscriptionPriceCard";
 import { getServerPictureUrl } from "helpers/discord";
 import { isSubscriptionActiveAndUnassiged } from "helpers/subscriptions";
@@ -159,9 +159,12 @@ const Premium = () => {
                     <div className="active">
                       {subscription.expires === "never"
                         ? `Activated`
-                        : `Active until ${new Date(
-                            subscription.expires
-                          ).toLocaleDateString()}`}
+                        : `${
+                            new Date(subscription.expires).getTime() >
+                            new Date().getTime()
+                              ? `Active until `
+                              : `Expired at `
+                          } ${new Date(subscription.expires).toLocaleString()}`}
                       {price && (
                         <div className="d-flex align-items-baseline price">
                           (
@@ -232,7 +235,7 @@ const Premium = () => {
         </Alert>
       )}
       {status === "success" && checkoutId && (
-        <SubscriptionAssignModal checkoutId={checkoutId} />
+        <SubscriptionAssign checkoutId={checkoutId} />
       )}
       {!status && subscriptions.data?.some(isSubscriptionActiveAndUnassiged) && (
         <Alert className="mb-4" variant="success">
@@ -244,7 +247,7 @@ const Premium = () => {
       {renderPrices()}
       {renderUserSubscriptions()}
       {subscriptionAssignId && (
-        <SubscriptionAssignModal
+        <SubscriptionAssign
           subscriptionId={subscriptionAssignId}
           onClose={() => setSubscriptionAssignId("")}
         />

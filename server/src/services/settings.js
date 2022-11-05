@@ -1,13 +1,14 @@
 const { find, findOne, updateOne, deleteOne } = require("../ports/database");
-const logger = require("../helpers/logger");
+const { memoize, set, remove } = require("../helpers/cache");
 
 const SETTINGS_COLLECTION = "settings";
-const REPORT_MODES = {
+
+const REPORT_MODES = Object.freeze({
   IMAGE: "image",
   TEXT: "text",
-};
+});
 
-const DEFAULT_SETTINGS = {
+const DEFAULT_SETTINGS = Object.freeze({
   lang: "en",
   kills: {
     enabled: true,
@@ -29,60 +30,45 @@ const DEFAULT_SETTINGS = {
     pvpRanking: "daily",
     guildRanking: "daily",
   },
-};
+});
 
-async function getSettings(guild) {
-  const settings = await findOne(SETTINGS_COLLECTION, { guild });
-  return {
-    ...DEFAULT_SETTINGS,
-    ...settings,
-  };
-}
-
-async function getSettingsForServer(servers) {
-  const settingsForServer = {};
-  servers.forEach((server) => {
-    settingsForServer[server.id] = { ...DEFAULT_SETTINGS };
+async function getSettings(serverId) {
+  return await memoize(`settings-${serverId}`, async () => {
+    const settings = await findOne(SETTINGS_COLLECTION, { guild: serverId });
+    return Object.assign({}, DEFAULT_SETTINGS, settings);
   });
-
-  (await find(SETTINGS_COLLECTION, {})).forEach((settings) => {
-    // TODO: Trim track list if subscription is expired
-    // Better to do when Track list gets refactored
-    if (settingsForServer[settings.guild] && settingsForServer[settings.guild].guild) {
-      logger.warn(`WARNING: Duplicate track settings for server ${settings.guild}.`, { settings });
-      return;
-    }
-    settingsForServer[settings.guild] = settings;
-  });
-
-  return settingsForServer;
 }
 
-async function getAllSettings() {
-  return await find(SETTINGS_COLLECTION, {}).toArray();
+async function fetchAllSettings() {
+  return await find(SETTINGS_COLLECTION, {});
 }
 
-async function setSettings(guild, settings) {
-  for (const key in settings) {
-    if (!(key in DEFAULT_SETTINGS)) delete settings[key];
-  }
-
-  // TODO: Validate track list size is below limits for subscribers
-  // Better to do when Track list gets refactored
-  await updateOne(SETTINGS_COLLECTION, { guild }, { $set: settings }, { upsert: true });
-  return await getSettings(guild);
+async function setSettings(serverId, settings) {
+  await updateOne(SETTINGS_COLLECTION, { guild: serverId }, { $set: settings }, { upsert: true });
+  remove(`track-${serverId}`);
+  return await getSettings(serverId);
 }
 
 async function deleteSettings(guild) {
   return await deleteOne(SETTINGS_COLLECTION, { guild });
 }
 
+async function updateSettingsCache(timeout) {
+  const settings = await find(SETTINGS_COLLECTION, {});
+  settings.forEach((settings) => {
+    if (!settings.guild) return;
+
+    const serverId = settings.guild;
+    set(`settings-${serverId}`, settings, { timeout });
+  });
+}
+
 module.exports = {
   REPORT_MODES,
   DEFAULT_SETTINGS,
-  getSettings,
-  getSettingsForServer,
-  getAllSettings,
-  setSettings,
   deleteSettings,
+  fetchAllSettings,
+  getSettings,
+  setSettings,
+  updateSettingsCache,
 };

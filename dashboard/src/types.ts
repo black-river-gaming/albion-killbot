@@ -95,6 +95,7 @@ export interface Subscription {
   };
   limits?: Limits;
 }
+export type UpdateSubscription = Omit<Subscription, "id">;
 
 export interface SubscriptionPrice {
   id: string;

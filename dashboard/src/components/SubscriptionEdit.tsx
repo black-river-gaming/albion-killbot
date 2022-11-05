@@ -7,12 +7,15 @@ interface ManageSubscriptionProps {
   subscription: Subscription;
 }
 
-const ManageSubscription = ({ subscription }: ManageSubscriptionProps) => {
+const SubscriptionEdit = ({ subscription }: ManageSubscriptionProps) => {
   const [showManage, setShowManage] = useState(false);
 
   const [owner, setOwner] = useState(subscription.owner);
   const [expires, setExpires] = useState(
-    new Date(subscription.expires)
+    (subscription.expires === "never"
+      ? new Date()
+      : new Date(subscription.expires)
+    )
       .toLocaleString("sv-SE", {
         year: "numeric",
         month: "2-digit",
@@ -48,7 +51,6 @@ const ManageSubscription = ({ subscription }: ManageSubscriptionProps) => {
     dispatchUpdateSubscription({
       serverId: subscription.server,
       subscription: {
-        id: subscription.id,
         owner,
         expires: expiresNever ? "never" : new Date(expires).toISOString(),
         limits: limits
@@ -164,4 +166,4 @@ const ManageSubscription = ({ subscription }: ManageSubscriptionProps) => {
   );
 };
 
-export default ManageSubscription;
+export default SubscriptionEdit;

@@ -1,13 +1,13 @@
 const logger = require("../../../helpers/logger");
 const { getTrackedEvent } = require("../../../helpers/tracking");
+const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../../../helpers/embeds");
 
 const { subscribeEvents } = require("../../../services/events");
 const { generateEventImage, generateInventoryImage } = require("../../../services/images");
-const { getSettingsForServer, REPORT_MODES } = require("../../../services/settings");
+const { REPORT_MODES, getSettings } = require("../../../services/settings");
 const { addRankingKill } = require("../../../services/rankings");
-const { getTrackForServer } = require("../../../services/track");
-
-const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../../../helpers/embeds");
+const { getTrack } = require("../../../services/track");
+const { getLimits } = require("../../../services/limits");
 
 const { sendNotification } = require("./notifications");
 
@@ -16,16 +16,13 @@ async function subscribe(client) {
     logger.debug(`Received event: ${event.EventId}`);
 
     try {
-      // TODO: This chunk repeat a lot. Find a way to componentize
-      const settingsByGuild = await getSettingsForServer(client.guilds.cache);
-      const trackByGuild = await getTrackForServer(client.guilds.cache);
-
       for (const guild of client.guilds.cache.values()) {
-        if (!settingsByGuild[guild.id] || !trackByGuild[guild.id]) continue;
-        const settings = settingsByGuild[guild.id];
-        const track = trackByGuild[guild.id];
+        const settings = await getSettings(guild.id);
+        const track = await getTrack(guild.id);
+        const limits = await getLimits(guild.id);
+        if (!settings || !track || !limits) continue;
 
-        const guildEvent = getTrackedEvent(event, track);
+        const guildEvent = getTrackedEvent(event, track, limits);
         if (!guildEvent) continue;
 
         const { enabled, channel, mode } = guildEvent.good ? settings.kills : settings.deaths;
@@ -39,11 +36,14 @@ async function subscribe(client) {
           continue;
         }
 
-        addRankingKill(guild.id, guildEvent, trackByGuild[guild.id]);
+        addRankingKill(guild.id, guildEvent, track.guilds[guild.id]);
 
-        logger.info(`Sending  ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
-          settings,
-          track,
+        logger.info(`Sending ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
+          metadata: {
+            settings,
+            track,
+            limits,
+          },
         });
         const locale = settings.lang;
 
@@ -71,8 +71,9 @@ async function subscribe(client) {
           await sendNotification(client, channel, embedEvent(guildEvent, { locale: settings.lang }));
         }
       }
-    } catch (e) {
-      logger.error(`Error processing event ${event.EventId}:`, e);
+    } catch (error) {
+      logger.error(`Error processing event ${event.EventId}: ${error.message}`, { error });
+      logger.error(error);
     }
 
     return true;
@@ -81,6 +82,17 @@ async function subscribe(client) {
   return await subscribeEvents(process.env.SHARD, cb);
 }
 
+async function init(client) {
+  try {
+    await subscribe(client);
+    logger.info(`Subscribed to events queue.`);
+  } catch (error) {
+    logger.error(`Error in subscription to events queue: ${error.message}`, { error });
+  }
+}
+
 module.exports = {
+  name: "events",
+  init,
   subscribe,
 };
