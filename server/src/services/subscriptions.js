@@ -33,6 +33,10 @@ async function manageSubscription(customerId) {
   return await stripe.createPortalSession(customerId);
 }
 
+async function fetchAllSubscriptions() {
+  return await find(SUBSCRIPTIONS_COLLECTION, {});
+}
+
 async function getSubscriptionsByOwner(owner) {
   if (!isSubscriptionsEnabled()) return [];
   return await find(SUBSCRIPTIONS_COLLECTION, { owner });
@@ -110,6 +114,7 @@ module.exports = {
   addSubscription,
   assignSubscription,
   buySubscription,
+  fetchAllSubscriptions,
   fetchSubscriptionPrices,
   findSubscriptionsByServerId,
   getBuySubscription,

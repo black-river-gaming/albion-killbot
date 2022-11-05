@@ -39,8 +39,8 @@ async function getSettings(serverId) {
   });
 }
 
-async function getAllSettings() {
-  return await find(SETTINGS_COLLECTION, {}).toArray();
+async function fetchAllSettings() {
+  return await find(SETTINGS_COLLECTION, {});
 }
 
 async function setSettings(serverId, settings) {
@@ -67,7 +67,7 @@ module.exports = {
   REPORT_MODES,
   DEFAULT_SETTINGS,
   deleteSettings,
-  getAllSettings,
+  fetchAllSettings,
   getSettings,
   setSettings,
   updateSettingsCache,

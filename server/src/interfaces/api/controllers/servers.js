@@ -1,4 +1,6 @@
 const logger = require("../../../helpers/logger");
+
+const limitsService = require("../../../services/limits");
 const serversService = require("../../../services/servers");
 const settingsService = require("../../../services/settings");
 const subscriptionService = require("../../../services/subscriptions");
@@ -32,7 +34,7 @@ async function getServer(req, res) {
     if (server.subscription && server.subscription.stripe) {
       server.subscription.stripe = await subscriptionService.getStripeSubscription(server.subscription.stripe);
     }
-    server.limits = await trackService.getLimits(serverId);
+    server.limits = await limitsService.getLimits(serverId);
     server.track = await trackService.getTrack(serverId);
 
     return res.send(server);

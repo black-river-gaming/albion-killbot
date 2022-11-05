@@ -1,8 +1,10 @@
 const { InteractionType } = require("discord-api-types/v10");
 const { String } = require("discord-api-types/v10").ApplicationCommandOptionType;
 const { getLocale } = require("../../../helpers/locale");
+
 const { getAlliance, search } = require("../../../services/search");
-const { getLimits, setTrack } = require("../../../services/track");
+const { getLimits } = require("../../../services/limits");
+const { setTrack } = require("../../../services/track");
 
 const t = getLocale().t;
 
