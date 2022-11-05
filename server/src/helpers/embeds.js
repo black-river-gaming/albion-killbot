@@ -445,11 +445,11 @@ const embedPvpRanking = (rankings, { locale }) => {
 };
 
 module.exports = {
+  embedBattle,
   embedEvent,
   embedEventImage,
   embedEventInventoryImage,
-  embedPvpRanking,
   embedGuildRanking,
+  embedPvpRanking,
   embedTrackList,
-  embedBattle,
 };
