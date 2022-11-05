@@ -344,20 +344,19 @@ const embedGuildRanking = (guild, { locale }) => {
 const embedTrackList = (track, limits, { locale }) => {
   const { t } = getLocale(locale);
 
-  const printTrackList = (list) => {
-    let value = "```";
+  const printTrackList = (list, limit) => {
+    let value = "";
 
     if (!list || list.length === 0) {
       value += `\n${t("TRACK.NONE")}`;
-      value += "```";
       return value;
     }
 
-    list.forEach((item) => {
-      value += `\n${item.name}`;
+    list.forEach((item, i) => {
+      if (i >= limit) value += `\n~~${item.name}~~`;
+      else value += `\n${item.name}`;
     });
 
-    value += "```";
     return value;
   };
 
@@ -368,17 +367,17 @@ const embedTrackList = (track, limits, { locale }) => {
         fields: [
           {
             name: t("TRACK.PLAYERS.NAME", { actual: track.players.length, max: limits.players }),
-            value: printTrackList(track.players),
+            value: printTrackList(track.players, limits.players),
             inline: true,
           },
           {
             name: t("TRACK.GUILDS.NAME", { actual: track.guilds.length, max: limits.guilds }),
-            value: printTrackList(track.guilds),
+            value: printTrackList(track.guilds, limits.guilds),
             inline: true,
           },
           {
             name: t("TRACK.ALLIANCES.NAME", { actual: track.alliances.length, max: limits.alliances }),
-            value: printTrackList(track.alliances),
+            value: printTrackList(track.alliances, limits.alliances),
             inline: true,
           },
         ],
