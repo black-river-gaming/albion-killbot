@@ -6,18 +6,17 @@ const { embedGuildRanking } = require("../../../helpers/embeds");
 const logger = require("../../../helpers/logger");
 
 const { getAllGuilds, updateGuild } = require("../../../services/guilds");
-const { getSettingsForServer } = require("../../../services/settings");
-const { getTrackForServer } = require("../../../services/track");
+const { getSettings } = require("../../../services/settings");
+const { getTrack } = require("../../../services/track");
 
 async function updateGuilds(client) {
   logger.verbose(`Updating albion guild data`);
 
-  const trackForServer = await getTrackForServer(client.guilds.cache);
   const albionGuilds = await getAllGuilds();
 
   for (const guild of client.guilds.cache.values()) {
-    if (!trackForServer[guild.id]) continue;
-    const track = trackForServer[guild.id];
+    const track = await getTrack(guild.id);
+    if (!track) continue;
 
     for (const trackedGuild of track.guilds) {
       const albionGuild = albionGuilds[trackedGuild.id];
@@ -34,14 +33,12 @@ async function updateGuilds(client) {
 async function displayRankings(client, { setting }) {
   logger.info(`Sending guild ranking on '${setting}' setting to all servers.`);
 
-  const settingsByGuild = await getSettingsForServer(client.guilds.cache);
-  const trackForServer = await getTrackForServer(client.guilds.cache);
   const albionGuilds = await getAllGuilds();
 
   for (const guild of client.guilds.cache.values()) {
-    if (!trackForServer[guild.id] || !settingsByGuild[guild.id]) continue;
-    const settings = settingsByGuild[guild.id];
-    const track = trackForServer[guild.id];
+    const settings = await getSettings(guild.id);
+    const track = await getTrack(guild.id);
+    if (!settings || !track) continue;
 
     const { enabled, channel, guildRanking } = settings.rankings;
     if (!enabled || !channel) continue;
