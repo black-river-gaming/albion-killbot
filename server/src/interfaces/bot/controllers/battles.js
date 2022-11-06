@@ -33,7 +33,7 @@ async function subscribe(client) {
             limits,
           },
         });
-        await sendNotification(client, channel, embedBattle(battle, guild.settings.lang));
+        await sendNotification(client, channel, embedBattle(battle, settings.lang));
       }
     } catch (error) {
       logger.error(`Error processing battle ${battle.id}: ${error.message}`, { error });
