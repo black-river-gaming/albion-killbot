@@ -1,5 +1,7 @@
 const { find, findOne, updateOne, deleteOne } = require("../ports/database");
+
 const { memoize, set, remove } = require("../helpers/cache");
+const { clone } = require("../helpers/utils");
 
 const SETTINGS_COLLECTION = "settings";
 
@@ -35,7 +37,7 @@ const DEFAULT_SETTINGS = Object.freeze({
 async function getSettings(serverId) {
   return await memoize(`settings-${serverId}`, async () => {
     const settings = await findOne(SETTINGS_COLLECTION, { guild: serverId });
-    return Object.assign({}, DEFAULT_SETTINGS, settings);
+    return Object.assign(clone(DEFAULT_SETTINGS), settings);
   });
 }
 
@@ -65,7 +67,6 @@ async function updateSettingsCache(timeout) {
 
 module.exports = {
   REPORT_MODES,
-  DEFAULT_SETTINGS,
   deleteSettings,
   fetchAllSettings,
   getSettings,

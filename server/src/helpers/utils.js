@@ -107,15 +107,20 @@ function clearAllIntervals() {
   running = false;
 }
 
+function clone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 module.exports = {
+  clearAllIntervals,
+  clone,
   digitsFormatter,
   fileSizeFormatter,
-  parseFileSize,
-  humanFormatter,
   getNumber,
+  humanFormatter,
+  parseFileSize,
   runDaily,
   runInterval,
-  clearAllIntervals,
   sleep,
   timeout,
 };
