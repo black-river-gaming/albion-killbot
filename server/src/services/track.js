@@ -29,6 +29,7 @@ async function addTrack(serverId, trackType, trackEntity) {
     metadata: {
       DEFAULT_TRACK,
       serverId,
+      track,
       trackType,
       trackEntity,
     },
@@ -46,6 +47,7 @@ async function removeTrack(serverId, trackType, trackEntity) {
     metadata: {
       DEFAULT_TRACK,
       serverId,
+      track,
       trackType,
       trackEntity,
     },
