@@ -39,6 +39,7 @@
   },
   "RANKING": {
     "MONTHLY": "Ranking Mensal - {{ guild }}",
+    "GUILD_RANKING_DESCRIPTION": "Fama Total de Abates: {{ killFame }}\nFama Total de Mortes: {{ deathFame }}",
     "PVE": "Ranking PvE",
     "PVP": "Ranking PvP",
     "GATHERING": "Ranking de Coleta",

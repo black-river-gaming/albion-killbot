@@ -1,13 +1,8 @@
 const { Client, Intents } = require("discord.js");
 
 const logger = require("../../helpers/logger");
-const { runInterval, runDaily } = require("../../helpers/utils");
-const { DAY, HOUR } = require("../../helpers/constants");
-
 const database = require("../../ports/database");
 const queue = require("../../ports/queue");
-
-const guilds = require("./controllers/guilds");
 
 const controllers = require("./controllers");
 const commands = require("./commands");
@@ -25,19 +20,6 @@ client.on("shardReady", async (id) => {
   await queue.init();
   await commands.init(client.application.id);
   await controllers.init(client);
-
-  runInterval(`Collect Guild data`, guilds.updateGuilds, {
-    fnOpts: [client],
-    interval: DAY / 4,
-  });
-
-  runDaily(`Display guild rankings for daily setting`, guilds.displayRankings, {
-    fnOpts: [client, { setting: "daily" }],
-  });
-  runInterval(`Display guild rankings for hourly setting`, guilds.displayRankings, {
-    fnOpts: [client, { setting: "hourly" }],
-    interval: HOUR,
-  });
 });
 
 client.on("shardDisconnect", async (ev) => {

@@ -1,13 +1,35 @@
 const moment = require("moment");
+const logger = require("../../../helpers/logger");
 
 const { sendNotification } = require("./notifications");
 
+const { HOUR, DAY } = require("../../../helpers/constants");
 const { embedGuildRanking } = require("../../../helpers/embeds");
-const logger = require("../../../helpers/logger");
+const { runDaily, runInterval } = require("../../../helpers/utils");
 
 const { getAllGuilds, updateGuild } = require("../../../services/guilds");
 const { getSettings } = require("../../../services/settings");
 const { getTrack } = require("../../../services/track");
+
+const { GUILD_RANKINGS } = process.env;
+
+async function init(client) {
+  try {
+    runInterval(`Collect Guild data`, updateGuilds, {
+      fnOpts: [client],
+      interval: DAY / 4,
+    });
+    runDaily(`Display guild rankings for daily setting`, displayRankings, {
+      fnOpts: [client, "daily"],
+    });
+    runInterval(`Display guild rankings for hourly setting`, displayRankings, {
+      fnOpts: [client, "hourly"],
+      interval: HOUR,
+    });
+  } catch (error) {
+    logger.error(`Error in init guild controller: ${error.message}`, { error });
+  }
+}
 
 async function updateGuilds(client) {
   logger.verbose(`Updating albion guild data`);
@@ -30,8 +52,9 @@ async function updateGuilds(client) {
   logger.verbose(`Update albion guild data complete`);
 }
 
-async function displayRankings(client, { setting }) {
-  logger.info(`Sending guild ranking on '${setting}' setting to all servers.`);
+async function displayRankings(client, rankingType) {
+  if (!GUILD_RANKINGS) return;
+  logger.info(`Sending guild ranking on '${rankingType}' setting to all servers.`);
 
   const albionGuilds = await getAllGuilds();
 
@@ -42,7 +65,7 @@ async function displayRankings(client, { setting }) {
 
     const { enabled, channel, guildRanking } = settings.rankings;
     if (!enabled || !channel) continue;
-    if (guildRanking != setting) continue;
+    if (guildRanking != rankingType) continue;
 
     for (const trackedGuild of track.guilds) {
       const trackedGuildData = albionGuilds[trackedGuild.id];
@@ -60,5 +83,6 @@ async function displayRankings(client, { setting }) {
 
 module.exports = {
   displayRankings,
+  init,
   updateGuilds,
 };

@@ -5,6 +5,7 @@ const { digitsFormatter, humanFormatter } = require("./utils");
 const KILL_URL = "https://albiononline.com/{lang}/killboard/kill/{kill}";
 const GREEN = 52224;
 const RED = 13369344;
+const GOLD = 0x89710f;
 const BATTLE = 16752981;
 const RANKING_LINE_LENGTH = 23;
 
@@ -18,6 +19,10 @@ const MAXLEN = {
   },
   FOOTER: 2048,
   AUTHOR: 256,
+};
+
+const footer = {
+  text: "Powered by Albion Killbot",
 };
 
 const embedEvent = (event, { locale }) => {
@@ -300,44 +305,66 @@ const embedGuildRanking = (guild, { locale }) => {
     return value;
   };
 
+  const ranking = {
+    title: t("RANKING.MONTHLY", { guild: guild.Name }),
+    description: t("RANKING.GUILD_RANKING_DESCRIPTION", {
+      killFame: digitsFormatter(guild.killFame),
+      deathFame: digitsFormatter(guild.DeathFame),
+    }),
+    color: GOLD,
+    thumbnail: {
+      url: "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
+    },
+    fields: [],
+    timestamp: moment(guild.updatedAt).toISOString(),
+    footer,
+    url: `https://albiononline.com/pt/killboard/guild/${guild._id}`,
+  };
+
+  if (guild.rankings) {
+    if (guild.rankings.pve) {
+      ranking.fields.push({
+        name: t("RANKING.PVE"),
+        value: generateRankFieldValue(guild.rankings.pve),
+        inline: true,
+      });
+    }
+
+    if (guild.rankings.pvp) {
+      ranking.fields.push({
+        name: t("RANKING.PVP"),
+        value: generateRankFieldValue(guild.rankings.pvp, true),
+        inline: true,
+      });
+    }
+
+    if (ranking.fields.length === 2) {
+      ranking.fields.push({
+        name: "\u200B",
+        value: "\u200B",
+        inline: false,
+      });
+    }
+
+    if (guild.rankings.gathering) {
+      ranking.fields.push({
+        name: t("RANKING.GATHERING"),
+        value: generateRankFieldValue(guild.rankings.gathering),
+        inline: true,
+      });
+    }
+
+    if (guild.rankings.crafting) {
+      ranking.fields.push({
+        name: t("RANKING.CRAFTING"),
+        value: generateRankFieldValue(guild.rankings.crafting),
+        inline: true,
+      });
+    }
+  }
+
   return {
-    embeds: [
-      {
-        title: t("RANKING.MONTHLY", { guild: guild.Name }),
-        url: `https://albiononline.com/pt/killboard/guild/${guild._id}`,
-        thumbnail: {
-          url: "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
-        },
-        fields: [
-          {
-            name: t("RANKING.PVE"),
-            value: generateRankFieldValue(guild.rankings.pve),
-            inline: true,
-          },
-          {
-            name: t("RANKING.PVP"),
-            value: generateRankFieldValue(guild.rankings.pvp, true),
-            inline: true,
-          },
-          {
-            name: "\u200B",
-            value: "\u200B",
-            inline: false,
-          },
-          {
-            name: t("RANKING.GATHERING"),
-            value: generateRankFieldValue(guild.rankings.gathering),
-            inline: true,
-          },
-          {
-            name: t("RANKING.CRAFTING"),
-            value: generateRankFieldValue(guild.rankings.crafting),
-            inline: true,
-          },
-        ],
-        timestamp: moment().toISOString(),
-      },
-    ],
+    embeds: [ranking],
   };
 };
 

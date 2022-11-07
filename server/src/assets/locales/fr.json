@@ -39,6 +39,7 @@
   },
   "RANKING": {
     "MONTHLY": "Classement mensuel - {{ guild }}",
+    "GUILD_RANKING_DESCRIPTION": "Total Kill Fame: {{ killFame }}\nTotal Death Fame: {{ deathFame }}",
     "PVE": "Classement PvE",
     "PVP": "Classement PvP",
     "GATHERING": "Classement de collecte",
