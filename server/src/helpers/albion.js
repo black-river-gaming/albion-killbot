@@ -2,7 +2,11 @@ function isAlbionId(id) {
   return /[\w-]{22}/.test(id);
 }
 
-function toSearchResult(entity) {
+function isTrackEntity(entity) {
+  return entity && typeof entity.id === "string" && typeof entity.name === "string";
+}
+
+function toTrackEntity(entity) {
   if (!entity) return entity;
 
   if (entity.Id && entity.Name) {
@@ -24,5 +28,6 @@ function toSearchResult(entity) {
 
 module.exports = {
   isAlbionId,
-  toSearchResult,
+  isTrackEntity,
+  toTrackEntity,
 };

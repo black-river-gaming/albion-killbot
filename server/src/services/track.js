@@ -1,13 +1,42 @@
 const { find, findOne, updateOne } = require("../ports/database");
 const { memoize, set, remove } = require("../helpers/cache");
+const { isTrackEntity } = require("../helpers/albion");
+const logger = require("../helpers/logger");
 
 const TRACK_COLLECTION = "track";
 
+const TRACK_TYPE = {
+  PLAYERS: "players",
+  GUILDS: "guilds",
+  ALLIANCES: "alliances",
+};
+
 const DEFAULT_TRACK = Object.freeze({
-  players: [],
-  guilds: [],
-  alliances: [],
+  [TRACK_TYPE.PLAYERS]: [],
+  [TRACK_TYPE.GUILDS]: [],
+  [TRACK_TYPE.ALLIANCES]: [],
 });
+
+function displayDefaultTrack() {
+  logger.debug(`Default track: ${JSON.stringify(DEFAULT_TRACK)}`);
+}
+
+async function addTrack(serverId, trackType, trackEntity) {
+  if (!Object.values(TRACK_TYPE).indexOf(trackType) < 0) throw new Error("Invalid track type.");
+  if (!isTrackEntity(trackEntity)) throw new Error("Not a valid track entity");
+
+  const track = await getTrack(serverId);
+  track[trackType].push(trackEntity);
+  logger.info(`Added ${trackType} for server ${serverId}: ${trackEntity.name}`, {
+    metadata: {
+      DEFAULT_TRACK,
+      serverId,
+      trackType,
+      trackEntity,
+    },
+  });
+  return await setTrack(serverId, track);
+}
 
 async function getTrack(serverId) {
   return await memoize(`track-${serverId}`, async () => {
@@ -33,6 +62,9 @@ async function updateTrackCache(timeout) {
 }
 
 module.exports = {
+  TRACK_TYPE,
+  displayDefaultTrack,
+  addTrack,
   getTrack,
   setTrack,
   updateTrackCache,

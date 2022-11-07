@@ -1,9 +1,9 @@
 const albion = require("../ports/albion");
-const { toSearchResult } = require("../helpers/albion");
+const { toTrackEntity } = require("../helpers/albion");
 
 async function getPlayer(playerId) {
   const player = await albion.getPlayer(playerId, { silent: true });
-  return toSearchResult(player);
+  return toTrackEntity(player);
 }
 
 async function getGuild(guildId) {
@@ -11,19 +11,19 @@ async function getGuild(guildId) {
     rankings: false,
     silent: true,
   });
-  return toSearchResult(guild);
+  return toTrackEntity(guild);
 }
 
 async function getAlliance(allianceId) {
   const alliance = await albion.getAlliance(allianceId, { silent: true });
-  return toSearchResult(alliance);
+  return toTrackEntity(alliance);
 }
 
 async function search(q) {
   const search = await albion.search(q);
   return {
-    players: search.players.map(toSearchResult),
-    guilds: search.guilds.map(toSearchResult),
+    players: search.players.map(toTrackEntity),
+    guilds: search.guilds.map(toTrackEntity),
     alliances: [],
   };
 }
