@@ -1,7 +1,7 @@
 const { InteractionType } = require("discord-api-types/v10");
 const { String } = require("discord-api-types/v10").ApplicationCommandOptionType;
 const { getLocale } = require("../../../helpers/locale");
-const { setTrack } = require("../../../services/track");
+const { removeTrack, TRACK_TYPE } = require("../../../services/track");
 
 const t = getLocale().t;
 
@@ -32,9 +32,9 @@ const command = {
   handle: async (interaction, { track, t }) => {
     const playerName = interaction.options.getString("player");
     const guildName = interaction.options.getString("guild");
-    const allianceId = interaction.options.getString("alliance");
+    const allianceName = interaction.options.getString("alliance");
 
-    if (!playerName && !guildName && !allianceId) {
+    if (!playerName && !guildName && !allianceName) {
       return await interaction.reply({
         content: t("TRACK.MISSING_PARAMETERS"),
         ephemeral: true,
@@ -48,24 +48,19 @@ const command = {
       content += msg + "\n";
     };
 
-    const untrack = async (type, value) => {
-      if (!track) track = {};
-      if (!track[type]) track[type] = [];
-
+    const untrack = async (type, name) => {
       const equalsCaseInsensitive = (a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
-      const entity = track[type].find((trackEntity) => equalsCaseInsensitive(trackEntity.name, value));
+      const trackedEntity = track[type].find((t) => equalsCaseInsensitive(t.name, name));
 
-      if (!entity) return addContent(t("TRACK.NOT_FOUND"));
+      if (!trackedEntity) return addContent(t("TRACK.NOT_FOUND"));
+      await removeTrack(interaction.guild.id, type, trackedEntity);
 
-      track[type] = track[type].filter((e) => e != entity);
-
-      await setTrack(interaction.guild.id, track);
-      return addContent(t(`TRACK.${type.toUpperCase()}.UNTRACKED`, { name: entity.name }));
+      return addContent(t(`TRACK.${type.toUpperCase()}.UNTRACKED`, { name: trackedEntity.name }));
     };
 
-    if (allianceId) await untrack("alliances", allianceId);
-    if (playerName) await untrack("players", playerName);
-    if (guildName) await untrack("guilds", guildName);
+    if (allianceName) await untrack(TRACK_TYPE.ALLIANCES, allianceName);
+    if (playerName) await untrack(TRACK_TYPE.PLAYERS, playerName);
+    if (guildName) await untrack(TRACK_TYPE.GUILDS, guildName);
 
     return await interaction.editReply({ content, ephemeral: true });
   },

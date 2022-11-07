@@ -27,7 +27,24 @@ async function addTrack(serverId, trackType, trackEntity) {
 
   const track = await getTrack(serverId);
   track[trackType].push(trackEntity);
-  logger.info(`Added ${trackType} for server ${serverId}: ${trackEntity.name}`, {
+  logger.info(`Added tracked ${trackType} for server ${serverId}: ${trackEntity.name}`, {
+    metadata: {
+      DEFAULT_TRACK,
+      serverId,
+      trackType,
+      trackEntity,
+    },
+  });
+  return await setTrack(serverId, track);
+}
+
+async function removeTrack(serverId, trackType, trackEntity) {
+  if (!Object.values(TRACK_TYPE).indexOf(trackType) < 0) throw new Error("Invalid track type.");
+  if (!isTrackEntity(trackEntity)) throw new Error("Not a valid track entity");
+
+  const track = await getTrack(serverId);
+  track[trackType] = track[trackType].filter((te) => te.id != trackEntity.id);
+  logger.info(`Removed tracked ${trackType} for server ${serverId}: ${trackEntity.name}`, {
     metadata: {
       DEFAULT_TRACK,
       serverId,
@@ -63,9 +80,10 @@ async function updateTrackCache(timeout) {
 
 module.exports = {
   TRACK_TYPE,
-  displayDefaultTrack,
   addTrack,
+  displayDefaultTrack,
   getTrack,
+  removeTrack,
   setTrack,
   updateTrackCache,
 };
