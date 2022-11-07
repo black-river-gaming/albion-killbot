@@ -1,28 +1,26 @@
 const { isPlayerTracked } = require("../helpers/tracking");
-const { getCollection } = require("../ports/database");
+const { find, updateOne, deleteMany } = require("../ports/database");
 const { getTrack } = require("../services/track");
 
 const RANKINGS_COLLECTION = "rankings";
 
-async function addRankingKill(guildId, event, track) {
-  const collection = getCollection(RANKINGS_COLLECTION);
-  if (!collection) throw new Error("Not connected to the database");
-
-  if (!track) track = await getTrack(guildId);
+async function addRankingKill(serverId, event) {
+  const track = await getTrack(serverId);
 
   if (event.good) {
     // Player kill
     for (const player of event.GroupMembers) {
       if (!isPlayerTracked(player, track)) continue;
       const killFame = Math.max(0, player.KillFame);
-      await collection.updateOne(
+      await updateOne(
+        RANKINGS_COLLECTION,
         {
-          guild: guildId,
+          server: serverId,
           player: player.Id,
         },
         {
           $setOnInsert: {
-            guild: guildId,
+            server: serverId,
             player: player.Id,
             name: player.Name,
           },
@@ -39,14 +37,15 @@ async function addRankingKill(guildId, event, track) {
     if (!isPlayerTracked(player, track)) return; // Should never happen
 
     const deathFame = Math.max(0, event.TotalVictimKillFame);
-    await collection.updateOne(
+    await updateOne(
+      RANKINGS_COLLECTION,
       {
-        guild: guildId,
+        server: serverId,
         player: player.Id,
       },
       {
         $setOnInsert: {
-          guild: guildId,
+          server: serverId,
           player: player.Id,
           name: player.Name,
         },
@@ -59,38 +58,36 @@ async function addRankingKill(guildId, event, track) {
   }
 }
 
-async function getRanking(guildId, limit = 5) {
-  const collection = getCollection(RANKINGS_COLLECTION);
-  if (!collection) throw new Error("Not connected to the database");
-
-  let killRanking = await collection
-    .find({
-      guild: guildId,
+async function getRanking(serverId, limit = 5) {
+  const killRanking = await find(
+    RANKINGS_COLLECTION,
+    {
+      server: serverId,
       killFame: { $gte: 0 },
-    })
-    .sort({ killFame: -1 })
-    .toArray();
-
+    },
+    {
+      sort: { killFame: -1 },
+      limit,
+    },
+  );
   const totalKillFame = killRanking.reduce((sum, player) => {
     return sum + Math.max(0, player.killFame);
   }, 0);
 
-  killRanking = killRanking.splice(0, limit);
-
-  let deathRanking = await collection
-    .find({
-      guild: guildId,
+  const deathRanking = await find(
+    RANKINGS_COLLECTION,
+    {
+      server: serverId,
       deathFame: { $gte: 0 },
-    })
-    .sort({ deathFame: -1 })
-    .limit(limit)
-    .toArray();
-
+    },
+    {
+      sort: { deathFame: -1 },
+      limit,
+    },
+  );
   const totalDeathFame = deathRanking.reduce((sum, player) => {
     return sum + Math.max(0, player.deathFame);
   }, 0);
-
-  deathRanking = deathRanking.splice(0, limit);
 
   return {
     killRanking,
@@ -101,8 +98,7 @@ async function getRanking(guildId, limit = 5) {
 }
 
 async function deleteRankings() {
-  const collection = getCollection(RANKINGS_COLLECTION);
-  await collection.deleteMany({});
+  await deleteMany(RANKINGS_COLLECTION, {});
 }
 
 module.exports = {

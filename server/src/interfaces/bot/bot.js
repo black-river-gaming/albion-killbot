@@ -8,7 +8,6 @@ const database = require("../../ports/database");
 const queue = require("../../ports/queue");
 
 const guilds = require("./controllers/guilds");
-const rankings = require("./controllers/rankings");
 
 const controllers = require("./controllers");
 const commands = require("./commands");
@@ -39,24 +38,6 @@ client.on("shardReady", async (id) => {
     fnOpts: [client, { setting: "hourly" }],
     interval: HOUR,
   });
-
-  runDaily(`Display pvp ranking for daily setting`, rankings.displayRankings, {
-    fnOpts: [client, { setting: "daily" }],
-    hour: 0,
-    minute: 0,
-  });
-  runInterval(`Display pvp ranking for hourly setting`, rankings.displayRankings, {
-    fnOpts: [client, { setting: "hourly" }],
-    interval: HOUR,
-  });
-
-  // Only one shard needs to run this
-  if (id == 0) {
-    runDaily(`Clear rankings data`, rankings.clearRankings, {
-      hour: 0,
-      minute: 5,
-    });
-  }
 });
 
 client.on("shardDisconnect", async (ev) => {

@@ -36,7 +36,7 @@ async function subscribe(client) {
           continue;
         }
 
-        addRankingKill(guild.id, guildEvent, track.guilds[guild.id]);
+        addRankingKill(guild.id, guildEvent);
 
         logger.info(`Sending ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
           metadata: {

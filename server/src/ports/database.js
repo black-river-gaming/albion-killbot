@@ -57,9 +57,9 @@ async function insertOne(collectionName, query) {
   return returnObjectId(result).insertedId;
 }
 
-async function find(collectionName, query) {
+async function find(collectionName, query, options) {
   const collection = getCollection(collectionName);
-  const result = await collection.find(convertObjectId(query)).toArray();
+  const result = await collection.find(convertObjectId(query), options).toArray();
   return result.map((document) => returnObjectId(document));
 }
 
@@ -81,6 +81,12 @@ async function updateOne(collectionName, filter, update, options) {
   return returnObjectId(document);
 }
 
+async function deleteMany(collectionName, filter) {
+  const collection = getCollection(collectionName);
+  const result = await collection.deleteMany(convertObjectId(filter));
+  return returnObjectId(result);
+}
+
 async function deleteOne(collectionName, filter) {
   const collection = getCollection(collectionName);
   const result = await collection.deleteOne(convertObjectId(filter));
@@ -90,6 +96,7 @@ async function deleteOne(collectionName, filter) {
 module.exports = {
   client,
   cleanup,
+  deleteMany,
   deleteOne,
   dropColection,
   find,
