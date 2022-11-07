@@ -3,7 +3,7 @@
   "LEAVE": "Triste!, J'ai du mal à envoyer des messages à votre serveur {{ guild }}, Donc je dois vous quitter =(\nOn se revoit bientot!",
   "NO_PERMISSION": "Désolé, j'accepte seulement les commandes des admins du serveur.",
   "CONFIG_NOT_SET": "ATTENTION: Impossible d'enregistrer la configuration du serveur. Ils seront réinitialiser au redémarrage du bot.",
-  "CHANNEL_NOT_SET": "ATTENTION: Le channel d'envoi des messages du bot n'est pas défini. Veuillez utiliser !channel [channel] Pour le configurer.",
+  "CHANNEL_NOT_SET": "ATTENTION: Le channel d'envoi des messages du bot n'est pas défini. Veuillez utiliser /settings Pour le configurer.",
   "TEST_MSG": "J'ai la permission d'envoyer des messages dans le channel {{{ channel }}}.",
   "TEST_FAIL": "Je n'ai pas la permission d'envoyer des messages au channel {{{ channel }}}.",
   "MODES_AVAILABLE": "Modes disponibles pour ce paramètre: {{ modes }}",

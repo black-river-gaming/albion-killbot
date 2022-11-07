@@ -32,7 +32,7 @@ const command = {
   type: InteractionType.Ping,
   default_member_permissions: "0",
   options,
-  handle: async (interaction, { track, t }) => {
+  handle: async (interaction, { settings, track, t }) => {
     if (!track) throw new Error("Unable to fetch your settings.");
 
     const limits = await getLimits(interaction.guild.id);
@@ -91,7 +91,11 @@ const command = {
     if (playerName) await searchAndAdd(TRACK_TYPE.PLAYERS, playerName, limits.players);
     if (guildName) await searchAndAdd(TRACK_TYPE.GUILDS, guildName, limits.guilds);
 
-    return await interaction.editReply({ content, ephemeral: true });
+    await interaction.editReply({ content, ephemeral: true });
+
+    if (!settings.kills.channel && !settings.deaths.channel) {
+      await interaction.followUp(t("CHANNEL_NOT_SET"));
+    }
   },
 };
 

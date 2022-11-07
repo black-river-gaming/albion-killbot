@@ -3,7 +3,7 @@
   "LEAVE": "Sadly, I am having trouble sending messages to your server {{ guild }}, so I have to leave now =(\nSee you soon!",
   "NO_PERMISSION": "Sorry, I only accept commands from server admins.",
   "CONFIG_NOT_SET": "WARNING: Unable to persist server configuration. They will be reverted upon bot restart.",
-  "CHANNEL_NOT_SET": "WARNING: Channel to send notifications is not set. Please use !channel [channel] to configure it.",
+  "CHANNEL_NOT_SET": "WARNING: Channel to send notifications is not set. Please set up a channel in /settings.",
   "TEST_MSG": "I have permission to send messages to the channel {{{ channel }}}.",
   "TEST_FAIL": "I DON'T have permissions to send messages to channel {{{ channel }}}.",
   "MODES_AVAILABLE": "Modes available for this setting: {{ modes }}",

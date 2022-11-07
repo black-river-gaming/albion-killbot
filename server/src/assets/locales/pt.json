@@ -3,7 +3,7 @@
   "LEAVE": "Infelizmente, eu estou tendo problemas em enviar mensagens para o seu servidor {{ guild }}, entãõ tenho que sair agora =(\nVejo você em breve!",
   "NO_PERMISSION": "Desulpe, mas só aceito comandos de administradores.",
   "CONFIG_NOT_SET": "AVISO: Não foi possível persistir a configuração do servidor. Ela será revertida quando o bot reiniciar.",
-  "CHANNEL_NOT_SET": "AVISO: Canal para enviar notificações não configurado. Por favor, use !channel [channel] to configurá-lo.",
+  "CHANNEL_NOT_SET": "AVISO: Canal para enviar notificações não configurado. Por favor, use /settings to configurá-lo.",
   "TEST_MSG": "Eu tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
   "TEST_FAIL": "Eu NÃO tenho privilégios para enviar mensagens para o canal {{{ channel }}}.",
   "MODES_AVAILABLE": "Modos disponíveis: {{{ modes }}}",
