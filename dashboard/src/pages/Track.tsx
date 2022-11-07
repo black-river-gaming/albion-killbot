@@ -54,18 +54,20 @@ const Track = () => {
   }, [dispatch, server]);
 
   if (updateTrack.isLoading) return <Loader />;
+  if (!server.data) return <div>No data for this server.</div>;
 
-  const limits = server.data?.limits;
+  const { limits, settings, subscription } = server.data;
+
   const hasOverLimitItems =
     (limits?.players && track.players.length > limits.players) ||
     (limits?.guilds && track.guilds.length > limits.guilds) ||
     (limits?.alliances && track.alliances.length > limits.alliances);
-
-  const subscription = server.data?.subscription;
   const isPremium =
     subscription &&
     (subscription.expires === "never" ||
       new Date(subscription.expires).getTime() > new Date().getTime());
+  const hasNoConfiguredTrackChannels =
+    !settings.kills.channel && !settings.deaths.channel;
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
@@ -259,6 +261,18 @@ const Track = () => {
               subscription.
             </Alert>
           )
+        )}
+
+        {hasNoConfiguredTrackChannels && (
+          <Alert variant="warning">
+            <b>Warning: </b>
+            <span>
+              You do not have configured a channel to display kills or death
+              notifications. Please go to the{" "}
+            </span>
+            <Link to="/settings">Settings</Link>
+            <span> page to set up notification channels.</span>
+          </Alert>
         )}
 
         <Card>
