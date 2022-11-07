@@ -109,8 +109,8 @@ async function generateEventImage(event) {
     await drawItem(ctx, equipment.Bag, x, y);
     await drawItem(ctx, equipment.Cape, x + BLOCK_SIZE * 2, y);
     await drawItem(ctx, equipment.Mount, x + BLOCK_SIZE, y + BLOCK_SIZE * 3);
-    await drawItem(ctx, equipment.Potion, x + BLOCK_SIZE * 2, y + BLOCK_SIZE * 2);
-    await drawItem(ctx, equipment.Food, x, y + BLOCK_SIZE * 2);
+    await drawItem(ctx, equipment.Potion, x, y + BLOCK_SIZE * 2);
+    await drawItem(ctx, equipment.Food, x + BLOCK_SIZE * 2, y + BLOCK_SIZE * 2);
   };
   await drawPlayer(event.Killer, 15, 0);
   await drawPlayer(event.Victim, 935, 0);
