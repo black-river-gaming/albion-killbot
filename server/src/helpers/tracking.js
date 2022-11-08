@@ -80,7 +80,7 @@ function getTrackedBattle(battle, track, limits) {
   return null;
 }
 
-async function isPlayerTracked(player, { players = [], guilds = [], alliances = [] }) {
+function isPlayerTracked(player, { players = [], guilds = [], alliances = [] }) {
   return (
     players.some((t) => t.id === player.Id) ||
     guilds.some((t) => t.id === player.GuildId) ||
