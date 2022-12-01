@@ -116,6 +116,8 @@ async function generateEventImage(event) {
   await drawPlayer(event.Victim, 935, 0);
 
   // timestamp
+  const timestampY = 50;
+  const timestampIconSize = 75;
   ctx.beginPath();
   ctx.font = "35px Roboto";
   ctx.fillStyle = "#FFF";
@@ -124,10 +126,13 @@ async function generateEventImage(event) {
   const timestamp = moment.utc(event.TimeStamp).format("YYYY.MM.DD HH:mm");
   tw = ctx.measureText(timestamp).width;
   th = ctx.measureText("M").width;
-  ctx.strokeText(timestamp, w / 2 - tw / 2, th * 4);
-  ctx.fillText(timestamp, w / 2 - tw / 2, th * 4);
+  await drawImage(ctx, path.join(assetsPath, "time.png"), w / 2 - timestampIconSize / 2, timestampY, timestampIconSize, timestampIconSize);
+  ctx.strokeText(timestamp, w / 2 - tw / 2, timestampY + timestampIconSize + th + 15);
+  ctx.fillText(timestamp, w / 2 - tw / 2, timestampY + timestampIconSize + th + 15);
 
   // fame
+  const fameY = 475;
+  const fameIconSize = 100;
   ctx.beginPath();
   ctx.font = "40px Roboto";
   ctx.fillStyle = "#FFF";
@@ -135,10 +140,9 @@ async function generateEventImage(event) {
   ctx.lineWidth = 4;
   const fame = digitsFormatter(event.TotalVictimKillFame);
   tw = ctx.measureText(fame).width;
-  const IMG_SIZE = 100;
-  await drawImage(ctx, path.join(assetsPath, "fame.png"), w / 2 - IMG_SIZE / 2, 500 - IMG_SIZE / 2);
-  ctx.strokeText(fame, w / 2 - tw / 2, 600);
-  ctx.fillText(fame, w / 2 - tw / 2, 600);
+  await drawImage(ctx, path.join(assetsPath, "fame.png"), w / 2 - fameIconSize / 2, fameY, fameIconSize, fameIconSize);
+  ctx.strokeText(fame, w / 2 - tw / 2, fameY + fameIconSize + th + 15);
+  ctx.fillText(fame, w / 2 - tw / 2, fameY + fameIconSize + th + 15);
 
   // assists bar
   const drawAssistBar = (participants, x, y, width, height, radius) => {
