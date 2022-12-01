@@ -1,11 +1,11 @@
 const router = require("express").Router();
-const killsController = require("../controllers/kills");
+const eventsController = require("../controllers/events");
 
 /**
  * @openapi
  * components:
  *  schemas:
- *    Kill:
+ *    Event:
  *      type: object
  *      properties:
  *        EventId:
@@ -171,30 +171,82 @@ const killsController = require("../controllers/kills");
 
 /**
  * @openapi
- * /kills/{killId}:
+ * /events/{eventId}:
  *   get:
- *     tags: [Kills]
+ *     tags: [Events]
  *     parameters:
- *     - name: killId
+ *     - name: eventId
  *       in: path
  *       required: true
  *       schema:
  *         type: string
- *     summary: Get kill report.
- *     operationId: getKill
+ *     summary: Get event report.
+ *     operationId: getEvent
  *     responses:
  *       200:
- *         description: Kill report
+ *         description: Event report
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Kill'
+ *               $ref: '#/components/schemas/Event'
  *       404:
- *         description: Kill not found
+ *         description: Event not found
  */
-router.get(`/:killId`, killsController.getKill);
+router.get(`/:eventId`, eventsController.getEvent);
+
+/**
+ * @openapi
+ * /events/{eventId}/image:
+ *   get:
+ *     tags: [Events]
+ *     parameters:
+ *     - name: eventId
+ *       in: path
+ *       required: true
+ *       schema:
+ *         type: string
+ *     summary: Get event report as image.
+ *     operationId: getEventImage
+ *     responses:
+ *       200:
+ *         description: Event report as image
+ *         content:
+ *           image/png:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       404:
+ *         description: Event not found
+ */
+router.get(`/:eventId/image`, eventsController.getEventImage);
+
+/**
+ * @openapi
+ * /events/{eventId}/image/inventory:
+ *   get:
+ *     tags: [Events]
+ *     parameters:
+ *     - name: eventId
+ *       in: path
+ *       required: true
+ *       schema:
+ *         type: string
+ *     summary: Get event inventory report as image.
+ *     operationId: getEventInventoryImage
+ *     responses:
+ *       200:
+ *         description: Event inventory image
+ *         content:
+ *           image/png:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       404:
+ *         description: Event not found
+ */
+router.get(`/:eventId/image/inventory`, eventsController.getEventInventoryImage);
 
 module.exports = {
-  path: "/kills",
+  path: "/events",
   router,
 };
