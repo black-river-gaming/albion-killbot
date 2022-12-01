@@ -126,7 +126,14 @@ async function generateEventImage(event) {
   const timestamp = moment.utc(event.TimeStamp).format("YYYY.MM.DD HH:mm");
   tw = ctx.measureText(timestamp).width;
   th = ctx.measureText("M").width;
-  await drawImage(ctx, path.join(assetsPath, "time.png"), w / 2 - timestampIconSize / 2, timestampY, timestampIconSize, timestampIconSize);
+  await drawImage(
+    ctx,
+    path.join(assetsPath, "time.png"),
+    w / 2 - timestampIconSize / 2,
+    timestampY,
+    timestampIconSize,
+    timestampIconSize,
+  );
   ctx.strokeText(timestamp, w / 2 - tw / 2, timestampY + timestampIconSize + th + 15);
   ctx.fillText(timestamp, w / 2 - tw / 2, timestampY + timestampIconSize + th + 15);
 

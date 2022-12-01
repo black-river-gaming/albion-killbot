@@ -29,7 +29,10 @@ async function getEventInventoryImage(req, res) {
   if (!inventory || inventory.length === 0) return res.sendStatus(404);
 
   const eventInventoryImage = await generateInventoryImage(inventory);
-  return res.set("Content-Disposition", `inline; filename="${event.EventId}-inventory.png"`).type("png").send(eventInventoryImage);
+  return res
+    .set("Content-Disposition", `inline; filename="${event.EventId}-inventory.png"`)
+    .type("png")
+    .send(eventInventoryImage);
 }
 
 module.exports = {
