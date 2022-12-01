@@ -49,15 +49,17 @@ async function subscribe(client) {
 
         if (mode === REPORT_MODES.IMAGE) {
           const inventory = guildEvent.Victim.Inventory.filter((i) => i != null);
+          const hasInventory = inventory.length > 0;
           const eventImage = await generateEventImage(guildEvent, settings.lang);
           await sendNotification(
             client,
             channel,
             embedEventImage(guildEvent, eventImage, {
               locale,
+              timestamp: !hasInventory,
             }),
           );
-          if (inventory.length > 0) {
+          if (hasInventory) {
             const inventoryImage = await generateInventoryImage(inventory, settings.lang);
             await sendNotification(
               client,
