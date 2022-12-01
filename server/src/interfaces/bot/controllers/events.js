@@ -56,7 +56,7 @@ async function subscribe(client) {
             channel,
             embedEventImage(guildEvent, eventImage, {
               locale,
-              timestamp: !hasInventory,
+              addFooter: !hasInventory,
             }),
           );
           if (hasInventory) {

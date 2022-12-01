@@ -122,7 +122,7 @@ const embedEvent = (event, { locale }) => {
   };
 };
 
-const embedEventImage = (event, image, { locale, timestamp }) => {
+const embedEventImage = (event, image, { locale, addFooter }) => {
   const l = getLocale(locale);
   const { t } = l;
 
@@ -142,7 +142,8 @@ const embedEventImage = (event, image, { locale, timestamp }) => {
         image: {
           url: `attachment://${filename}`,
         },
-        timestamp: timestamp ? moment(event.TimeStamp).toISOString() : undefined,
+        timestamp: addFooter ? moment(event.TimeStamp).toISOString() : undefined,
+        footer: addFooter ? footer : undefined,
       },
     ],
     files: [
@@ -169,6 +170,7 @@ const embedEventInventoryImage = (event, image, { locale }) => {
           url: `attachment://${filename}`,
         },
         timestamp: moment(event.TimeStamp).toISOString(),
+        footer,
       },
     ],
     files: [
