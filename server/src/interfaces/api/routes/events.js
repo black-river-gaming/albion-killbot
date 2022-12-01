@@ -1,8 +1,5 @@
 const router = require("express").Router();
 const eventsController = require("../controllers/events");
-const { disableCache } = require("../middlewares/cache");
-
-router.use(disableCache);
 
 /**
  * @openapi
@@ -212,7 +209,7 @@ router.get(`/:eventId`, eventsController.getEvent);
  *     operationId: getEventImage
  *     responses:
  *       200:
- *         description: Event report
+ *         description: Event report as image
  *         content:
  *           image/png:
  *             schema:
@@ -222,6 +219,32 @@ router.get(`/:eventId`, eventsController.getEvent);
  *         description: Event not found
  */
 router.get(`/:eventId/image`, eventsController.getEventImage);
+
+/**
+ * @openapi
+ * /events/{eventId}/image/inventory:
+ *   get:
+ *     tags: [Events]
+ *     parameters:
+ *     - name: eventId
+ *       in: path
+ *       required: true
+ *       schema:
+ *         type: string
+ *     summary: Get event inventory report as image.
+ *     operationId: getEventInventoryImage
+ *     responses:
+ *       200:
+ *         description: Event inventory image
+ *         content:
+ *           image/png:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       404:
+ *         description: Event not found
+ */
+router.get(`/:eventId/image/inventory`, eventsController.getEventInventoryImage);
 
 module.exports = {
   path: "/events",
