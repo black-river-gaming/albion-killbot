@@ -1,38 +1,30 @@
-const logger = require("../../../helpers/logger");
-const { getRanking, deleteRankings } = require("../../../services/rankings");
-const { getSettings } = require("../../../services/settings");
-
 const { HOUR } = require("../../../helpers/constants");
+const logger = require("../../../helpers/logger");
 const { embedPvpRanking } = require("../../../helpers/embeds");
 const { runDaily, runInterval } = require("../../../helpers/utils");
+
+const { getRanking, deleteRankings } = require("../../../services/rankings");
+const { getSettings } = require("../../../services/settings");
 
 const { sendNotification } = require("./notifications");
 
 async function init(client) {
   try {
-    runDaily(`Display pvp ranking for daily setting`, displayRankings, {
-      fnOpts: [client, "daily"],
+    runDaily(`Display pvp ranking for daily setting and clear after`, displayRankings, {
+      fnOpts: [client, "daily", { clearAfterDisplay: true }],
       hour: 0,
       minute: 0,
     });
     runInterval(`Display pvp ranking for hourly setting`, displayRankings, {
-      fnOpts: [client, "hourly"],
+      fnOpts: [client, "hourly", {}],
       interval: HOUR,
     });
-
-    // Only the first shard needs to run this
-    if (process.env.SHARD === 0) {
-      runDaily(`Clear rankings data`, clearRankings, {
-        hour: 0,
-        minute: 5,
-      });
-    }
   } catch (error) {
     logger.error(`Error in init pvp rankings: ${error.message}`, { error });
   }
 }
 
-async function displayRankings(client, rankingType) {
+async function displayRankings(client, rankingType, { clearAfterDisplay = false }) {
   logger.info(`Sending pvp ranking on '${rankingType}' setting to all servers.`);
 
   for (const guild of client.guilds.cache.values()) {
@@ -54,12 +46,22 @@ async function displayRankings(client, rankingType) {
       }),
     );
   }
+
+  if (clearAfterDisplay) await clearRankings(client);
+
+  logger.info(`Send pvp ranking on '${rankingType}' setting to all servers complete.`);
 }
 
-async function clearRankings() {
-  logger.info(`Clearing rankings.`);
-  await deleteRankings();
-  logger.verbose(`Ranking cleared!`);
+async function clearRankings(client) {
+  for (const guild of client.guilds.cache.values()) {
+    logger.verbose(`Clearing rankings for ${guild.name}.`, {
+      metadata: {
+        servers: client.guilds.cache.size,
+        guild,
+      },
+    });
+    await deleteRankings(guild.id);
+  }
 }
 
 module.exports = {
