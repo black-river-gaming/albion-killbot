@@ -39,8 +39,8 @@ async function downloadFromCDNs(item, writer) {
         // Emergency timeout
         setTimeout(() => resolve(false), 30000);
       });
-    } catch (e) {
-      logger.debug(`Unable to download ${url}:`, e);
+    } catch (error) {
+      logger.debug(`Unable to download ${url}: ${error.message}`);
     }
   }
 
