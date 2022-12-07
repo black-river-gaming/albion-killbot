@@ -97,8 +97,8 @@ async function getRanking(serverId, limit = 5) {
   };
 }
 
-async function deleteRankings() {
-  await deleteMany(RANKINGS_COLLECTION, {});
+async function deleteRankings(serverId) {
+  await deleteMany(RANKINGS_COLLECTION, { server: serverId });
 }
 
 module.exports = {
