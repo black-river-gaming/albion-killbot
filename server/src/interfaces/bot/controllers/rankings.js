@@ -25,7 +25,7 @@ async function init(client) {
 }
 
 async function displayRankings(client, rankingType, { clearAfterDisplay = false }) {
-  logger.info(`Sending pvp ranking on '${rankingType}' setting to all servers.`);
+  logger.info(`PvP Ranking on '${rankingType}' setting: start.`);
 
   for (const guild of client.guilds.cache.values()) {
     const settings = await getSettings(guild.id);
@@ -49,7 +49,7 @@ async function displayRankings(client, rankingType, { clearAfterDisplay = false 
 
   if (clearAfterDisplay) await clearRankings(client);
 
-  logger.info(`Send pvp ranking on '${rankingType}' setting to all servers complete.`);
+  logger.verbose(`PvP Ranking on '${rankingType}' setting: complete.`);
 }
 
 async function clearRankings(client) {

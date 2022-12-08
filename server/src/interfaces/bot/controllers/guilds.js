@@ -54,7 +54,7 @@ async function updateGuilds(client) {
 
 async function displayRankings(client, rankingType) {
   if (!GUILD_RANKINGS) return;
-  logger.info(`Sending guild ranking on '${rankingType}' setting to all servers.`);
+  logger.info(`Guild Ranking on '${rankingType}' setting: start.`);
 
   const albionGuilds = await getAllGuilds();
 
@@ -78,7 +78,7 @@ async function displayRankings(client, rankingType) {
     }
   }
 
-  logger.verbose(`Displaying guild rankings to all servers complete`);
+  logger.verbose(`Guild Ranking on '${rankingType}' setting: complete.`);
 }
 
 module.exports = {
