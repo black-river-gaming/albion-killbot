@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const albion = require("../ports/albion");
 const { publish, subscribe } = require("../ports/queue");
 const logger = require("../helpers/logger");
@@ -45,8 +46,8 @@ async function publishBattle(battle) {
   return await publish(BATTLES_EXCHANGE, battle);
 }
 
-async function subscribeBattles(queue_suffix, callback) {
-  const queue = `${BATTLES_QUEUE_PREFIX}-${queue_suffix}`;
+async function subscribeBattles(callback, { queue_suffix } = {}) {
+  const queue = `${BATTLES_QUEUE_PREFIX}-${queue_suffix || crypto.randomUUID()}`;
   return await subscribe(BATTLES_EXCHANGE, queue, callback);
 }
 
