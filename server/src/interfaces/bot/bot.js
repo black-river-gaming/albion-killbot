@@ -15,11 +15,7 @@ const client = new Client({
 client.on("shardReady", async (id) => {
   process.env.SHARD = id;
   logger.info(`Shard online! Bot user: ${client.user.tag}. Guild count: ${client.guilds.cache.size}`);
-
-  await database.init();
-  await queue.init();
-  await commands.init(client.application.id);
-  await controllers.init(client);
+  await commands.refresh(client.application.id);
 });
 
 client.on("shardDisconnect", async (ev) => {
@@ -37,6 +33,10 @@ client.on("error", async (e) => {
 client.on("interactionCreate", commands.handle);
 
 async function run() {
+  await database.init();
+  await queue.init();
+  await controllers.init(client);
+  await commands.init();
   await client.login();
 }
 

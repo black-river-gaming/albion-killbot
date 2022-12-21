@@ -11,16 +11,15 @@ const { getTrack } = require("../../../services/track");
 const rest = new REST({ version: "10" });
 let commands = [];
 
-async function init(clientId) {
+async function init() {
   const { DISCORD_TOKEN } = process.env;
   if (!DISCORD_TOKEN) {
     throw new Error(`Please define DISCORD_TOKEN environment variable with the discord token.`);
   }
   rest.setToken(DISCORD_TOKEN);
-  return await reload(clientId);
 }
 
-async function reload(clientId) {
+async function refresh(clientId) {
   commands = [];
 
   try {
@@ -88,6 +87,6 @@ module.exports = {
   getCommands,
   hasCommand,
   init,
-  reload,
+  refresh,
   handle,
 };
