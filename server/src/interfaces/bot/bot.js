@@ -12,10 +12,20 @@ const client = new Client({
   intents: [Intents.FLAGS.GUILDS],
 });
 
+let init = false;
+
 client.on("shardReady", async (id) => {
   process.env.SHARD = id;
   logger.info(`Shard online! Bot user: ${client.user.tag}. Guild count: ${client.guilds.cache.size}`);
-  await commands.refresh(client.application.id);
+
+  if (!init) {
+    await database.init();
+    await queue.init();
+    await controllers.init(client);
+    await commands.init();
+    await commands.refresh(client.application.id);
+    init = true;
+  }
 });
 
 client.on("shardDisconnect", async (ev) => {
@@ -33,10 +43,6 @@ client.on("error", async (e) => {
 client.on("interactionCreate", commands.handle);
 
 async function run() {
-  await database.init();
-  await queue.init();
-  await controllers.init(client);
-  await commands.init();
   await client.login();
 }
 

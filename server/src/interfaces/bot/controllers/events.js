@@ -81,7 +81,7 @@ async function subscribe(client) {
     return true;
   };
 
-  return await subscribeEvents(cb);
+  return await subscribeEvents(cb, { queue_suffix: process.env.SHARD });
 }
 
 async function init(client) {

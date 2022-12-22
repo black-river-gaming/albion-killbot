@@ -42,7 +42,7 @@ async function subscribe(client) {
     return true;
   };
 
-  return await subscribeBattles(cb);
+  return await subscribeBattles(cb, { queue_suffix: process.env.SHARD });
 }
 
 async function init(client) {
