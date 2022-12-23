@@ -9,6 +9,8 @@ const { getLimits } = require("../../../services/limits");
 
 const { sendNotification } = require("./notifications");
 
+const { AMQP_QUEUE_BATTLES_BATCH } = process.env;
+
 async function subscribe(client) {
   const cb = async (battle) => {
     logger.debug(`Received battle: ${battle.id}`);
@@ -42,7 +44,19 @@ async function subscribe(client) {
     return true;
   };
 
-  return await subscribeBattles(cb, { queue_suffix: process.env.SHARD });
+  const batchCb = async (battles) => {
+    logger.verbose(`Processing ${battles.length} battles.`);
+    for (const battle of battles) {
+      await cb(battle);
+    }
+    logger.verbose(`Process battles complete.`);
+    return true;
+  };
+
+  const queue_suffix = process.env.SHARD;
+
+  if (AMQP_QUEUE_BATTLES_BATCH) return subscribeBattles(batchCb, { queue_suffix });
+  return await subscribeBattles(cb, { queue_suffix });
 }
 
 async function init(client) {
