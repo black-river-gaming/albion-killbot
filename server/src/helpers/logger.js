@@ -1,6 +1,7 @@
 const { createLogger, format, transports } = require("winston");
 const { Loggly } = require("winston-loggly-bulk");
 const path = require("path");
+const { printSpace } = require("./utils");
 
 const { MODE, DEBUG_LEVEL, LOGGLY_TOKEN, LOGGLY_SUBDOMAIN } = process.env;
 const level = DEBUG_LEVEL || "info";
@@ -41,7 +42,8 @@ const logger = createLogger({
 
 const consoleFormat = format.printf(({ level, message, timestamp, [Symbol.for("level")]: logLevel, shard }) => {
   const maxLen = "verbose".length;
-  const spacing = " ".repeat(Math.max(0, maxLen - logLevel.length));
+  const repeatCount = Math.max(0, maxLen - logLevel.length);
+  const spacing = printSpace(repeatCount);
   const shardStr = shard ? `[#${shard}] ` : "";
   return `${timestamp} [${level}] ${spacing}: ${shardStr}${message}`;
 });

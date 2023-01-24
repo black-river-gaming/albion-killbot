@@ -1,6 +1,7 @@
 const { InteractionType } = require("discord-api-types/v10");
 const { getCommands } = require(".");
 const { getLocale } = require("../../../helpers/locale");
+const { printSpace } = require("../../../helpers/utils");
 
 const LINE_LENGTH = 15;
 
@@ -15,7 +16,8 @@ const command = {
     for (const command of commands) {
       const commandKey = `/${command.name}`;
       const description = t(`HELP.${command.name.toUpperCase()}`);
-      response += commandKey + " ".repeat(LINE_LENGTH - commandKey.length) + description + "\n";
+      const repeatCount = Math.max(LINE_LENGTH - commandKey.length, 0);
+      response += commandKey + printSpace(repeatCount) + description + "\n";
     }
     response += "```";
 
