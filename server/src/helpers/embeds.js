@@ -290,7 +290,8 @@ const embedGuildRanking = (guild, { locale }) => {
     let value = "```c";
     if (!ranking || ranking.length === 0) {
       const nodata = t("RANKING.NO_DATA_SHORT");
-      value += `\n${nodata}${" ".repeat(RANKING_LINE_LENGTH - nodata.length)}`;
+      const repeatCount = Math.max(RANKING_LINE_LENGTH - nodata.length, 0);
+      value += `\n${nodata}${printSpace(repeatCount)}`;
       value += "```";
       return value;
     }
@@ -424,7 +425,8 @@ const embedPvpRanking = (rankings, { locale }) => {
     let value = "```c";
     if (ranking.length === 0) {
       const nodata = t("RANKING.NO_DATA_SHORT");
-      value += `\n${nodata}${" ".repeat(RANKING_LINE_LENGTH - nodata.length)}`;
+      const repeatCount = Math.max(RANKING_LINE_LENGTH - nodata.length, 0);
+      value += `\n${nodata}${printSpace(repeatCount)}`;
     }
     ranking.forEach((item) => {
       const nameValue = item[name];
