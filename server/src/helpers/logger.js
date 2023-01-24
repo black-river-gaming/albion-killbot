@@ -42,8 +42,8 @@ const logger = createLogger({
 
 const consoleFormat = format.printf(({ level, message, timestamp, [Symbol.for("level")]: logLevel, shard }) => {
   const maxLen = "verbose".length;
-  const repeatCount = Math.max(0, maxLen - logLevel.length);
-  const spacing = printSpace(repeatCount);
+  const count = maxLen - logLevel.length;
+  const spacing = printSpace(count);
   const shardStr = shard ? `[#${shard}] ` : "";
   return `${timestamp} [${level}] ${spacing}: ${shardStr}${message}`;
 });

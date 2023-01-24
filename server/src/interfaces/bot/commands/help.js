@@ -16,8 +16,8 @@ const command = {
     for (const command of commands) {
       const commandKey = `/${command.name}`;
       const description = t(`HELP.${command.name.toUpperCase()}`);
-      const repeatCount = Math.max(LINE_LENGTH - commandKey.length, 0);
-      response += commandKey + printSpace(repeatCount) + description + "\n";
+      const count = LINE_LENGTH - commandKey.length;
+      response += commandKey + printSpace(count) + description + "\n";
     }
     response += "```";
 
