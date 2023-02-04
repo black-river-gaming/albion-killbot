@@ -1,6 +1,6 @@
 const MongoClient = require("mongodb").MongoClient;
 const logger = require("../../helpers/logger");
-const { sleep } = require("../../helpers/utils");
+const { sleep } = require("../../helpers/scheduler");
 
 let client;
 let db;

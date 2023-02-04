@@ -1,5 +1,5 @@
 const logger = require("../../../helpers/logger");
-const { runInterval } = require("../../../helpers/utils");
+const { runInterval } = require("../../../helpers/scheduler");
 
 const { updateLimitsCache } = require("../../../services/limits");
 const { updateSettingsCache } = require("../../../services/settings");

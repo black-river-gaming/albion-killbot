@@ -1,7 +1,7 @@
 const { HOUR } = require("../../../helpers/constants");
 const logger = require("../../../helpers/logger");
 const { embedPvpRanking } = require("../../../helpers/embeds");
-const { runDaily, runInterval } = require("../../../helpers/utils");
+const { runDaily, runInterval } = require("../../../helpers/scheduler");
 
 const { getRanking, deleteRankings } = require("../../../services/rankings");
 const { getSettings } = require("../../../services/settings");

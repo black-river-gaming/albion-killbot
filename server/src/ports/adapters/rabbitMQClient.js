@@ -1,6 +1,6 @@
 const amqp = require("amqplib");
 const logger = require("../../helpers/logger");
-const { sleep } = require("../../helpers/utils");
+const { sleep } = require("../../helpers/scheduler");
 
 const QUEUE_MAX_LENGTH = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
 const QUEUE_MESSAGE_TTL = 1000 * 60 * 60 * 4; // 4 hours

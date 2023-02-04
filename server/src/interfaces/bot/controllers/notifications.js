@@ -1,5 +1,5 @@
 const logger = require("../../../helpers/logger");
-const { timeout } = require("../../../helpers/utils");
+const { timeout } = require("../../../helpers/scheduler");
 
 const NOTIFICATION_TIMEOUT = 10000;
 

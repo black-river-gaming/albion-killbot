@@ -5,7 +5,7 @@ const { sendNotification } = require("./notifications");
 
 const { HOUR, DAY } = require("../../../helpers/constants");
 const { embedGuildRanking } = require("../../../helpers/embeds");
-const { runDaily, runInterval } = require("../../../helpers/utils");
+const { runDaily, runInterval } = require("../../../helpers/scheduler");
 
 const { getAllGuilds, updateGuild } = require("../../../services/guilds");
 const { getSettings } = require("../../../services/settings");

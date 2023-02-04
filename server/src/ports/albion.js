@@ -3,7 +3,7 @@ const itemCDNClient = require("./adapters/itemCDNClient");
 const awsSdkClient = require("./adapters/awsSdkClient");
 const cache = require("./adapters/fsCache");
 
-const { sleep } = require("../helpers/utils");
+const { sleep } = require("../helpers/scheduler");
 const logger = require("../helpers/logger");
 
 const ITEMS_DIR = "items";

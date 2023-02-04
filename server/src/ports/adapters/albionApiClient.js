@@ -1,7 +1,7 @@
 const axios = require("axios");
 const moment = require("moment");
 const logger = require("../../helpers/logger");
-const { sleep } = require("../../helpers/utils");
+const { sleep } = require("../../helpers/scheduler");
 
 const ALLIANCES_ENDPOINT = "alliances";
 const BATTLES_ENDPOINT = "battles";

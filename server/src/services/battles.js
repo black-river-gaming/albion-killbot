@@ -2,7 +2,7 @@ const crypto = require("crypto");
 const albion = require("../ports/albion");
 const { publish, subscribe } = require("../ports/queue");
 const logger = require("../helpers/logger");
-const { sleep } = require("../helpers/utils");
+const { sleep } = require("../helpers/scheduler");
 
 const BATTLES_EXCHANGE = "battles";
 const BATTLES_QUEUE_PREFIX = "battles";
