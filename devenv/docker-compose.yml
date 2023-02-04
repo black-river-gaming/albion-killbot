@@ -18,17 +18,19 @@ services:
     ports:
       - 27017:27017
 
-  rabbitmq:
-    image: rabbitmq:3
+  amqp:
+    image: cloudamqp/lavinmq
     healthcheck:
-      test: rabbitmq-diagnostics -q ping
+      test: lavinmqctl status
       interval: 5s
       timeout: 30s
       retries: 5
     volumes:
       - type: volume
-        source: rabbitmq
-        target: /var/lib/rabbitmq
+        source: amqp
+        target: /var/lib/lavinmq
+    ports:
+      - 15672:15672
     expose:
       - 5672
 
@@ -57,12 +59,12 @@ services:
     image: albion-killbot
     command: npm run start:crawler:dev
     depends_on:
-      rabbitmq:
+      amqp:
         condition: service_healthy
     env_file: ../server/.env
     environment:
       - NODE_ENV=development
-      - RABBITMQ_URL=amqp://rabbitmq
+      - AMQP_URL=amqp://amqp
     volumes:
       - ../server/src:/app/src
 
@@ -75,13 +77,13 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
-      rabbitmq:
+      amqp:
         condition: service_healthy
     env_file: ../server/.env
     environment:
       - NODE_ENV=development
       - MONGODB_URL=mongodb://mongodb:27017/albion-killbot
-      - RABBITMQ_URL=amqp://rabbitmq
+      - AMQP_URL=amqp://amqp
     volumes:
       - ../server/migrations:/app/migrations
       - ../server/bin:/app/bin
@@ -135,5 +137,5 @@ services:
 volumes:
   mongodb:
   mongodb-config:
-  rabbitmq:
+  amqp:
   cache:
