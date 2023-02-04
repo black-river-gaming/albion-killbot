@@ -1,6 +1,6 @@
 const moment = require("moment");
 const { getLocale } = require("./locale");
-const { digitsFormatter, humanFormatter } = require("./utils");
+const { digitsFormatter, humanFormatter, printSpace } = require("./utils");
 
 const KILL_URL = "https://albiononline.com/{lang}/killboard/kill/{kill}";
 const GREEN = 52224;
@@ -290,19 +290,20 @@ const embedGuildRanking = (guild, { locale }) => {
     let value = "```c";
     if (!ranking || ranking.length === 0) {
       const nodata = t("RANKING.NO_DATA_SHORT");
-      value += `\n${nodata}${" ".repeat(RANKING_LINE_LENGTH - nodata.length)}`;
+      const count = RANKING_LINE_LENGTH - nodata.length;
+      value += `\n${nodata}${printSpace(count)}`;
       value += "```";
       return value;
     }
     ranking.forEach((item) => {
       if (pvp) {
         const fameValue = humanFormatter(item.KillFame, 2);
-        value += `\n${item.Name}${" ".repeat(RANKING_LINE_LENGTH - fameValue.length - item.Name.length)}${fameValue}`;
+        const count = RANKING_LINE_LENGTH - fameValue.length - item.Name.length;
+        value += `\n${item.Name}${printSpace(count)}${fameValue}`;
       } else {
         const fameValue = humanFormatter(item.Fame, 2);
-        value += `\n${item.Player.Name}${" ".repeat(
-          RANKING_LINE_LENGTH - fameValue.length - item.Player.Name.length,
-        )}${fameValue}`;
+        const count = RANKING_LINE_LENGTH - fameValue.length - item.Player.Name.length;
+        value += `\n${item.Player.Name}${printSpace(count)}${fameValue}`;
       }
     });
     value += "```";
@@ -424,12 +425,14 @@ const embedPvpRanking = (rankings, { locale }) => {
     let value = "```c";
     if (ranking.length === 0) {
       const nodata = t("RANKING.NO_DATA_SHORT");
-      value += `\n${nodata}${" ".repeat(RANKING_LINE_LENGTH - nodata.length)}`;
+      const count = RANKING_LINE_LENGTH - nodata.length;
+      value += `\n${nodata}${printSpace(count)}`;
     }
     ranking.forEach((item) => {
       const nameValue = item[name];
       const numberValue = humanFormatter(item[number], 2);
-      value += `\n${nameValue}${" ".repeat(RANKING_LINE_LENGTH - numberValue.length - nameValue.length)}${numberValue}`;
+      const count = RANKING_LINE_LENGTH - numberValue.length - nameValue.length;
+      value += `\n${nameValue}${printSpace(count)}${numberValue}`;
     });
     value += "```";
     return value;

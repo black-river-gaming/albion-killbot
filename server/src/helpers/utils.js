@@ -128,6 +128,8 @@ function clone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
+const printSpace = (count) => " ".repeat(Math.max(count, 0));
+
 module.exports = {
   clearAllIntervals,
   clone,
@@ -140,4 +142,5 @@ module.exports = {
   runInterval,
   sleep,
   timeout,
+  printSpace,
 };
