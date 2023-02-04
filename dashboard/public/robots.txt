@@ -1,3 +1,6 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Allow: /wp-includes/js/
+Allow: /wp-includes/css/
