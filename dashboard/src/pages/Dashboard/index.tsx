@@ -2,13 +2,14 @@ import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
 import { getServerInviteUrl } from "helpers/discord";
 import { Alert, Button, Col, Container, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFetchServersQuery } from "store/api";
 import { ServerPartial } from "types";
 import DashboardStyles from "./styles";
 
 const Dashboard = () => {
   const servers = useFetchServersQuery();
+  const navigate = useNavigate();
 
   if (servers.isFetching) {
     return (
@@ -34,7 +35,7 @@ const Dashboard = () => {
       const invitePopupTick = setInterval(function () {
         if (invitePopup.closed) {
           clearInterval(invitePopupTick);
-          servers.refetch();
+          return navigate(server.id);
         }
       }, 1000);
     } else {
@@ -47,7 +48,7 @@ const Dashboard = () => {
       <Col sm={6} lg={4} key={server.id}>
         <ServerCard server={server}>
           <div className="server-buttons">
-            {server.bot ? (
+            {!server.bot ? (
               <Link to={server.id}>
                 <Button variant="primary">Dashboard</Button>
               </Link>
