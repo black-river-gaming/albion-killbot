@@ -1,17 +1,19 @@
 const { createLogger, format, transports } = require("winston");
 const { Loggly } = require("winston-loggly-bulk");
 const path = require("path");
+const fastRedact = require("fast-redact");
 const { printSpace } = require("./utils");
 
 const { MODE, DEBUG_LEVEL, LOGGLY_TOKEN, LOGGLY_SUBDOMAIN } = process.env;
 const level = DEBUG_LEVEL || "info";
 
-format.redact = format((log) => {
-  if (log.metadata && log.metadata.message && log.metadata.message.files) {
-    log.metadata.message.files = "[redacted]";
-  }
-  return log;
+const redact = fastRedact({
+  paths: ["metadata.message.files", "response.request"],
+  serialize: false,
+  strict: false,
 });
+
+format.redact = format(redact);
 
 const logger = createLogger({
   level: "debug",

@@ -18,7 +18,7 @@ discordApiClient.interceptors.response.use(null, async (error) => {
 
   if (config && response && response.status == 429) {
     const retryAfter = response.data ? response.data.retry_after : 5000;
-    logger.warn(`Discord API request to ${config.url} returned ${response.status}. Retrying in ${retryAfter}...`, {
+    logger.warn(`Discord API request to ${config.url} returned ${response.status}. Retrying in ${retryAfter}s...`, {
       response,
     });
     await sleep(retryAfter);
