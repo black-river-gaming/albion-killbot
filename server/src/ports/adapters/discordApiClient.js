@@ -1,4 +1,6 @@
 const axios = require("axios");
+const logger = require("../../helpers/logger");
+const { sleep } = require("../../helpers/scheduler");
 
 const TOKEN_ENDPOINT = "/oauth2/token";
 const USERS_ENDPOINT = "/users";
@@ -8,6 +10,22 @@ const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_REDIRECT_URL } = proce
 
 const discordApiClient = axios.create({
   baseURL: "https://discord.com/api/v10",
+});
+
+// Handle Discord 429: Too Many Requests
+discordApiClient.interceptors.response.use(null, async (error) => {
+  const { config, response } = error;
+
+  if (config && response && response.status == 429) {
+    const retryAfter = response.data ? response.data.retry_after : 5000;
+    logger.warn(`Discord API request to ${config.url} returned ${response.status}. Retrying in ${retryAfter}...`, {
+      response,
+    });
+    await sleep(retryAfter);
+    return discordApiClient.request(config);
+  }
+
+  return Promise.reject(error);
 });
 
 async function exchangeCode(code) {

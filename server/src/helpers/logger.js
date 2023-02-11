@@ -6,7 +6,7 @@ const { printSpace } = require("./utils");
 const { MODE, DEBUG_LEVEL, LOGGLY_TOKEN, LOGGLY_SUBDOMAIN } = process.env;
 const level = DEBUG_LEVEL || "info";
 
-format.messages = format((log) => {
+format.redact = format((log) => {
   if (log.metadata && log.metadata.message && log.metadata.message.files) {
     log.metadata.message.files = "[redacted]";
   }
@@ -15,7 +15,7 @@ format.messages = format((log) => {
 
 const logger = createLogger({
   level: "debug",
-  format: format.combine(format.timestamp(), format.errors({ stack: true }), format.messages(), format.json()),
+  format: format.combine(format.timestamp(), format.errors({ stack: true }), format.redact(), format.json()),
   defaultMeta: {
     service: MODE,
     get shard() {
