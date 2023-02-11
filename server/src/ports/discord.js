@@ -52,7 +52,7 @@ async function getBotGuilds() {
       return guilds.map(discordHelper.transformGuild);
     },
     {
-      timeout: 30000,
+      timeout: 60000,
     },
   );
 }
