@@ -108,6 +108,7 @@ export const api = createApi({
       }),
       fetchServers: builder.query<ServerPartial[], void>({
         query: () => `/servers`,
+        providesTags: ["Server"],
       }),
       fetchServer: builder.query<Server, string>({
         query: (serverId) => `/servers/${serverId}`,

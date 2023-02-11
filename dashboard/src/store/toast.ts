@@ -42,6 +42,14 @@ export const toastSlice = createSlice({
       }
     );
 
+    builder.addMatcher(api.endpoints.fetchServers.matchRejected, (state) => {
+      state.push({
+        id: uid(),
+        theme: "danger",
+        message: "Failed fetch servers. Please try again later.",
+      });
+    });
+
     builder.addMatcher(api.endpoints.doLeaveServer.matchFulfilled, (state) => {
       state.push({ id: uid(), theme: "success", message: "Left server." });
     });
