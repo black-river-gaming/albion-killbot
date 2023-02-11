@@ -22,9 +22,9 @@ async function getServers(accessToken) {
         server.bot = botServerIds.indexOf(server.id) >= 0;
         return server;
       });
-  } catch (e) {
-    logger.error(`Error while retrieving user guilds:`, e);
-    throw e;
+  } catch (error) {
+    logger.error(`Error while retrieving user guilds: ${error.message}`, { error });
+    throw error;
   }
 }
 
