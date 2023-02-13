@@ -21,7 +21,7 @@ discordApiClient.interceptors.response.use(null, async (error) => {
     logger.warn(`Discord API request to ${config.url} returned ${response.status}. Retrying in ${retryAfter}s...`, {
       response,
     });
-    await sleep(retryAfter);
+    await sleep(retryAfter + 0.1); // Add 0.1 just to be sure
     return discordApiClient.request(config);
   }
 
