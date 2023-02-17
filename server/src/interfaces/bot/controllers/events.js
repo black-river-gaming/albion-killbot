@@ -1,6 +1,7 @@
 const logger = require("../../../helpers/logger");
 const { getTrackedEvent } = require("../../../helpers/tracking");
 const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../../../helpers/embeds");
+const { transformGuild } = require("../../../helpers/discord");
 
 const { subscribeEvents } = require("../../../services/events");
 const { generateEventImage, generateInventoryImage } = require("../../../services/images");
@@ -41,11 +42,10 @@ async function subscribe(client) {
         addRankingKill(guild.id, guildEvent);
 
         logger.info(`Sending ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
-          metadata: {
-            settings,
-            track,
-            limits,
-          },
+          guild: transformGuild(guild),
+          settings,
+          track,
+          limits,
         });
         const locale = settings.lang;
 

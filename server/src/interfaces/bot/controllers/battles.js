@@ -1,6 +1,7 @@
 const logger = require("../../../helpers/logger");
 const { getTrackedBattle } = require("../../../helpers/tracking");
 const { embedBattle } = require("../../../helpers/embeds");
+const { transformGuild } = require("../../../helpers/discord");
 
 const { subscribeBattles } = require("../../../services/battles");
 const { getSettings } = require("../../../services/settings");
@@ -29,11 +30,10 @@ async function subscribe(client) {
         if (!enabled || !channel) continue;
 
         logger.info(`Sending battle ${battle.id} to "${guild.name}".`, {
-          metadata: {
-            settings,
-            track,
-            limits,
-          },
+          guild: transformGuild(guild),
+          settings,
+          track,
+          limits,
         });
         await sendNotification(client, channel, embedBattle(battle, settings.lang));
       }
