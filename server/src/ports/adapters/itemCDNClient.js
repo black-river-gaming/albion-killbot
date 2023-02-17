@@ -15,7 +15,7 @@ const CDNS = [
 ];
 
 async function downloadFromCDNs(item, writer) {
-  logger.verbose(`Searching item "${item.Type}_Q${item.Quality}" in CDNs...`);
+  logger.verbose(`Searching item "${item.Type}_Q${item.Quality}" in CDNs...`, { item });
 
   for (const cdn of CDNS) {
     // If the CDN does not support quality and item has Quality, skip this cdn
@@ -32,7 +32,7 @@ async function downloadFromCDNs(item, writer) {
       });
 
       return new Promise((resolve) => {
-        logger.debug(`Downloading "${url}"...`);
+        logger.debug(`Downloading "${url}"...`, { item, cdn });
         response.data.pipe(writer);
         writer.on("finish", () => resolve(true));
         writer.on("error", () => resolve(false));
@@ -40,7 +40,7 @@ async function downloadFromCDNs(item, writer) {
         setTimeout(() => resolve(false), 30000);
       });
     } catch (error) {
-      logger.debug(`Unable to download ${url}: ${error.message}`);
+      logger.debug(`Unable to download ${url}: ${error.message}`, { error });
     }
   }
 
