@@ -8,7 +8,7 @@ const { MODE, DEBUG_LEVEL, LOGGLY_TOKEN, LOGGLY_SUBDOMAIN } = process.env;
 const level = DEBUG_LEVEL || "info";
 
 const redact = fastRedact({
-  paths: ["metadata.message.files", "response.request"],
+  paths: ["notification.files", "response.request"],
   serialize: false,
   strict: false,
 });
