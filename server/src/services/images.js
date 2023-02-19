@@ -1,7 +1,7 @@
 const moment = require("moment");
 const path = require("node:path");
 const { createCanvas, registerFont, loadImage } = require("canvas");
-const { getItemFile } = require("../ports/albion");
+const { getItemFile, getLootValue } = require("../ports/albion");
 
 const { optimizeImage } = require("../helpers/images");
 const { digitsFormatter, fileSizeFormatter } = require("../helpers/utils");
@@ -46,6 +46,8 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
 };
 
 async function generateEventImage(event) {
+  const lootValue = await getLootValue(event);
+
   let canvas = createCanvas(1600, 1250);
   let tw, th;
   const w = canvas.width;
@@ -150,6 +152,29 @@ async function generateEventImage(event) {
   await drawImage(ctx, path.join(assetsPath, "fame.png"), w / 2 - fameIconSize / 2, fameY, fameIconSize, fameIconSize);
   ctx.strokeText(fame, w / 2 - tw / 2, fameY + fameIconSize + th + 15);
   ctx.fillText(fame, w / 2 - tw / 2, fameY + fameIconSize + th + 15);
+
+  // loot value
+  if (lootValue) {
+    const lootValueY = 675;
+    const lootValueIconSize = 100;
+    ctx.beginPath();
+    ctx.font = "40px Roboto";
+    ctx.fillStyle = "#FFF";
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 4;
+    const lootValueText = digitsFormatter(lootValue);
+    tw = ctx.measureText(lootValueText).width;
+    await drawImage(
+      ctx,
+      path.join(assetsPath, "lootValue.png"),
+      w / 2 - lootValueIconSize / 2,
+      lootValueY,
+      lootValueIconSize,
+      lootValueIconSize,
+    );
+    ctx.strokeText(lootValueText, w / 2 - tw / 2, lootValueY + lootValueIconSize + th + 15);
+    ctx.fillText(lootValueText, w / 2 - tw / 2, lootValueY + lootValueIconSize + th + 15);
+  }
 
   // assists bar
   const drawAssistBar = (participants, x, y, width, height, radius) => {
