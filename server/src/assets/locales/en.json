@@ -24,6 +24,7 @@
     "SOLO_5": "Solo killed. No questions asked.",
     "ASSIST": "Assist(s): {{{ assists }}}",
     "FAME": "Kill Fame",
+    "LOOT_VALUE": "Loot Value",
     "KILLER_GUILD": "Killer's Guild",
     "VICTIM_GUILD": "Victim's Guild",
     "NO_GUILD": "No guild",

@@ -24,6 +24,7 @@
     "SOLO_5": "Solo asesinado. No se hicieron preguntas.",
     "ASSIST": "Ayuda(s): {{{ assists }}}",
     "FAME": "Fama por Muerte",
+    "LOOT_VALUE": "Valor del Loot",
     "KILLER_GUILD": "Gremio de Asesino",
     "VICTIM_GUILD": "Gremio de Victima",
     "NO_GUILD": "Sin Gremio",

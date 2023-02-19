@@ -24,6 +24,7 @@
     "SOLO_5": "Одинокая смерть. Без коментариев.",
     "ASSIST": "Помошник(и): {{{ assists }}}",
     "FAME": "Слава",
+    "LOOT_VALUE": "Loot Value",
     "KILLER_GUILD": "Гильдия убийц",
     "VICTIM_GUILD": "Гильдия жертв",
     "NO_GUILD": "Без гильдии",

@@ -83,7 +83,17 @@ const embedEvent = (event, { locale }) => {
           {
             name: t("KILL.FAME"),
             value: digitsFormatter(event.TotalVictimKillFame),
-            inline: false,
+            inline: true,
+          },
+          {
+            name: t("KILL.LOOT_VALUE"),
+            value: digitsFormatter(event.TotalVictimLootValue) || "-",
+            inline: true,
+          },
+          {
+            name: "\u200B",
+            value: "\u200B",
+            inline: true,
           },
           {
             name: t("KILL.KILLER_GUILD"),

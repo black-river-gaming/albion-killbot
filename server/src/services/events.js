@@ -55,9 +55,14 @@ async function getEvent(eventId) {
   return await albion.getEvent(eventId);
 }
 
+async function getEventVictimLootValue(event) {
+  return albion.getLootValue(event);
+}
+
 module.exports = {
   fetchEventsTo,
+  getEvent,
+  getEventVictimLootValue,
   publishEvent,
   subscribeEvents,
-  getEvent,
 };

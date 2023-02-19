@@ -46,8 +46,6 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
 };
 
 async function generateEventImage(event) {
-  const lootValue = await getLootValue(event);
-
   let canvas = createCanvas(1600, 1250);
   let tw, th;
   const w = canvas.width;
@@ -154,7 +152,7 @@ async function generateEventImage(event) {
   ctx.fillText(fame, w / 2 - tw / 2, fameY + fameIconSize + th + 15);
 
   // loot value
-  if (lootValue) {
+  if (event.TotalVictimLootValue) {
     const lootValueY = 675;
     const lootValueIconSize = 100;
     ctx.beginPath();
@@ -162,7 +160,7 @@ async function generateEventImage(event) {
     ctx.fillStyle = "#FFF";
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 4;
-    const lootValueText = digitsFormatter(lootValue);
+    const lootValueText = digitsFormatter(event.TotalVictimLootValue);
     tw = ctx.measureText(lootValueText).width;
     await drawImage(
       ctx,

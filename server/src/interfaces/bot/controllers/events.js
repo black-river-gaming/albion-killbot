@@ -2,8 +2,9 @@ const logger = require("../../../helpers/logger");
 const { getTrackedEvent } = require("../../../helpers/tracking");
 const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../../../helpers/embeds");
 const { transformGuild } = require("../../../helpers/discord");
+const { transformEvent } = require("../../../helpers/albion");
 
-const { subscribeEvents } = require("../../../services/events");
+const { subscribeEvents, getEventVictimLootValue } = require("../../../services/events");
 const { generateEventImage, generateInventoryImage } = require("../../../services/images");
 const { REPORT_MODES, getSettings } = require("../../../services/settings");
 const { addRankingKill } = require("../../../services/rankings");
@@ -27,6 +28,7 @@ async function subscribe(client) {
 
         const guildEvent = getTrackedEvent(event, track, limits);
         if (!guildEvent) continue;
+        guildEvent.TotalVictimLootValue = await getEventVictimLootValue(event);
 
         const { enabled, channel, mode } = guildEvent.good ? settings.kills : settings.deaths;
         if (!enabled || !channel) {
@@ -43,6 +45,7 @@ async function subscribe(client) {
 
         logger.info(`Sending ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
           guild: transformGuild(guild),
+          event: transformEvent(event),
           settings,
           track,
           limits,

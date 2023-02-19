@@ -45,9 +45,21 @@ function getVictimItems(event) {
     .filter((item) => !!item);
 }
 
+const transformEvent = (event) => ({
+  EventId: event.EventId,
+  BattleId: event.BattleId,
+  TimeStamp: event.TimeStamp,
+  TotalVictimKillFame: event.TotalVictimKillFame,
+  TotalVictimLootValue: event.TotalVictimLootValue,
+  Killer: event.Killer,
+  Victim: event.Victim,
+  Participants: event.Participants,
+});
+
 module.exports = {
   getVictimItems,
   isAlbionId,
   isTrackEntity,
   toTrackEntity,
+  transformEvent,
 };
