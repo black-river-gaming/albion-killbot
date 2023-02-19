@@ -7,12 +7,12 @@ import {
   faSkull,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import screenshot1 from "assets/screenshots/505815101-event.png";
-import screenshot2 from "assets/screenshots/505822850-event.png";
-import screenshot3 from "assets/screenshots/554963542-event.png";
-import screenshot4 from "assets/screenshots/554987916-event.png";
-import screenshot5 from "assets/screenshots/554998921-event.png";
-import screenshot6 from "assets/screenshots/555017536-event.png";
+import screenshot1 from "assets/screenshots/725719324-event.png";
+import screenshot2 from "assets/screenshots/725719720-event.png";
+import screenshot3 from "assets/screenshots/725747034-event.png";
+import screenshot4 from "assets/screenshots/725752704-event.png";
+import screenshot5 from "assets/screenshots/725753477-event.png";
+import screenshot6 from "assets/screenshots/725754202-event.png";
 import Paper from "components/Paper";
 import { getServerInviteUrl } from "helpers/discord";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
