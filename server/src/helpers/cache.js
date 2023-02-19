@@ -28,7 +28,10 @@ const get = (key, { debug = false } = {}) => {
   return null;
 };
 
-const set = (key, value, { timeout = 60000, timeoutCallback, debug = false } = {}) => {
+const set = (key, value, { timeout = 60000, timeoutCallback, debug = false, ignore } = {}) => {
+  // If the value is strict equal to ignore, ignore cache
+  if (value === ignore) return value;
+
   if (timeout && typeof timeout !== "number") throw new Error("Timeout for cache must be a valid number.");
   if (timeoutCallback && typeof timeoutCallback !== "function")
     throw new Error("Timeout callback for cache must be a valid function.");
@@ -56,7 +59,7 @@ const set = (key, value, { timeout = 60000, timeoutCallback, debug = false } = {
   return value;
 };
 
-const memoize = async (key, fn, { timeout, timeoutCallback, debug } = {}) => {
+const memoize = async (key, fn, { timeout, timeoutCallback, debug, ignore } = {}) => {
   // If entry exists, return it
   if (cache.has(key)) return get(key, { debug: false });
 
@@ -65,7 +68,7 @@ const memoize = async (key, fn, { timeout, timeoutCallback, debug } = {}) => {
     throw new Error("Timeout callback for cache must be a valid function.");
 
   const value = await fn();
-  return set(key, value, { timeout, timeoutCallback, debug });
+  return set(key, value, { timeout, timeoutCallback, debug, ignore });
 };
 
 const size = () => cache.size();

@@ -45,7 +45,12 @@ function clone(obj) {
 
 const printSpace = (count) => " ".repeat(Math.max(count, 0));
 
+const average = (...numbers) => {
+  return Math.round(numbers.reduce((sum, n) => sum + n, 0) / numbers.length);
+};
+
 module.exports = {
+  average,
   clone,
   digitsFormatter,
   fileSizeFormatter,

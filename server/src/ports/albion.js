@@ -1,10 +1,14 @@
 const albionApiClient = require("./adapters/albionApiClient");
+const albionDataApiClient = require("./adapters/albionDataApiClient");
 const itemCDNClient = require("./adapters/itemCDNClient");
 const awsSdkClient = require("./adapters/awsSdkClient");
 const cache = require("./adapters/fsCache");
 
 const { sleep } = require("../helpers/scheduler");
 const logger = require("../helpers/logger");
+const { getVictimItems } = require("../helpers/albion");
+const { memoize } = require("../helpers/cache");
+const { average } = require("../helpers/utils");
 
 const ITEMS_DIR = "items";
 
@@ -134,6 +138,60 @@ async function search(query) {
   }
 }
 
+async function getLootValue(event) {
+  return memoize(
+    `albion.events.${event.EventId}.lootValue`,
+    async () => {
+      try {
+        const victimItems = getVictimItems(event);
+        if (victimItems.length === 0) return 0;
+
+        const itemList = victimItems.map((item) => item.Type);
+        const qualities = victimItems
+          .map((item) => Math.max(item.Quality, 1))
+          .filter((item, i, items) => items.indexOf(item) === i)
+          .sort();
+
+        const itemPriceData = await albionDataApiClient.getPrices(itemList.join(), {
+          locations: ["Thetford", "Fort Sterling", "Martlock", "Bridgewatch", "Lymhurst"].join(),
+          qualities,
+        });
+        if (!itemPriceData && itemPriceData.length === 0) return 0;
+
+        return victimItems.reduce((lootValue, item) => {
+          let prices = itemPriceData
+            .filter(
+              (priceData) =>
+                priceData.item_id === item.Type &&
+                priceData.quality === Math.max(item.Quality, 1) &&
+                priceData.sell_price_min > 0,
+            )
+            .map((priceData) => priceData.sell_price_min);
+          if (prices.length === 0) return lootValue;
+          // Remove values that are too unrealistic (150% diff tolerance)
+          // Can only be done if we have more than two prices
+          if (prices.length >= 3) {
+            const minPrice = prices.reduce((min, price) => Math.min(min, price), prices[0]);
+            prices = prices.filter((price) => Math.abs(price - minPrice) < minPrice * 1.5);
+          }
+
+          return Math.round(lootValue + average(...prices));
+        }, 0);
+      } catch (error) {
+        logger.error(`Failed to fetch kill loot value for event ${event.EventId}: ${error.message}`, {
+          error,
+          event,
+        });
+        return null;
+      }
+    },
+    {
+      timeout: 30000,
+      ignore: null,
+    },
+  );
+}
+
 module.exports = {
   getAlliance,
   getBattle,
@@ -142,6 +200,7 @@ module.exports = {
   getEvents,
   getGuild,
   getItemFile,
+  getLootValue,
   getPlayer,
   search,
 };

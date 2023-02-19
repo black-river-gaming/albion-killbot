@@ -26,7 +26,27 @@ function toTrackEntity(entity) {
   return entity;
 }
 
+// Get all victim items, including equipment and inventory, excluding nulls
+function getVictimItems(event) {
+  const { Equipment, Inventory } = event.Victim;
+  return [
+    Equipment.Armor,
+    Equipment.Bag,
+    Equipment.Cape,
+    Equipment.Food,
+    Equipment.Head,
+    Equipment.MainHand,
+    Equipment.Mount,
+    Equipment.OffHand,
+    Equipment.Potion,
+    Equipment.Shoes,
+  ]
+    .concat(Inventory)
+    .filter((item) => !!item);
+}
+
 module.exports = {
+  getVictimItems,
   isAlbionId,
   isTrackEntity,
   toTrackEntity,
