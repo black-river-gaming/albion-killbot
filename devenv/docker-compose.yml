@@ -111,6 +111,9 @@ services:
       - MONGODB_URL=mongodb://mongodb:27017/albion-killbot
     volumes:
       - ../server/src:/app/src
+      - type: volume
+        source: cache
+        target: /tmp/albion-killbot-cache
     expose:
       - 80
 
