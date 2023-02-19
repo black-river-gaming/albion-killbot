@@ -168,9 +168,8 @@ async function getLootValue(event) {
             )
             .map((priceData) => priceData.sell_price_min);
           if (prices.length === 0) return lootValue;
-          // Remove values that are too unrealistic (150% diff tolerance)
-          // Can only be done if we have more than two prices
-          if (prices.length >= 3) {
+          // Remove values that are too unrealistic (150% diff tolerance to min value)
+          if (prices.length >= 2) {
             const minPrice = prices.reduce((min, price) => Math.min(min, price), prices[0]);
             prices = prices.filter((price) => Math.abs(price - minPrice) < minPrice * 1.5);
           }
