@@ -8,6 +8,7 @@ const { sleep } = require("../helpers/scheduler");
 const logger = require("../helpers/logger");
 const { getVictimItems } = require("../helpers/albion");
 const { memoize } = require("../helpers/cache");
+const { average } = require("../helpers/utils");
 
 const ITEMS_DIR = "items";
 
@@ -147,22 +148,34 @@ async function getLootValue(event) {
 
         const itemList = victimItems.map((item) => item.Type);
         const qualities = victimItems
-          .map((item) => item.Quality + 1)
+          .map((item) => Math.max(item.Quality, 1))
           .filter((item, i, items) => items.indexOf(item) === i)
           .sort();
 
-        const itemPriceData = await albionDataApiClient.getPrices(itemList, {
-          locations: "Caerleon",
+        const itemPriceData = await albionDataApiClient.getPrices(itemList.join(), {
+          locations: ["Thetford", "Fort Sterling", "Martlock", "Bridgewatch", "Lymhurst"].join(),
           qualities,
         });
-        return victimItems.reduce((lootValue, item) => {
-          const priceData = itemPriceData.find(
-            (priceData) => priceData.item_id === item.Type && priceData.quality === item.Quality + 1,
-          );
-          if (!priceData) return lootValue;
+        if (!itemPriceData && itemPriceData.length === 0) return 0;
 
-          const price = (priceData.sell_price_min + priceData.sell_price_max) / 2;
-          return Math.round(lootValue + price);
+        return victimItems.reduce((lootValue, item) => {
+          let prices = itemPriceData
+            .filter(
+              (priceData) =>
+                priceData.item_id === item.Type &&
+                priceData.quality === Math.max(item.Quality, 1) &&
+                priceData.sell_price_min > 0,
+            )
+            .map((priceData) => priceData.sell_price_min);
+          if (prices.length === 0) return lootValue;
+          // Remove values that are too unrealistic (150% diff tolerance)
+          // Can only be done if we have more than two prices
+          if (prices.length >= 3) {
+            const minPrice = prices.reduce((min, price) => Math.min(min, price), prices[0]);
+            prices = prices.filter((price) => Math.abs(price - minPrice) < minPrice * 1.5);
+          }
+
+          return Math.round(lootValue + average(...prices));
         }, 0);
       } catch (error) {
         logger.error(`Failed to fetch kill loot value for event ${event.EventId}: ${error.message}`, {

@@ -5,7 +5,7 @@ const albionDataApiClient = axios.create({
 });
 
 async function getPrices(itemList, { locations, qualities }) {
-  const res = await albionDataApiClient.get(`Prices/${itemList.join()}.json`, {
+  const res = await albionDataApiClient.get(`Prices/${itemList}.json`, {
     params: {
       locations,
       qualities,
