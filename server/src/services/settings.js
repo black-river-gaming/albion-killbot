@@ -47,7 +47,7 @@ async function fetchAllSettings() {
 
 async function setSettings(serverId, settings) {
   await updateOne(SETTINGS_COLLECTION, { guild: serverId }, { $set: settings }, { upsert: true });
-  remove(`track-${serverId}`);
+  remove(`settings-${serverId}`);
   return await getSettings(serverId);
 }
 
