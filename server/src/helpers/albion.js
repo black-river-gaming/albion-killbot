@@ -68,14 +68,14 @@ const transformEventPlayer = (player) => ({
 });
 
 const transformEvent = (event) => ({
-  EventId: event.EventId,
-  BattleId: event.BattleId,
-  TimeStamp: event.TimeStamp,
-  TotalVictimKillFame: event.TotalVictimKillFame,
-  TotalVictimLootValue: event.TotalVictimLootValue,
-  Killer: transformEventPlayer(event.Killer),
-  Victim: transformEventPlayer(event.Victim),
-  Participants: event.Participants.map(transformEventPlayer),
+  id: event.EventId,
+  battle: event.BattleId,
+  timestamp: event.TimeStamp,
+  fame: event.TotalVictimKillFame,
+  lootValue: event.TotalVictimLootValue,
+  killer: transformEventPlayer(event.Killer),
+  victim: transformEventPlayer(event.Victim),
+  participants: event.Participants.map(transformEventPlayer),
 });
 
 module.exports = {
