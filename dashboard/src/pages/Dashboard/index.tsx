@@ -48,7 +48,7 @@ const Dashboard = () => {
       <Col sm={6} lg={4} key={server.id}>
         <ServerCard server={server}>
           <div className="server-buttons">
-            {!server.bot ? (
+            {server.bot ? (
               <Link to={server.id}>
                 <Button variant="primary">Dashboard</Button>
               </Link>
