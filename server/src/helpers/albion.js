@@ -45,15 +45,37 @@ function getVictimItems(event) {
     .filter((item) => !!item);
 }
 
+const transformEventPlayer = (player) => ({
+  id: player.Id,
+  name: player.Name,
+  ip: player.AverageItemPower,
+  killFame: player.KillFame,
+  deathFame: player.DeathFame,
+  guild: player.GuildId
+    ? {
+        id: player.GuildId,
+        name: player.GuildName,
+      }
+    : null,
+  alliance: player.AllianceId
+    ? {
+        id: player.AllianceId,
+        tag: player.AllianceTag,
+        name: player.AllianceName,
+      }
+    : null,
+  equipment: player.Equipment,
+});
+
 const transformEvent = (event) => ({
   EventId: event.EventId,
   BattleId: event.BattleId,
   TimeStamp: event.TimeStamp,
   TotalVictimKillFame: event.TotalVictimKillFame,
   TotalVictimLootValue: event.TotalVictimLootValue,
-  Killer: event.Killer,
-  Victim: event.Victim,
-  Participants: event.Participants,
+  Killer: transformEventPlayer(event.Killer),
+  Victim: transformEventPlayer(event.Victim),
+  Participants: event.Participants.map(transformEventPlayer),
 });
 
 module.exports = {

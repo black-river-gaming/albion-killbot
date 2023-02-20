@@ -45,7 +45,7 @@ async function subscribe(client) {
 
         logger.info(`Sending ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
           guild: transformGuild(guild),
-          event: transformEvent(event),
+          event: transformEvent(guildEvent),
           settings,
           track,
           limits,
