@@ -99,7 +99,28 @@ async function getGuildChannels(Authorization, guildId) {
   return res.data;
 }
 
+async function addGuildMemberRole(Authorization, { guildId, memberId, roleId, reason }) {
+  const res = await discordApiClient.put(`/guilds/${guildId}/members/${memberId}/roles/${roleId}`, null, {
+    headers: {
+      Authorization,
+      "X-Audit-Log-Reason": reason,
+    },
+  });
+  return res.data;
+}
+
+async function removeGuildMemberRole(Authorization, { guildId, memberId, roleId, reason }) {
+  const res = await discordApiClient.delete(`/guilds/${guildId}/members/${memberId}/roles/${roleId}`, {
+    headers: {
+      Authorization,
+      "X-Audit-Log-Reason": reason,
+    },
+  });
+  return res.data;
+}
+
 module.exports = {
+  addGuildMemberRole,
   exchangeCode,
   getCurrentUser,
   getCurrentUserGuilds,
@@ -107,4 +128,5 @@ module.exports = {
   getGuildChannels,
   leaveGuild,
   refreshToken,
+  removeGuildMemberRole,
 };

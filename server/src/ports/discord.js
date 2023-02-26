@@ -82,7 +82,26 @@ async function leaveGuild(guildId) {
   return true;
 }
 
+const addMemberRole = (guildId, memberId, roleId, reason) => {
+  return discordApiClient.addGuildMemberRole(`Bot ${DISCORD_TOKEN}`, {
+    guildId,
+    memberId,
+    roleId,
+    reason,
+  });
+};
+
+const removeMemberRole = (guildId, memberId, roleId, reason) => {
+  return discordApiClient.removeGuildMemberRole(`Bot ${DISCORD_TOKEN}`, {
+    guildId,
+    memberId,
+    roleId,
+    reason,
+  });
+};
+
 module.exports = {
+  addMemberRole,
   getBotGuilds,
   getGuild,
   getGuildChannels,
@@ -91,4 +110,5 @@ module.exports = {
   getUserGuilds,
   leaveGuild,
   refreshToken,
+  removeMemberRole,
 };

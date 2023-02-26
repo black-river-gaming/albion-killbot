@@ -69,9 +69,9 @@ async function findOne(collectionName, query) {
   return returnObjectId(document);
 }
 
-async function update(collectionName, filter, update, options) {
+async function updateMany(collectionName, filter, update, options) {
   const collection = getCollection(collectionName);
-  const document = await collection.update(convertObjectId(filter), update, options);
+  const document = await collection.updateMany(convertObjectId(filter), update, options);
   return returnObjectId(document);
 }
 
@@ -104,6 +104,6 @@ module.exports = {
   getCollection,
   init,
   insertOne,
-  update,
+  updateMany,
   updateOne,
 };

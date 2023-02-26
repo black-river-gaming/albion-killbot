@@ -1,7 +1,7 @@
 const EventEmitter = require("events");
 const moment = require("moment");
 const stripe = require("../ports/stripe");
-const { find, findOne, insertOne, updateOne, update, deleteOne } = require("../ports/database");
+const { find, findOne, insertOne, updateOne, updateMany, deleteOne } = require("../ports/database");
 const { remove } = require("../helpers/cache");
 
 const SUBSCRIPTIONS_MODE = Boolean(process.env.SUBSCRIPTIONS_MODE);
@@ -167,7 +167,7 @@ async function unassignSubscriptionsByServerId(serverId) {
   const subscription = await getSubscriptionByServerId(serverId);
   subscriptionEvents.emit("unassign", subscription);
 
-  return await update(SUBSCRIPTIONS_COLLECTION, { server: serverId }, { $unset: { server: "" } });
+  return await updateMany(SUBSCRIPTIONS_COLLECTION, { server: serverId }, { $unset: { server: "" } });
 }
 
 module.exports = {

@@ -7,7 +7,13 @@ const port = PORT || 80;
 let server;
 
 async function run() {
-  logger.info(`Starting Api...`);
+  const { DISCORD_TOKEN } = process.env;
+  if (!DISCORD_TOKEN) {
+    throw new Error("Please define DISCORD_TOKEN environment variable with the discord token.");
+  }
+
+  logger.info(`Starting Albion-Killbot rest api.`);
+
   await database.init();
   server = await api.listen(port);
   logger.verbose(`Api is listening on port ${port}.`);
@@ -15,6 +21,7 @@ async function run() {
 
 async function cleanup(reason) {
   logger.info(`Shutting down Api. Reason: ${reason}`);
+
   if (server) {
     await server.close(() => process.exit(0));
   }
