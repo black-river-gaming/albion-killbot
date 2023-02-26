@@ -1,7 +1,7 @@
 const moment = require("moment");
 const path = require("node:path");
 const { createCanvas, registerFont, loadImage } = require("canvas");
-const { getItemFile, getLootValue } = require("../ports/albion");
+const { getItemFile } = require("../ports/albion");
 
 const { optimizeImage } = require("../helpers/images");
 const { digitsFormatter, fileSizeFormatter } = require("../helpers/utils");
