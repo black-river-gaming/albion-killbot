@@ -1,4 +1,4 @@
-const { Permissions } = require("discord.js");
+const { PermissionFlagsBits, PermissionsBitField } = require("discord.js");
 
 const { DISCORD_COMMUNITY_ADMINS = "" } = process.env;
 
@@ -19,8 +19,7 @@ const transformUser = (user) => {
 };
 
 const isServerAdmin = (permissions) => {
-  const bitPermissions = new Permissions(permissions);
-  return bitPermissions.has(Permissions.FLAGS.ADMINISTRATOR);
+  return new PermissionsBitField(permissions).has(PermissionFlagsBits.Administrator);
 };
 
 const transformGuild = (guild) => {
