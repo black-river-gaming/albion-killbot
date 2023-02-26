@@ -5,7 +5,7 @@ const serversService = require("../../../services/servers");
 async function getSubscriptions(req, res) {
   try {
     const { user } = req.session.discord;
-    const subscriptions = await subscriptionsService.getSubscriptionsByOwner(user.id);
+    const subscriptions = await subscriptionsService.fetchSubscriptionsByOwner(user.id);
 
     for (const subscription of subscriptions) {
       if (subscription.stripe)
