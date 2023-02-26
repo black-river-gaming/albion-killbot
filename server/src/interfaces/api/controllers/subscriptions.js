@@ -2,10 +2,12 @@ const logger = require("../../../helpers/logger");
 const subscriptionsService = require("../../../services/subscriptions");
 const serversService = require("../../../services/servers");
 
+const { DISCORD_COMMUNITY_SERVER, DISCORD_COMMUNITY_PREMIUM_ROLE } = process.env;
+
 async function getSubscriptions(req, res) {
   try {
     const { user } = req.session.discord;
-    const subscriptions = await subscriptionsService.getSubscriptionsByOwner(user.id);
+    const subscriptions = await subscriptionsService.fetchSubscriptionsByOwner(user.id);
 
     for (const subscription of subscriptions) {
       if (subscription.stripe)
@@ -89,6 +91,28 @@ async function manageSubscription(req, res) {
     return res.sendStatus(500);
   }
 }
+
+subscriptionsService.subscriptionEvents.on("add", (subscription) => {
+  if (DISCORD_COMMUNITY_SERVER && DISCORD_COMMUNITY_PREMIUM_ROLE && subscription.owner) {
+    serversService.addMemberRole(
+      DISCORD_COMMUNITY_SERVER,
+      subscription.owner,
+      DISCORD_COMMUNITY_PREMIUM_ROLE,
+      "Add Premium User role",
+    );
+  }
+});
+
+subscriptionsService.subscriptionEvents.on("remove", (subscription) => {
+  if (DISCORD_COMMUNITY_SERVER && DISCORD_COMMUNITY_PREMIUM_ROLE && subscription.owner) {
+    serversService.removeMemberRole(
+      DISCORD_COMMUNITY_SERVER,
+      subscription.owner,
+      DISCORD_COMMUNITY_PREMIUM_ROLE,
+      "Remove Premium User role",
+    );
+  }
+});
 
 module.exports = {
   assignSubscription,

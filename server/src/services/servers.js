@@ -33,7 +33,7 @@ async function getServer(serverId) {
     return await discord.getGuild(serverId);
   } catch (error) {
     logger.error(`Error while retrieving discord server: ${error.message}`, { error });
-    throw error;
+    return null;
   }
 }
 
@@ -55,10 +55,40 @@ async function leaveServer(serverId) {
   }
 }
 
+async function addMemberRole(serverId, userId, roleId, reason) {
+  try {
+    return await discord.addMemberRole(serverId, userId, roleId, reason);
+  } catch (error) {
+    logger.error(`Error while adding user role: ${error.message}`, {
+      serverId,
+      userId,
+      roleId,
+      error,
+    });
+    return null;
+  }
+}
+
+async function removeMemberRole(serverId, userId, roleId, reason) {
+  try {
+    return await discord.removeMemberRole(serverId, userId, roleId, reason);
+  } catch (error) {
+    logger.error(`Error while removing user role: ${error.message}`, {
+      serverId,
+      userId,
+      roleId,
+      error,
+    });
+    return null;
+  }
+}
+
 module.exports = {
+  addMemberRole,
   getBotServers,
   getServer,
   getServerChannels,
   getServers,
   leaveServer,
+  removeMemberRole,
 };

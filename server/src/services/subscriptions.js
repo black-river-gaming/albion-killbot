@@ -1,23 +1,18 @@
+const EventEmitter = require("events");
 const moment = require("moment");
 const stripe = require("../ports/stripe");
-const { getCollection, find, findOne, insertOne, updateOne, update, deleteOne } = require("../ports/database");
+const { find, findOne, insertOne, updateOne, updateMany, deleteOne } = require("../ports/database");
 const { remove } = require("../helpers/cache");
 
 const SUBSCRIPTIONS_MODE = Boolean(process.env.SUBSCRIPTIONS_MODE);
 const SUBSCRIPTIONS_COLLECTION = "subscriptions";
+const subscriptionEvents = new EventEmitter();
 
 function isSubscriptionsEnabled() {
   return SUBSCRIPTIONS_MODE;
 }
 
-async function addSubscription(subscription) {
-  return await insertOne(SUBSCRIPTIONS_COLLECTION, subscription);
-}
-
-async function assignSubscription(_id, server) {
-  return await updateOne(SUBSCRIPTIONS_COLLECTION, { _id }, { $set: { server } });
-}
-
+/* Stripe */
 async function fetchSubscriptionPrices() {
   return await stripe.getPrices({});
 }
@@ -30,22 +25,32 @@ async function getBuySubscription(checkoutId) {
   return await stripe.getCheckoutSession(checkoutId);
 }
 
+async function getStripeSubscription(id) {
+  return await stripe.getSubscription(id);
+}
+
 async function manageSubscription(customerId) {
   return await stripe.createPortalSession(customerId);
 }
 
+/* Subscriptions */
 async function fetchAllSubscriptions() {
   return await find(SUBSCRIPTIONS_COLLECTION, {});
-}
-
-async function getSubscriptionsByOwner(owner) {
-  if (!isSubscriptionsEnabled()) return [];
-  return await find(SUBSCRIPTIONS_COLLECTION, { owner });
 }
 
 async function getSubscriptionById(_id) {
   if (!isSubscriptionsEnabled()) return null;
   return await findOne(SUBSCRIPTIONS_COLLECTION, { _id });
+}
+
+async function getSubscriptionByOwner(owner) {
+  if (!isSubscriptionsEnabled()) return null;
+  return await findOne(SUBSCRIPTIONS_COLLECTION, { owner });
+}
+
+async function fetchSubscriptionsByOwner(owner) {
+  if (!isSubscriptionsEnabled()) return [];
+  return await find(SUBSCRIPTIONS_COLLECTION, { owner });
 }
 
 async function getSubscriptionByServerId(server) {
@@ -68,10 +73,6 @@ async function getSubscriptionByCheckoutId(checkoutId) {
   return await findOne(SUBSCRIPTIONS_COLLECTION, { stripe: checkout.subscription });
 }
 
-async function getStripeSubscription(id) {
-  return await stripe.getSubscription(id);
-}
-
 function isActiveSubscription(subscription) {
   if (!isSubscriptionsEnabled()) return false;
   if (!subscription) return false;
@@ -84,53 +85,107 @@ async function hasSubscriptionByServerId(server) {
   return isActiveSubscription(subscription);
 }
 
+async function addSubscription(data) {
+  const id = await insertOne(SUBSCRIPTIONS_COLLECTION, data);
+
+  const subscription = await getSubscriptionById(id);
+  subscriptionEvents.emit("add", subscription);
+
+  remove(`limits-${subscription.server}`);
+
+  return subscription;
+}
+
+async function assignSubscription(_id, server) {
+  const subscription = await getSubscriptionById(_id);
+  subscriptionEvents.emit("assign", subscription);
+
+  remove(`limits-${subscription.server}`);
+
+  return await updateOne(SUBSCRIPTIONS_COLLECTION, { _id }, { $set: { server } });
+}
+
 async function removeSubscription(_id) {
+  const subscription = await getSubscriptionById(_id);
+  subscriptionEvents.emit("remove", subscription);
+
+  remove(`limits-${subscription.server}`);
+
   return await deleteOne(SUBSCRIPTIONS_COLLECTION, { _id });
 }
 
 async function removeSubscriptionByServerId(serverId) {
-  remove(`limits-${serverId}`);
+  const subscription = await getSubscriptionByServerId(serverId);
+  subscriptionEvents.emit("remove", subscription);
+
+  remove(`limits-${subscription.server}`);
+
   return await deleteOne(SUBSCRIPTIONS_COLLECTION, { server: serverId });
 }
 
-async function removeSubscriptionByStripeId(stripe) {
-  const collection = getCollection(SUBSCRIPTIONS_COLLECTION);
-  return await collection.deleteOne({ stripe });
+async function removeSubscriptionByStripeId(stripeId) {
+  const subscription = await getSubscriptionByStripeId(stripeId);
+  subscriptionEvents.emit("remove", subscription);
+
+  remove(`limits-${subscription.server}`);
+
+  return await deleteOne(SUBSCRIPTIONS_COLLECTION, { stripe: stripeId });
 }
 
-async function updateSubscriptionByServerId(serverId, subscription) {
-  await updateOne(SUBSCRIPTIONS_COLLECTION, { server: serverId }, { $set: subscription }, { upsert: true });
-  remove(`limits-${serverId}`);
-  return await getSubscriptionByServerId(serverId);
+async function updateSubscriptionByServerId(serverId, data) {
+  await updateOne(SUBSCRIPTIONS_COLLECTION, { server: serverId }, { $set: data }, { upsert: true });
+
+  const subscription = await getSubscriptionByServerId(serverId);
+  subscriptionEvents.emit("update", subscription);
+
+  remove(`limits-${subscription.server}`);
+
+  return subscription;
 }
 
-async function updateSubscriptionByStripeId(stripeId, subscription) {
-  await updateOne(SUBSCRIPTIONS_COLLECTION, { stripe: stripeId }, { $set: subscription });
-  return await getSubscriptionByStripeId(stripeId);
+async function updateSubscriptionByStripeId(stripeId, data) {
+  await updateOne(SUBSCRIPTIONS_COLLECTION, { stripe: stripeId }, { $set: data });
+
+  const subscription = await getSubscriptionByStripeId(stripeId);
+  subscriptionEvents.emit("update", subscription);
+
+  remove(`limits-${subscription.server}`);
+
+  return subscription;
 }
 
 async function unassignSubscription(_id) {
+  const subscription = await getSubscriptionById(_id);
+  subscriptionEvents.emit("unassign", subscription);
+
+  remove(`limits-${subscription.server}`);
+
   return await updateOne(SUBSCRIPTIONS_COLLECTION, { _id }, { $unset: { server: "" } });
 }
 
-async function unassignSubscriptionsByServerId(server) {
-  return await update(SUBSCRIPTIONS_COLLECTION, { server }, { $unset: { server: "" } });
+async function unassignSubscriptionsByServerId(serverId) {
+  const subscription = await getSubscriptionByServerId(serverId);
+  subscriptionEvents.emit("unassign", subscription);
+
+  return await updateMany(SUBSCRIPTIONS_COLLECTION, { server: serverId }, { $unset: { server: "" } });
 }
 
 module.exports = {
+  subscriptionEvents,
   addSubscription,
   assignSubscription,
   buySubscription,
   fetchAllSubscriptions,
   fetchSubscriptionPrices,
+  fetchSubscriptionsByOwner,
   findSubscriptionsByServerId,
   getBuySubscription,
   getStripeSubscription,
   getSubscriptionByCheckoutId,
   getSubscriptionById,
+  getSubscriptionByOwner,
   getSubscriptionByServerId,
   getSubscriptionByStripeId,
-  getSubscriptionsByOwner,
   hasSubscriptionByServerId,
   isActiveSubscription,
   isSubscriptionsEnabled,
