@@ -1,13 +1,13 @@
-const { InteractionType } = require("discord-api-types/v10");
+const { SlashCommandBuilder } = require("discord.js");
 const { getLocale } = require("../../../helpers/locale");
 const { embedTrackList } = require("../../../helpers/embeds");
 const { getLimits } = require("../../../services/limits");
 
 const command = {
-  name: "list",
-  description: getLocale().t("HELP.LIST"),
-  type: InteractionType.Ping,
-  default_member_permissions: "0",
+  data: new SlashCommandBuilder()
+    .setName("list")
+    .setDescription(getLocale().t("HELP.LIST"))
+    .setDefaultMemberPermissions("0"),
   handle: async (interaction, { settings, track }) => {
     const limits = await getLimits(interaction.guild.id);
 

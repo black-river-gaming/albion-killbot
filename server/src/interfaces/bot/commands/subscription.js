@@ -1,15 +1,15 @@
-const { InteractionType } = require("discord-api-types/v10");
+const { SlashCommandBuilder } = require("discord.js");
 const moment = require("moment");
 const { getLocale } = require("../../../helpers/locale");
 const { isSubscriptionsEnabled, getSubscriptionByServerId } = require("../../../services/subscriptions");
 
-const t = getLocale().t;
+const { t } = getLocale();
 
 const command = {
-  name: "subscription",
-  description: t("HELP.SUBSCRIPTION"),
-  type: InteractionType.Ping,
-  default_member_permissions: "0",
+  data: new SlashCommandBuilder()
+    .setName("subscription")
+    .setDescription(t("HELP.SUBSCRIPTION"))
+    .setDefaultMemberPermissions("0"),
   handle: async (interaction, { t }) => {
     const ephemeral = true;
 

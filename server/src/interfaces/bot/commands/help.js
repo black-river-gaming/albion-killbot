@@ -1,21 +1,20 @@
-const { InteractionType } = require("discord-api-types/v10");
-const { getCommands } = require(".");
+const { SlashCommandBuilder } = require("discord.js");
 const { getLocale } = require("../../../helpers/locale");
 const { printSpace } = require("../../../helpers/utils");
 
 const LINE_LENGTH = 15;
 
 const command = {
-  name: "help",
-  description: getLocale().t("HELP.HELP"),
-  type: InteractionType.Ping,
-  default_member_permissions: "0",
+  data: new SlashCommandBuilder()
+    .setName("help")
+    .setDescription(getLocale().t("HELP.HELP"))
+    .setDefaultMemberPermissions("0"),
   handle: async (interaction, { t }) => {
     let response = "```\n";
-    const commands = getCommands();
+    const commands = interaction.client.commands.values();
     for (const command of commands) {
-      const commandKey = `/${command.name}`;
-      const description = t(`HELP.${command.name.toUpperCase()}`);
+      const commandKey = `/${command.data.name}`;
+      const description = t(`HELP.${command.data.name.toUpperCase()}`);
       const count = LINE_LENGTH - commandKey.length;
       response += commandKey + printSpace(count) + description + "\n";
     }

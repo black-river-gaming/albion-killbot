@@ -1,5 +1,4 @@
-const { InteractionType } = require("discord-api-types/v10");
-const { Boolean, Channel, String, Subcommand } = require("discord-api-types/v10").ApplicationCommandOptionType;
+const { SlashCommandBuilder } = require("discord.js");
 const { getLocale } = require("../../../helpers/locale");
 const { setSettings } = require("../../../services/settings");
 
@@ -7,89 +6,56 @@ const locale = getLocale();
 const localeList = locale.getLocales();
 const t = locale.t;
 
-const kills = {
-  name: "kills",
-  description: t("SETTINGS.KILLS"),
-  type: Subcommand,
-  options: [
-    {
-      name: "enabled",
-      description: t("SETTINGS.ENABLED"),
-      type: Boolean,
-    },
-    {
-      name: "channel",
-      description: t("SETTINGS.CHANNEL"),
-      type: Channel,
-    },
-    {
-      name: "mode",
-      description: t("SETTINGS.CHANNEL"),
-      type: String,
-      choices: [
-        {
-          name: t("SETTINGS.MODE.IMAGE"),
-          value: "image",
-        },
-        {
-          name: t("SETTINGS.MODE.TEXT"),
-          value: "text",
-        },
-      ],
-    },
-  ],
-};
+const kills = (subcommand) =>
+  subcommand
+    .setName("kills")
+    .setDescription(t("SETTINGS.KILLS"))
+    .addBooleanOption((option) => option.setName("enabled").setDescription(t("SETTINGS.ENABLED")))
+    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL")))
+    .addStringOption((option) =>
+      option
+        .setName("mode")
+        .setDescription(t("SETTINGS.KILLS"))
+        .addChoices(
+          {
+            name: t("SETTINGS.MODE.IMAGE"),
+            value: "image",
+          },
+          {
+            name: t("SETTINGS.MODE.TEXT"),
+            value: "text",
+          },
+        ),
+    );
 
-const deaths = {
-  name: "deaths",
-  description: t("SETTINGS.DEATHS"),
-  type: Subcommand,
-  options: [
-    {
-      name: "enabled",
-      description: t("SETTINGS.ENABLED"),
-      type: Boolean,
-    },
-    {
-      name: "channel",
-      description: t("SETTINGS.CHANNEL"),
-      type: Channel,
-    },
-    {
-      name: "mode",
-      description: t("SETTINGS.CHANNEL"),
-      type: String,
-      choices: [
-        {
-          name: t("SETTINGS.MODE.IMAGE"),
-          value: "image",
-        },
-        {
-          name: t("SETTINGS.MODE.TEXT"),
-          value: "text",
-        },
-      ],
-    },
-  ],
-};
+const deaths = (subcommand) =>
+  subcommand
+    .setName("deaths")
+    .setDescription(t("SETTINGS.DEATHS"))
+    .addBooleanOption((option) => option.setName("enabled").setDescription(t("SETTINGS.ENABLED")))
+    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL")))
+    .addStringOption((option) =>
+      option
+        .setName("mode")
+        .setDescription(t("SETTINGS.DEATHS"))
+        .addChoices(
+          {
+            name: t("SETTINGS.MODE.IMAGE"),
+            value: "image",
+          },
+          {
+            name: t("SETTINGS.MODE.TEXT"),
+            value: "text",
+          },
+        ),
+    );
 
-const battles = {
-  name: "battles",
-  description: t("SETTINGS.BATTLES"),
-  type: Subcommand,
-  options: [
-    {
-      name: "enabled",
-      description: t("SETTINGS.ENABLED"),
-      type: Boolean,
-    },
-    {
-      name: "channel",
-      description: t("SETTINGS.CHANNEL"),
-      type: Channel,
-    },
-  ],
-};
+const battles = (subcommand) =>
+  subcommand
+    .setName("battles")
+    .setDescription(t("SETTINGS.BATTLES"))
+    .addBooleanOption((option) => option.setName("enabled").setDescription(t("SETTINGS.ENABLED")))
+    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL")));
 
 const rankingFrequencies = [
   {
@@ -106,53 +72,41 @@ const rankingFrequencies = [
   },
 ];
 
-const rankings = {
-  name: "rankings",
-  description: t("SETTINGS.RANKINGS"),
-  type: Subcommand,
-  options: [
-    {
-      name: "enabled",
-      description: t("SETTINGS.ENABLED"),
-      type: Boolean,
-    },
-    {
-      name: "channel",
-      description: t("SETTINGS.CHANNEL"),
-      type: Channel,
-    },
-    {
-      name: "pvp-ranking",
-      description: t("SETTINGS.PVP_RANKING"),
-      type: String,
-      choices: rankingFrequencies,
-    },
-    {
-      name: "guild-ranking",
-      description: t("SETTINGS.GUILD_RANKING"),
-      type: String,
-      choices: rankingFrequencies,
-    },
-  ],
-};
+const rankings = (subcommand) =>
+  subcommand
+    .setName("rankings")
+    .setDescription(t("SETTINGS.RANKINGS"))
+    .addBooleanOption((option) => option.setName("enabled").setDescription(t("SETTINGS.ENABLED")))
+    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL")))
+    .addStringOption((option) =>
+      option
+        .setName("pvp-ranking")
+        .setDescription(t("SETTINGS.PVP_RANKING"))
+        .addChoices(...rankingFrequencies),
+    )
+    .addStringOption((option) =>
+      option
+        .setName("guild-ranking")
+        .setDescription(t("SETTINGS.GUILD_RANKING"))
+        .addChoices(...rankingFrequencies),
+    );
 
-const lang = {
-  name: "lang",
-  description: t("SETTINGS.LANG"),
-  type: Subcommand,
-  options: [
-    {
-      name: "language",
-      description: t("SETTINGS.LANG"),
-      type: String,
-      required: true,
-      choices: localeList.map((locale) => ({
-        name: locale,
-        value: locale,
-      })),
-    },
-  ],
-};
+const lang = (subcommand) =>
+  subcommand
+    .setName("lang")
+    .setDescription(t("SETTINGS.LANG"))
+    .addStringOption((option) =>
+      option
+        .setName("language")
+        .setDescription(t("SETTINGS.LANG"))
+        .setRequired(true)
+        .addChoices(
+          ...localeList.map((locale) => ({
+            name: locale,
+            value: locale,
+          })),
+        ),
+    );
 
 function getCommonOptions(settings, category, interaction) {
   const enabled = interaction.options.getBoolean("enabled");
@@ -177,11 +131,15 @@ function printCommonOptions(settings, category, interaction, t) {
 }
 
 const command = {
-  name: "settings",
-  description: t("HELP.SETTINGS"),
-  type: InteractionType.Ping,
-  default_member_permissions: "0",
-  options: [kills, deaths, battles, rankings, lang],
+  data: new SlashCommandBuilder()
+    .setName("settings")
+    .setDescription(t("HELP.SETTINGS"))
+    .setDefaultMemberPermissions("0")
+    .addSubcommand(kills)
+    .addSubcommand(deaths)
+    .addSubcommand(battles)
+    .addSubcommand(rankings)
+    .addSubcommand(lang),
   handle: async (interaction, { settings, t }) => {
     const reply = async (content, ephemeral = true) => await interaction.reply({ content, ephemeral });
     const editReply = async (content, ephemeral = true) => await interaction.editReply({ content, ephemeral });

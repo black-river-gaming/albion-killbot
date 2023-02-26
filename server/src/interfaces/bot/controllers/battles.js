@@ -56,7 +56,7 @@ async function subscribe(client) {
   const queue_suffix = process.env.SHARD;
 
   if (AMQP_QUEUE_BATTLES_BATCH) return subscribeBattles(batchCb, { queue_suffix });
-  return await subscribeBattles(cb, { queue_suffix });
+  return subscribeBattles(cb, { queue_suffix });
 }
 
 async function init(client) {

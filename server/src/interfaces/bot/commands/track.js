@@ -1,37 +1,19 @@
-const { InteractionType } = require("discord-api-types/v10");
-const { String } = require("discord-api-types/v10").ApplicationCommandOptionType;
+const { SlashCommandBuilder } = require("discord.js");
 const { getLocale } = require("../../../helpers/locale");
-
 const { getAlliance, search } = require("../../../services/search");
 const { getLimits } = require("../../../services/limits");
 const { TRACK_TYPE, addTrack } = require("../../../services/track");
 
-const t = getLocale().t;
-
-const options = [
-  {
-    name: "player",
-    description: t("TRACK.PLAYERS.DESCRIPTION"),
-    type: String,
-  },
-  {
-    name: "guild",
-    description: t("TRACK.GUILDS.DESCRIPTION"),
-    type: String,
-  },
-  {
-    name: "alliance",
-    description: t("TRACK.ALLIANCES.DESCRIPTION"),
-    type: String,
-  },
-];
+const { t } = getLocale();
 
 const command = {
-  name: "track",
-  description: t("HELP.TRACK"),
-  type: InteractionType.Ping,
-  default_member_permissions: "0",
-  options,
+  data: new SlashCommandBuilder()
+    .setName("track")
+    .setDescription(t("HELP.TRACK"))
+    .setDefaultMemberPermissions("0")
+    .addStringOption((option) => option.setName("player").setDescription(t("TRACK.PLAYERS.DESCRIPTION")))
+    .addStringOption((option) => option.setName("guild").setDescription(t("TRACK.GUILDS.DESCRIPTION")))
+    .addStringOption((option) => option.setName("alliance").setDescription(t("TRACK.ALLIANCES.DESCRIPTION"))),
   handle: async (interaction, { settings, track, t }) => {
     if (!track) throw new Error("Unable to fetch your settings.");
 

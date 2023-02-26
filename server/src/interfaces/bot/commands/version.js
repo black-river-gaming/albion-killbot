@@ -1,13 +1,11 @@
-const { InteractionType } = require("discord-api-types/v10");
+const { SlashCommandBuilder } = require("discord.js");
 const { getLocale } = require("../../../helpers/locale");
 
 const version = process.env.npm_package_version;
+const t = getLocale().t;
 
 const command = {
-  name: "version",
-  description: getLocale().t("HELP.VERSION"),
-  type: InteractionType.Ping,
-  default_permission: true,
+  data: new SlashCommandBuilder().setName("version").setDescription(t("HELP.VERSION")),
   handle: async (interaction, { t }) => {
     let response = "```\n";
     if (version) {

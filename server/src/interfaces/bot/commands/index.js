@@ -1,5 +1,4 @@
-const { REST } = require("@discordjs/rest");
-const { Routes } = require("discord-api-types/v10");
+const { Collection, REST, Routes } = require("discord.js");
 const { readdirSync } = require("fs");
 const path = require("node:path");
 const { getLocale } = require("../../../helpers/locale");
@@ -8,58 +7,53 @@ const logger = require("../../../helpers/logger");
 const { getSettings } = require("../../../services/settings");
 const { getTrack } = require("../../../services/track");
 
-const rest = new REST({ version: "10" });
-let commands = [];
+const { DISCORD_TOKEN } = process.env;
+const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
 
-async function init() {
-  const { DISCORD_TOKEN } = process.env;
-  if (!DISCORD_TOKEN) {
-    throw new Error(`Please define DISCORD_TOKEN environment variable with the discord token.`);
-  }
-  rest.setToken(DISCORD_TOKEN);
-}
+async function init(client) {
+  client.commands = new Collection();
 
-async function refresh(clientId) {
-  commands = [];
+  const commandFiles = readdirSync(__dirname);
+  for (const commandFile of commandFiles) {
+    if (commandFile === "index.js") continue;
 
-  try {
-    const commandFiles = readdirSync(__dirname);
-    for (const commandFile of commandFiles) {
-      if (commandFile === "index.js") continue;
-
-      try {
-        const command = require(path.join(__dirname, commandFile));
-        logger.debug(`Command loaded: ${commandFile}`);
-        commands.push(command);
-      } catch (e) {
-        logger.error(`Error loading command ${commandFile}: ${e}`);
-      }
+    try {
+      const command = require(path.join(__dirname, commandFile));
+      logger.debug(`Command loaded: ${commandFile}`);
+      client.commands.set(command.data.name, command);
+    } catch (error) {
+      logger.error(`Error loading command ${commandFile}: ${error.message}`, { error });
     }
-
-    // TODO: Use Discord port instead of directly calling the API
-    logger.info(`Refreshing application slash commands...`);
-    await rest.put(Routes.applicationCommands(clientId), { body: commands });
-    logger.verbose(`Successfully reloaded slash commands.`);
-  } catch (e) {
-    logger.error(`An error ocurred while reloading slash commands:`, e);
   }
+
+  return reload(client);
 }
 
-function hasCommand(name) {
-  return commands.some((c) => c.name == name);
-}
+async function reload(client) {
+  try {
+    const commands = client.commands.map((command) => command.data.toJSON());
+    logger.info(`Started refreshing ${commands.length} application slash commands.`);
 
-function getCommands() {
-  return commands;
+    // The put method is used to fully refresh all commands in the guild with the current set
+    const data = await rest.put(Routes.applicationCommands(client.application.id), { body: commands });
+
+    logger.verbose(`Successfully reloaded ${data.length} application slash commands.`);
+  } catch (error) {
+    logger.error(`An error ocurred while reloading slash commands: ${error.message}`, { error });
+    console.error(error);
+  }
 }
 
 async function handle(interaction) {
+  if (!interaction.isChatInputCommand() || !interaction.guild) return;
+
   const settings = await getSettings(interaction.guild.id);
   const track = await getTrack(interaction.guild.id);
   const t = getLocale(settings.lang).t;
 
   try {
-    if (!hasCommand(interaction.commandName)) throw new Error("COMMAND_NOT_FOUND");
+    const command = interaction.client.commands.get(interaction.commandName);
+    if (!command) throw new Error("COMMAND_NOT_FOUND");
     // TODO: Find a place for this
     // This is needed because interaction uses BigInt and toJSON() fails
     BigInt.prototype.toJSON = function () {
@@ -70,11 +64,10 @@ async function handle(interaction) {
       interaction: interaction.toJSON(),
     });
 
-    const command = commands.find((c) => c.name == interaction.commandName);
     return await command.handle(interaction, { settings, track, t });
-  } catch (e) {
-    logger.error(`Error in interaction:`, e);
-    const reply = (!interaction.deferred && !interaction.replied ? interaction.reply : interaction.editReply).bind(
+  } catch (error) {
+    logger.error(`Error in interaction: ${error.message}`, { error });
+    const reply = (!interaction.deferred && !interaction.replied ? interaction.reply : interaction.followUp).bind(
       interaction,
     );
     return await reply({
@@ -84,9 +77,6 @@ async function handle(interaction) {
 }
 
 module.exports = {
-  getCommands,
-  hasCommand,
   init,
-  refresh,
   handle,
 };

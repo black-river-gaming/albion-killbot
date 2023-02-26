@@ -1,37 +1,32 @@
-const { InteractionType } = require("discord-api-types/v10");
-const { String } = require("discord-api-types/v10").ApplicationCommandOptionType;
+const { SlashCommandBuilder } = require("discord.js");
 const { getLocale } = require("../../../helpers/locale");
 const { getRanking } = require("../../../services/rankings");
 const { getGuild } = require("../../../services/guilds");
 const { embedPvpRanking, embedGuildRanking } = require("../../../helpers/embeds");
 
-const t = getLocale().t;
-
-const options = [
-  {
-    name: "ranking",
-    description: t("HELP.RANKING"),
-    type: String,
-    required: true,
-    choices: [
-      {
-        name: t("SETTINGS.PVP_RANKING"),
-        value: "pvpRanking",
-      },
-      {
-        name: t("SETTINGS.GUILD_RANKING"),
-        value: "guildRanking",
-      },
-    ],
-  },
-];
+const { t } = getLocale();
 
 const command = {
-  name: "ranking",
-  description: t("HELP.RANKING"),
-  type: InteractionType.Ping,
-  default_member_permissions: "0",
-  options,
+  data: new SlashCommandBuilder()
+    .setName("ranking")
+    .setDescription(t("HELP.RANKING"))
+    .setDefaultMemberPermissions("0")
+    .addStringOption((option) =>
+      option
+        .setName("ranking")
+        .setDescription(t("HELP.RANKING"))
+        .setRequired(true)
+        .addChoices(
+          {
+            name: t("SETTINGS.PVP_RANKING"),
+            value: "pvpRanking",
+          },
+          {
+            name: t("SETTINGS.GUILD_RANKING"),
+            value: "guildRanking",
+          },
+        ),
+    ),
   handle: async (interaction, { settings, track, t }) => {
     const rankingType = interaction.options.getString("ranking");
 

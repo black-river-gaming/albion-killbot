@@ -1,34 +1,17 @@
-const { InteractionType } = require("discord-api-types/v10");
-const { String } = require("discord-api-types/v10").ApplicationCommandOptionType;
+const { SlashCommandBuilder } = require("discord.js");
 const { getLocale } = require("../../../helpers/locale");
 const { removeTrack, TRACK_TYPE } = require("../../../services/track");
 
 const t = getLocale().t;
 
-const options = [
-  {
-    name: "player",
-    description: t("TRACK.PLAYERS.DESCRIPTION"),
-    type: String,
-  },
-  {
-    name: "guild",
-    description: t("TRACK.GUILDS.DESCRIPTION"),
-    type: String,
-  },
-  {
-    name: "alliance",
-    description: t("TRACK.ALLIANCES.DESCRIPTION"),
-    type: String,
-  },
-];
-
 const command = {
-  name: "untrack",
-  description: t("HELP.UNTRACK"),
-  type: InteractionType.Ping,
-  default_member_permissions: "0",
-  options,
+  data: new SlashCommandBuilder()
+    .setName("untrack")
+    .setDescription(t("HELP.UNTRACK"))
+    .setDefaultMemberPermissions("0")
+    .addStringOption((option) => option.setName("player").setDescription(t("TRACK.PLAYERS.DESCRIPTION")))
+    .addStringOption((option) => option.setName("guild").setDescription(t("TRACK.GUILDS.DESCRIPTION")))
+    .addStringOption((option) => option.setName("alliance").setDescription(t("TRACK.ALLIANCES.DESCRIPTION"))),
   handle: async (interaction, { track, t }) => {
     const playerName = interaction.options.getString("player");
     const guildName = interaction.options.getString("guild");
