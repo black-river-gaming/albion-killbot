@@ -13,8 +13,8 @@ function isSubscriptionsEnabled() {
 }
 
 /* Stripe */
-async function fetchSubscriptionPrices() {
-  return await stripe.getPrices({});
+async function fetchSubscriptionPrices(currency) {
+  return await stripe.getPrices({ currency });
 }
 
 async function buySubscription(priceId, owner) {

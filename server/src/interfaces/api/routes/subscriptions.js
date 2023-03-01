@@ -273,15 +273,31 @@ router.post(`/manage`, subscriptionsController.manageSubscription);
  *     tags: [Subscriptions]
  *     summary: Fetches a list of subscriptions prices
  *     operationId: getSubscriptionsPrices
+ *     parameters:
+ *     - name: currency
+ *       in: query
+ *       schema:
+ *         type: string
+ *         default: "usd"
  *     responses:
  *       200:
  *         description: List of subscriptions prices
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/SubscriptionPrice'
+ *               type: object
+ *               properties:
+ *                 currencies:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                     minLength: 3
+ *                     maxLength: 3
+ *                     example: "usd"
+ *                 prices:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/SubscriptionPrice'
  */
 router.get(`/prices`, subscriptionsController.getSubscriptionsPrices);
 
