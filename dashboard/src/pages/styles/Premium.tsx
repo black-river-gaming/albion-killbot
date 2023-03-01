@@ -11,7 +11,6 @@ const UserSubscriptionsCard = styled(Card)`
     .info {
       .id-text {
         font-size: 10px;
-        line-height: 10px;
 
         color: ${({ theme }) => theme.mutedText};
 
@@ -24,13 +23,7 @@ const UserSubscriptionsCard = styled(Card)`
       }
 
       .active {
-        display: flex;
-        align-items: center;
-
-        .price {
-          padding-left: 0.25rem;
-          font-weight: 500;
-        }
+        line-height: 1.15rem;
       }
     }
 

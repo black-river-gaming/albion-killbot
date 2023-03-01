@@ -195,21 +195,24 @@ const Premium = () => {
                       )}
                     </div>
                     <div className="active">
-                      {subscription.expires === "never"
-                        ? `Activated`
-                        : `${
-                            new Date(subscription.expires).getTime() >
-                            new Date().getTime()
-                              ? `Active until `
-                              : `Expired at `
-                          } ${new Date(subscription.expires).toLocaleString()}`}
+                      <div className="expires">
+                        {subscription.expires === "never"
+                          ? `Activated`
+                          : `${
+                              new Date(subscription.expires).getTime() >
+                              new Date().getTime()
+                                ? `Active until `
+                                : `Expired at `
+                            } ${new Date(
+                              subscription.expires
+                            ).toLocaleString()}`}
+                      </div>
                       {price && (
-                        <div className="d-flex align-items-baseline price">
-                          (
+                        <div className="price">
                           {getCurrency(price.price / 100, {
                             currency: price.currency,
                           })}
-                          /{price.recurrence.count} {price.recurrence.interval})
+                          /{price.recurrence.count} {price.recurrence.interval}
                         </div>
                       )}
                     </div>
