@@ -11,6 +11,7 @@ import SubscriptionPriceCard from "components/SubscriptionPriceCard";
 import { getServerPictureUrl } from "helpers/discord";
 import { isSubscriptionActiveAndUnassiged } from "helpers/subscriptions";
 import { getCurrency } from "helpers/utils";
+import LocaleCurrency from "locale-currency";
 import { useState } from "react";
 import {
   Alert,
@@ -18,6 +19,7 @@ import {
   Card,
   Col,
   Container,
+  Dropdown,
   ListGroup,
   Row,
   Stack,
@@ -27,15 +29,19 @@ import {
   useBuySubscriptionMutation,
   useFetchPricesQuery,
   useFetchSubscriptionsQuery,
+  useFetchUserQuery,
   useManageSubscriptionMutation,
 } from "store/api";
 import { ServerBase, SubscriptionPrice } from "types";
 import UserSubscriptionsCard from "./styles/Premium";
 
 const Premium = () => {
-  const [currency] = useState("usd");
+  const user = useFetchUserQuery();
+  const [currency, setCurrency] = useState(
+    LocaleCurrency.getCurrency(user.data?.locale || "en-US")
+  );
   const subscriptions = useFetchSubscriptionsQuery();
-  const prices = useFetchPricesQuery({ currency });
+  const pricesResponse = useFetchPricesQuery({ currency });
   const [dispatchBuySubscription, buySubscription] =
     useBuySubscriptionMutation();
   const [dispatchManageSubscription, manageSubscription] =
@@ -55,12 +61,42 @@ const Premium = () => {
     window.location.href = manageSubscription.data.url;
   }
 
+  const renderCurrenciesDropdown = () => {
+    if (!pricesResponse.data?.currencies) return null;
+
+    return (
+      <Stack
+        direction="horizontal"
+        gap={2}
+        className="d-flex align-items-center"
+      >
+        <div>Currency:</div>
+
+        <Dropdown className="d-flex">
+          <Dropdown.Toggle variant="primary" id="currencies">
+            {currency.toUpperCase()}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            {pricesResponse.data.currencies.map((currency) => (
+              <Dropdown.Item
+                key={currency}
+                onClick={() => setCurrency(currency)}
+              >
+                {currency.toUpperCase()}
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      </Stack>
+    );
+  };
+
   const renderPrices = () => {
-    if (prices.isFetching) return <Loader />;
+    if (pricesResponse.isFetching) return <Loader />;
 
     return (
       <Row className="gy-2">
-        {prices.data?.map((price: SubscriptionPrice, i) => (
+        {pricesResponse.data?.prices.map((price: SubscriptionPrice, i) => (
           <Col key={price.id} sm={6} lg={4} xxl={3} className="gx-4">
             <SubscriptionPriceCard price={price}>
               <>
@@ -246,6 +282,9 @@ const Premium = () => {
         )}
         <div className="d-flex justify-content-center">
           <h1>Premium</h1>
+        </div>
+        <div className="d-flex justify-content-end">
+          {renderCurrenciesDropdown()}
         </div>
         {renderPrices()}
         {renderUserSubscriptions()}

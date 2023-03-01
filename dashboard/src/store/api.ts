@@ -6,7 +6,7 @@ import {
   Session,
   Settings,
   Subscription,
-  SubscriptionPrice,
+  SubscriptionPricesResponse,
   TrackList,
   UpdateSubscription,
   User,
@@ -97,7 +97,10 @@ export const api = createApi({
         }),
         invalidatesTags: ["Admin", "Server", "Subscription"],
       }),
-      fetchPrices: builder.query<SubscriptionPrice[], { currency: string }>({
+      fetchPrices: builder.query<
+        SubscriptionPricesResponse,
+        { currency: string }
+      >({
         query: ({ currency }) => ({
           url: `/subscriptions/prices`,
           params: {
