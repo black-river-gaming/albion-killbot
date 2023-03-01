@@ -77,7 +77,6 @@ export const api = createApi({
         }),
         invalidatesTags: ["Admin"],
       }),
-
       updateSubscription: builder.mutation<
         Subscription,
         { serverId: string; subscription: UpdateSubscription }
@@ -98,9 +97,13 @@ export const api = createApi({
         }),
         invalidatesTags: ["Admin", "Server", "Subscription"],
       }),
-
-      fetchPrices: builder.query<SubscriptionPrice[], void>({
-        query: () => `/subscriptions/prices`,
+      fetchPrices: builder.query<SubscriptionPrice[], { currency: string }>({
+        query: ({ currency }) => ({
+          url: `/subscriptions/prices`,
+          params: {
+            currency,
+          },
+        }),
       }),
       fetchUser: builder.query<User, void>({
         query: () => `/users/me`,

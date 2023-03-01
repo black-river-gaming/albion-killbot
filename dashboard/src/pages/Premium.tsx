@@ -17,6 +17,7 @@ import {
   Button,
   Card,
   Col,
+  Container,
   ListGroup,
   Row,
   Stack,
@@ -29,11 +30,12 @@ import {
   useManageSubscriptionMutation,
 } from "store/api";
 import { ServerBase, SubscriptionPrice } from "types";
-import StyledPremium from "./styles/Premium";
+import UserSubscriptionsCard from "./styles/Premium";
 
 const Premium = () => {
+  const [currency] = useState("usd");
   const subscriptions = useFetchSubscriptionsQuery();
-  const prices = useFetchPricesQuery();
+  const prices = useFetchPricesQuery({ currency });
   const [dispatchBuySubscription, buySubscription] =
     useBuySubscriptionMutation();
   const [dispatchManageSubscription, manageSubscription] =
@@ -132,7 +134,7 @@ const Premium = () => {
     if (activeSubscriptions.length === 0) return;
 
     return (
-      <Card className="p-2 mt-4 user-subscriptions">
+      <UserSubscriptionsCard>
         <Card.Header>Your Active Subscriptions:</Card.Header>
 
         <Card.Body>
@@ -220,39 +222,41 @@ const Premium = () => {
             })}
           </Stack>
         </Card.Body>
-      </Card>
+      </UserSubscriptionsCard>
     );
   };
 
   return (
-    <StyledPremium className="py-2">
-      <div className="d-flex justify-content-center">
-        <h1 className="py-2">Premium</h1>
-      </div>
-      {status === "cancel" && (
-        <Alert className="mb-4" variant="danger">
-          Purchase cancelled.
-        </Alert>
-      )}
-      {status === "success" && checkoutId && (
-        <SubscriptionAssign checkoutId={checkoutId} />
-      )}
-      {!status && subscriptions.data?.some(isSubscriptionActiveAndUnassiged) && (
-        <Alert className="mb-4" variant="success">
-          You currently have an active subscription that is not assigned to a
-          server. Make sure to assign it before being able to benefit from the
-          subscription.
-        </Alert>
-      )}
-      {renderPrices()}
-      {renderUserSubscriptions()}
-      {subscriptionAssignId && (
-        <SubscriptionAssign
-          subscriptionId={subscriptionAssignId}
-          onClose={() => setSubscriptionAssignId("")}
-        />
-      )}
-    </StyledPremium>
+    <Container fluid className="py-3">
+      <Stack gap={2}>
+        {status === "success" && checkoutId && (
+          <SubscriptionAssign checkoutId={checkoutId} />
+        )}
+        {status === "cancel" && (
+          <Alert className="mb-4" variant="danger">
+            Purchase cancelled.
+          </Alert>
+        )}
+        {!status && subscriptions.data?.some(isSubscriptionActiveAndUnassiged) && (
+          <Alert className="mb-4" variant="success">
+            You currently have an active subscription that is not assigned to a
+            server. Make sure to assign it before being able to benefit from the
+            subscription.
+          </Alert>
+        )}
+        <div className="d-flex justify-content-center">
+          <h1>Premium</h1>
+        </div>
+        {renderPrices()}
+        {renderUserSubscriptions()}
+        {subscriptionAssignId && (
+          <SubscriptionAssign
+            subscriptionId={subscriptionAssignId}
+            onClose={() => setSubscriptionAssignId("")}
+          />
+        )}
+      </Stack>
+    </Container>
   );
 };
 

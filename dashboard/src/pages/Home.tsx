@@ -16,7 +16,7 @@ import screenshot6 from "assets/screenshots/725754202-event.png";
 import Paper from "components/Paper";
 import { getServerInviteUrl } from "helpers/discord";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
-import StyledHome from "./styles";
+import StyledHome from "./styles/Home";
 
 const screenshots = [
   screenshot1,

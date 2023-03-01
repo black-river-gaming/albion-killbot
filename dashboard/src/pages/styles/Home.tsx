@@ -12,6 +12,7 @@ const StyledHome = styled.div`
     background-size: cover;
     background-blend-mode: multiply;
   }
+
   .home-text {
     text-align: center;
   }
