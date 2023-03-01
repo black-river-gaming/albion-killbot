@@ -46,6 +46,7 @@ async function reload(client) {
 
 async function handle(interaction) {
   if (!interaction.isChatInputCommand() || !interaction.guild) return;
+  if (interaction.guild.partial) await interaction.guild.fetch();
 
   const settings = await getSettings(interaction.guild.id);
   const track = await getTrack(interaction.guild.id);
