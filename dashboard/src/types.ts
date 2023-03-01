@@ -3,6 +3,7 @@ export interface User {
   username: string;
   avatar: string;
   discriminator: string;
+  locale: string;
   admin: boolean;
 }
 
@@ -96,6 +97,11 @@ export interface Subscription {
   limits?: Limits;
 }
 export type UpdateSubscription = Omit<Subscription, "id">;
+
+export interface SubscriptionPricesResponse {
+  currencies: string[];
+  prices: SubscriptionPrice[];
+}
 
 export interface SubscriptionPrice {
   id: string;

@@ -3,6 +3,8 @@ const subscriptionsService = require("../../../services/subscriptions");
 const serversService = require("../../../services/servers");
 
 const { DISCORD_COMMUNITY_SERVER, DISCORD_COMMUNITY_PREMIUM_ROLE } = process.env;
+// TODO: Get this list from stripe
+const SUPPORTED_CURRENCIES = ["usd", "brl"];
 
 async function getSubscriptions(req, res) {
   try {
@@ -23,8 +25,15 @@ async function getSubscriptions(req, res) {
 
 async function getSubscriptionsPrices(req, res) {
   try {
-    const prices = await subscriptionsService.fetchSubscriptionPrices();
-    return res.send(prices);
+    let { currency } = req.query;
+    if (currency && SUPPORTED_CURRENCIES.indexOf(currency.toLowerCase()) === -1) {
+      currency = "usd";
+    }
+
+    const prices = await subscriptionsService.fetchSubscriptionPrices(currency);
+    const currencies = SUPPORTED_CURRENCIES;
+
+    return res.send({ currencies, prices });
   } catch (error) {
     logger.error(error);
     return res.sendStatus(500);

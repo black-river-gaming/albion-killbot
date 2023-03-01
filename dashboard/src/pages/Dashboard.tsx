@@ -1,11 +1,10 @@
 import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
 import { getServerInviteUrl } from "helpers/discord";
-import { Alert, Button, Col, Container, Row } from "react-bootstrap";
+import { Alert, Button, Col, Container, Row, Stack } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useFetchServersQuery } from "store/api";
 import { ServerPartial } from "types";
-import DashboardStyles from "./styles";
 
 const Dashboard = () => {
   const servers = useFetchServersQuery();
@@ -47,7 +46,7 @@ const Dashboard = () => {
     return (
       <Col sm={6} lg={4} key={server.id}>
         <ServerCard server={server}>
-          <div className="server-buttons">
+          <div className="d-flex justify-content-end">
             {server.bot ? (
               <Link to={server.id}>
                 <Button variant="primary">Dashboard</Button>
@@ -67,15 +66,15 @@ const Dashboard = () => {
   };
 
   return (
-    <DashboardStyles>
-      <Alert variant="info" className="m-0 mb-2">
-        <b>Can't find your server?</b> Please check if you are a server owner or
-        have the Administrator permissions.
-      </Alert>
-      <div className="dashboard-title">
-        <h1>Discord Servers</h1>
-      </div>
-      <Container fluid className="pt-4">
+    <Container fluid className="py-3">
+      <Stack gap={2}>
+        <Alert variant="info" className="m-0 mb-2">
+          <b>Can't find your server?</b> Please check if you are a server owner
+          or have the Administrator permissions.
+        </Alert>
+        <div className="d-flex justify-content-center">
+          <h1>Discord Servers</h1>
+        </div>
         <Row className="g-4">
           {servers.data && servers.data.map(renderServer)}
           {servers.data?.length === 0 && (
@@ -84,8 +83,8 @@ const Dashboard = () => {
             </h5>
           )}
         </Row>
-      </Container>
-    </DashboardStyles>
+      </Stack>
+    </Container>
   );
 };
 

@@ -11,12 +11,15 @@ import SubscriptionPriceCard from "components/SubscriptionPriceCard";
 import { getServerPictureUrl } from "helpers/discord";
 import { isSubscriptionActiveAndUnassiged } from "helpers/subscriptions";
 import { getCurrency } from "helpers/utils";
+import LocaleCurrency from "locale-currency";
 import { useState } from "react";
 import {
   Alert,
   Button,
   Card,
   Col,
+  Container,
+  Dropdown,
   ListGroup,
   Row,
   Stack,
@@ -26,14 +29,19 @@ import {
   useBuySubscriptionMutation,
   useFetchPricesQuery,
   useFetchSubscriptionsQuery,
+  useFetchUserQuery,
   useManageSubscriptionMutation,
 } from "store/api";
 import { ServerBase, SubscriptionPrice } from "types";
-import StyledPremium from "./styles/Premium";
+import UserSubscriptionsCard from "./styles/Premium";
 
 const Premium = () => {
+  const user = useFetchUserQuery();
+  const [currency, setCurrency] = useState(
+    LocaleCurrency.getCurrency(user.data?.locale || "en-US")
+  );
   const subscriptions = useFetchSubscriptionsQuery();
-  const prices = useFetchPricesQuery();
+  const pricesResponse = useFetchPricesQuery({ currency });
   const [dispatchBuySubscription, buySubscription] =
     useBuySubscriptionMutation();
   const [dispatchManageSubscription, manageSubscription] =
@@ -53,12 +61,42 @@ const Premium = () => {
     window.location.href = manageSubscription.data.url;
   }
 
+  const renderCurrenciesDropdown = () => {
+    if (!pricesResponse.data?.currencies) return null;
+
+    return (
+      <Stack
+        direction="horizontal"
+        gap={2}
+        className="d-flex align-items-center"
+      >
+        <div>Currency:</div>
+
+        <Dropdown className="d-flex">
+          <Dropdown.Toggle variant="primary" id="currencies">
+            {currency.toUpperCase()}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            {pricesResponse.data.currencies.map((currency) => (
+              <Dropdown.Item
+                key={currency}
+                onClick={() => setCurrency(currency)}
+              >
+                {currency.toUpperCase()}
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      </Stack>
+    );
+  };
+
   const renderPrices = () => {
-    if (prices.isFetching) return <Loader />;
+    if (pricesResponse.isFetching) return <Loader />;
 
     return (
       <Row className="gy-2">
-        {prices.data?.map((price: SubscriptionPrice, i) => (
+        {pricesResponse.data?.prices.map((price: SubscriptionPrice, i) => (
           <Col key={price.id} sm={6} lg={4} xxl={3} className="gx-4">
             <SubscriptionPriceCard price={price}>
               <>
@@ -132,7 +170,7 @@ const Premium = () => {
     if (activeSubscriptions.length === 0) return;
 
     return (
-      <Card className="p-2 mt-4 user-subscriptions">
+      <UserSubscriptionsCard>
         <Card.Header>Your Active Subscriptions:</Card.Header>
 
         <Card.Body>
@@ -157,21 +195,24 @@ const Premium = () => {
                       )}
                     </div>
                     <div className="active">
-                      {subscription.expires === "never"
-                        ? `Activated`
-                        : `${
-                            new Date(subscription.expires).getTime() >
-                            new Date().getTime()
-                              ? `Active until `
-                              : `Expired at `
-                          } ${new Date(subscription.expires).toLocaleString()}`}
+                      <div className="expires">
+                        {subscription.expires === "never"
+                          ? `Activated`
+                          : `${
+                              new Date(subscription.expires).getTime() >
+                              new Date().getTime()
+                                ? `Active until `
+                                : `Expired at `
+                            } ${new Date(
+                              subscription.expires
+                            ).toLocaleString()}`}
+                      </div>
                       {price && (
-                        <div className="d-flex align-items-baseline price">
-                          (
+                        <div className="price">
                           {getCurrency(price.price / 100, {
                             currency: price.currency,
                           })}
-                          /{price.recurrence.count} {price.recurrence.interval})
+                          /{price.recurrence.count} {price.recurrence.interval}
                         </div>
                       )}
                     </div>
@@ -220,39 +261,44 @@ const Premium = () => {
             })}
           </Stack>
         </Card.Body>
-      </Card>
+      </UserSubscriptionsCard>
     );
   };
 
   return (
-    <StyledPremium className="py-2">
-      <div className="d-flex justify-content-center">
-        <h1 className="py-2">Premium</h1>
-      </div>
-      {status === "cancel" && (
-        <Alert className="mb-4" variant="danger">
-          Purchase cancelled.
-        </Alert>
-      )}
-      {status === "success" && checkoutId && (
-        <SubscriptionAssign checkoutId={checkoutId} />
-      )}
-      {!status && subscriptions.data?.some(isSubscriptionActiveAndUnassiged) && (
-        <Alert className="mb-4" variant="success">
-          You currently have an active subscription that is not assigned to a
-          server. Make sure to assign it before being able to benefit from the
-          subscription.
-        </Alert>
-      )}
-      {renderPrices()}
-      {renderUserSubscriptions()}
-      {subscriptionAssignId && (
-        <SubscriptionAssign
-          subscriptionId={subscriptionAssignId}
-          onClose={() => setSubscriptionAssignId("")}
-        />
-      )}
-    </StyledPremium>
+    <Container fluid className="py-3">
+      <Stack gap={2}>
+        {status === "success" && checkoutId && (
+          <SubscriptionAssign checkoutId={checkoutId} />
+        )}
+        {status === "cancel" && (
+          <Alert className="mb-4" variant="danger">
+            Purchase cancelled.
+          </Alert>
+        )}
+        {!status && subscriptions.data?.some(isSubscriptionActiveAndUnassiged) && (
+          <Alert className="mb-4" variant="success">
+            You currently have an active subscription that is not assigned to a
+            server. Make sure to assign it before being able to benefit from the
+            subscription.
+          </Alert>
+        )}
+        <div className="d-flex justify-content-center">
+          <h1>Premium</h1>
+        </div>
+        <div className="d-flex justify-content-end">
+          {renderCurrenciesDropdown()}
+        </div>
+        {renderPrices()}
+        {renderUserSubscriptions()}
+        {subscriptionAssignId && (
+          <SubscriptionAssign
+            subscriptionId={subscriptionAssignId}
+            onClose={() => setSubscriptionAssignId("")}
+          />
+        )}
+      </Stack>
+    </Container>
   );
 };
 
