@@ -1,19 +1,9 @@
 import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import LeaveServer from "components/LeaveServer";
 import Loader from "components/Loader";
-import ServerCard from "components/ServerCard";
+import ServerList from "components/ServerList";
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Card,
-  Container,
-  Form,
-  InputGroup,
-  Row,
-  Stack,
-} from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Button, Card, Form, InputGroup } from "react-bootstrap";
 import { useFetchAdminServersQuery } from "store/api";
 import { ServerPartial } from "types";
 
@@ -53,24 +43,6 @@ const Admin = () => {
     );
   }
 
-  const renderServer = (server: ServerPartial) => {
-    return (
-      <ServerCard key={server.id} server={server} list>
-        <Stack gap={2} direction="horizontal">
-          <Link to={`/admin/${server.id}`}>
-            <Button variant="primary">Manage</Button>
-          </Link>
-
-          <Link to={`/dashboard/${server.id}`}>
-            <Button variant="primary">Dashboard</Button>
-          </Link>
-
-          <LeaveServer server={server} />
-        </Stack>
-      </ServerCard>
-    );
-  };
-
   return (
     <div>
       <div className="d-flex justify-content-center pt-3">
@@ -97,16 +69,7 @@ const Admin = () => {
         </Form>
       </Card>
 
-      <Container fluid className="py-4">
-        <Row className="g-4">
-          {servers.map(renderServer)}
-          {servers.length === 0 && (
-            <h5 className="d-flex justify-content-center py-5">
-              No servers to display.
-            </h5>
-          )}
-        </Row>
-      </Container>
+      <ServerList servers={servers} className="py-4" />
     </div>
   );
 };

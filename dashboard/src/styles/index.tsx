@@ -64,6 +64,12 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
     display: none;
   }
 
+  *:focus {
+    box-shadow: 0 0 0 0.15rem ${({ theme }) => theme.primary}7c !important;
+    outline: none;
+    transition: 0.25s ease-in-out box-shadow !important;
+  }
+
   a {
     color: ${({ theme }) => theme.text};
     transition: color 0.25s ease-in-out;
@@ -392,6 +398,73 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
         rgba(255, 255, 255, 0.05),
         rgba(255, 255, 255, 0.05)
       );
+      }
+    }
+  }
+
+  /* Bootstrap Pagination overrides */
+  .pagination {
+    margin: 0;
+
+    background-color: ${({ theme }) => theme.background};
+    background-image: linear-gradient(
+      rgba(255, 255, 255, 0.09),
+      rgba(255, 255, 255, 0.09)
+    );
+    box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%),
+      0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
+    border-radius: 0.5rem;
+    color: ${({ theme }) => theme.text};
+
+    .page-item {
+      min-width: 2.7rem;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      background: transparent;
+      border: 1px solid ${({ theme }) => theme.background}77;
+
+      &:first-child {
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+      }
+
+      &:last-child {
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+      }
+
+      &:not(:last-child) {
+        border-right-width: 0px;
+      }
+
+      &.active {
+        background-image: linear-gradient(
+          rgba(255, 255, 255, 0.05),
+          rgba(255, 255, 255, 0.05)
+        );
+
+        .page-link {
+          color: ${({ theme }) => theme.primary};
+        }
+      }
+
+      .page-link {
+        background: transparent;
+        border: none;
+        color:  ${({ theme }) => theme.text};
+
+        cursor: pointer;
+        user-select: none;
+        user-drag: none;
+
+        &:hover {
+          border: none;
+          color: ${({ theme }) => theme.primary};
+        }
+
       }
     }
   }
