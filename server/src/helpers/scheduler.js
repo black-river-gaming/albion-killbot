@@ -3,9 +3,16 @@ const moment = require("moment");
 
 // Flag to keep infinite loops until program is closed
 let running = true;
+const timeoutIds = new Set();
 
 const clean = () => {
   running = false;
+
+  for (const timeoutId of timeoutIds) {
+    logger.debug(`Cleaning timeout: ${timeoutId}`);
+    clearTimeout(timeoutId);
+    timeoutIds.delete(timeoutId);
+  }
 };
 
 //catches ctrl+c event
@@ -15,17 +22,22 @@ process.on("SIGUSR1", clean);
 process.on("SIGUSR2", clean);
 
 function sleep(milliseconds) {
-  return new Promise((resolve, reject) =>
-    setTimeout(() => (running ? resolve() : reject(new Error("Sleep trigger after program exited."))), milliseconds),
-  );
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      timeoutIds.delete(timeoutId);
+      return running ? resolve() : reject(new Error("Sleep trigger after program exited."));
+    }, milliseconds);
+    timeoutIds.add(timeoutId);
+  });
 }
 
 function timeout(fn, milliseconds) {
   const timeout = new Promise((resolve, reject) => {
-    const id = setTimeout(() => {
-      clearTimeout(id);
+    const timeoutId = setTimeout(() => {
+      clearTimeout(timeoutId);
       reject(new Error(`Operation timeout (${milliseconds} ms)`));
     }, milliseconds);
+    timeoutIds.add(timeoutId);
   });
 
   return Promise.race([fn, timeout]);
