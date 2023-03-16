@@ -406,59 +406,80 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
   .pagination {
     margin: 0;
 
-    background-color: ${({ theme }) => theme.background};
-    background-image: linear-gradient(
-      rgba(255, 255, 255, 0.09),
-      rgba(255, 255, 255, 0.09)
-    );
-    box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%),
-      0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
-    border-radius: 0.5rem;
-    color: ${({ theme }) => theme.text};
+    display: flex;
+    justify-content: center;
+    flex-flow: row wrap;
 
     .page-item {
+      color: ${({ theme }) => theme.text};
+
+      background-color: ${({ theme }) => theme.background};
+      background-image: linear-gradient(
+        rgba(255, 255, 255, 0.09),
+        rgba(255, 255, 255, 0.09)
+      );
+      box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%),
+        0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
+
       min-width: 2.7rem;
 
       display: flex;
       justify-content: center;
       align-items: center;
 
-      background: transparent;
-      border: 1px solid ${({ theme }) => theme.background}77;
-
-      &:first-child {
-        border-top-left-radius: 0.5rem;
-        border-bottom-left-radius: 0.5rem;
-      }
-
-      &:last-child {
-        border-top-right-radius: 0.5rem;
-        border-bottom-right-radius: 0.5rem;
-      }
+      border-radius: 0.5rem;
 
       &:not(:last-child) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
         border-right-width: 0px;
+
+        .page-link {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+      }
+
+      &:not(:first-child) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left-width: 0px;
+
+        .page-link {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+        }
       }
 
       &.active {
-        background-image: linear-gradient(
-          rgba(255, 255, 255, 0.05),
-          rgba(255, 255, 255, 0.05)
-        );
-
         .page-link {
+          background-image: linear-gradient(
+            rgba(255, 255, 255, 0.05),
+            rgba(255, 255, 255, 0.05)
+          );
+
           color: ${({ theme }) => theme.primary};
+
+          z-index: 1;
         }
       }
 
       .page-link {
-        background: transparent;
-        border: none;
+        border: 1px solid ${({ theme }) => theme.background}77;
+        border-radius: 0.5rem;
+
+        background: inherit;
         color:  ${({ theme }) => theme.text};
 
         cursor: pointer;
         user-select: none;
         user-drag: none;
+
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         &:hover {
           border: none;
