@@ -12,28 +12,28 @@ const { average } = require("../helpers/utils");
 
 const ITEMS_DIR = "items";
 
-async function getEvent(eventId) {
+async function getEvent(eventId, { server }) {
   try {
-    return await albionApiClient.getEvent(eventId);
+    return await albionApiClient.getEvent(eventId, { server });
   } catch (e) {
     return null;
   }
 }
 
-async function getEvents(queryParams = {}) {
-  return await albionApiClient.getEvents(queryParams);
+async function getEvents({ server, limit, offset }) {
+  return await albionApiClient.getEvents({ server, limit, offset });
 }
 
-async function getBattle(battleId) {
+async function getBattle(battleId, { server }) {
   try {
-    return await albionApiClient.getBattle(battleId);
+    return await albionApiClient.getBattle(battleId, { server });
   } catch (e) {
     return null;
   }
 }
 
-async function getBattles(queryParams = {}) {
-  return await albionApiClient.getBattles(queryParams);
+async function getBattles({ server, limit, offset }) {
+  return await albionApiClient.getBattles({ server, limit, offset });
 }
 
 const missingItems = {};
@@ -81,66 +81,71 @@ const getItemFile = async (item, tries = 0) => {
   return getItemFile(item, tries + 1);
 };
 
-async function getPlayer(playerId, { silent = false }) {
+async function getPlayer(playerId, { server, silent = false }) {
   try {
     logger.verbose(`Fetch Albion Online player: ${playerId}`);
-    return await albionApiClient.getPlayer(playerId);
+    return await albionApiClient.getPlayer(playerId, { server });
   } catch (e) {
     if (!silent) logger.error(`Failed to fetch Albion Online player [${playerId}]:`, e);
     return null;
   }
 }
 
-async function getGuild(guildId, { rankings = false, silent = false }) {
+async function getGuild(guildId, { server, rankings = false, silent = false }) {
   try {
     logger.verbose(`Fetch Albion Online guild: ${guildId}`);
-    const guild = await albionApiClient.getGuild(guildId);
+    const guild = await albionApiClient.getGuild(guildId, { server });
 
     if (rankings) {
       guild.rankings = {};
       logger.debug(`[${guild.Name}] Fetching PvE rankings...`);
-      guild.rankings.pve = await albionApiClient.getStatistics(guildId, albionApiClient.STATISTICS_TYPES.PVE);
+      guild.rankings.pve = await albionApiClient.getStatistics(guildId, albionApiClient.STATISTICS_TYPES.PVE, {
+        server,
+      });
       logger.debug(`[${guild.Name}] Fetching PvP rankings...`);
-      guild.rankings.pvp = await albionApiClient.getPlayerFame(guildId, albionApiClient.STATISTICS_TYPES.PVE);
+      guild.rankings.pvp = await albionApiClient.getPlayerFame(guildId, albionApiClient.STATISTICS_TYPES.PVE, {
+        server,
+      });
       logger.debug(`[${guild.Name}] Fetching Gathering rankings...`);
-      guild.rankings.gathering = await albionApiClient.getPlayerFame(
+      guild.rankings.gathering = await albionApiClient.getStatistics(
         guildId,
         albionApiClient.STATISTICS_TYPES.GATHERING,
+        { server },
       );
       logger.debug(`[${guild.Name}] Fetching Crafting rankings...`);
-      guild.rankings.crafting = await albionApiClient.getPlayerFame(guildId, albionApiClient.STATISTICS_TYPES.CRAFTING);
+      guild.rankings.crafting = await albionApiClient.getStatistics(guildId, albionApiClient.STATISTICS_TYPES.CRAFTING);
     }
 
     return guild;
-  } catch (e) {
-    if (!silent) logger.error(`Failed to fetch Albion Online guild [${guildId}]:`, e);
+  } catch (error) {
+    if (!silent) logger.error(`Failed to fetch Albion Online guild [${guildId}]: ${error.message}`, { error });
     return null;
   }
 }
 
-async function getAlliance(allianceId, { silent = false }) {
+async function getAlliance(allianceId, { server, silent = false }) {
   try {
     logger.verbose(`Fetch Albion Online alliance: ${allianceId}`);
-    return await albionApiClient.getAlliance(allianceId);
-  } catch (e) {
-    if (!silent) logger.error(`Failed to fetch Albion Online alliance [${allianceId}]:`, e);
+    return await albionApiClient.getAlliance(allianceId, { server });
+  } catch (error) {
+    if (!silent) logger.error(`Failed to fetch Albion Online alliance [${allianceId}]: ${error.message}`, { error });
     return null;
   }
 }
 
-async function search(query) {
+async function search(query, { server }) {
   try {
     logger.verbose(`Searching entities in Albion Online for: ${query}`);
-    return await albionApiClient.search(query);
+    return await albionApiClient.search(query, { server });
   } catch (e) {
     logger.error(`Failed to search entities in API:`, e);
     return null;
   }
 }
 
-async function getLootValue(event) {
+async function getLootValue(event, { server }) {
   return memoize(
-    `albion.events.${event.EventId}.lootValue`,
+    `albion.events.${server}.${event.EventId}.lootValue`,
     async () => {
       try {
         const victimItems = getVictimItems(event);
