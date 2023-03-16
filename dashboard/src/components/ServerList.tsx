@@ -12,8 +12,17 @@ interface ServerListProps {
 }
 
 const ServerList = ({ servers, className, pageSize = 10 }: ServerListProps) => {
+  const [width, setWidth] = useState(window.innerWidth);
+  const PAGE_GAP = 2 + Math.floor(width / 450);
+
   const [page, setPage] = useState(1);
   const pages = Math.ceil(servers.length / pageSize);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [setWidth]);
 
   useEffect(() => {
     if (page < 1) setPage(1);
@@ -25,8 +34,8 @@ const ServerList = ({ servers, className, pageSize = 10 }: ServerListProps) => {
     (page - 1) * pageSize + pageSize
   );
 
-  let startPage = page - 5;
-  let endPage = page + 5;
+  let startPage = page - PAGE_GAP;
+  let endPage = page + PAGE_GAP;
 
   while (startPage < 1) {
     startPage++;
@@ -71,7 +80,7 @@ const ServerList = ({ servers, className, pageSize = 10 }: ServerListProps) => {
         </ServerCard>
       ))}
 
-      <div className="d-flex justify-content-center">
+      <div className="mw-w100 d-flex justify-content-center">
         <Pagination>
           <Pagination.First onClick={() => setPage(1)} />
 
