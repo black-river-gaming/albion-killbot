@@ -21,12 +21,28 @@ const STATISTICS_TYPES = {
 const BATTLES_SORT = "recent";
 const DEFAULT_LIMIT = 51;
 
+const ALBION_SERVERS = {
+  WEST: {
+    name: "Albion West",
+    url: "https://gameinfo.albiononline.com/api/gameinfo/",
+  },
+  EAST: {
+    name: "Albion East",
+    url: "https://gameinfo-sgp.albiononline.com/api/gameinfo/",
+  },
+};
+
 const albionApiClient = axios.create({
-  baseURL: "https://gameinfo.albiononline.com/api/gameinfo/",
+  baseURL: ALBION_SERVERS.WEST.url,
 });
 
 // Setup timeouts for crawler axios client because sometimes server just hangs indefinetly
 albionApiClient.interceptors.request.use((config) => {
+  if (config.server) {
+    const server = Object.values(ALBION_SERVERS).find((server) => server.name === config.server);
+    if (server) config.baseURL = server.url;
+  }
+
   const source = axios.CancelToken.source();
   setTimeout(() => {
     source.cancel("Client timeout");
@@ -48,28 +64,30 @@ albionApiClient.interceptors.response.use(null, async (error) => {
   return Promise.reject(error);
 });
 
-async function getEvent(eventId) {
-  const res = await albionApiClient.get(`${EVENTS_ENDPOINT}/${eventId}`);
+async function getEvent(eventId, { server }) {
+  const res = await albionApiClient.get(`${EVENTS_ENDPOINT}/${eventId}`, {
+    server,
+  });
   return res.data;
 }
 
-async function getEvents({ limit = DEFAULT_LIMIT, offset = 0 }) {
+async function getEvents({ server, limit = DEFAULT_LIMIT, offset = 0 }) {
   const params = {
     offset,
     limit,
     timestamp: moment().unix(),
   };
 
-  const res = await albionApiClient.get(EVENTS_ENDPOINT, { params });
+  const res = await albionApiClient.get(EVENTS_ENDPOINT, { server, params });
   return res.data;
 }
 
-async function getBattle(battleId) {
-  const res = await albionApiClient.get(`${BATTLES_ENDPOINT}/${battleId}`);
+async function getBattle(battleId, { server }) {
+  const res = await albionApiClient.get(`${BATTLES_ENDPOINT}/${battleId}`, { server });
   return res.data;
 }
 
-async function getBattles({ limit = DEFAULT_LIMIT, offset = 0 }) {
+async function getBattles({ server, limit = DEFAULT_LIMIT, offset = 0 }) {
   const params = {
     offset,
     limit,
@@ -77,26 +95,26 @@ async function getBattles({ limit = DEFAULT_LIMIT, offset = 0 }) {
     timestamp: moment().unix(),
   };
 
-  const res = await albionApiClient.get(BATTLES_ENDPOINT, { params });
+  const res = await albionApiClient.get(BATTLES_ENDPOINT, { server, params });
   return res.data;
 }
 
-async function getPlayer(playerId) {
-  const res = await albionApiClient.get(`${PLAYERS_ENDPOINT}/${playerId}`);
+async function getPlayer(playerId, { server }) {
+  const res = await albionApiClient.get(`${PLAYERS_ENDPOINT}/${playerId}`, { server });
   return res.data;
 }
 
-async function getGuild(guildId) {
-  const res = await albionApiClient.get(`${GUILDS_ENDPOINT}/${guildId}`);
+async function getGuild(guildId, { server }) {
+  const res = await albionApiClient.get(`${GUILDS_ENDPOINT}/${guildId}`, { server });
   return res.data;
 }
 
-async function getAlliance(allianceId) {
-  const res = await albionApiClient.get(`${ALLIANCES_ENDPOINT}/${allianceId}`);
+async function getAlliance(allianceId, { server }) {
+  const res = await albionApiClient.get(`${ALLIANCES_ENDPOINT}/${allianceId}`, { server });
   return res.data;
 }
 
-async function getStatistics(guildId, type) {
+async function getStatistics(guildId, type, { server }) {
   const params = {
     guildId,
     type,
@@ -107,11 +125,11 @@ async function getStatistics(guildId, type) {
     timestamp: moment().unix(),
   };
 
-  const res = await albionApiClient.get(STATISTICS_ENDPOINT, { params });
+  const res = await albionApiClient.get(STATISTICS_ENDPOINT, { server, params });
   return res.data;
 }
 
-async function getPlayerFame(guildId) {
+async function getPlayerFame(guildId, { server }) {
   const params = {
     guildId,
     range: "month",
@@ -120,17 +138,18 @@ async function getPlayerFame(guildId) {
     timestamp: moment().unix(),
   };
 
-  const res = await albionApiClient.get(PLAYER_FAME_ENDPOINT, { params });
+  const res = await albionApiClient.get(PLAYER_FAME_ENDPOINT, { server, params });
   return res.data;
 }
 
-async function search(q) {
+async function search(q, { server }) {
   const params = { q };
-  const res = await albionApiClient.get(SEARCH_ENDPOINT, { params });
+  const res = await albionApiClient.get(SEARCH_ENDPOINT, { server, params });
   return res.data;
 }
 
 module.exports = {
+  ALBION_SERVERS,
   STATISTICS_TYPES,
   getAlliance,
   getBattle,
