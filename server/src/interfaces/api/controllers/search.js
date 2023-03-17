@@ -1,5 +1,6 @@
 const searchService = require("../../../services/search");
 const { isAlbionId } = require("../../../helpers/albion");
+const logger = require("../../../helpers/logger");
 
 async function search(req, res) {
   try {
@@ -24,7 +25,8 @@ async function search(req, res) {
     const results = await searchService.search(query);
 
     return res.send(results);
-  } catch (e) {
+  } catch (error) {
+    logger.error(`Failed to search entities in Albion Online: ${error.message}`, { error });
     return res.sendStatus(500);
   }
 }
