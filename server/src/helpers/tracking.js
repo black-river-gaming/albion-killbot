@@ -1,3 +1,5 @@
+const { equalsCaseInsensitive } = require("./utils");
+
 const applyLimits = (track, limits) => {
   let players = track.players || [];
   if (!isNaN(limits.players)) players = players.slice(0, Math.max(0, limits.players));
@@ -88,8 +90,22 @@ function isPlayerTracked(player, { players = [], guilds = [], alliances = [] }) 
   );
 }
 
+const isTracked = ({ id, name, server }, trackList) => {
+  if (!server) return false;
+  if (!name && !id) return false;
+
+  return trackList
+    .filter((trackItem) => trackItem.server === server)
+    .some((trackItem) => {
+      if (id && !trackItem.id !== id) return false;
+      if (name && !equalsCaseInsensitive(trackItem.name, name)) return false;
+      return true;
+    });
+};
+
 module.exports = {
   getTrackedBattle,
   getTrackedEvent,
   isPlayerTracked,
+  isTracked,
 };

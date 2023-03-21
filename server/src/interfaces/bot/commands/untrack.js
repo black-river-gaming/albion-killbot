@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
+const { SERVERS } = require("../../../helpers/constants");
 const { getLocale } = require("../../../helpers/locale");
 const { removeTrack, TRACK_TYPE } = require("../../../services/track");
 
@@ -9,6 +10,18 @@ const command = {
     .setName("untrack")
     .setDescription(t("HELP.UNTRACK"))
     .setDefaultMemberPermissions("0")
+    .addStringOption((option) =>
+      option.setName("server").setDescription(t("TRACK.ALLIANCES.DESCRIPTION")).setRequired(true).setChoices(
+        {
+          name: SERVERS.WEST,
+          value: SERVERS.WEST,
+        },
+        {
+          name: SERVERS.EAST,
+          value: SERVERS.EAST,
+        },
+      ),
+    )
     .addStringOption((option) => option.setName("player").setDescription(t("TRACK.PLAYERS.DESCRIPTION")))
     .addStringOption((option) => option.setName("guild").setDescription(t("TRACK.GUILDS.DESCRIPTION")))
     .addStringOption((option) => option.setName("alliance").setDescription(t("TRACK.ALLIANCES.DESCRIPTION"))),

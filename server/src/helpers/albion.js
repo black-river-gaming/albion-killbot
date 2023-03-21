@@ -3,7 +3,9 @@ function isAlbionId(id) {
 }
 
 function isTrackEntity(entity) {
-  return entity && typeof entity.id === "string" && typeof entity.name === "string";
+  return (
+    entity && typeof entity.id === "string" && typeof entity.name === "string" && typeof entity.server === "string"
+  );
 }
 
 function toTrackEntity(entity) {
