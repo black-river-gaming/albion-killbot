@@ -90,22 +90,30 @@ function isPlayerTracked(player, { players = [], guilds = [], alliances = [] }) 
   );
 }
 
-const isTracked = ({ id, name, server }, trackList) => {
-  if (!server) return false;
-  if (!name && !id) return false;
+const getTrackedItem = ({ id, name, server }, trackList) => {
+  if (!server) return null;
+  if (!name && !id) return null;
 
   return trackList
     .filter((trackItem) => trackItem.server === server)
-    .some((trackItem) => {
+    .find((trackItem) => {
       if (id && !trackItem.id !== id) return false;
       if (name && !equalsCaseInsensitive(trackItem.name, name)) return false;
       return true;
     });
 };
 
+const isTracked = ({ id, name, server }, trackList) => {
+  if (!server) return false;
+  if (!name && !id) return false;
+
+  return !!getTrackedItem({ id, name, server }, trackList);
+};
+
 module.exports = {
   getTrackedBattle,
   getTrackedEvent,
+  getTrackedItem,
   isPlayerTracked,
   isTracked,
 };

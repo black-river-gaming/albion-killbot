@@ -30,7 +30,7 @@ const command = {
     .addStringOption((option) => option.setName("guild").setDescription(t("TRACK.GUILDS.DESCRIPTION")))
     .addStringOption((option) => option.setName("alliance").setDescription(t("TRACK.ALLIANCES.DESCRIPTION"))),
   handle: async (interaction, { settings, track, t }) => {
-    if (!track) throw new Error("Unable to fetch your settings.");
+    if (!track) throw new Error(t("TRACK.ERRORS.FETCH_FAILED"));
 
     const limits = await getLimits(interaction.guild.id);
 
@@ -89,7 +89,7 @@ const command = {
     await interaction.editReply({ content, ephemeral: true });
 
     if (!settings.kills.channel && !settings.deaths.channel) {
-      await interaction.followUp(t("CHANNEL_NOT_SET"));
+      await interaction.followUp(t("CHANNEL.NOT_SET"));
     }
   },
 };
