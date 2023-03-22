@@ -27,9 +27,9 @@ function getTrackedEvent(event, track, limits) {
     return null;
   }
 
-  const playerIds = players.map((t) => t.id);
-  const guildIds = guilds.map((t) => t.id);
-  const allianceIds = alliances.map((t) => t.id);
+  const playerIds = players.filter((item) => item.server === event.server).map((item) => item.id);
+  const guildIds = guilds.filter((item) => item.server === event.server).map((item) => item.id);
+  const allianceIds = alliances.filter((item) => item.server === event.server).map((item) => item.id);
 
   // Ignore Arena kills or Duel kills
   if (event.TotalVictimKillFame <= 0) {
@@ -62,9 +62,9 @@ function getTrackedBattle(battle, track, limits) {
     return null;
   }
 
-  const playerIds = players.map((t) => t.id);
-  const guildIds = guilds.map((t) => t.id);
-  const allianceIds = alliances.map((t) => t.id);
+  const playerIds = players.filter((item) => item.server === battle.server).map((item) => item.id);
+  const guildIds = guilds.filter((item) => item.server === battle.server).map((item) => item.id);
+  const allianceIds = alliances.filter((item) => item.server === battle.server).map((item) => item.id);
 
   // Ignore battles without fame
   if (battle.totalFame <= 0) {

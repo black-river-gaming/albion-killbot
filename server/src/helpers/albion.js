@@ -71,6 +71,7 @@ const transformEventPlayer = (player) => ({
 
 const transformEvent = (event) => ({
   id: event.EventId,
+  server: event.server,
   battle: event.BattleId,
   timestamp: event.TimeStamp,
   fame: event.TotalVictimKillFame,

@@ -17,7 +17,9 @@ const { AMQP_QUEUE_EVENTS_BATCH } = process.env;
 
 async function subscribe(client) {
   const cb = async (event) => {
-    logger.debug(`Received event: ${event.EventId}`);
+    const { server } = event;
+
+    logger.debug(`[${server}] Received event: ${event.EventId}`);
 
     try {
       for (const guild of client.guilds.cache.values()) {
@@ -28,28 +30,23 @@ async function subscribe(client) {
 
         const guildEvent = getTrackedEvent(event, track, limits);
         if (!guildEvent) continue;
-        guildEvent.TotalVictimLootValue = await getEventVictimLootValue(event);
+        guildEvent.TotalVictimLootValue = await getEventVictimLootValue(event, { server });
 
         const { enabled, channel, mode } = guildEvent.good ? settings.kills : settings.deaths;
-        if (!enabled || !channel) {
-          logger.verbose(
-            `Skipping sending ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${
-              guild.name
-            }" (disabled or no channel).`,
-            { settings, track },
-          );
-          continue;
-        }
+        if (!enabled || !channel) continue;
 
         addRankingKill(guild.id, guildEvent);
 
-        logger.info(`Sending ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
-          guild: transformGuild(guild),
-          event: transformEvent(guildEvent),
-          settings,
-          track,
-          limits,
-        });
+        logger.info(
+          `[${server}] Sending ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`,
+          {
+            guild: transformGuild(guild),
+            event: transformEvent(guildEvent),
+            settings,
+            track,
+            limits,
+          },
+        );
         const locale = settings.lang;
 
         if (mode === REPORT_MODES.IMAGE) {
@@ -79,8 +76,9 @@ async function subscribe(client) {
         }
       }
     } catch (error) {
-      logger.error(`Error processing event ${event.EventId}: ${error.message}`, { error });
-      logger.error(error);
+      logger.error(`[${server}] Error processing event ${event.EventId}: ${error.message}\n${error.stack}`, {
+        error,
+      });
     }
 
     return true;

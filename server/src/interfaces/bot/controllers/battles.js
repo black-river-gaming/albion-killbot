@@ -14,7 +14,9 @@ const { AMQP_QUEUE_BATTLES_BATCH } = process.env;
 
 async function subscribe(client) {
   const cb = async (battle) => {
-    logger.debug(`Received battle: ${battle.id}`);
+    const { server } = battle;
+
+    logger.debug(`[${server}] Received battle: ${battle.id}`);
 
     try {
       for (const guild of client.guilds.cache.values()) {
@@ -29,8 +31,9 @@ async function subscribe(client) {
         const { enabled, channel } = settings.battles;
         if (!enabled || !channel) continue;
 
-        logger.info(`Sending battle ${battle.id} to "${guild.name}".`, {
+        logger.info(`[${server}] Sending battle ${battle.id} to "${guild.name}".`, {
           guild: transformGuild(guild),
+          battle,
           settings,
           track,
           limits,
@@ -38,7 +41,7 @@ async function subscribe(client) {
         await sendNotification(client, channel, embedBattle(battle, settings.lang));
       }
     } catch (error) {
-      logger.error(`Error processing battle ${battle.id}: ${error.message}`, { error });
+      logger.error(`[${server}] Error processing battle ${battle.id}: ${error.message}`, { error });
     }
 
     return true;
