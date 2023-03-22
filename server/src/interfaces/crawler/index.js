@@ -11,6 +11,7 @@ async function run() {
 
 async function cleanup(reason) {
   logger.info(`Shutting down Crawler. Reason: ${reason}`);
+  process.exit(0);
 }
 
 module.exports = {

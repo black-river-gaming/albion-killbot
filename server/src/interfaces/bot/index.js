@@ -21,7 +21,7 @@ async function run() {
     respawn: true,
   });
 
-  manager.spawn();
+  await manager.spawn();
 }
 
 async function cleanup(reason) {
