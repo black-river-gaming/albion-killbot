@@ -8,10 +8,13 @@ const SERVERS = {
   WEST: "Albion West",
 };
 
+const SERVER_LIST = [SERVERS.WEST, SERVERS.EAST];
+
 module.exports = {
   SECOND,
   MINUTE,
   HOUR,
   DAY,
   SERVERS,
+  SERVER_LIST,
 };
