@@ -84,17 +84,23 @@ const getItemFile = async (item, tries = 0) => {
 
 async function getPlayer(playerId, { server = SERVERS.WEST, silent = false }) {
   try {
-    logger.verbose(`Fetch Albion Online player: ${playerId}`);
+    logger.verbose(`Fetch ${server} player: ${playerId}`);
     return await albionApiClient.getPlayer(playerId, { server });
-  } catch (e) {
-    if (!silent) logger.error(`Failed to fetch Albion Online player [${playerId}]:`, e);
+  } catch (error) {
+    if (!silent)
+      logger.error(`Failed to fetch ${server} player [${playerId}]: ${error.message}`, {
+        error,
+        server,
+        silent,
+        playerId,
+      });
     return null;
   }
 }
 
 async function getGuild(guildId, { server = SERVERS.WEST, rankings = false, silent = false }) {
   try {
-    logger.verbose(`Fetch Albion Online guild by id: ${guildId}`, { server, rankings, silent });
+    logger.verbose(`Fetch ${server} guild: ${guildId}`, { server, rankings, silent });
     const guild = await albionApiClient.getGuild(guildId, { server });
 
     if (rankings) {
@@ -123,7 +129,13 @@ async function getGuild(guildId, { server = SERVERS.WEST, rankings = false, sile
 
     return guild;
   } catch (error) {
-    if (!silent) logger.error(`Failed to fetch Albion Online guild [${guildId}]: ${error.message}`, { error });
+    if (!silent)
+      logger.error(`Failed to fetch ${server} guild [${guildId}]: ${error.message}`, {
+        error,
+        server,
+        silent,
+        guildId,
+      });
     return null;
   }
 }
@@ -134,11 +146,11 @@ async function getAlliance(allianceId, { server = SERVERS.WEST, silent = false }
     return await albionApiClient.getAlliance(allianceId, { server });
   } catch (error) {
     if (!silent)
-      logger.error(`Failed to fetch Albion Online alliance [${allianceId}]: ${error.message}`, {
+      logger.error(`Failed to fetch ${server} alliance [${allianceId}]: ${error.message}`, {
         error,
-        allianceId,
         server,
         silent,
+        allianceId,
       });
     return null;
   }

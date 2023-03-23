@@ -8,13 +8,14 @@ function isTrackEntity(entity) {
   );
 }
 
-function toTrackEntity(entity) {
+function toTrackEntity(entity, server) {
   if (!entity) return entity;
 
   if (entity.Id && entity.Name) {
     return {
       id: entity.Id,
       name: entity.Name,
+      server,
     };
   }
 
