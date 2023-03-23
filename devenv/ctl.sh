@@ -30,7 +30,11 @@ Start() {
 }
 
 Stop() {
-  docker compose $ARGS down
+  if [ ! -z $component ]; then
+    docker compose $ARGS rm -svf $component
+  else
+    docker compose $ARGS down
+  fi
 }
 
 Restart() {
@@ -74,13 +78,13 @@ Help() {
   printf "\nCommands:\n"
   printf "\tbuild\t\t\tBuild all components\n"
   printf "\tstart\t\t\tStart the stack in detached mode\n"
-  printf "\tstop\t\t\tShutdown the stack\n"
+  printf "\tstop [component]\tShutdown the stack or a single component\n"
   printf "\trestart\t\t\tRestart the stack\n"
   printf "\tmigrate\t\t\tRun migrations\n"
   printf "\texec [component]\tExecute a single command in the target component\n"
   printf "\tshell [component]\tOpen a bash shell in the target component\n"
   printf "\tlogs [component]\tGet logs for component or all logs with tail mode\n"
-  printf "\tcmd <cmd>\t\tShorthand for docker compose $ARGS <cmd>\n"
+  printf "\tcmd <cmd>\t\tShortcut for docker compose commands\n"
   printf "\nComponents:\n"
   printf "\tcrawler\t\t\tAlbion api crawler\n"
   printf "\tbot\t\t\tDiscord bot\n"
