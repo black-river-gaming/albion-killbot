@@ -51,6 +51,10 @@ async function removeTrack(serverId, type, item) {
   return await setTrack(serverId, track);
 }
 
+async function fetchTracks(query = {}) {
+  return find(TRACK_COLLECTION, query);
+}
+
 async function getTrack(serverId) {
   return await memoize(`track-${serverId}`, async () => {
     const track = await findOne(TRACK_COLLECTION, { server: serverId });
@@ -77,6 +81,7 @@ async function updateTrackCache(timeout) {
 module.exports = {
   TRACK_TYPE,
   addTrack,
+  fetchTracks,
   getTrack,
   removeTrack,
   setTrack,

@@ -11,7 +11,6 @@ const GUILDS_ENDPOINT = "guilds";
 const PLAYERS_ENDPOINT = "players";
 const PLAYER_FAME_ENDPOINT = "events/playerfame";
 const SEARCH_ENDPOINT = "search";
-const STATISTICS_ENDPOINT = "players/statistics";
 
 const STATISTICS_TYPES = {
   PVE: "PvE",
@@ -119,6 +118,7 @@ async function getStatistics(guildId, type, { server }) {
   const params = {
     guildId,
     type,
+    subtype: type === STATISTICS_TYPES.GATHERING ? "All" : null,
     range: "month",
     limit: 11,
     offset: 0,
@@ -126,7 +126,7 @@ async function getStatistics(guildId, type, { server }) {
     timestamp: moment().unix(),
   };
 
-  const res = await albionApiClient.get(STATISTICS_ENDPOINT, { server, params });
+  const res = await albionApiClient.get("players/statistics", { server, params });
   return res.data;
 }
 

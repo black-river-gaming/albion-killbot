@@ -94,27 +94,31 @@ async function getPlayer(playerId, { server = SERVERS.WEST, silent = false }) {
 
 async function getGuild(guildId, { server = SERVERS.WEST, rankings = false, silent = false }) {
   try {
-    logger.verbose(`Fetch Albion Online guild: ${guildId}`);
+    logger.verbose(`Fetch Albion Online guild by id: ${guildId}`, { server, rankings, silent });
     const guild = await albionApiClient.getGuild(guildId, { server });
 
     if (rankings) {
       guild.rankings = {};
-      logger.debug(`[${guild.Name}] Fetching PvE rankings...`);
+      logger.verbose(`[${guild.Name}/${server}] Fetching PvE rankings...`);
       guild.rankings.pve = await albionApiClient.getStatistics(guildId, albionApiClient.STATISTICS_TYPES.PVE, {
         server,
       });
-      logger.debug(`[${guild.Name}] Fetching PvP rankings...`);
-      guild.rankings.pvp = await albionApiClient.getPlayerFame(guildId, albionApiClient.STATISTICS_TYPES.PVE, {
+      logger.verbose(`[${guild.Name}/${server}] Fetching PvP rankings...`);
+      guild.rankings.pvp = await albionApiClient.getPlayerFame(guildId, {
         server,
       });
-      logger.debug(`[${guild.Name}] Fetching Gathering rankings...`);
+      logger.verbose(`[${guild.Name}/${server}] Fetching Gathering rankings...`);
       guild.rankings.gathering = await albionApiClient.getStatistics(
         guildId,
         albionApiClient.STATISTICS_TYPES.GATHERING,
         { server },
       );
-      logger.debug(`[${guild.Name}] Fetching Crafting rankings...`);
-      guild.rankings.crafting = await albionApiClient.getStatistics(guildId, albionApiClient.STATISTICS_TYPES.CRAFTING);
+      logger.verbose(`[${guild.Name}/${server}] Fetching Crafting rankings...`);
+      guild.rankings.crafting = await albionApiClient.getStatistics(
+        guildId,
+        albionApiClient.STATISTICS_TYPES.CRAFTING,
+        { server },
+      );
     }
 
     return guild;

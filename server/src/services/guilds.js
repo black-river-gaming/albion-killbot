@@ -1,43 +1,34 @@
-const { getCollection } = require("../ports/database");
+const { find, findOne, replaceOne } = require("../ports/database");
 const albion = require("../ports/albion");
 
 const { GUILD_RANKINGS } = process.env;
 const GUILDS_COLLECTION = "guilds";
 
-async function updateGuild(guildId) {
-  const collection = getCollection(GUILDS_COLLECTION);
-  if (!collection) return;
-
-  const guild = await albion.getGuild(guildId, { rankings: GUILD_RANKINGS });
-  if (!guild) return;
-
-  guild.updatedAt = new Date();
-
-  return await collection.replaceOne({ Id: guild.Id }, guild, { upsert: true });
-}
-
 async function getAllGuilds() {
   const albionGuilds = {};
-
-  const collection = getCollection(GUILDS_COLLECTION);
-  if (!collection) return albionGuilds;
-
-  await collection.find({}).forEach((guild) => {
+  await find(GUILDS_COLLECTION, {}).forEach((guild) => {
     albionGuilds[guild.Id] = guild;
   });
 
   return albionGuilds;
 }
 
-async function getGuild(guildId) {
-  const collection = getCollection(GUILDS_COLLECTION);
-  if (!collection) throw new Error("Not connected to the database.");
+async function getGuildByTrackGuild(trackGuild) {
+  return findOne(GUILDS_COLLECTION, { server: trackGuild.server, Id: trackGuild.id });
+}
 
-  return await collection.findOne({ Id: guildId });
+async function updateGuildDataByTrackGuild(trackGuild) {
+  const guild = await albion.getGuild(trackGuild.id, { server: trackGuild.server, rankings: GUILD_RANKINGS });
+
+  if (!guild) return;
+  guild.server = trackGuild.server;
+  guild.updatedAt = new Date();
+
+  return replaceOne(GUILDS_COLLECTION, { server: guild.server, Id: guild.Id }, guild, { upsert: true });
 }
 
 module.exports = {
   getAllGuilds,
-  getGuild,
-  updateGuild,
+  getGuildByTrackGuild,
+  updateGuildDataByTrackGuild,
 };
