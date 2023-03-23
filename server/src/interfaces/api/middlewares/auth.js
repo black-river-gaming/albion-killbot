@@ -41,13 +41,15 @@ const authenticated = async (req, res, next) => {
 
     return next();
   } catch (error) {
-    logger.error(`Failed to authenticate user: ${error.message}`, { error });
+    logger.warn(`Failed to authenticate user: ${error.message}`, { error });
     return res.sendStatus(403);
   }
 };
 
 const serverAdmin = async (req, res, next) => {
   try {
+    if (!req.session.discord) throw new Error("Not authenticated");
+
     const { serverId } = req.params;
     const { user } = req.session.discord;
 
@@ -62,13 +64,15 @@ const serverAdmin = async (req, res, next) => {
 
     return next();
   } catch (error) {
-    logger.error(`Failed to authenticate server admin: ${error.message}`, { error });
+    logger.warn(`Failed to authenticate server admin: ${error.message}`, { error });
     return res.sendStatus(403);
   }
 };
 
 const admin = async (req, res, next) => {
   try {
+    if (!req.session.discord) throw new Error("Not authenticated");
+
     const { user } = req.session.discord;
 
     if (!user) throw new Error("Not authenticated");
@@ -76,7 +80,7 @@ const admin = async (req, res, next) => {
 
     return next();
   } catch (error) {
-    logger.error(`Failed to validate admin: ${error.message}`, { error });
+    logger.warn(`Failed to validate admin: ${error.message}`, { error });
     return res.sendStatus(403);
   }
 };
