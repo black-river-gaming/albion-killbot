@@ -1,17 +1,8 @@
-const { find, findOne, replaceOne } = require("../ports/database");
+const { findOne, replaceOne } = require("../ports/database");
 const albion = require("../ports/albion");
 
 const { GUILD_RANKINGS } = process.env;
 const GUILDS_COLLECTION = "guilds";
-
-async function getAllGuilds() {
-  const albionGuilds = {};
-  await find(GUILDS_COLLECTION, {}).forEach((guild) => {
-    albionGuilds[guild.Id] = guild;
-  });
-
-  return albionGuilds;
-}
 
 async function getGuildByTrackGuild(trackGuild) {
   return findOne(GUILDS_COLLECTION, { server: trackGuild.server, Id: trackGuild.id });
@@ -28,7 +19,6 @@ async function updateGuildDataByTrackGuild(trackGuild) {
 }
 
 module.exports = {
-  getAllGuilds,
   getGuildByTrackGuild,
   updateGuildDataByTrackGuild,
 };

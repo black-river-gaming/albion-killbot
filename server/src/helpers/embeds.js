@@ -340,7 +340,7 @@ const embedGuildRanking = (guild, { locale }) => {
     fields: [],
     timestamp: moment(guild.updatedAt).toISOString(),
     footer,
-    url: `https://albiononline.com/pt/killboard/guild/${guild._id}`,
+    url: `https://albiononline.com/pt/killboard/guild/${guild.Id}`,
   };
 
   if (guild.rankings) {
