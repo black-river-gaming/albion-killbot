@@ -3,7 +3,11 @@ const { SERVER_LIST } = require("./constants");
 const { getLocale } = require("./locale");
 const { digitsFormatter, humanFormatter, printSpace } = require("./utils");
 
+// TODO: Give users the ability to choose these
 const KILL_URL = "https://albiononline.com/{lang}/killboard/kill/{kill}";
+const BATTLE_URL = "https://albiononline.com/killboard/battles/{battle}";
+const GUILD_RANKING_URL = "https://albiononline.com/pt/killboard/guild/{guild}";
+
 const GREEN = 52224;
 const RED = 13369344;
 const GOLD = 0x89710f;
@@ -288,7 +292,7 @@ const embedBattle = (battle, { locale }) => {
       {
         color: BATTLE,
         title: t("BATTLE.EVENT", { guilds: guildCount }),
-        url: `http://www.yaga.sk/killboard/battle.php?id=${battle.id}`,
+        url: BATTLE_URL.replace("{battle}", battle.id),
         description,
         thumbnail: {
           url: "https://user-images.githubusercontent.com/13356774/76130049-b9eec480-5fdf-11ea-95c0-7de130a705a3.png",
@@ -340,7 +344,7 @@ const embedGuildRanking = (guild, { locale }) => {
     fields: [],
     timestamp: moment(guild.updatedAt).toISOString(),
     footer,
-    url: `https://albiononline.com/pt/killboard/guild/${guild.Id}`,
+    url: GUILD_RANKING_URL.replace("{guild}", guild.Id),
   };
 
   if (guild.rankings) {
