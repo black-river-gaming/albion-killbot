@@ -82,7 +82,13 @@ function getTrackedBattle(battle, track, limits) {
   return null;
 }
 
-function isPlayerTracked(player, { players = [], guilds = [], alliances = [] }) {
+function isPlayerTracked(player, { players = [], guilds = [], alliances = [] }, { server }) {
+  if (server) {
+    players = players.filter((t) => t.server === server);
+    guilds = guilds.filter((t) => t.server === server);
+    alliances = alliances.filter((t) => t.server === server);
+  }
+
   return (
     players.some((t) => t.id === player.Id) ||
     guilds.some((t) => t.id === player.GuildId) ||
