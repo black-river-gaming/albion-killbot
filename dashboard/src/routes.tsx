@@ -10,7 +10,7 @@ import Premium from "pages/Premium";
 import Server from "pages/Server";
 import Settings from "pages/Settings";
 import SubscriptionPage from "pages/Subscription";
-import Track from "pages/Track";
+import TrackPage from "pages/TrackPage";
 import { createRoutesFromElements, Navigate, Route } from "react-router-dom";
 
 const routes = createRoutesFromElements(
@@ -24,7 +24,7 @@ const routes = createRoutesFromElements(
           <Route path=":serverId" element={<Server />}>
             <Route index element={<Navigate to="settings" replace={true} />} />
             <Route path="settings" element={<Settings />} />
-            <Route path="track" element={<Track />} />
+            <Route path="track" element={<TrackPage />} />
             <Route path="subscription" element={<SubscriptionPage />} />
           </Route>
         </Route>

@@ -38,7 +38,7 @@ import {
 } from "store/track";
 import { SearchResults, TrackList } from "types";
 
-const Track = () => {
+const TrackPage = () => {
   const { serverId = "" } = useParams();
   const server = useFetchServerQuery(serverId);
   const [query, setQuery] = useState("");
@@ -144,13 +144,18 @@ const Track = () => {
       title: string,
       searchResults: SearchResults["players" | "guilds" | "alliances"],
       trackList: TrackList["players" | "guilds" | "alliances"],
-      trackFunction: (entity: { id: string; name: string }) => void
+      trackFunction: (
+        entity:
+          | TrackList["players"][number]
+          | TrackList["guilds"][number]
+          | TrackList["alliances"][number]
+      ) => void
     ) => {
       return (
         <div>
           <div className="d-flex justify-content-center">{title}</div>
           <ListGroup>
-            {searchResults.map(({ id, name }) => (
+            {searchResults.map(({ id, name, server }) => (
               <ListGroup.Item key={id}>
                 <div className="d-flex justify-content-between align-items-center">
                   <div>{name}</div>
@@ -163,7 +168,7 @@ const Track = () => {
                       <Button
                         variant="secondary"
                         className="btn-icon"
-                        onClick={() => trackFunction({ id, name })}
+                        onClick={() => trackFunction({ id, name, server })}
                       >
                         <FontAwesomeIcon icon={faAdd} />
                       </Button>
@@ -327,4 +332,4 @@ const Track = () => {
   );
 };
 
-export default Track;
+export default TrackPage;
