@@ -1,12 +1,7 @@
-import {
-  faAdd,
-  faCheck,
-  faSearch,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faCheck, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import Loader from "components/Loader";
+import TrackList from "components/TrackList";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import React, { useEffect, useState } from "react";
 import {
@@ -27,16 +22,8 @@ import {
   useUpdateTrackMutation,
 } from "store/api";
 import { addToast } from "store/toast";
-import {
-  loadTrack,
-  trackAlliance,
-  trackGuild,
-  trackPlayer,
-  untrackAlliance,
-  untrackGuild,
-  untrackPlayer,
-} from "store/track";
-import { SearchResults, TrackList } from "types";
+import { loadTrack, trackAlliance, trackGuild, trackPlayer } from "store/track";
+import { SearchResults, TrackList as ITrackList } from "types";
 
 const TrackPage = () => {
   const { serverId = "" } = useParams();
@@ -56,7 +43,7 @@ const TrackPage = () => {
   if (updateTrack.isLoading) return <Loader />;
   if (!server.data) return <div>No data for this server.</div>;
 
-  const { limits, settings, subscription } = server.data;
+  const { id, limits, settings, subscription } = server.data;
 
   const hasOverLimitItems =
     (limits?.players && track.players.length > limits.players) ||
@@ -74,81 +61,16 @@ const TrackPage = () => {
     search(query, true);
   };
 
-  const renderTracking = () => {
-    const renderTrackingList = (
-      title: string,
-      limit = 0,
-      list: TrackList["players" | "guilds" | "alliances"],
-      untrackAction: ActionCreatorWithPayload<string, string>
-    ) => {
-      return (
-        <ListGroup className="rounded">
-          <ListGroup.Item
-            className="d-flex justify-content-center"
-            variant="primary"
-          >
-            {title} [{list.length}/{limit}]
-          </ListGroup.Item>
-          {list.map(({ id, name }, i) => (
-            <ListGroup.Item key={id} className="paper">
-              <div className="d-flex justify-content-between align-items-center">
-                <div className={i >= limit ? "text-danger" : ""}>{name}</div>
-                <ButtonGroup size="sm">
-                  <Button
-                    variant="danger"
-                    className="btn-icon"
-                    onClick={() => dispatch(untrackAction(id))}
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </Button>
-                </ButtonGroup>
-              </div>
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      );
-    };
-
-    return (
-      <Row className="p-2 gy-2">
-        <Col xl={4}>
-          {renderTrackingList(
-            "Players",
-            server.data?.limits.players,
-            track.players,
-            untrackPlayer
-          )}
-        </Col>
-        <Col xl={4}>
-          {renderTrackingList(
-            "Guilds",
-            server.data?.limits.guilds,
-            track.guilds,
-            untrackGuild
-          )}
-        </Col>
-        <Col xl={4}>
-          {renderTrackingList(
-            "Alliances",
-            server.data?.limits.alliances,
-            track.alliances,
-            untrackAlliance
-          )}
-        </Col>
-      </Row>
-    );
-  };
-
   const renderSearchResults = () => {
     const renderSearchResultsList = (
       title: string,
       searchResults: SearchResults["players" | "guilds" | "alliances"],
-      trackList: TrackList["players" | "guilds" | "alliances"],
+      trackList: ITrackList["players" | "guilds" | "alliances"],
       trackFunction: (
         entity:
-          | TrackList["players"][number]
-          | TrackList["guilds"][number]
-          | TrackList["alliances"][number]
+          | ITrackList["players"][number]
+          | ITrackList["guilds"][number]
+          | ITrackList["alliances"][number]
       ) => void
     ) => {
       return (
@@ -186,7 +108,7 @@ const TrackPage = () => {
       dispatch(addToast({ theme: "danger", message }));
 
     const doTrackPlayer = (player: SearchResults["players"][number]) => {
-      const limit = server.data?.limits.players || 0;
+      const limit = limits.players || 0;
 
       if (track.players.length >= limit)
         return showError(`Maximum limit of ${limit} player(s) exceeded.`);
@@ -194,7 +116,7 @@ const TrackPage = () => {
     };
 
     const doTrackGuild = (guild: SearchResults["guilds"][number]) => {
-      const limit = server.data?.limits.guilds || 0;
+      const limit = limits.guilds || 0;
 
       if (track.guilds.length >= limit)
         return showError(`Maximum limit of ${limit} guild(s) exceeded.`);
@@ -202,7 +124,7 @@ const TrackPage = () => {
     };
 
     const doTrackAlliance = (alliance: SearchResults["alliances"][number]) => {
-      const limit = server.data?.limits.alliances || 0;
+      const limit = limits.alliances || 0;
 
       if (track.alliances.length >= limit)
         return showError(`Maximum limit of ${limit} alliances(s) exceeded.`);
@@ -280,27 +202,10 @@ const TrackPage = () => {
           </Alert>
         )}
 
-        <Card>
-          {renderTracking()}
-          <div className="d-flex justify-content-end align-items-center p-3">
-            <Button
-              variant="secondary"
-              onClick={() => {
-                if (server?.data?.settings)
-                  dispatch(loadTrack(server.data.track));
-              }}
-            >
-              Reset
-            </Button>
-            <div className="px-2" />
-            <Button
-              variant="primary"
-              onClick={() => dispatchUpdateTrack({ serverId, track })}
-            >
-              Save
-            </Button>
-          </div>
-        </Card>
+        <TrackList
+          limits={limits}
+          onUpdateClick={() => dispatchUpdateTrack({ serverId: id, track })}
+        />
       </Col>
       <Col sm={12}>
         <Card className="p-2">

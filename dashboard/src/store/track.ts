@@ -7,6 +7,8 @@ const initialState: TrackList = {
   alliances: [],
 };
 
+let defaultState: TrackList = { ...initialState };
+
 export const trackslice = createSlice({
   name: "track",
   initialState,
@@ -15,6 +17,15 @@ export const trackslice = createSlice({
       state.players = payload.players;
       state.guilds = payload.guilds;
       state.alliances = payload.alliances;
+
+      defaultState.players = payload.players;
+      defaultState.guilds = payload.guilds;
+      defaultState.alliances = payload.alliances;
+    },
+    resetTrack: (state) => {
+      state.players = defaultState.players;
+      state.guilds = defaultState.guilds;
+      state.alliances = defaultState.alliances;
     },
     trackPlayer: (
       state,
@@ -57,6 +68,7 @@ export const trackslice = createSlice({
 
 export const {
   loadTrack,
+  resetTrack,
   trackPlayer,
   trackGuild,
   trackAlliance,
