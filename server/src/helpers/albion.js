@@ -3,16 +3,19 @@ function isAlbionId(id) {
 }
 
 function isTrackEntity(entity) {
-  return entity && typeof entity.id === "string" && typeof entity.name === "string";
+  return (
+    entity && typeof entity.id === "string" && typeof entity.name === "string" && typeof entity.server === "string"
+  );
 }
 
-function toTrackEntity(entity) {
+function toTrackEntity(entity, server) {
   if (!entity) return entity;
 
   if (entity.Id && entity.Name) {
     return {
       id: entity.Id,
       name: entity.Name,
+      server,
     };
   }
 
@@ -69,6 +72,7 @@ const transformEventPlayer = (player) => ({
 
 const transformEvent = (event) => ({
   id: event.EventId,
+  server: event.server,
   battle: event.BattleId,
   timestamp: event.TimeStamp,
   fame: event.TotalVictimKillFame,

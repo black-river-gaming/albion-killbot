@@ -1,6 +1,7 @@
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import {
   faCrown,
+  faEarthAsia,
   faGear,
   faLandmarkFlag,
   faRankingStar,
@@ -15,7 +16,7 @@ import screenshot5 from "assets/screenshots/725753477-event.png";
 import screenshot6 from "assets/screenshots/725754202-event.png";
 import Paper from "components/Paper";
 import { getServerInviteUrl } from "helpers/discord";
-import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import { Badge, Button, Card, Col, Container, Row } from "react-bootstrap";
 import StyledHome from "./styles/Home";
 
 const screenshots = [
@@ -28,6 +29,12 @@ const screenshots = [
 ];
 
 const features = [
+  {
+    new: true,
+    name: "East Server Support",
+    icon: faEarthAsia,
+    description: "You can track entities from the new Albion East server.",
+  },
   {
     name: "Kills",
     icon: faSkull,
@@ -100,6 +107,7 @@ const Home = () => {
                 </div>
                 <Card.Title className="d-flex justify-content-center align-items-center">
                   <div className="px-2">{feature.name}</div>
+                  {feature.new && <Badge bg="primary">NEW</Badge>}
                 </Card.Title>
                 <Card.Body className="feature-description">
                   {feature.description}

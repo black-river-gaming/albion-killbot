@@ -69,6 +69,12 @@ async function findOne(collectionName, query) {
   return returnObjectId(document);
 }
 
+async function replaceOne(collectionName, filter, update, options) {
+  const collection = getCollection(collectionName);
+  const document = await collection.replaceOne(convertObjectId(filter), update, options);
+  return returnObjectId(document);
+}
+
 async function updateMany(collectionName, filter, update, options) {
   const collection = getCollection(collectionName);
   const document = await collection.updateMany(convertObjectId(filter), update, options);
@@ -104,6 +110,7 @@ module.exports = {
   getCollection,
   init,
   insertOne,
+  replaceOne,
   updateMany,
   updateOne,
 };

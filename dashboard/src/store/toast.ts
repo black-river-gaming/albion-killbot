@@ -1,4 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  isRejectedWithValue,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import { api } from "./api";
 
 interface ToastMsg {
@@ -33,7 +37,8 @@ export const toastSlice = createSlice({
   extraReducers: (builder) => {
     builder.addMatcher(
       api.endpoints.assignSubscription.matchRejected,
-      (state) => {
+      (state, action) => {
+        if (!isRejectedWithValue(action)) return;
         state.push({
           id: uid(),
           theme: "danger",
@@ -42,50 +47,67 @@ export const toastSlice = createSlice({
       }
     );
 
-    builder.addMatcher(api.endpoints.fetchServers.matchRejected, (state) => {
-      state.push({
-        id: uid(),
-        theme: "danger",
-        message: "Failed fetch servers. Please try again later.",
-      });
-    });
+    builder.addMatcher(
+      api.endpoints.fetchServers.matchRejected,
+      (state, action) => {
+        if (!isRejectedWithValue(action)) return;
+        state.push({
+          id: uid(),
+          theme: "danger",
+          message: "Failed fetch servers. Please try again later.",
+        });
+      }
+    );
 
     builder.addMatcher(api.endpoints.doLeaveServer.matchFulfilled, (state) => {
       state.push({ id: uid(), theme: "success", message: "Left server." });
     });
-    builder.addMatcher(api.endpoints.doLeaveServer.matchRejected, (state) => {
-      state.push({
-        id: uid(),
-        theme: "danger",
-        message: "Failed to leave server. Please try again later.",
-      });
-    });
+    builder.addMatcher(
+      api.endpoints.doLeaveServer.matchRejected,
+      (state, action) => {
+        if (!isRejectedWithValue(action)) return;
+        state.push({
+          id: uid(),
+          theme: "danger",
+          message: "Failed to leave server. Please try again later.",
+        });
+      }
+    );
 
     builder.addMatcher(api.endpoints.updateSettings.matchFulfilled, (state) => {
       state.push({ id: uid(), theme: "success", message: "Settings saved." });
     });
-    builder.addMatcher(api.endpoints.updateSettings.matchRejected, (state) => {
-      state.push({
-        id: uid(),
-        theme: "danger",
-        message: "Failed to save settings. Please try again later.",
-      });
-    });
+    builder.addMatcher(
+      api.endpoints.updateSettings.matchRejected,
+      (state, action) => {
+        if (!isRejectedWithValue(action)) return;
+        state.push({
+          id: uid(),
+          theme: "danger",
+          message: "Failed to save settings. Please try again later.",
+        });
+      }
+    );
 
     builder.addMatcher(api.endpoints.updateTrack.matchFulfilled, (state) => {
       state.push({ id: uid(), theme: "success", message: "Track list saved." });
     });
-    builder.addMatcher(api.endpoints.updateTrack.matchRejected, (state) => {
-      state.push({
-        id: uid(),
-        theme: "danger",
-        message: "Failed to save track list. Please try again later.",
-      });
-    });
+    builder.addMatcher(
+      api.endpoints.updateTrack.matchRejected,
+      (state, action) => {
+        if (!isRejectedWithValue(action)) return;
+        state.push({
+          id: uid(),
+          theme: "danger",
+          message: "Failed to save track list. Please try again later.",
+        });
+      }
+    );
 
     builder.addMatcher(
       api.endpoints.updateSubscription.matchRejected,
-      (state) => {
+      (state, action) => {
+        if (!isRejectedWithValue(action)) return;
         state.push({
           id: uid(),
           theme: "danger",
@@ -96,7 +118,8 @@ export const toastSlice = createSlice({
     );
     builder.addMatcher(
       api.endpoints.deleteSubscription.matchRejected,
-      (state) => {
+      (state, action) => {
+        if (!isRejectedWithValue(action)) return;
         state.push({
           id: uid(),
           theme: "danger",

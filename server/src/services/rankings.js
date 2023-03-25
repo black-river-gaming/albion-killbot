@@ -5,12 +5,13 @@ const { getTrack } = require("../services/track");
 const RANKINGS_COLLECTION = "rankings";
 
 async function addRankingKill(serverId, event) {
+  const { server } = event;
   const track = await getTrack(serverId);
 
   if (event.good) {
     // Player kill
     for (const player of event.GroupMembers) {
-      if (!isPlayerTracked(player, track)) continue;
+      if (!isPlayerTracked(player, track, { server })) continue;
       const killFame = Math.max(0, player.KillFame);
       await updateOne(
         RANKINGS_COLLECTION,
@@ -34,7 +35,7 @@ async function addRankingKill(serverId, event) {
   } else {
     // Player death
     const player = event.Victim;
-    if (!isPlayerTracked(player, track)) return; // Should never happen
+    if (!isPlayerTracked(player, track, { server })) throw new Error("Bad event but victim is not tracked."); // Should never happen
 
     const deathFame = Math.max(0, event.TotalVictimKillFame);
     await updateOne(

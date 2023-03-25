@@ -1,3 +1,5 @@
+import { SERVER } from "./constants";
+
 export interface ThemeProps {
   name: string;
 
@@ -22,6 +24,10 @@ export interface ThemeProps {
     contrastText?: string;
     mutedText?: string;
   };
+
+  servers: {
+    [server: string]: string;
+  };
 }
 
 const theme: ThemeProps = {
@@ -40,6 +46,11 @@ const theme: ThemeProps = {
   rgb: {
     primary: "255,189,89",
     secondary: "105,101,124",
+  },
+
+  servers: {
+    [SERVER.WEST]: "#33673b",
+    [SERVER.EAST]: "#cc3f0c",
   },
 };
 

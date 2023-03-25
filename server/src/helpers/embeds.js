@@ -1,13 +1,24 @@
 const moment = require("moment");
+const { SERVER_LIST } = require("./constants");
 const { getLocale } = require("./locale");
 const { digitsFormatter, humanFormatter, printSpace } = require("./utils");
 
+// TODO: Give users the ability to choose these
 const KILL_URL = "https://albiononline.com/{lang}/killboard/kill/{kill}";
+const BATTLE_URL = "https://albiononline.com/killboard/battles/{battle}";
+const GUILD_RANKING_URL = "https://albiononline.com/pt/killboard/guild/{guild}";
+
 const GREEN = 52224;
 const RED = 13369344;
 const GOLD = 0x89710f;
 const BATTLE = 16752981;
 const RANKING_LINE_LENGTH = 23;
+
+const COLORS = {
+  GREY: 0xdcdfdf,
+  LIGHT_GREEN: 0x57ad65,
+  LIGHT_RED: 0xed4f4f,
+};
 
 const MAXLEN = {
   TITLE: 256,
@@ -281,7 +292,7 @@ const embedBattle = (battle, { locale }) => {
       {
         color: BATTLE,
         title: t("BATTLE.EVENT", { guilds: guildCount }),
-        url: `http://www.yaga.sk/killboard/battle.php?id=${battle.id}`,
+        url: BATTLE_URL.replace("{battle}", battle.id),
         description,
         thumbnail: {
           url: "https://user-images.githubusercontent.com/13356774/76130049-b9eec480-5fdf-11ea-95c0-7de130a705a3.png",
@@ -333,7 +344,7 @@ const embedGuildRanking = (guild, { locale }) => {
     fields: [],
     timestamp: moment(guild.updatedAt).toISOString(),
     footer,
-    url: `https://albiononline.com/pt/killboard/guild/${guild._id}`,
+    url: GUILD_RANKING_URL.replace("{guild}", guild.Id),
   };
 
   if (guild.rankings) {
@@ -386,13 +397,13 @@ const embedGuildRanking = (guild, { locale }) => {
 const embedTrackList = (track, limits, { locale }) => {
   const { t } = getLocale(locale);
 
-  const printTrackList = (list, limit) => {
-    let value = "";
+  const printTrackList = (server, list, limit) => {
+    if (!list || !Array.isArray(list)) return t("TRACK.NONE");
 
-    if (!list || list.length === 0) {
-      value += `\n${t("TRACK.NONE")}`;
-      return value;
-    }
+    list = list.filter((item) => item.server === server);
+    if (list.length === 0) return t("TRACK.NONE");
+
+    let value = "";
 
     list.forEach((item, i) => {
       if (i >= limit) value += `\n~~${item.name}~~`;
@@ -405,24 +416,31 @@ const embedTrackList = (track, limits, { locale }) => {
   return {
     embeds: [
       {
-        description: t("TRACK.LIST"),
-        fields: [
-          {
-            name: t("TRACK.PLAYERS.NAME", { actual: track.players.length, max: limits.players }),
-            value: printTrackList(track.players, limits.players),
-            inline: true,
-          },
-          {
-            name: t("TRACK.GUILDS.NAME", { actual: track.guilds.length, max: limits.guilds }),
-            value: printTrackList(track.guilds, limits.guilds),
-            inline: true,
-          },
-          {
-            name: t("TRACK.ALLIANCES.NAME", { actual: track.alliances.length, max: limits.alliances }),
-            value: printTrackList(track.alliances, limits.alliances),
-            inline: true,
-          },
-        ],
+        color: COLORS.GREY,
+        title: t("TRACK.PLAYERS.NAME", { actual: track.players.length, max: limits.players }),
+        fields: SERVER_LIST.map((server) => ({
+          name: server,
+          value: printTrackList(server, track.players, limits.players),
+          inline: true,
+        })),
+      },
+      {
+        color: COLORS.LIGHT_GREEN,
+        title: t("TRACK.GUILDS.NAME", { actual: track.guilds.length, max: limits.guilds }),
+        fields: SERVER_LIST.map((server) => ({
+          name: server,
+          value: printTrackList(server, track.guilds, limits.guilds),
+          inline: true,
+        })),
+      },
+      {
+        color: COLORS.LIGHT_RED,
+        title: t("TRACK.ALLIANCES.NAME", { actual: track.alliances.length, max: limits.alliances }),
+        fields: SERVER_LIST.map((server) => ({
+          name: server,
+          value: printTrackList(server, track.alliances, limits.alliances),
+          inline: true,
+        })),
       },
     ],
   };

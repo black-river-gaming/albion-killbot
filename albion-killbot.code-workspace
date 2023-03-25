@@ -39,7 +39,11 @@
     "[html]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "i18nJsonEditor": {
+      "supportedFolders": ["locales", "i18n"]
+    },
+    "i18nJsonEditor.translationService": ""
   },
   "extensions": {
     "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]

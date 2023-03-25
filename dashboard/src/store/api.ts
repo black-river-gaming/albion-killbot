@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
-  SearchResults,
+  ISearchResults,
   Server,
   ServerPartial,
   Session,
@@ -124,8 +124,13 @@ export const api = createApi({
         query: () => `/subscriptions`,
         providesTags: ["Subscription"],
       }),
-      search: builder.query<SearchResults, string>({
-        query: (query) => `/search/${query}`,
+      search: builder.query<ISearchResults, { server: string; query: string }>({
+        query: ({ server, query }) => ({
+          url: `/search/${query}`,
+          params: {
+            server,
+          },
+        }),
       }),
       updateTrack: builder.mutation<
         void,
@@ -167,6 +172,7 @@ export const {
   useLazySearchQuery,
   useLogoutMutation,
   useManageSubscriptionMutation,
+  useSearchQuery,
   useUpdateSettingsMutation,
   useUpdateSubscriptionMutation,
   useUpdateTrackMutation,

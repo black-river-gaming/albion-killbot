@@ -19,40 +19,40 @@ const DEFAULT_TRACK = Object.freeze({
   [TRACK_TYPE.ALLIANCES]: [],
 });
 
-async function addTrack(serverId, trackType, trackEntity) {
-  if (!Object.values(TRACK_TYPE).indexOf(trackType) < 0) throw new Error("Invalid track type.");
-  if (!isTrackEntity(trackEntity)) throw new Error("Not a valid track entity");
+async function addTrack(serverId, type, item) {
+  if (!Object.values(TRACK_TYPE).indexOf(type) < 0) throw new Error("Invalid track type.");
+  if (!isTrackEntity(item)) throw new Error("Not a valid track entity");
 
   const track = await getTrack(serverId);
-  track[trackType].push(trackEntity);
-  logger.info(`Added tracked ${trackType} for server ${serverId}: ${trackEntity.name}`, {
-    metadata: {
-      DEFAULT_TRACK,
-      serverId,
-      track,
-      trackType,
-      trackEntity,
-    },
+  track[type].push(item);
+  logger.info(`Added tracked ${type} for server ${serverId}: ${item.name}`, {
+    serverId,
+    track,
+    type,
+    item,
   });
+
   return await setTrack(serverId, track);
 }
 
-async function removeTrack(serverId, trackType, trackEntity) {
-  if (!Object.values(TRACK_TYPE).indexOf(trackType) < 0) throw new Error("Invalid track type.");
-  if (!isTrackEntity(trackEntity)) throw new Error("Not a valid track entity");
+async function removeTrack(serverId, type, item) {
+  if (!Object.values(TRACK_TYPE).indexOf(type) < 0) throw new Error("Invalid track type.");
+  if (!isTrackEntity(item)) throw new Error("Not a valid track entity");
 
   const track = await getTrack(serverId);
-  track[trackType] = track[trackType].filter((te) => te.id != trackEntity.id);
-  logger.info(`Removed tracked ${trackType} for server ${serverId}: ${trackEntity.name}`, {
-    metadata: {
-      DEFAULT_TRACK,
-      serverId,
-      track,
-      trackType,
-      trackEntity,
-    },
+  track[type] = track[type].filter((trackItem) => trackItem.id != item.id);
+  logger.info(`Removed tracked ${type} for server ${serverId}: ${item.name}`, {
+    serverId,
+    track,
+    type,
+    item,
   });
+
   return await setTrack(serverId, track);
+}
+
+async function fetchTracks(query = {}) {
+  return find(TRACK_COLLECTION, query);
 }
 
 async function getTrack(serverId) {
@@ -81,6 +81,7 @@ async function updateTrackCache(timeout) {
 module.exports = {
   TRACK_TYPE,
   addTrack,
+  fetchTracks,
   getTrack,
   removeTrack,
   setTrack,

@@ -10,46 +10,16 @@ const searchController = require("../controllers/search");
  *       properties:
  *         players:
  *           type: array
- *           description: Player List
  *           items:
- *             type: object
- *             properties:
- *               id:
- *                 description: Player id
- *                 type: string
- *                 example: "PMQEaTj7SEqCDozi6cIsJA"
- *               name:
- *                 description: Player name
- *                 type: string
- *                 example: "Awesome Player"
+ *             $ref: '#/components/schemas/TrackItem'
  *         guilds:
  *           type: array
- *           description: Guild list
  *           items:
- *             type: object
- *             properties:
- *               id:
- *                 description: Guild id
- *                 type: string
- *                 example: "W7eCg8IiSzu94gKprzqXlA"
- *               name:
- *                 description: Guild name
- *                 type: string
- *                 example: "Awesome Guild"
+ *             $ref: '#/components/schemas/TrackItem'
  *         alliances:
  *           type: array
- *           description: Alliance list
  *           items:
- *             type: object
- *             properties:
- *               id:
- *                 description: Alliance id
- *                 type: string
- *                 example: "-Ysq5eZ8R0y8gsMmJm-3NQ"
- *               name:
- *                 description: Alliance name
- *                 type: string
- *                 example: "Awesome Alliance"
+ *             $ref: '#/components/schemas/TrackItem'
  */
 
 /**
@@ -63,7 +33,13 @@ const searchController = require("../controllers/search");
  *       required: true
  *       schema:
  *         type: string
- *     summary: Search Albion Online entities (players, guilds and alliances)
+ *     - name: server
+ *       in: query
+ *       schema:
+ *         type: string
+ *         enum: ["Albion West", "Albion East"]
+ *         default: "Albion West"
+ *     summary: Search Albion Online (players, guilds and alliances)
  *     operationId: search
  *     responses:
  *       200:

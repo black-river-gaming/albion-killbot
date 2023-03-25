@@ -28,7 +28,7 @@ const modes = [
   },
 ];
 
-(async () => {
+async function start() {
   const mode = modes.find((m) => m.name == MODE);
   if (!mode) {
     logger.info(`Please select an mode from the following:\n`);
@@ -42,11 +42,13 @@ const modes = [
   try {
     const { run, cleanup } = require(mode.entryPoint);
 
-    //catches ctrl+c event
-    process.once("SIGINT", await cleanup);
-    // graceful shutdown when using nodemon
-    process.once("SIGHUP", await cleanup);
-    process.once("SIGUSR2", await cleanup);
+    if (cleanup) {
+      //catches ctrl+c event
+      process.once("SIGINT", await cleanup);
+      // graceful shutdown when using nodemon
+      process.once("SIGHUP", await cleanup);
+      process.once("SIGUSR2", await cleanup);
+    }
 
     //catches uncaught exceptions
     process.on("uncaughtException", async (error) => {
@@ -54,8 +56,12 @@ const modes = [
     });
 
     await run();
-  } catch (e) {
-    logger.error(`An error ocurred while running ${mode.name}: `, e);
+  } catch (error) {
+    logger.error(`An error ocurred while running ${mode.name}: ${error.message}`, { error });
     process.exit(1);
   }
-})();
+}
+
+if (require.main === module) {
+  start();
+}

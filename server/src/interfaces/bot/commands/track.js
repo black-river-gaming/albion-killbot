@@ -1,8 +1,11 @@
 const { SlashCommandBuilder } = require("discord.js");
+const { SERVERS } = require("../../../helpers/constants");
 const { getLocale } = require("../../../helpers/locale");
 const { getAlliance, search } = require("../../../services/search");
 const { getLimits } = require("../../../services/limits");
 const { TRACK_TYPE, addTrack } = require("../../../services/track");
+const { isTracked } = require("../../../helpers/tracking");
+const { equalsCaseInsensitive } = require("../../../helpers/utils");
 
 const { t } = getLocale();
 
@@ -11,19 +14,32 @@ const command = {
     .setName("track")
     .setDescription(t("HELP.TRACK"))
     .setDefaultMemberPermissions("0")
+    .addStringOption((option) =>
+      option.setName("server").setDescription(t("TRACK.ALLIANCES.DESCRIPTION")).setRequired(true).setChoices(
+        {
+          name: SERVERS.WEST,
+          value: SERVERS.WEST,
+        },
+        {
+          name: SERVERS.EAST,
+          value: SERVERS.EAST,
+        },
+      ),
+    )
     .addStringOption((option) => option.setName("player").setDescription(t("TRACK.PLAYERS.DESCRIPTION")))
     .addStringOption((option) => option.setName("guild").setDescription(t("TRACK.GUILDS.DESCRIPTION")))
     .addStringOption((option) => option.setName("alliance").setDescription(t("TRACK.ALLIANCES.DESCRIPTION"))),
   handle: async (interaction, { settings, track, t }) => {
-    if (!track) throw new Error("Unable to fetch your settings.");
+    if (!track) throw new Error(t("TRACK.ERRORS.FETCH_FAILED"));
 
     const limits = await getLimits(interaction.guild.id);
 
+    const server = interaction.options.getString("server");
     const playerName = interaction.options.getString("player");
     const guildName = interaction.options.getString("guild");
     const allianceId = interaction.options.getString("alliance");
 
-    if (!playerName && !guildName && !allianceId) {
+    if (!server || (!playerName && !guildName && !allianceId)) {
       return await interaction.reply({
         content: t("TRACK.MISSING_PARAMETERS"),
         ephemeral: true,
@@ -44,29 +60,26 @@ const command = {
       }
       if (track[type].length >= limit) return addContent(t("TRACK.LIMIT_REACHED", { limit }));
 
+      let trackItem;
+
       if (type == "alliances") {
-        if (track.alliances.some((a) => a.id === value)) return addContent(t("TRACK.ALREADY_TRACKED"));
+        if (isTracked({ id: value, server }, track[type])) return addContent(t("TRACK.ALREADY_TRACKED"));
 
-        const trackEntity = await getAlliance(value);
-        if (!trackEntity) return addContent(t("TRACK.NOT_FOUND"));
-
-        await addTrack(interaction.guild.id, TRACK_TYPE.ALLIANCE, trackEntity);
-        return addContent(t("TRACK.ALLIANCES.TRACKED", { name: trackEntity.name }));
+        trackItem = await getAlliance(server, value);
       } else {
-        const equalsCaseInsensitive = (a, b) => a && a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
+        if (isTracked({ name: value, server }, track[type])) return addContent(t("TRACK.ALREADY_TRACKED"));
 
-        if (track[type].some((trackEntity) => equalsCaseInsensitive(trackEntity.name, value)))
-          return addContent(t("TRACK.ALREADY_TRACKED"));
-
-        const searchResults = await search(value);
+        const searchResults = await search(server, value);
         if (!searchResults) return addContent(t("TRACK.SEARCH_FAILED"));
 
-        const trackEntity = searchResults[type].find((searchEntity) => equalsCaseInsensitive(searchEntity.name, value));
-        if (!trackEntity) return addContent(t("TRACK.NOT_FOUND"));
-
-        await addTrack(interaction.guild.id, type, trackEntity);
-        return addContent(t(`TRACK.${type.toUpperCase()}.TRACKED`, { name: trackEntity.name }));
+        trackItem = searchResults[type].find((searchEntity) => equalsCaseInsensitive(searchEntity.name, value));
       }
+
+      if (!trackItem) return addContent(t("TRACK.NOT_FOUND"));
+      trackItem.server = server;
+
+      await addTrack(interaction.guild.id, type, trackItem);
+      return addContent(t(`TRACK.${type.toUpperCase()}.TRACKED`, { name: trackItem.name }));
     };
 
     if (allianceId) await searchAndAdd(TRACK_TYPE.ALLIANCES, allianceId, limits.alliances);
@@ -76,7 +89,7 @@ const command = {
     await interaction.editReply({ content, ephemeral: true });
 
     if (!settings.kills.channel && !settings.deaths.channel) {
-      await interaction.followUp(t("CHANNEL_NOT_SET"));
+      await interaction.followUp(t("CHANNEL.NOT_SET"));
     }
   },
 };

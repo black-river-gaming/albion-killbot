@@ -181,6 +181,10 @@ router.use(`/:serverId`, serverAdmin);
  *          type: string
  *          description: Albion name
  *          example: "Gray Death"
+ *        server:
+ *          type: string
+ *          description: Albion server
+ *          example: "Albion West"
  */
 
 /**

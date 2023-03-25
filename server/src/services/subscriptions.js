@@ -54,7 +54,7 @@ async function fetchSubscriptionsByOwner(owner) {
 }
 
 async function getSubscriptionByServerId(server) {
-  if (!isSubscriptionsEnabled()) return [];
+  if (!isSubscriptionsEnabled()) return null;
   return await findOne(SUBSCRIPTIONS_COLLECTION, { server });
 }
 

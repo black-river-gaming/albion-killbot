@@ -1,3 +1,5 @@
+const { equalsCaseInsensitive } = require("./utils");
+
 const applyLimits = (track, limits) => {
   let players = track.players || [];
   if (!isNaN(limits.players)) players = players.slice(0, Math.max(0, limits.players));
@@ -25,9 +27,9 @@ function getTrackedEvent(event, track, limits) {
     return null;
   }
 
-  const playerIds = players.map((t) => t.id);
-  const guildIds = guilds.map((t) => t.id);
-  const allianceIds = alliances.map((t) => t.id);
+  const playerIds = players.filter((item) => item.server === event.server).map((item) => item.id);
+  const guildIds = guilds.filter((item) => item.server === event.server).map((item) => item.id);
+  const allianceIds = alliances.filter((item) => item.server === event.server).map((item) => item.id);
 
   // Ignore Arena kills or Duel kills
   if (event.TotalVictimKillFame <= 0) {
@@ -60,9 +62,9 @@ function getTrackedBattle(battle, track, limits) {
     return null;
   }
 
-  const playerIds = players.map((t) => t.id);
-  const guildIds = guilds.map((t) => t.id);
-  const allianceIds = alliances.map((t) => t.id);
+  const playerIds = players.filter((item) => item.server === battle.server).map((item) => item.id);
+  const guildIds = guilds.filter((item) => item.server === battle.server).map((item) => item.id);
+  const allianceIds = alliances.filter((item) => item.server === battle.server).map((item) => item.id);
 
   // Ignore battles without fame
   if (battle.totalFame <= 0) {
@@ -80,7 +82,13 @@ function getTrackedBattle(battle, track, limits) {
   return null;
 }
 
-function isPlayerTracked(player, { players = [], guilds = [], alliances = [] }) {
+function isPlayerTracked(player, { players = [], guilds = [], alliances = [] }, { server }) {
+  if (server) {
+    players = players.filter((t) => t.server === server);
+    guilds = guilds.filter((t) => t.server === server);
+    alliances = alliances.filter((t) => t.server === server);
+  }
+
   return (
     players.some((t) => t.id === player.Id) ||
     guilds.some((t) => t.id === player.GuildId) ||
@@ -88,8 +96,30 @@ function isPlayerTracked(player, { players = [], guilds = [], alliances = [] }) 
   );
 }
 
+const getTrackedItem = ({ id, name, server }, trackList) => {
+  if (!server) return null;
+  if (!name && !id) return null;
+
+  return trackList
+    .filter((trackItem) => trackItem.server === server)
+    .find((trackItem) => {
+      if (id && !trackItem.id !== id) return false;
+      if (name && !equalsCaseInsensitive(trackItem.name, name)) return false;
+      return true;
+    });
+};
+
+const isTracked = ({ id, name, server }, trackList) => {
+  if (!server) return false;
+  if (!name && !id) return false;
+
+  return !!getTrackedItem({ id, name, server }, trackList);
+};
+
 module.exports = {
   getTrackedBattle,
   getTrackedEvent,
+  getTrackedItem,
   isPlayerTracked,
+  isTracked,
 };

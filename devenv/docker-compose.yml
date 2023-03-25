@@ -59,12 +59,15 @@ services:
     image: albion-killbot
     command: npm run start:crawler:dev
     depends_on:
+      mongodb:
+        condition: service_healthy
       amqp:
         condition: service_healthy
     env_file: ../server/.env
     environment:
       - NODE_ENV=development
       - AMQP_URL=amqp://amqp
+      - MONGODB_URL=mongodb://mongodb:27017/albion-killbot
     volumes:
       - ../server/src:/app/src
 
@@ -82,8 +85,8 @@ services:
     env_file: ../server/.env
     environment:
       - NODE_ENV=development
-      - MONGODB_URL=mongodb://mongodb:27017/albion-killbot
       - AMQP_URL=amqp://amqp
+      - MONGODB_URL=mongodb://mongodb:27017/albion-killbot
     volumes:
       - ../server/migrations:/app/migrations
       - ../server/bin:/app/bin

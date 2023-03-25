@@ -49,10 +49,13 @@ const average = (...numbers) => {
   return Math.round(numbers.reduce((sum, n) => sum + n, 0) / numbers.length);
 };
 
+const equalsCaseInsensitive = (a, b) => a && a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
+
 module.exports = {
   average,
   clone,
   digitsFormatter,
+  equalsCaseInsensitive,
   fileSizeFormatter,
   getNumber,
   humanFormatter,

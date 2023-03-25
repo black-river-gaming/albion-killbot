@@ -69,18 +69,21 @@ export interface TrackList {
   players: {
     id: string;
     name: string;
+    server: string;
   }[];
   guilds: {
     id: string;
     name: string;
+    server: string;
   }[];
   alliances: {
     id: string;
     name: string;
+    server: string;
   }[];
 }
 
-export type SearchResults = TrackList;
+export type ISearchResults = TrackList;
 
 export interface Subscription {
   id: string;

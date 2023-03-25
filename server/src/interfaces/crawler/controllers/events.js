@@ -1,37 +1,47 @@
+const { SECOND, SERVERS } = require("../../../helpers/constants");
 const logger = require("../../../helpers/logger");
+const { runInterval } = require("../../../helpers/scheduler");
+
 const { fetchEventsTo, publishEvent } = require("../../../services/events");
 
 const { AMQP_QUEUE_EVENTS_BATCH } = process.env;
 
-let latestEvent;
+const latestEvent = {
+  [SERVERS.WEST]: null,
+  [SERVERS.EAST]: null,
+};
 
-async function fetchEvents() {
-  if (!latestEvent) {
-    logger.info("Retrieving first batch of events.");
+async function fetchEvents(server) {
+  if (!latestEvent[server]) {
+    logger.info(`[${server}] Retrieving first batch of events.`);
   } else {
-    logger.info(`Fetching Albion Online events from API up to event ${latestEvent.EventId}.`);
+    logger.info(`[${server}] Fetching Albion Online events from API up to event ${latestEvent[server].EventId}.`);
   }
 
-  const events = await fetchEventsTo(latestEvent);
-  if (events.length === 0) return logger.verbose("No new events.");
+  const events = await fetchEventsTo(latestEvent[server], { server });
+  if (events.length === 0) return logger.verbose(`[${server}] No new events.`);
 
   // Publish new events, from oldest to newest
   const eventsToPublish = [];
-  logger.verbose(`Publishing ${events.length} new events to exchange...`);
+  logger.verbose(`[${server}] Publishing ${events.length} new events to exchange...`);
   for (const evt of events) {
-    if (latestEvent && evt.EventId <= latestEvent.EventId) {
-      logger.warn(`The published id is lower than latestEvent! Skipping.`);
+    if (latestEvent[server] && evt.EventId <= latestEvent[server].EventId) {
+      logger.warn(`[${server}] The published id is lower than latestEvent! Skipping.`, {
+        latestEventId: latestEvent[server].EventId,
+        eventId: evt.EventId,
+        server,
+      });
       continue;
     }
 
     if (!AMQP_QUEUE_EVENTS_BATCH) {
-      logger.debug(`Publishing event ${evt.EventId}`);
+      logger.debug(`[${server}] Publishing event ${evt.EventId}`);
       await publishEvent(evt);
     } else {
       eventsToPublish.push(evt);
     }
 
-    latestEvent = evt;
+    latestEvent[server] = evt;
   }
 
   // Batch publish
@@ -39,9 +49,23 @@ async function fetchEvents() {
     await publishEvent(eventsToPublish);
   }
 
-  logger.info("Publish events complete.");
+  logger.info(`[${server}] Publish events complete.`);
 }
 
+const init = async () => {
+  runInterval("Fetch events for west server", fetchEvents, {
+    interval: 30 * SECOND,
+    runOnStart: true,
+    fnOpts: [SERVERS.WEST],
+  });
+  runInterval("Fetch events for east server", fetchEvents, {
+    interval: 30 * SECOND,
+    runOnStart: true,
+    fnOpts: [SERVERS.EAST],
+  });
+};
+
 module.exports = {
-  fetchEvents,
+  name: "events",
+  init,
 };
