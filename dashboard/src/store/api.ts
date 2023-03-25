@@ -141,6 +141,7 @@ export const api = createApi({
           method: "PUT",
           body: track,
         }),
+        invalidatesTags: ["Server"],
       }),
       updateSettings: builder.mutation<
         void,
