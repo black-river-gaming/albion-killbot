@@ -83,7 +83,7 @@ export interface TrackList {
   }[];
 }
 
-export type SearchResults = TrackList;
+export type ISearchResults = TrackList;
 
 export interface Subscription {
   id: string;
