@@ -53,16 +53,16 @@ async function fetchBattles(server) {
 }
 
 const init = async () => {
-  // runInterval("Fetch battles for west server", fetchBattles, {
-  //   interval: 61 * SECOND,
-  //   runOnStart: true,
-  //   fnOpts: [SERVERS.WEST],
-  // });
-  // runInterval("Fetch battles for east server", fetchBattles, {
-  //   interval: 61 * SECOND,
-  //   runOnStart: true,
-  //   fnOpts: [SERVERS.EAST],
-  // });
+  runInterval("Fetch battles for west server", fetchBattles, {
+    interval: 61 * SECOND,
+    runOnStart: true,
+    fnOpts: [SERVERS.WEST],
+  });
+  runInterval("Fetch battles for east server", fetchBattles, {
+    interval: 61 * SECOND,
+    runOnStart: true,
+    fnOpts: [SERVERS.EAST],
+  });
 };
 
 module.exports = {
