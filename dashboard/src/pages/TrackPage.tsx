@@ -1,6 +1,6 @@
 import Loader from "components/Loader";
 import Search from "components/Search";
-import TrackList from "components/TrackList";
+import Track from "components/Track";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { useEffect } from "react";
 import { Alert, Col, Row } from "react-bootstrap";
@@ -70,7 +70,7 @@ const TrackPage = () => {
           </Alert>
         )}
 
-        <TrackList
+        <Track
           limits={limits}
           onUpdateClick={() => dispatchUpdateTrack({ serverId: id, track })}
         />
