@@ -399,6 +399,17 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
           }
         }
       }
+
+      &.list-group-item-secondary {
+        color: ${({ theme }) => theme.text};
+        background-color: ${({ theme }) => theme.secondary};
+
+        &.list-group-item-action {
+          &:hover {
+            color: ${({ theme }) => theme.contrastText};
+          }
+        }
+      }
     }
   }
 
