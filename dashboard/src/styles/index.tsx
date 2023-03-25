@@ -96,6 +96,19 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
       rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px;
   }
 
+  .id-text {
+    font-size: 10px;
+    line-height: 10px;
+    color: ${({ theme }) => theme.mutedText};
+  }
+
+  .cancelled-text {
+    font-size: 12px;
+    padding-left: 0.25rem;
+    font-weight: 500;
+    color: ${({ theme }) => theme.danger};
+  }
+
   /* Bootstrap Accordion overrides */
   .accordion {
     .accordion-item {
@@ -162,6 +175,18 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
           color: ${({ theme }) => theme.primary};
         }
       }
+  }
+  
+  /* Bootstrap Badge overrides */
+  .badge {
+    user-select: none;
+
+    ${({ theme }) =>
+      Object.keys(theme.servers).map((server) => ({
+        [`&.bg-${server.toLowerCase().replace(" ", "-")}`]: {
+          backgroundColor: theme.servers[server],
+        },
+      }))}
   }
 
   /* Bootstrap Button overrides */

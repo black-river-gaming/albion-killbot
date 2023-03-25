@@ -22,6 +22,10 @@ export interface ThemeProps {
     contrastText?: string;
     mutedText?: string;
   };
+
+  servers: {
+    [server: string]: string;
+  };
 }
 
 const theme: ThemeProps = {
@@ -40,6 +44,11 @@ const theme: ThemeProps = {
   rgb: {
     primary: "255,189,89",
     secondary: "105,101,124",
+  },
+
+  servers: {
+    "Albion West": "#33673b",
+    "Albion East": "#cc3f0c",
   },
 };
 
