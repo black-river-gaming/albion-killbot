@@ -1,11 +1,13 @@
 import { faAdd, faCheck, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { SERVER, SERVERS } from "helpers/constants";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { useState } from "react";
 import {
   Button,
   ButtonGroup,
   Card,
+  Dropdown,
   Form,
   InputGroup,
   ListGroup,
@@ -22,13 +24,14 @@ interface ISearchProps {
 
 const Search = ({ limits }: ISearchProps) => {
   const [query, setQuery] = useState("");
+  const [server, setServer] = useState(SERVER.WEST);
   const [search, searchResults] = useLazySearchQuery();
   const track = useAppSelector((state) => state.track);
   const dispatch = useAppDispatch();
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
-    search(query, true);
+    search({ server, query }, true);
   };
 
   const renderSearchResults = () => {
@@ -152,6 +155,17 @@ const Search = ({ limits }: ISearchProps) => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
+            <Dropdown>
+              <Dropdown.Toggle variant="primary">{server}</Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {SERVERS.map((server) => (
+                  <Dropdown.Item key={server} onClick={() => setServer(server)}>
+                    {server}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
             <Button variant="primary" type="submit">
               <FontAwesomeIcon icon={faSearch} />
             </Button>

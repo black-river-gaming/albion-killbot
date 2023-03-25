@@ -124,8 +124,13 @@ export const api = createApi({
         query: () => `/subscriptions`,
         providesTags: ["Subscription"],
       }),
-      search: builder.query<SearchResults, string>({
-        query: (query) => `/search/${query}`,
+      search: builder.query<SearchResults, { server: string; query: string }>({
+        query: ({ server, query }) => ({
+          url: `/search/${query}`,
+          params: {
+            server,
+          },
+        }),
       }),
       updateTrack: builder.mutation<
         void,
