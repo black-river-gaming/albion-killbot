@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("discord.js");
 const { getLocale } = require("../../../helpers/locale");
 const { getRanking } = require("../../../services/rankings");
-const { getGuild } = require("../../../services/guilds");
+const { getGuildByTrackGuild } = require("../../../services/guilds");
 const { embedPvpRanking, embedGuildRanking } = require("../../../helpers/embeds");
 
 const { t } = getLocale();
@@ -41,7 +41,7 @@ const command = {
         if (!track.guilds || track.guilds.length === 0)
           return await interaction.editReply({ content: "No tracked guilds to display rankings.", ephemeral: true });
         for (const trackGuild of track.guilds) {
-          const albionGuild = await getGuild(trackGuild.id);
+          const albionGuild = await getGuildByTrackGuild(trackGuild);
           if (!albionGuild) await interaction.followUp(t("RANKING.NO_DATA", { guild: trackGuild.name }));
           else await interaction.followUp(embedGuildRanking(albionGuild, { locale: settings.lang }));
         }
