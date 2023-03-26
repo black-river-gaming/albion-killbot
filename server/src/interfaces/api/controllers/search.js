@@ -7,8 +7,6 @@ async function search(req, res) {
   const { query } = req.params;
   const { server = SERVERS.WEST } = req.query;
 
-  logger.debug(server);
-
   try {
     if (isAlbionId(query)) {
       const [player, guild, alliance] = await Promise.all([
