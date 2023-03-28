@@ -19,6 +19,26 @@ const DEFAULT_TRACK = Object.freeze({
   [TRACK_TYPE.ALLIANCES]: [],
 });
 
+async function setTrack(serverId, data) {
+  // TODO: Schema validation
+  const { players, guilds, alliances } = data;
+
+  console.log({
+    players,
+    guilds,
+    alliances,
+  });
+
+  await updateOne(
+    TRACK_COLLECTION,
+    { server: serverId },
+    { $set: { server: serverId, players, guilds, alliances } },
+    { upsert: true },
+  );
+  remove(`track-${serverId}`);
+  return await getTrack(serverId);
+}
+
 async function addTrack(serverId, type, item) {
   if (!Object.values(TRACK_TYPE).indexOf(type) < 0) throw new Error("Invalid track type.");
   if (!isTrackEntity(item)) throw new Error("Not a valid track entity");
@@ -60,12 +80,6 @@ async function getTrack(serverId) {
     const track = await findOne(TRACK_COLLECTION, { server: serverId });
     return Object.assign(clone(DEFAULT_TRACK), track);
   });
-}
-
-async function setTrack(serverId, track) {
-  await updateOne(TRACK_COLLECTION, { server: serverId }, { $set: track }, { upsert: true });
-  remove(`track-${serverId}`);
-  return await getTrack(serverId);
 }
 
 async function updateTrackCache(timeout) {

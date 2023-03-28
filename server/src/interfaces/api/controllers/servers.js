@@ -46,19 +46,14 @@ async function getServer(req, res) {
 
 async function setServerSettings(req, res) {
   const { serverId } = req.params;
-  const newSettings = req.body;
-
-  const settings = await settingsService.setSettings(serverId, newSettings);
-  return res.send(settings);
+  const settings = req.body;
+  return res.send(await settingsService.setSettings(serverId, settings));
 }
 
 async function setServerTrack(req, res) {
   const { serverId } = req.params;
-  const newTrack = req.body;
-  // TODO: Validate schema
-
-  const track = await trackService.setTrack(serverId, newTrack);
-  return res.send(track);
+  const track = req.body;
+  return res.send(await trackService.setTrack(serverId, track));
 }
 
 module.exports = {
