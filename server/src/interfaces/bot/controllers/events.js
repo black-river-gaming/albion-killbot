@@ -89,7 +89,7 @@ async function subscribe(client) {
     for (const event of events) {
       await cb(event);
     }
-    logger.verbose(`Process events complete.`);
+    logger.debug(`Process events complete.`);
     return true;
   };
 

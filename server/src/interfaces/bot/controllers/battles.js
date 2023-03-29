@@ -52,7 +52,7 @@ async function subscribe(client) {
     for (const battle of battles) {
       await cb(battle);
     }
-    logger.verbose(`Process battles complete.`);
+    logger.debug(`Process battles complete.`);
     return true;
   };
 

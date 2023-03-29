@@ -23,12 +23,6 @@ async function setTrack(serverId, data) {
   // TODO: Schema validation
   const { players, guilds, alliances } = data;
 
-  console.log({
-    players,
-    guilds,
-    alliances,
-  });
-
   await updateOne(
     TRACK_COLLECTION,
     { server: serverId },
