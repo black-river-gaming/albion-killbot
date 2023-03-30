@@ -23,7 +23,9 @@ async function cleanup(reason) {
   logger.info(`Shutting down Api. Reason: ${reason}`);
 
   if (server) {
-    await server.close(() => process.exit(0));
+    await server.close((error) => process.exit(error ? 1 : 0));
+  } else {
+    process.exit(0);
   }
 }
 
