@@ -48,11 +48,14 @@ async function subscribe(client) {
   };
 
   const batchCb = async (battles) => {
-    logger.verbose(`Processing ${battles.length} battles.`);
+    if (!Array.isArray(battles) || battles.length === 0) return true;
+    const server = battles[0].server;
+
+    logger.verbose(`[${server}] Processing ${battles.length} battles.`);
     for (const battle of battles) {
       await cb(battle);
     }
-    logger.debug(`Process battles complete.`);
+    logger.debug(`[${server}] Process battles complete.`);
     return true;
   };
 

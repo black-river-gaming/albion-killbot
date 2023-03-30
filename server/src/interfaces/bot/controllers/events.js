@@ -85,11 +85,15 @@ async function subscribe(client) {
   };
 
   const batchCb = async (events) => {
-    logger.verbose(`Processing ${events.length} events.`);
+    if (!Array.isArray(events) || events.length === 0) return true;
+    const server = events[0].server;
+
+    logger.verbose(`[${server}] Processing ${events.length} events.`);
     for (const event of events) {
       await cb(event);
     }
-    logger.debug(`Process events complete.`);
+
+    logger.debug(`[${server}] Process events complete.`);
     return true;
   };
 
