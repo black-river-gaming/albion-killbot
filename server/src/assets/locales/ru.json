@@ -31,8 +31,9 @@
   },
   "KILL": {
     "ASSIST": "Помошник(и): {{{ assists }}}",
-    "EVENT": "{{ killer }} убил {{ victim }}!",
+    "BAD_TITLE": "{{ victim }} была убита {{ killer }}",
     "FAME": "Слава",
+    "GOOD_TITLE": "{{ killer }} убил {{ victim }}",
     "KILLER_GUILD": "Гильдия убийц",
     "KILLER_IP": "IP убийцы",
     "LOOT_VALUE": "Loot Value",

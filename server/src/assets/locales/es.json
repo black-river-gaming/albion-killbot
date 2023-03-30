@@ -31,8 +31,9 @@
   },
   "KILL": {
     "ASSIST": "Ayuda(s): {{{ assists }}}",
-    "EVENT": "{{ killer }} Mató {{ victim }}!",
+    "BAD_TITLE": "{{ victim }} fue asesinado por {{ killer }}",
     "FAME": "Fama por Muerte",
+    "GOOD_TITLE": "{{ killer }} Mató {{ victim }}",
     "KILLER_GUILD": "Gremio de Asesino",
     "KILLER_IP": "IP de el Asesino",
     "LOOT_VALUE": "Valor del Loot",

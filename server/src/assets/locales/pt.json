@@ -31,8 +31,9 @@
   },
   "KILL": {
     "ASSIST": "Assistência(s): {{{ assists }}}",
-    "EVENT": "{{ killer }} matou {{ victim }}!",
+    "BAD_TITLE": "{{ victim }} foi morto por {{ killer }}",
     "FAME": "Fama do Abate",
+    "GOOD_TITLE": "{{ killer }} matou {{ victim }}",
     "KILLER_GUILD": "Guilda do Matador",
     "KILLER_IP": "IP do Matador",
     "LOOT_VALUE": "Valor do Loot",

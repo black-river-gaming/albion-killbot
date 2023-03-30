@@ -36,14 +36,27 @@ const footer = {
   text: "Powered by Albion Killbot",
 };
 
-const embedEvent = (event, { locale }) => {
+const embedEvent = (event, { locale, addGuildTags = true }) => {
   const l = getLocale(locale);
   const { t } = l;
 
   const good = event.good;
-  const title = t("KILL.EVENT", {
-    killer: event.Killer.Name,
-    victim: event.Victim.Name,
+
+  let killer = "";
+  if (addGuildTags && event.Killer.GuildName) {
+    killer += `[${event.Killer.GuildName}] `;
+  }
+  killer += event.Killer.Name;
+
+  let victim = "";
+  if (addGuildTags && event.Victim.GuildName) {
+    victim += `[${event.Victim.GuildName}] `;
+  }
+  victim += event.Victim.Name;
+
+  const title = t(good ? "KILL.GOOD_TITLE" : "KILL.BAD_TITLE", {
+    killer,
+    victim,
   });
 
   let description;
@@ -143,14 +156,27 @@ const embedEvent = (event, { locale }) => {
   };
 };
 
-const embedEventImage = (event, image, { locale, addFooter }) => {
+const embedEventImage = (event, image, { locale, addGuildTags = true, addFooter }) => {
   const l = getLocale(locale);
   const { t } = l;
 
   const good = event.good;
-  const title = t("KILL.EVENT", {
-    killer: event.Killer.Name,
-    victim: event.Victim.Name,
+
+  let killer = "";
+  if (addGuildTags && event.Killer.GuildName) {
+    killer += `[${event.Killer.GuildName}] `;
+  }
+  killer += event.Killer.Name;
+
+  let victim = "";
+  if (addGuildTags && event.Victim.GuildName) {
+    victim += `[${event.Victim.GuildName}] `;
+  }
+  victim += event.Victim.Name;
+
+  const title = t(good ? "KILL.GOOD_TITLE" : "KILL.BAD_TITLE", {
+    killer,
+    victim,
   });
   const filename = `${event.EventId}-event.png`;
 
