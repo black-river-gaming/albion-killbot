@@ -181,6 +181,7 @@ async function getLootValue(event, { server = SERVERS.WEST }) {
           .sort();
 
         const itemPriceData = await albionDataApiClient.getPrices(itemList.join(), {
+          server,
           locations: ["Thetford", "Fort Sterling", "Martlock", "Bridgewatch", "Lymhurst"].join(),
           qualities,
         });
