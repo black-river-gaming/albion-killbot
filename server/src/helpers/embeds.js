@@ -151,6 +151,7 @@ const embedEvent = (event, { locale, addGuildTags = true }) => {
           },
         ],
         timestamp: event.TimeStamp,
+        footer,
       },
     ],
   };
@@ -325,6 +326,7 @@ const embedBattle = (battle, { locale }) => {
         },
         fields: fields.slice(0, MAXLEN.FIELD.COUNT),
         timestamp: moment(battle.endTime).toISOString(),
+        footer,
       },
     ],
   };
@@ -526,6 +528,7 @@ const embedPvpRanking = (rankings, { locale }) => {
             inline: true,
           },
         ],
+        footer,
       },
     ],
   };
