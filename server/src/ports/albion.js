@@ -15,26 +15,32 @@ const ITEMS_DIR = "items";
 
 async function getEvent(eventId, { server = SERVERS.WEST }) {
   try {
-    return await albionApiClient.getEvent(eventId, { server });
+    const event = await albionApiClient.getEvent(eventId, { server });
+    event.server = server;
+    return event;
   } catch (e) {
     return null;
   }
 }
 
 async function getEvents({ server = SERVERS.WEST, limit, offset }) {
-  return await albionApiClient.getEvents({ server, limit, offset });
+  const events = await albionApiClient.getEvents({ server, limit, offset });
+  return events.map((event) => ({ server, ...event }));
 }
 
 async function getBattle(battleId, { server }) {
   try {
-    return await albionApiClient.getBattle(battleId, { server });
+    const battle = await albionApiClient.getBattle(battleId, { server });
+    battle.server = server;
+    return battle;
   } catch (e) {
     return null;
   }
 }
 
 async function getBattles({ server = SERVERS.WEST, limit, offset }) {
-  return await albionApiClient.getBattles({ server, limit, offset });
+  const battles = await albionApiClient.getBattles({ server, limit, offset });
+  return battles.map((battle) => ({ server, ...battle }));
 }
 
 const missingItems = {};
@@ -85,7 +91,9 @@ const getItemFile = async (item, tries = 0) => {
 async function getPlayer(playerId, { server = SERVERS.WEST, silent = false }) {
   try {
     logger.verbose(`Fetch ${server} player: ${playerId}`);
-    return await albionApiClient.getPlayer(playerId, { server });
+    const player = await albionApiClient.getPlayer(playerId, { server });
+    player.server = server;
+    return player;
   } catch (error) {
     if (!silent)
       logger.error(`Failed to fetch ${server} player [${playerId}]: ${error.message}`, {
@@ -102,6 +110,7 @@ async function getGuild(guildId, { server = SERVERS.WEST, rankings = false, sile
   try {
     logger.verbose(`Fetch ${server} guild: ${guildId}`, { server, rankings, silent });
     const guild = await albionApiClient.getGuild(guildId, { server });
+    guild.server = server;
 
     if (rankings) {
       guild.rankings = {};
@@ -143,7 +152,9 @@ async function getGuild(guildId, { server = SERVERS.WEST, rankings = false, sile
 async function getAlliance(allianceId, { server = SERVERS.WEST, silent = false }) {
   try {
     logger.verbose(`Fetch ${server} alliance: ${allianceId}`, { allianceId, server, silent });
-    return await albionApiClient.getAlliance(allianceId, { server });
+    const alliance = await albionApiClient.getAlliance(allianceId, { server });
+    alliance.server = server;
+    return alliance;
   } catch (error) {
     if (!silent)
       logger.error(`Failed to fetch ${server} alliance [${allianceId}]: ${error.message}`, {
