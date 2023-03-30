@@ -3,8 +3,9 @@ const { generateEventImage, generateInventoryImage } = require("../../../service
 
 async function getEvent(req, res) {
   const { eventId } = req.params;
+  const { server } = req.query;
 
-  const event = await eventsService.getEvent(eventId);
+  const event = await eventsService.getEvent(eventId, { server });
   if (!event) return res.sendStatus(404);
 
   return res.send(event);
@@ -12,9 +13,11 @@ async function getEvent(req, res) {
 
 async function getEventImage(req, res) {
   const { eventId } = req.params;
+  const { server } = req.query;
 
-  const event = await eventsService.getEvent(eventId);
+  const event = await eventsService.getEvent(eventId, { server });
   if (!event) return res.sendStatus(404);
+  event.TotalVictimLootValue = await eventsService.getEventVictimLootValue(event, { server });
 
   const eventImage = await generateEventImage(event);
   return res.set("Content-Disposition", `inline; filename="${event.EventId}-event.png"`).type("png").send(eventImage);

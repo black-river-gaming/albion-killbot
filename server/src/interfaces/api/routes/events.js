@@ -1,5 +1,8 @@
 const router = require("express").Router();
 const eventsController = require("../controllers/events");
+const { validateServer } = require("../middlewares/query");
+
+router.use(validateServer);
 
 /**
  * @openapi
@@ -180,6 +183,12 @@ const eventsController = require("../controllers/events");
  *       required: true
  *       schema:
  *         type: string
+ *     - name: server
+ *       in: query
+ *       schema:
+ *         type: string
+ *         enum: ["Albion West", "Albion East"]
+ *         default: "Albion West"
  *     summary: Get event report.
  *     operationId: getEvent
  *     responses:
@@ -205,6 +214,12 @@ router.get(`/:eventId`, eventsController.getEvent);
  *       required: true
  *       schema:
  *         type: string
+ *     - name: server
+ *       in: query
+ *       schema:
+ *         type: string
+ *         enum: ["Albion West", "Albion East"]
+ *         default: "Albion West"
  *     summary: Get event report as image.
  *     operationId: getEventImage
  *     responses:
@@ -231,6 +246,12 @@ router.get(`/:eventId/image`, eventsController.getEventImage);
  *       required: true
  *       schema:
  *         type: string
+ *     - name: server
+ *       in: query
+ *       schema:
+ *         type: string
+ *         enum: ["Albion West", "Albion East"]
+ *         default: "Albion West"
  *     summary: Get event inventory report as image.
  *     operationId: getEventInventoryImage
  *     responses:

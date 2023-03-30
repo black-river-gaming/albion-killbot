@@ -1,5 +1,8 @@
 const router = require("express").Router();
 const battlesController = require("../controllers/battles");
+const { validateServer } = require("../middlewares/query");
+
+router.use(validateServer);
 
 /**
  * @openapi
@@ -119,6 +122,12 @@ const battlesController = require("../controllers/battles");
  *       required: true
  *       schema:
  *         type: string
+ *     - name: server
+ *       in: query
+ *       schema:
+ *         type: string
+ *         enum: ["Albion West", "Albion East"]
+ *         default: "Albion West"
  *     summary: Get battle report.
  *     operationId: getBattle
  *     responses:
