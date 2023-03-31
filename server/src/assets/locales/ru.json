@@ -88,7 +88,11 @@
     },
     "PVP_RANKING": "PvP Ranking",
     "RANKINGS": "Change settings for ranking notifications.",
-    "SET": "Notifications for category `{{ category }}` are `{{ option }}`"
+    "SET": "Notifications for category `{{ category }}` are `{{ option }}`",
+    "SPLIT_LOOT_VALUE": {
+      "DESCRIPTION": "Разделите стоимость добычи между снаряжением и инвентарем.",
+      "SET": "Разделить стоимость добычи: {{ enabled }}"
+    }
   },
   "SUBSCRIPTION": {
     "ACTIONS": "Invalid action, please select one of: {{ actions }}.",

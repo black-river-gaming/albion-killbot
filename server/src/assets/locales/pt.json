@@ -88,7 +88,11 @@
     },
     "PVP_RANKING": "Ranking PvP",
     "RANKINGS": "Mudar configurações de rankings.",
-    "SET": "Notificações da categoria `{{ category }}` estão `{{ option }}s`"
+    "SET": "Notificações da categoria `{{ category }}` estão `{{ option }}s`",
+    "SPLIT_LOOT_VALUE": {
+      "DESCRIPTION": "Divida o valor do loot entre equipamento e inventário.",
+      "SET": "Valor do loot dividido: {{ enabled }}"
+    }
   },
   "SUBSCRIPTION": {
     "ACTIONS": "Ação inválida, use um destes: {{ actions }}.",
