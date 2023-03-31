@@ -122,6 +122,10 @@ router.use(`/:serverId`, serverAdmin);
  *              type: boolean
  *              description: Display guild tags in player's names
  *              default: false
+ *            splitLootValue:
+ *              type: boolean
+ *              description: Split the loot value between gear and inventory
+ *              default: false
  *        battles:
  *          allOf:
  *          - $ref: '#/components/schemas/Category'

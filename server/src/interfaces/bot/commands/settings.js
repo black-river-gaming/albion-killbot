@@ -106,7 +106,10 @@ const general = (subcommand) =>
           })),
         ),
     )
-    .addBooleanOption((option) => option.setName("guild_tags").setDescription(t("SETTINGS.GUILD_TAGS.DESCRIPTION")));
+    .addBooleanOption((option) => option.setName("guild_tags").setDescription(t("SETTINGS.GUILD_TAGS.DESCRIPTION")))
+    .addBooleanOption((option) =>
+      option.setName("split_loot_value").setDescription(t("SETTINGS.SPLIT_LOOT_VALUE.DESCRIPTION")),
+    );
 
 function getCommonOptions(settings, category, interaction) {
   const enabled = interaction.options.getBoolean("enabled");
@@ -212,6 +215,11 @@ const command = {
           settings.general.guildTags = guildTags;
         }
 
+        const splitLootValue = interaction.options.getBoolean("split_loot_value");
+        if (typeof splitLootValue === "boolean") {
+          settings.general.splitLootValue = splitLootValue;
+        }
+
         await interaction.deferReply({ ephemeral: true });
         await setSettings(interaction.guild.id, settings);
 
@@ -220,6 +228,10 @@ const command = {
         reply +=
           t("SETTINGS.GUILD_TAGS.SET", {
             enabled: settings.general.guildTags ? t("SETTINGS.ENABLED") : t("SETTINGS.DISABLED"),
+          }) + "\n";
+        reply +=
+          t("SETTINGS.SPLIT_LOOT_VALUE.SET", {
+            enabled: settings.general.splitLootValue ? t("SETTINGS.ENABLED") : t("SETTINGS.DISABLED"),
           }) + "\n";
 
         return await editReply(reply);

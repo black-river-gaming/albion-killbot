@@ -6,6 +6,7 @@ const initialState: ISettings = {
   general: {
     locale: "en",
     guildTags: false,
+    splitLootValue: false,
   },
   kills: {
     enabled: true,
@@ -46,6 +47,9 @@ export const settingsSlice = createSlice({
     },
     setGeneralGuildTags: (state, action: PayloadAction<boolean>) => {
       state.general.guildTags = action.payload;
+    },
+    setGeneralSplitLootValue: (state, action: PayloadAction<boolean>) => {
+      state.general.splitLootValue = action.payload;
     },
     setKillsEnabled: (state, action: PayloadAction<boolean>) => {
       state.kills.enabled = action.payload;
@@ -90,6 +94,7 @@ export const {
   loadSettings,
   setGeneralLocale,
   setGeneralGuildTags,
+  setGeneralSplitLootValue,
   setKillsEnabled,
   setKillsChannel,
   setKillsMode,

@@ -45,7 +45,7 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
   ctx.restore();
 };
 
-async function generateEventImage(event) {
+async function generateEventImage(event, { lootValue, splitLootValue = false } = {}) {
   let canvas = createCanvas(1600, 1250);
   let tw, th;
   const w = canvas.width;
@@ -152,7 +152,8 @@ async function generateEventImage(event) {
   ctx.fillText(fame, w / 2 - tw / 2, fameY + fameIconSize + th + 15);
 
   // loot value
-  if (event.TotalVictimLootValue) {
+  const lootSum = splitLootValue ? lootValue.equipment : lootValue.equipment + lootValue.inventory;
+  if (lootSum) {
     const lootValueY = 675;
     const lootValueIconSize = 100;
     ctx.beginPath();
@@ -160,7 +161,7 @@ async function generateEventImage(event) {
     ctx.fillStyle = "#FFF";
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 4;
-    const lootValueText = digitsFormatter(event.TotalVictimLootValue);
+    const lootValueText = digitsFormatter(lootSum);
     tw = ctx.measureText(lootValueText).width;
     await drawImage(
       ctx,
@@ -300,7 +301,9 @@ async function generateEventImage(event) {
   return buffer;
 }
 
-async function generateInventoryImage(inventory) {
+async function generateInventoryImage(inventory, { lootValue, splitLootValue = false } = {}) {
+  const hasLootValue = splitLootValue && lootValue && lootValue.inventory;
+
   const BLOCK_SIZE = 130;
   const WIDTH = 1600;
   const PADDING = 20;
@@ -310,7 +313,8 @@ async function generateInventoryImage(inventory) {
   const itemsPerRow = Math.floor((WIDTH - PADDING * 2) / BLOCK_SIZE);
   const rows = Math.ceil(inventory.length / itemsPerRow);
 
-  let canvas = createCanvas(WIDTH, rows * BLOCK_SIZE + PADDING * 2);
+  let canvas = createCanvas(WIDTH, rows * BLOCK_SIZE + PADDING * 2 + (hasLootValue ? 35 : 0));
+  const w = canvas.width;
   const ctx = canvas.getContext("2d");
 
   await drawImage(ctx, path.join(assetsPath, "/background.png"), 0, 0);
@@ -324,6 +328,32 @@ async function generateInventoryImage(inventory) {
     }
     await drawItem(ctx, item, x, y, BLOCK_SIZE);
     x += BLOCK_SIZE;
+  }
+
+  if (hasLootValue) {
+    y += BLOCK_SIZE;
+
+    ctx.beginPath();
+    ctx.font = "36px Roboto";
+    ctx.fillStyle = "#FFF";
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 4;
+    const lootValueText = digitsFormatter(lootValue.inventory);
+    const lootValueTextWidth = ctx.measureText(lootValueText).width;
+    const lootValueLineHeight = ctx.measureText("M").width;
+    const lootValueIconSize = 45;
+
+    await drawImage(
+      ctx,
+      path.join(assetsPath, "lootValue.png"),
+      w - PADDING * 2 - lootValueIconSize - PADDING * 0.5 - lootValueTextWidth,
+      y,
+      lootValueIconSize,
+      lootValueIconSize,
+    );
+
+    ctx.strokeText(lootValueText, w - PADDING * 2 - lootValueTextWidth, y + lootValueLineHeight * 1.1);
+    ctx.fillText(lootValueText, w - PADDING * 2 - lootValueTextWidth, y + lootValueLineHeight * 1.1);
   }
 
   const buffer = await optimizeImage(canvas.toBuffer(), 900);

@@ -88,7 +88,11 @@
     },
     "PVP_RANKING": "PvP Ranking",
     "RANKINGS": "Change settings for ranking notifications.",
-    "SET": "Les notifications pour la catégorie `{{ category }}` sont `{{ option }}`"
+    "SET": "Les notifications pour la catégorie `{{ category }}` sont `{{ option }}`",
+    "SPLIT_LOOT_VALUE": {
+      "DESCRIPTION": "Divisez la valeur du butin entre l'équipement et l'inventaire.",
+      "SET": "Valeur du butin partagé : {{ enabled }}"
+    }
   },
   "SUBSCRIPTION": {
     "ACTIONS": "Invalid action, please select one of: {{ actions }}.",

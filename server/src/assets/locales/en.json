@@ -88,7 +88,11 @@
     },
     "PVP_RANKING": "PvP Ranking",
     "RANKINGS": "Change settings for ranking notifications.",
-    "SET": "Notifications for category `{{ category }}` are `{{ option }}`"
+    "SET": "Notifications for category `{{ category }}` are `{{ option }}`",
+    "SPLIT_LOOT_VALUE": {
+      "DESCRIPTION": "Split the loot value between gear and inventory.",
+      "SET": "Split loot value: {{ enabled }}"
+    }
   },
   "SUBSCRIPTION": {
     "ACTIONS": "Invalid action, please select one of: {{ actions }}.",
