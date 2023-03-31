@@ -111,10 +111,17 @@ router.use(`/:serverId`, serverAdmin);
  *          description: Discord server id
  *          readOnly: true
  *          example: "738365346855256107"
- *        lang:
- *          type: string
- *          description: Bot language
- *          default: "en"
+ *        general:
+ *          type: object
+ *          properties:
+ *            locale:
+ *              type: string
+ *              description: Bot language
+ *              default: "en"
+ *            guildTags:
+ *              type: boolean
+ *              description: Display guild tags in player's names
+ *              default: false
  *        battles:
  *          allOf:
  *          - $ref: '#/components/schemas/Category'

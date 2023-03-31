@@ -38,7 +38,7 @@ async function subscribe(client) {
           track,
           limits,
         });
-        await sendNotification(client, channel, embedBattle(battle, settings.lang));
+        await sendNotification(client, channel, embedBattle(battle, settings.general.locale));
       }
     } catch (error) {
       logger.error(`[${server}] Error processing battle ${battle.id}: ${error.message}`, { error });

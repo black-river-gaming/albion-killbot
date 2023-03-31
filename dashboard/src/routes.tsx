@@ -8,7 +8,7 @@ import Dashboard from "pages/Dashboard";
 import Home from "pages/Home";
 import Premium from "pages/Premium";
 import Server from "pages/Server";
-import Settings from "pages/Settings";
+import SettingsPage from "pages/SettingsPage";
 import SubscriptionPage from "pages/Subscription";
 import TrackPage from "pages/TrackPage";
 import { createRoutesFromElements, Navigate, Route } from "react-router-dom";
@@ -23,7 +23,7 @@ const routes = createRoutesFromElements(
           <Route index element={<Dashboard />} />
           <Route path=":serverId" element={<Server />}>
             <Route index element={<Navigate to="settings" replace={true} />} />
-            <Route path="settings" element={<Settings />} />
+            <Route path="settings" element={<SettingsPage />} />
             <Route path="track" element={<TrackPage />} />
             <Route path="subscription" element={<SubscriptionPage />} />
           </Route>

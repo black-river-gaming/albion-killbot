@@ -13,12 +13,6 @@
     "SET_CHANNEL": "Channel for category '{{ category }}' defined to {{{ channel }}}."
   },
   "COMMAND_ERROR": "Ocorreu um erro ao executar o comando. Por favor tente novamente mais tarde.",
-  "GENERAL": {
-    "ACTIVATE": "Activate",
-    "DEACTIVATE": "Deactivate",
-    "DISABLED": "disabled",
-    "ENABLED": "enabled"
-  },
   "HELP": {
     "HELP": "Показать список команд бота.",
     "LIST": "Списки отслеживаемых игроков, гильдий и альянсов.",
@@ -47,13 +41,6 @@
     "VICTIM_GUILD": "Гильдия жертв",
     "VICTIM_IP": "IP жертвы"
   },
-  "LANGUAGE": {
-    "NOT_SUPPORTED": "Этот язык не поддерживается.",
-    "SET_LANGUAGE": "Язык установлен на '{{ lang }}'"
-  },
-  "MODE": {
-    "SET": "Режим установлен на: {{ mode }}"
-  },
   "RANKING": {
     "CRAFTING": "Рейтинг крафта",
     "DAILY": "Daily PvP Ranking",
@@ -75,17 +62,28 @@
     "BATTLES": "Change settings for battle notifications.",
     "CHANNEL": "Channel",
     "DEATHS": "Change settings for death notifications.",
-    "ENABLED": "Enable",
+    "DISABLED": "disabled",
+    "ENABLED": "Enabled",
     "FREQUENCIES": {
       "DAILY": "Daily",
       "HOURLY": "Every hour",
       "OFF": "Off"
     },
+    "GENERAL": "Изменить общие настройки",
     "GUILD_RANKING": "Guild Ranking",
+    "GUILD_TAGS": {
+      "DESCRIPTION": "Показывать теги гильдии в именах игроков.",
+      "SET": "Показать теги гильдии: {{ enabled }}"
+    },
     "KILLS": "Change settings for kill notifications.",
-    "LANG": "Change language.",
+    "LANG": {
+      "DESCRIPTION": "Change language.",
+      "NOT_SUPPORTED": "Этот язык не поддерживается.",
+      "SET": "Язык установлен на '{{ lang }}'"
+    },
     "MODE": {
       "IMAGE": "Image",
+      "SET": "Режим установлен на: {{ mode }}",
       "TEXT": "Text"
     },
     "PVP_RANKING": "PvP Ranking",

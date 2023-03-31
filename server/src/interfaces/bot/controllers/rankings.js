@@ -42,7 +42,7 @@ async function displayRankings(client, rankingType, { clearAfterDisplay = false 
       client,
       channel,
       embedPvpRanking(ranking, {
-        locale: settings.lang,
+        locale: settings.general.locale,
       }),
     );
   }

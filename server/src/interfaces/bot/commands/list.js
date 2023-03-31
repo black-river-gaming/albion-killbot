@@ -12,7 +12,7 @@ const command = {
     const limits = await getLimits(interaction.guild.id);
 
     await interaction.reply({
-      ...embedTrackList(track, limits, { locale: settings.lang }),
+      ...embedTrackList(track, limits, { locale: settings.general.locale }),
       ephemeral: true,
     });
   },

@@ -11,7 +11,10 @@ const REPORT_MODES = Object.freeze({
 });
 
 const DEFAULT_SETTINGS = Object.freeze({
-  lang: "en",
+  general: {
+    lang: "en",
+    guildTags: false,
+  },
   kills: {
     enabled: true,
     channel: null,
@@ -36,7 +39,7 @@ const DEFAULT_SETTINGS = Object.freeze({
 
 async function getSettings(serverId) {
   return await memoize(`settings-${serverId}`, async () => {
-    const settings = await findOne(SETTINGS_COLLECTION, { guild: serverId });
+    const settings = await findOne(SETTINGS_COLLECTION, { server: serverId });
     return Object.assign(clone(DEFAULT_SETTINGS), settings);
   });
 }
@@ -45,22 +48,30 @@ async function fetchAllSettings() {
   return await find(SETTINGS_COLLECTION, {});
 }
 
-async function setSettings(serverId, settings) {
-  await updateOne(SETTINGS_COLLECTION, { guild: serverId }, { $set: settings }, { upsert: true });
+async function setSettings(serverId, data) {
+  // TODO: Schema validation
+  const { general, kills, deaths, battles, rankings } = data;
+
+  await updateOne(
+    SETTINGS_COLLECTION,
+    { server: serverId },
+    { $set: { server: serverId, general, kills, deaths, battles, rankings } },
+    { upsert: true },
+  );
   remove(`settings-${serverId}`);
   return await getSettings(serverId);
 }
 
-async function deleteSettings(guild) {
-  return await deleteOne(SETTINGS_COLLECTION, { guild });
+async function deleteSettings(serverId) {
+  return await deleteOne(SETTINGS_COLLECTION, { server: serverId });
 }
 
 async function updateSettingsCache(timeout) {
   const settings = await find(SETTINGS_COLLECTION, {});
   settings.forEach((settings) => {
-    if (!settings.guild) return;
+    if (!settings.server) return;
 
-    const serverId = settings.guild;
+    const serverId = settings.server;
     set(`settings-${serverId}`, settings, { timeout });
   });
 }

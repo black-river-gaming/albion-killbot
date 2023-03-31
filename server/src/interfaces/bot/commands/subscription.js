@@ -15,7 +15,7 @@ const command = {
 
     if (!isSubscriptionsEnabled())
       return interaction.reply({
-        content: t("SUBSCRIPTION.FAILED", { reason: t("GENERAL.DISABLED") }),
+        content: t("SUBSCRIPTION.FAILED", { reason: t("SETTINGS.DISABLED") }),
         ephemeral,
       });
 

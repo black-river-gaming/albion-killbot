@@ -32,7 +32,7 @@ async function displayRankings(client, rankingType) {
         continue;
       }
 
-      await sendNotification(client, channel, embedGuildRanking(trackGuildData, { locale: settings.lang }));
+      await sendNotification(client, channel, embedGuildRanking(trackGuildData, { locale: settings.general.locale }));
     }
   }
 

@@ -13,12 +13,6 @@
     "SET_CHANNEL": "Channel for category '{{ category }}' defined to {{{ channel }}}."
   },
   "COMMAND_ERROR": "There was an error while executing this command. Please try again later.",
-  "GENERAL": {
-    "ACTIVATE": "Activate",
-    "DEACTIVATE": "Deactivate",
-    "DISABLED": "Disabled",
-    "ENABLED": "Enabled"
-  },
   "HELP": {
     "HELP": "Show bot command list.",
     "LIST": "Lists tracked players, guilds and alliances.",
@@ -47,13 +41,6 @@
     "VICTIM_GUILD": "Victim's Guild",
     "VICTIM_IP": "Victim's IP"
   },
-  "LANGUAGE": {
-    "NOT_SUPPORTED": "This language is not supported.",
-    "SET_LANGUAGE": "Language set to '{{ lang }}'"
-  },
-  "MODE": {
-    "SET": "Output mode set to: {{ mode }}"
-  },
   "RANKING": {
     "CRAFTING": "Crafting Ranking",
     "DAILY": "Daily PvP Ranking",
@@ -75,17 +62,28 @@
     "BATTLES": "Change settings for battle notifications.",
     "CHANNEL": "Channel",
     "DEATHS": "Change settings for death notifications.",
-    "ENABLED": "Enable",
+    "DISABLED": "Disabled",
+    "ENABLED": "Enabled",
     "FREQUENCIES": {
       "DAILY": "Daily",
       "HOURLY": "Every hour",
       "OFF": "Off"
     },
+    "GENERAL": "Change general settings",
     "GUILD_RANKING": "Guild Ranking",
+    "GUILD_TAGS": {
+      "DESCRIPTION": "Show guild tags in player's names.",
+      "SET": "Display guild tags: {{ enabled }}"
+    },
     "KILLS": "Change settings for kill notifications.",
-    "LANG": "Change language.",
+    "LANG": {
+      "DESCRIPTION": "Change language.",
+      "NOT_SUPPORTED": "This language is not supported.",
+      "SET": "Language set to '{{ lang }}'"
+    },
     "MODE": {
       "IMAGE": "Image",
+      "SET": "Output mode set to: {{ mode }}",
       "TEXT": "Text"
     },
     "PVP_RANKING": "PvP Ranking",

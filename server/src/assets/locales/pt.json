@@ -13,12 +13,6 @@
     "SET_CHANNEL": "Canal para a categoria '{{ category }}' definido para {{{ channel }}}."
   },
   "COMMAND_ERROR": "Ocorreu um erro ao executar o comando. Por favor tente novamente mais tarde.",
-  "GENERAL": {
-    "ACTIVATE": "Activar",
-    "DEACTIVATE": "Desativar",
-    "DISABLED": "desativado",
-    "ENABLED": "ativado"
-  },
   "HELP": {
     "HELP": "Mostra a lista de comandos do bot.",
     "LIST": "Lista os jogadores, guildas e alianças rastreadas.",
@@ -47,13 +41,6 @@
     "VICTIM_GUILD": "Guilda da Vítima",
     "VICTIM_IP": "IP da Vítima"
   },
-  "LANGUAGE": {
-    "NOT_SUPPORTED": "Este idioma não é suportado.",
-    "SET_LANGUAGE": "Idioma definido para '{{ lang }}'"
-  },
-  "MODE": {
-    "SET": "Modo de saida definido para: {{ mode }}"
-  },
   "RANKING": {
     "CRAFTING": "Ranking de Criação",
     "DAILY": "Ranking diário de PvP",
@@ -75,17 +62,28 @@
     "BATTLES": "Mudar configurações de batalhas.",
     "CHANNEL": "Canal",
     "DEATHS": "Mudar configurações de mortes.",
+    "DISABLED": "desativado",
     "ENABLED": "Ativado",
     "FREQUENCIES": {
       "DAILY": "Diariamente",
       "HOURLY": "A cada hora",
       "OFF": "Desligado"
     },
+    "GENERAL": "Mudar configurações gerais",
     "GUILD_RANKING": "Ranking de Guilda",
+    "GUILD_TAGS": {
+      "DESCRIPTION": "Mostra as tags da guilda nos nomes dos jogadores.",
+      "SET": "Mostra as tags da guilda: {{ enabled }}"
+    },
     "KILLS": "Mudar configurações de abates.",
-    "LANG": "Alterar idioma.",
+    "LANG": {
+      "DESCRIPTION": "Alterar idioma.",
+      "NOT_SUPPORTED": "Este idioma não é suportado.",
+      "SET": "Idioma definido para '{{ lang }}'"
+    },
     "MODE": {
       "IMAGE": "Imagem",
+      "SET": "Modo de saida definido para: {{ mode }}",
       "TEXT": "Texto"
     },
     "PVP_RANKING": "Ranking PvP",

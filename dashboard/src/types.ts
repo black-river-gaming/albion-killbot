@@ -25,24 +25,27 @@ export interface ServerPartial extends ServerBase {
   bot: boolean;
 }
 
-export interface Server extends ServerBase {
-  channels: Channel[];
-  settings: Settings;
+export interface IServer extends ServerBase {
+  channels: IChannel[];
+  settings: ISettings;
   limits: Limits;
   subscription: Subscription;
   track: TrackList;
 }
 
-export interface Channel {
+export interface IChannel {
   id: string;
   name: string;
   type: number;
   parentId?: string;
 }
 
-export interface Settings {
-  guild: string;
-  lang: string;
+export interface ISettings {
+  server: string;
+  general: {
+    locale: string;
+    guildTags: boolean;
+  };
   kills: {
     enabled: boolean;
     channel: string;
