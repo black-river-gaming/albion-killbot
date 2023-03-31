@@ -1,11 +1,16 @@
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import guildTags from "assets/settings/guildTags.png";
+import splitLootValue from "assets/settings/splitLootValue.png";
 import { LANGUAGES } from "helpers/constants";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { getLocaleName } from "helpers/utils";
 import { Button, Form, OverlayTrigger, Stack, Tooltip } from "react-bootstrap";
-import { setGeneralGuildTags, setGeneralLocale } from "store/settings";
+import {
+  setGeneralGuildTags,
+  setGeneralLocale,
+  setGeneralSplitLootValue,
+} from "store/settings";
 
 const SettingsGeneral = () => {
   const general = useAppSelector((state) => state.settings.general);
@@ -47,7 +52,7 @@ const SettingsGeneral = () => {
             >
               <div>Show Guild Tags</div>
               <OverlayTrigger
-                placement="top"
+                placement="auto-end"
                 overlay={
                   <Tooltip>
                     <Stack gap={2} className="align-items-start">
@@ -55,6 +60,48 @@ const SettingsGeneral = () => {
                       <img
                         src={guildTags}
                         alt="Example of Guild Tags"
+                        style={{ borderRadius: "0.2rem" }}
+                      />
+                    </Stack>
+                  </Tooltip>
+                }
+              >
+                <Button className="btn-icon" variant="secondary" size="sm">
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Button>
+              </OverlayTrigger>
+            </Stack>
+          </Form.Switch.Label>
+        </Form.Switch>
+      </Form.Group>
+
+      <Form.Group controlId="splitLootValue">
+        <Form.Switch>
+          <Form.Switch.Input
+            checked={general.splitLootValue}
+            type="checkbox"
+            onChange={(e) =>
+              dispatch(setGeneralSplitLootValue(e.target.checked))
+            }
+          />
+          <Form.Switch.Label>
+            <Stack
+              direction="horizontal"
+              gap={1}
+              className="align-items-center"
+            >
+              <div>Split Loot Value</div>
+              <OverlayTrigger
+                placement="auto-end"
+                overlay={
+                  <Tooltip>
+                    <Stack gap={2} className="align-items-start">
+                      <div>
+                        Split the loot value between gear and inventory:
+                      </div>
+                      <img
+                        src={splitLootValue}
+                        alt="Example of Split Loot"
                         style={{ borderRadius: "0.2rem" }}
                       />
                     </Stack>

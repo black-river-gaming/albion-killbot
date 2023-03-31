@@ -45,6 +45,7 @@ export interface ISettings {
   general: {
     locale: string;
     guildTags: boolean;
+    splitLootValue: boolean;
   };
   kills: {
     enabled: boolean;
