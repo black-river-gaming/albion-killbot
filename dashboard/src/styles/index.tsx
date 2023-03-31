@@ -347,15 +347,15 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
         border-color: ${({ theme }) => theme.primary};
         background-color: ${({ theme }) => theme.primary};
       }
+    }
 
-      &:focus:not(:checked) {
+    input.form-check-input:focus:not(:checked) {
         background-image: ${({ theme }) =>
           `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23${theme.primary.replace(
             "#",
             ""
           )}'/%3e%3c/svg%3e") !important`};
         border-color: ${({ theme }) => theme.primary};
-      }
     }
   }
 
