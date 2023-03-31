@@ -616,6 +616,38 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
       opacity: 1;
     }
 
+    &.bs-tooltip-start {
+      .tooltip-arrow {
+        :before {
+          border-left-color: ${({ theme }) => theme.background}f1;
+        }
+      }
+    }
+
+    &.bs-tooltip-end {
+      .tooltip-arrow {
+        :before {
+          border-right-color: ${({ theme }) => theme.background}f1;
+        }
+      }
+    }
+
+    &.bs-tooltip-top {
+      .tooltip-arrow {
+        :before {
+          border-top-color: ${({ theme }) => theme.background}f1;
+        }
+      }
+    }
+
+    &.bs-tooltip-bottom {
+      .tooltip-arrow {
+        :before {
+          border-bottom-color: ${({ theme }) => theme.background}f1;
+        }
+      }
+    }
+
     .tooltip-inner {
       background: ${({ theme }) => theme.background}f1;
       max-width: unset;
