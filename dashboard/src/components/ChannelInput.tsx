@@ -3,12 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CHANNEL_TYPES } from "helpers/discord";
 import { useEffect, useState } from "react";
 import { Form, FormControlProps } from "react-bootstrap";
-import { Channel } from "types";
-import Paper from "../Paper";
-import StyledChannelInput from "./styles";
+import { IChannel } from "types";
+import Paper from "./Paper";
+import StyledChannelInput from "./styles/ChannelInput";
 
 interface ChannelInputProps extends FormControlProps {
-  availableChannels: Channel[];
+  availableChannels: IChannel[];
   onChannelChange?: { (channel: string): void };
 }
 
@@ -16,7 +16,7 @@ const ChannelInput = (props: ChannelInputProps) => {
   const { availableChannels, value, onChannelChange, ...formControlProps } =
     props;
 
-  const [matchedChannels, setMatchedChannels] = useState<Channel[]>(
+  const [matchedChannels, setMatchedChannels] = useState<IChannel[]>(
     availableChannels.filter((channel) => channel.type === CHANNEL_TYPES.TEXT)
   );
   const [inputText, setInputText] = useState("");
@@ -35,7 +35,7 @@ const ChannelInput = (props: ChannelInputProps) => {
     }
   }, [value, availableChannels]);
 
-  const setSelectedChannel = (channel?: Channel) => {
+  const setSelectedChannel = (channel?: IChannel) => {
     setInputText(channel ? `#${channel.name}` : ``);
     if (channel?.parentId) {
       setCategory(
@@ -71,7 +71,7 @@ const ChannelInput = (props: ChannelInputProps) => {
     setSelectedChannel();
   };
 
-  const handleMenuOptionClick = (channel: Channel) => {
+  const handleMenuOptionClick = (channel: IChannel) => {
     if (formControlProps.disabled) return;
     setSelectedChannel(channel);
   };

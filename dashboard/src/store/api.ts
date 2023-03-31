@@ -1,10 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   ISearchResults,
-  Server,
+  IServer,
+  ISettings,
   ServerPartial,
   Session,
-  Settings,
   Subscription,
   SubscriptionPricesResponse,
   TrackList,
@@ -116,7 +116,7 @@ export const api = createApi({
         query: () => `/servers`,
         providesTags: ["Server"],
       }),
-      fetchServer: builder.query<Server, string>({
+      fetchServer: builder.query<IServer, string>({
         query: (serverId) => `/servers/${serverId}`,
         providesTags: ["Server"],
       }),
@@ -145,7 +145,7 @@ export const api = createApi({
       }),
       updateSettings: builder.mutation<
         void,
-        { serverId: string; settings: Partial<Settings> }
+        { serverId: string; settings: Partial<ISettings> }
       >({
         query: ({ serverId, settings }) => ({
           url: `/servers/${serverId}/settings`,

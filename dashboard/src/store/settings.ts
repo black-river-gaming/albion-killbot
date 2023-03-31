@@ -1,8 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Settings } from "types";
+import { ISettings } from "types";
 
-const initialState = {
-  lang: "en",
+const initialState: ISettings = {
+  server: "",
+  general: {
+    locale: "en",
+    guildTags: false,
+  },
   kills: {
     enabled: true,
     channel: "",
@@ -29,15 +33,19 @@ export const settingsSlice = createSlice({
   name: "settings",
   initialState,
   reducers: {
-    loadSettings: (state, { payload }: PayloadAction<Settings>) => {
-      state.lang = payload.lang;
-      state.kills = payload.kills;
-      state.deaths = payload.deaths;
-      state.battles = payload.battles;
-      state.rankings = payload.rankings;
+    loadSettings: (state, action: PayloadAction<ISettings>) => {
+      state.server = action.payload.server;
+      state.general = action.payload.general;
+      state.kills = action.payload.kills;
+      state.deaths = action.payload.deaths;
+      state.battles = action.payload.battles;
+      state.rankings = action.payload.rankings;
     },
-    setLang: (state, action: PayloadAction<string>) => {
-      state.lang = action.payload;
+    setGeneralLocale: (state, action: PayloadAction<string>) => {
+      state.general.locale = action.payload;
+    },
+    setGeneralGuildTags: (state, action: PayloadAction<boolean>) => {
+      state.general.guildTags = action.payload;
     },
     setKillsEnabled: (state, action: PayloadAction<boolean>) => {
       state.kills.enabled = action.payload;
@@ -80,7 +88,8 @@ export const settingsSlice = createSlice({
 
 export const {
   loadSettings,
-  setLang,
+  setGeneralLocale,
+  setGeneralGuildTags,
   setKillsEnabled,
   setKillsChannel,
   setKillsMode,

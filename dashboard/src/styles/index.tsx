@@ -197,41 +197,57 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
 
     &.btn-icon {
       border-radius: 50%;
-      width: 2rem;
-      height: 2rem;
-    }
+      width: auto;
+      height: auto;
+      padding: 0;
 
-    &.btn-primary {
-      color: ${({ theme }) => theme.text};
-      background-color: ${({ theme }) => theme.primary};
-      border-color: ${({ theme }) => theme.primary};
+      background-color: ${({ theme }) => theme.text};
+      border-color: ${({ theme }) => theme.text};
 
-      &:focus {
-        box-shadow: 0 0 0 0.25rem ${({ theme }) => theme.primary}1a;
+      &.btn-primary {
+        color: ${({ theme }) => theme.primary};
+      }
+
+      &.btn-secondary {
+        color: ${({ theme }) => theme.secondary};
+
+        &:focus {
+          box-shadow: 0 0 0 0.25rem ${({ theme }) =>
+            theme.secondary}6f !important;
+        }
       }
     }
 
-    &.btn-secondary {
-      color: ${({ theme }) => theme.text};
-      background-color: ${({ theme }) => theme.secondary};
-      border-color: ${({ theme }) => theme.secondary};
-
-      &:focus {
-        box-shadow: 0 0 0 0.25rem ${({ theme }) => theme.secondary}1a;
-      }
-    }
-
-    svg {
-      &:not(:only-child) {
-        padding: 0rem 0.5rem;
+    &:not(.btn-icon) {
+      &.btn-primary {
+        color: ${({ theme }) => theme.text};
+        background-color: ${({ theme }) => theme.primary};
+        border-color: ${({ theme }) => theme.primary};
       }
 
-      &:first-child {
-        padding-left: 0;
+      &.btn-secondary {
+        color: ${({ theme }) => theme.text};
+        background-color: ${({ theme }) => theme.secondary};
+        border-color: ${({ theme }) => theme.secondary};
+
+        &:focus {
+          box-shadow: 0 0 0 0.25rem ${({ theme }) =>
+            theme.secondary}6f !important;
+        }
       }
 
-      &:last-child {
-        padding-right: 0;
+      svg {
+        &:not(:only-child) {
+          padding: 0rem 0.5rem;
+        }
+
+        &:first-child {
+          padding-left: 0;
+        }
+
+        &:last-child {
+          padding-right: 0;
+        }
       }
     }
   }
@@ -332,9 +348,13 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
         background-color: ${({ theme }) => theme.primary};
       }
 
-      &:focus {
+      &:focus:not(:checked) {
+        background-image: ${({ theme }) =>
+          `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23${theme.primary.replace(
+            "#",
+            ""
+          )}'/%3e%3c/svg%3e") !important`};
         border-color: ${({ theme }) => theme.primary};
-        box-shadow: 0 0 0 0.25rem ${({ theme }) => theme.primary}1c;
       }
     }
   }
@@ -587,6 +607,18 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
     to {
       transform: translateY(0rem);
       opacity: 1;
+    }
+  }
+
+  /* Bootstrap Tooltip overrides */
+  .tooltip {
+    &.show {
+      opacity: 1;
+    }
+
+    .tooltip-inner {
+      background: ${({ theme }) => theme.background}f1;
+      max-width: unset;
     }
   }
 `;
