@@ -185,8 +185,14 @@ async function getLootValue(event, { server = SERVERS.WEST }) {
         const victimItems = getVictimItems(event);
         if (victimItems.length === 0) return 0;
 
-        const itemList = victimItems.map((item) => item.Type);
-        const qualities = victimItems
+        const itemList = []
+          .concat(victimItems.equipment)
+          .concat(victimItems.inventory)
+          .map((item) => item.Type)
+          .filter((item, i, items) => items.indexOf(item) === i);
+        const qualities = []
+          .concat(victimItems.equipment)
+          .concat(victimItems.inventory)
           .map((item) => Math.max(item.Quality, 1))
           .filter((item, i, items) => items.indexOf(item) === i)
           .sort();
@@ -198,24 +204,30 @@ async function getLootValue(event, { server = SERVERS.WEST }) {
         });
         if (!itemPriceData && itemPriceData.length === 0) return 0;
 
-        return victimItems.reduce((lootValue, item) => {
-          let prices = itemPriceData
-            .filter(
-              (priceData) =>
-                priceData.item_id === item.Type &&
-                priceData.quality === Math.max(item.Quality, 1) &&
-                priceData.sell_price_min > 0,
-            )
-            .map((priceData) => priceData.sell_price_min);
-          if (prices.length === 0) return lootValue;
-          // Remove values that are too unrealistic (150% diff tolerance to min value)
-          if (prices.length >= 2) {
-            const minPrice = prices.reduce((min, price) => Math.min(min, price), prices[0]);
-            prices = prices.filter((price) => Math.abs(price - minPrice) < minPrice * 1.5);
-          }
+        const calculateLootValue = (items) =>
+          items.reduce((lootValue, item) => {
+            let prices = itemPriceData
+              .filter(
+                (priceData) =>
+                  priceData.item_id === item.Type &&
+                  priceData.quality === Math.max(item.Quality, 1) &&
+                  priceData.sell_price_min > 0,
+              )
+              .map((priceData) => priceData.sell_price_min);
+            if (prices.length === 0) return lootValue;
+            // Remove values that are too unrealistic (150% diff tolerance to min value)
+            if (prices.length >= 2) {
+              const minPrice = prices.reduce((min, price) => Math.min(min, price), prices[0]);
+              prices = prices.filter((price) => Math.abs(price - minPrice) < minPrice * 1.5);
+            }
 
-          return Math.round(lootValue + average(...prices));
-        }, 0);
+            return Math.round(lootValue + average(...prices) * item.Count);
+          }, 0);
+
+        return {
+          equipment: calculateLootValue(victimItems.equipment),
+          inventory: calculateLootValue(victimItems.inventory),
+        };
       } catch (error) {
         logger.error(`Failed to fetch kill loot value for event ${event.EventId}: ${error.message}`, {
           error,

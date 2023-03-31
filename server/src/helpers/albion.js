@@ -32,20 +32,21 @@ function toTrackEntity(entity, server) {
 // Get all victim items, including equipment and inventory, excluding nulls
 function getVictimItems(event) {
   const { Equipment, Inventory } = event.Victim;
-  return [
-    Equipment.Armor,
-    Equipment.Bag,
-    Equipment.Cape,
-    Equipment.Food,
-    Equipment.Head,
-    Equipment.MainHand,
-    Equipment.Mount,
-    Equipment.OffHand,
-    Equipment.Potion,
-    Equipment.Shoes,
-  ]
-    .concat(Inventory)
-    .filter((item) => !!item);
+  return {
+    equipment: [
+      Equipment.Armor,
+      Equipment.Bag,
+      Equipment.Cape,
+      Equipment.Food,
+      Equipment.Head,
+      Equipment.MainHand,
+      Equipment.Mount,
+      Equipment.OffHand,
+      Equipment.Potion,
+      Equipment.Shoes,
+    ].filter((item) => !!item),
+    inventory: Inventory.filter((item) => !!item),
+  };
 }
 
 const transformEventPlayer = (player) => ({
@@ -76,7 +77,7 @@ const transformEvent = (event) => ({
   battle: event.BattleId,
   timestamp: event.TimeStamp,
   fame: event.TotalVictimKillFame,
-  lootValue: event.TotalVictimLootValue,
+  lootValue: event.lootValue,
   killer: transformEventPlayer(event.Killer),
   victim: transformEventPlayer(event.Victim),
   participants: event.Participants.map(transformEventPlayer),
