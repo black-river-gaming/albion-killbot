@@ -7,6 +7,7 @@ function getLocale(locale = "en") {
   const l = {};
 
   i18n.configure({
+    autoReload: process.env.NODE_ENV === "development",
     defaultLocale: "en",
     directory: LOCALE_DIR,
     objectNotation: true,
@@ -16,6 +17,7 @@ function getLocale(locale = "en") {
       __n: "tn",
     },
     register: l,
+    updateFiles: false,
   });
 
   l.setLocale(locale);
