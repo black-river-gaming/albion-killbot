@@ -23,6 +23,7 @@ function toTrackEntity(entity, server) {
     return {
       id: entity.AllianceId,
       name: entity.AllianceTag,
+      server,
     };
   }
 

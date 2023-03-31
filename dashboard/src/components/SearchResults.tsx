@@ -76,7 +76,7 @@ const SearchResults = ({ limits, searchResults }: ISearchResultsProps) => {
       {alliances.length > 0 && (
         <SearchResultsList
           title="Alliances"
-          list={guilds.slice(0, 5)}
+          list={alliances.slice(0, 5)}
           track={track.alliances}
           onTrackClick={(e, item) => doTrackAlliance(item)}
         />
