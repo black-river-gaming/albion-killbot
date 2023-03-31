@@ -2,7 +2,7 @@ import { faStripe } from "@fortawesome/free-brands-svg-icons";
 import {
   faCircleCheck,
   faCircleQuestion,
-  faPeopleGroup
+  faPeopleGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
@@ -22,7 +22,7 @@ import {
   Dropdown,
   ListGroup,
   Row,
-  Stack
+  Stack,
 } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import {
@@ -30,7 +30,7 @@ import {
   useFetchPricesQuery,
   useFetchSubscriptionsQuery,
   useFetchUserQuery,
-  useManageSubscriptionMutation
+  useManageSubscriptionMutation,
 } from "store/api";
 import { ServerBase, SubscriptionPrice } from "types";
 import UserSubscriptionsCard from "./styles/Premium";
