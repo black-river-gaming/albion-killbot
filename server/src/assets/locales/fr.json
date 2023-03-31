@@ -13,12 +13,6 @@
     "SET_CHANNEL": "Canal pour la catégorie '{{ category }}' sélectionné {{{ channel }}}."
   },
   "COMMAND_ERROR": "There was an error while executing this command. Please try again later.",
-  "GENERAL": {
-    "ACTIVATE": "Activate",
-    "DEACTIVATE": "Deactivate",
-    "DISABLED": "Désactivé",
-    "ENABLED": "Activé"
-  },
   "HELP": {
     "HELP": "Afficher la liste des commandes du bot.",
     "LIST": "Liste des joueurs, guildes et alliances suivis.",
@@ -47,13 +41,6 @@
     "VICTIM_GUILD": "Guilde victime",
     "VICTIM_IP": "IP de la victime"
   },
-  "LANGUAGE": {
-    "NOT_SUPPORTED": "Cette langue n'est pas disponible.",
-    "SET_LANGUAGE": "Langue sélectionné '{{ lang }}'"
-  },
-  "MODE": {
-    "SET": "Mode de sortie défini sur: {{ mode }}"
-  },
   "RANKING": {
     "CRAFTING": "Classement de craft",
     "DAILY": "Classement PvP quotidien",
@@ -75,17 +62,28 @@
     "BATTLES": "Change settings for battle notifications.",
     "CHANNEL": "Channel",
     "DEATHS": "Change settings for death notifications.",
-    "ENABLED": "Enable",
+    "DISABLED": "Désactivé",
+    "ENABLED": "Activé",
     "FREQUENCIES": {
       "DAILY": "Daily",
       "HOURLY": "Every hour",
       "OFF": "Off"
     },
+    "GENERAL": "Modifier les paramètres généraux",
     "GUILD_RANKING": "Guild Ranking",
+    "GUILD_TAGS": {
+      "DESCRIPTION": "Afficher les tags de guilde dans les noms des joueurs.",
+      "SET": "Afficher les tags de guilde: {{ enabled }}"
+    },
     "KILLS": "Change settings for kill notifications.",
-    "LANG": "Change language.",
+    "LANG": {
+      "DESCRIPTION": "Change language.",
+      "NOT_SUPPORTED": "Cette langue n'est pas disponible.",
+      "SET": "Langue sélectionné '{{ lang }}'"
+    },
     "MODE": {
       "IMAGE": "Image",
+      "SET": "Mode de sortie défini sur: {{ mode }}",
       "TEXT": "Text"
     },
     "PVP_RANKING": "PvP Ranking",

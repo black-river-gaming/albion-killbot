@@ -47,22 +47,23 @@ async function subscribe(client) {
             limits,
           },
         );
-        const locale = settings.lang;
+        const { locale, guildTags } = settings.general;
 
         if (mode === REPORT_MODES.IMAGE) {
           const inventory = guildEvent.Victim.Inventory.filter((i) => i != null);
           const hasInventory = inventory.length > 0;
-          const eventImage = await generateEventImage(guildEvent, settings.lang);
+          const eventImage = await generateEventImage(guildEvent);
           await sendNotification(
             client,
             channel,
             embedEventImage(guildEvent, eventImage, {
               locale,
+              guildTags,
               addFooter: !hasInventory,
             }),
           );
           if (hasInventory) {
-            const inventoryImage = await generateInventoryImage(inventory, settings.lang);
+            const inventoryImage = await generateInventoryImage(inventory);
             await sendNotification(
               client,
               channel,
@@ -72,7 +73,7 @@ async function subscribe(client) {
             );
           }
         } else if (mode === REPORT_MODES.TEXT) {
-          await sendNotification(client, channel, embedEvent(guildEvent, { locale: settings.lang }));
+          await sendNotification(client, channel, embedEvent(guildEvent, { locale, guildTags }));
         }
       }
     } catch (error) {

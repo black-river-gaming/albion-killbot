@@ -50,7 +50,7 @@ async function handle(interaction) {
 
   const settings = await getSettings(interaction.guild.id);
   const track = await getTrack(interaction.guild.id);
-  const t = getLocale(settings.lang).t;
+  const t = getLocale(settings.general.locale).t;
 
   try {
     const command = interaction.client.commands.get(interaction.commandName);

@@ -34,7 +34,7 @@ const command = {
       pvpRanking: async () => {
         await interaction.deferReply({ ephemeral: false });
         const pvpRanking = await getRanking(interaction.guild.id);
-        return await interaction.editReply(embedPvpRanking(pvpRanking, { locale: settings.lang }));
+        return await interaction.editReply(embedPvpRanking(pvpRanking, { locale: settings.general.locale }));
       },
       guildRanking: async () => {
         await interaction.deferReply({ ephemeral: false });
@@ -43,7 +43,7 @@ const command = {
         for (const trackGuild of track.guilds) {
           const albionGuild = await getGuildByTrackGuild(trackGuild);
           if (!albionGuild) await interaction.followUp(t("RANKING.NO_DATA", { guild: trackGuild.name }));
-          else await interaction.followUp(embedGuildRanking(albionGuild, { locale: settings.lang }));
+          else await interaction.followUp(embedGuildRanking(albionGuild, { locale: settings.general.locale }));
         }
       },
     };

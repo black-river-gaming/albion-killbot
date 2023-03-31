@@ -91,22 +91,22 @@ const rankings = (subcommand) =>
         .addChoices(...rankingFrequencies),
     );
 
-const lang = (subcommand) =>
+const general = (subcommand) =>
   subcommand
-    .setName("lang")
-    .setDescription(t("SETTINGS.LANG"))
+    .setName("general")
+    .setDescription(t("SETTINGS.GENERAL"))
     .addStringOption((option) =>
       option
         .setName("language")
-        .setDescription(t("SETTINGS.LANG"))
-        .setRequired(true)
+        .setDescription(t("SETTINGS.LANG.DESCRIPTION"))
         .addChoices(
           ...localeList.map((locale) => ({
             name: locale,
             value: locale,
           })),
         ),
-    );
+    )
+    .addBooleanOption((option) => option.setName("guild_tags").setDescription(t("SETTINGS.GUILD_TAGS.DESCRIPTION")));
 
 function getCommonOptions(settings, category, interaction) {
   const enabled = interaction.options.getBoolean("enabled");
@@ -121,7 +121,7 @@ function getCommonOptions(settings, category, interaction) {
 function printCommonOptions(settings, category, interaction, t) {
   let reply = "";
 
-  const option = settings[category].enabled ? t("GENERAL.ENABLED") : t("GENERAL.DISABLED");
+  const option = settings[category].enabled ? t("SETTINGS.ENABLED") : t("SETTINGS.DISABLED");
   const channel = interaction.guild.channels.cache.get(settings[category].channel);
   reply += t("SETTINGS.SET", { category, option }) + "\n";
   if (channel) reply += t("CHANNEL.SET_CHANNEL", { category, channel: channel.toString() }) + "\n";
@@ -139,9 +139,8 @@ const command = {
     .addSubcommand(deaths)
     .addSubcommand(battles)
     .addSubcommand(rankings)
-    .addSubcommand(lang),
+    .addSubcommand(general),
   handle: async (interaction, { settings, t }) => {
-    const reply = async (content, ephemeral = true) => await interaction.reply({ content, ephemeral });
     const editReply = async (content, ephemeral = true) => await interaction.editReply({ content, ephemeral });
 
     const subcommands = {
@@ -156,7 +155,7 @@ const command = {
         await setSettings(interaction.guild.id, settings);
 
         let reply = printCommonOptions(settings, category, interaction, t);
-        reply += t("MODE.SET", { mode: settings[category].mode }) + "\n";
+        reply += t("SETTINGS.MODE.SET", { mode: settings[category].mode }) + "\n";
         return await editReply(reply);
       },
       deaths: async () => {
@@ -170,7 +169,7 @@ const command = {
         await setSettings(interaction.guild.id, settings);
 
         let reply = printCommonOptions(settings, category, interaction, t);
-        reply += t("MODE.SET", { mode: settings[category].mode }) + "\n";
+        reply += t("SETTINGS.MODE.SET", { mode: settings[category].mode }) + "\n";
         return await editReply(reply);
       },
       battles: async () => {
@@ -200,16 +199,36 @@ const command = {
         reply += t("RANKING.GUILD_RANKING_SET", { guildRanking: settings[category].guildRanking }) + "\n";
         return await editReply(reply);
       },
-      lang: async () => {
-        const lang = interaction.options.getString("language");
-        if (localeList.indexOf(lang) < 0) return await reply(t("LANGUAGE.NOT_SUPPORTED"));
+      general: async () => {
+        const locale = interaction.options.getString("language");
+        if (locale) {
+          if (localeList.indexOf(locale) < 0) return await reply(t("SETTINGS.LANG.NOT_SUPPORTED"));
+          settings.general.locale = locale;
+          t = getLocale(settings.general.locale).t;
+        }
+
+        const guildTags = interaction.options.getBoolean("guild_tags");
+        if (typeof guildTags === "boolean") {
+          settings.general.guildTags = guildTags;
+        }
+
         await interaction.deferReply({ ephemeral: true });
-        await setSettings(interaction.guild.id, { ...settings, lang });
-        return await editReply(getLocale(lang).t("LANGUAGE.SET_LANGUAGE", { lang }));
+        await setSettings(interaction.guild.id, settings);
+
+        let reply = "";
+        reply += t("SETTINGS.LANG.SET", { lang: settings.general.locale }) + "\n";
+        reply +=
+          t("SETTINGS.GUILD_TAGS.SET", {
+            enabled: settings.general.guildTags ? t("SETTINGS.ENABLED") : t("SETTINGS.DISABLED"),
+          }) + "\n";
+
+        return await editReply(reply);
       },
     };
 
-    return await subcommands[interaction.options.getSubcommand()]();
+    const subcommand = subcommands[interaction.options.getSubcommand()];
+    if (!subcommand) throw new Error("Option not found");
+    return await subcommand();
   },
 };
 
