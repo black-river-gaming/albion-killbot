@@ -152,7 +152,7 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
   ctx.fillText(fame, w / 2 - tw / 2, fameY + fameIconSize + th + 15);
 
   // loot value
-  const lootSum = splitLootValue ? lootValue.equipment : lootValue.equipment + lootValue.inventory;
+  const lootSum = splitLootValue && lootValue ? lootValue.equipment : lootValue.equipment + lootValue.inventory;
   if (lootSum) {
     const lootValueY = 675;
     const lootValueIconSize = 100;
