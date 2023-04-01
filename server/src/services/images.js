@@ -6,6 +6,7 @@ const { getItemFile } = require("../ports/albion");
 const { optimizeImage } = require("../helpers/images");
 const { digitsFormatter, fileSizeFormatter } = require("../helpers/utils");
 const logger = require("../helpers/logger");
+const F = require("fast-redact");
 
 const assetsPath = path.join(__dirname, "..", "assets");
 
@@ -152,27 +153,29 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
   ctx.fillText(fame, w / 2 - tw / 2, fameY + fameIconSize + th + 15);
 
   // loot value
-  const lootSum = splitLootValue && lootValue ? lootValue.equipment : lootValue.equipment + lootValue.inventory;
-  if (lootSum) {
-    const lootValueY = 675;
-    const lootValueIconSize = 100;
-    ctx.beginPath();
-    ctx.font = "40px Roboto";
-    ctx.fillStyle = "#FFF";
-    ctx.strokeStyle = "#000";
-    ctx.lineWidth = 4;
-    const lootValueText = digitsFormatter(lootSum);
-    tw = ctx.measureText(lootValueText).width;
-    await drawImage(
-      ctx,
-      path.join(assetsPath, "lootValue.png"),
-      w / 2 - lootValueIconSize / 2,
-      lootValueY,
-      lootValueIconSize,
-      lootValueIconSize,
-    );
-    ctx.strokeText(lootValueText, w / 2 - tw / 2, lootValueY + lootValueIconSize + th + 15);
-    ctx.fillText(lootValueText, w / 2 - tw / 2, lootValueY + lootValueIconSize + th + 15);
+  if (lootValue) {
+    const lootSum = splitLootValue ? lootValue.equipment : lootValue.equipment + lootValue.inventory;
+    if (lootSum) {
+      const lootValueY = 675;
+      const lootValueIconSize = 100;
+      ctx.beginPath();
+      ctx.font = "40px Roboto";
+      ctx.fillStyle = "#FFF";
+      ctx.strokeStyle = "#000";
+      ctx.lineWidth = 4;
+      const lootValueText = digitsFormatter(lootSum);
+      tw = ctx.measureText(lootValueText).width;
+      await drawImage(
+        ctx,
+        path.join(assetsPath, "lootValue.png"),
+        w / 2 - lootValueIconSize / 2,
+        lootValueY,
+        lootValueIconSize,
+        lootValueIconSize,
+      );
+      ctx.strokeText(lootValueText, w / 2 - tw / 2, lootValueY + lootValueIconSize + th + 15);
+      ctx.fillText(lootValueText, w / 2 - tw / 2, lootValueY + lootValueIconSize + th + 15);
+    }
   }
 
   // assists bar
@@ -302,7 +305,7 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
 }
 
 async function generateInventoryImage(inventory, { lootValue, splitLootValue = false } = {}) {
-  const hasLootValue = splitLootValue && lootValue && lootValue.inventory;
+  const hasInventoryLootValue = lootValue && splitLootValue && lootValue.inventory;
 
   const BLOCK_SIZE = 130;
   const WIDTH = 1600;
@@ -313,7 +316,7 @@ async function generateInventoryImage(inventory, { lootValue, splitLootValue = f
   const itemsPerRow = Math.floor((WIDTH - PADDING * 2) / BLOCK_SIZE);
   const rows = Math.ceil(inventory.length / itemsPerRow);
 
-  let canvas = createCanvas(WIDTH, rows * BLOCK_SIZE + PADDING * 2 + (hasLootValue ? 35 : 0));
+  let canvas = createCanvas(WIDTH, rows * BLOCK_SIZE + PADDING * 2 + (hasInventoryLootValue ? 35 : 0));
   const w = canvas.width;
   const ctx = canvas.getContext("2d");
 
@@ -330,7 +333,7 @@ async function generateInventoryImage(inventory, { lootValue, splitLootValue = f
     x += BLOCK_SIZE;
   }
 
-  if (hasLootValue) {
+  if (hasInventoryLootValue) {
     y += BLOCK_SIZE;
 
     ctx.beginPath();
