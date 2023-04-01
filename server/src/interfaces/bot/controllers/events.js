@@ -73,7 +73,7 @@ async function subscribe(client) {
             );
           }
         } else if (mode === REPORT_MODES.TEXT) {
-          await sendNotification(client, channel, embedEvent(guildEvent, { locale, guildTags }));
+          await sendNotification(client, channel, embedEvent(guildEvent, { lootValue, locale, guildTags }));
         }
       }
     } catch (error) {

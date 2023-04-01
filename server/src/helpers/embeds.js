@@ -36,10 +36,11 @@ const footer = {
   text: "Powered by Albion Killbot",
 };
 
-const embedEvent = (event, { locale, guildTags = true }) => {
+const embedEvent = (event, { lootValue, locale, guildTags = true }) => {
   const l = getLocale(locale);
   const { t } = l;
 
+  const lootSum = lootValue ? lootValue.equipment + lootValue.inventory : null;
   const good = event.good;
 
   let killer = "";
@@ -111,7 +112,7 @@ const embedEvent = (event, { locale, guildTags = true }) => {
           },
           {
             name: t("KILL.LOOT_VALUE"),
-            value: digitsFormatter(event.TotalVictimLootValue) || "-",
+            value: digitsFormatter(lootSum) || "-",
             inline: true,
           },
           {

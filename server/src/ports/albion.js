@@ -183,7 +183,7 @@ async function getLootValue(event, { server = SERVERS.WEST }) {
     async () => {
       try {
         const victimItems = getVictimItems(event);
-        if (victimItems.length === 0) return 0;
+        if (victimItems.equipment.length === 0 && victimItems.inventory.length === 0) return null;
 
         const itemList = []
           .concat(victimItems.equipment)
@@ -202,7 +202,7 @@ async function getLootValue(event, { server = SERVERS.WEST }) {
           locations: ["Thetford", "Fort Sterling", "Martlock", "Bridgewatch", "Lymhurst"].join(),
           qualities,
         });
-        if (!itemPriceData && itemPriceData.length === 0) return 0;
+        if (!itemPriceData && itemPriceData.length === 0) return null;
 
         const calculateLootValue = (items) =>
           items.reduce((lootValue, item) => {
