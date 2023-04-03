@@ -12,8 +12,9 @@ const REPORT_MODES = Object.freeze({
 
 const DEFAULT_SETTINGS = Object.freeze({
   general: {
-    lang: "en",
+    locale: "en",
     guildTags: false,
+    splitLootValue: false,
   },
   kills: {
     enabled: true,
