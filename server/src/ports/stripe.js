@@ -1,7 +1,7 @@
 const Stripe = require("stripe");
 const logger = require("../helpers/logger");
 
-const { STRIPE_ACCESS_TOKEN, STRIPE_PRODUCT, STRIPE_REDIRECT_URL } = process.env;
+const { DASHBOARD_URL, STRIPE_ACCESS_TOKEN, STRIPE_PRODUCT } = process.env;
 
 const isEnabled = STRIPE_ACCESS_TOKEN && STRIPE_PRODUCT;
 const stripe = Stripe(STRIPE_ACCESS_TOKEN, {
@@ -36,8 +36,8 @@ async function getPrices({ currency = "usd", product = STRIPE_PRODUCT }) {
 async function createCheckoutSession(priceId, owner) {
   try {
     const checkout = await stripe.checkout.sessions.create({
-      success_url: `${STRIPE_REDIRECT_URL}?status=success&checkout_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${STRIPE_REDIRECT_URL}?status=cancel`,
+      success_url: `${DASHBOARD_URL}/premium?status=success&checkout_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${DASHBOARD_URL}/premium?status=cancel`,
       client_reference_id: owner,
       mode: "subscription",
       line_items: [
@@ -63,7 +63,7 @@ async function createPortalSession(customerId) {
   try {
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: STRIPE_REDIRECT_URL,
+      return_url: `${DASHBOARD_URL}/premium`,
     });
 
     return {

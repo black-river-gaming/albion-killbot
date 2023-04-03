@@ -114,18 +114,21 @@
   "TRACK": {
     "ALLIANCES": {
       "DESCRIPTION": "Alliance ID",
-      "NAME": "Alianzas ({{ actual }}/{{ max }})",
+      "TITLE": "Alianzas ({{ actual }}/{{ max }})",
       "TRACKED": "Alianza rastreada: {{ name }}.",
+      "TYPE": "Alianzas",
       "UNTRACKED": "Dejar de rastrear Alianza: {{ name }}."
     },
     "ALREADY_TRACKED": "Ya estoy rastreando este artículo.",
     "ERRORS": {
       "FETCH_FAILED": "No se puede obtener la configuración de la pista. Por favor, inténtelo de nuevo más tarde."
     },
+    "FREE_LIMIT_REACHED": "Alcanzaste el límite de {{ limit }} {{ type }} para servidores gratuitos. Actualizar al estado Premium aumentará sus espacios a {{ premiumLimit }} {{ type }}. Para obtener más detalles, visite la [página premium]({{{ url }}}).",
     "GUILDS": {
       "DESCRIPTION": "Guild name",
-      "NAME": "Gremios ({{ actual }}/{{ max }})",
+      "TITLE": "Gremios ({{ actual }}/{{ max }})",
       "TRACKED": "Gremio rastreado: {{ name }}.",
+      "TYPE": "Gremios",
       "UNTRACKED": "Dejar de rastrear gremio: {{ name }}."
     },
     "LIMIT_REACHED": "Limite Alcanzado de {{ limit }} articulos en esta lista.",
@@ -135,12 +138,13 @@
     "NOT_FOUND": "Lo siento, no pude encontrar nada con este nombre.",
     "PLAYERS": {
       "DESCRIPTION": "Player name",
-      "NAME": "Jugadores ({{ actual }}/{{ max }})",
+      "TITLE": "Jugadores ({{ actual }}/{{ max }})",
       "TRACKED": "Jugador rastreado: {{ name }}.",
+      "TYPE": "Jugadores",
       "UNTRACKED": "Dejar de rastrear Jugador: {{ name }}."
     },
     "SEARCH_FAILED": "Failed to fetch data from Albion Servers. Please try again.",
-    "TRACKING_DISABLED": "Lo sentimos, el seguimiento de {{ type }} está deshabilitado por ahora. Póngase en contacto con el administrador de bot para obtener más información.",
+    "TRACKING_DISABLED": "Lo sentimos, el seguimiento de {{ type }} está deshabilitado. Póngase en contacto con el administrador de bot para obtener más información.",
     "UNSUPPORTED_TYPE": "Tipo de seguimiento no compatible. Escriba !Help para ver más."
   },
   "VERSION": {

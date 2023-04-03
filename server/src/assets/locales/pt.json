@@ -114,18 +114,21 @@
   "TRACK": {
     "ALLIANCES": {
       "DESCRIPTION": "ID da aliança",
-      "NAME": "Alianças ({{ actual }}/{{ max }})",
+      "TITLE": "Alianças ({{ actual }}/{{ max }})",
       "TRACKED": "Rastreando aliança: {{ name }}.",
+      "TYPE": "Alianças",
       "UNTRACKED": "Parando de rastrear aliança: {{ name }}."
     },
     "ALREADY_TRACKED": "Já estou rastreando este item.",
     "ERRORS": {
       "FETCH_FAILED": "Não foi possível recuperar informações de rastreamento. Tente novamente mais tarde."
     },
+    "FREE_LIMIT_REACHED": "Você atingiu o limite de {{ limit }} {{ type }} para servidores gratuitos. A atualização para o status Premium aumentará seus slots para {{ premiumLimit }} {{ type }}. Para mais detalhes, visite a [página premium]({{{ url }}}).",
     "GUILDS": {
       "DESCRIPTION": "Nome da guilda",
-      "NAME": "Guildas ({{ actual }}/{{ max }})",
+      "TITLE": "Guildas ({{ actual }}/{{ max }})",
       "TRACKED": "Rastreando guilda: {{ name }}.",
+      "TYPE": "Guildas",
       "UNTRACKED": "Parando de rastrear guilda: {{ name }}."
     },
     "LIMIT_REACHED": "Você atingiu o limite de {{ limit }} itens nesta lista.",
@@ -135,12 +138,13 @@
     "NOT_FOUND": "Desculpe, não consegui encontrar nada com este nome.",
     "PLAYERS": {
       "DESCRIPTION": "Nome do jogador",
-      "NAME": "Jogadores ({{ actual }}/{{ max }})",
+      "TITLE": "Jogadores ({{ actual }}/{{ max }})",
       "TRACKED": "Rastreando jogador: {{ name }}.",
+      "TYPE": "Jogadores",
       "UNTRACKED": "Parando de rastrear jogador: {{ name }}."
     },
     "SEARCH_FAILED": "Falha ao buscar dados nos servidores do jogo. Por favor, tente novamente.",
-    "TRACKING_DISABLED": "Desculpe, rastreamento de {{ type }} está desabilitado por enquanto. Consulte o administrador do bot para mais informações.",
+    "TRACKING_DISABLED": "Desculpe, o rastreamento de {{ type }} está desativado. Entre em contato com o administrador do bot para obter mais informações.",
     "UNSUPPORTED_TYPE": "Tipo de rastreamento não suportado. Digite !help para ver mais."
   },
   "VERSION": {

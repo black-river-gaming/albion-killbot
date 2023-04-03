@@ -6,7 +6,6 @@ const { getItemFile } = require("../ports/albion");
 const { optimizeImage } = require("../helpers/images");
 const { digitsFormatter, fileSizeFormatter } = require("../helpers/utils");
 const logger = require("../helpers/logger");
-const F = require("fast-redact");
 
 const assetsPath = path.join(__dirname, "..", "assets");
 
