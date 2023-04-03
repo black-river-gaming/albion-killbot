@@ -2,12 +2,18 @@ const { SlashCommandBuilder } = require("discord.js");
 const { SERVERS } = require("../../../helpers/constants");
 const { getLocale } = require("../../../helpers/locale");
 const { getAlliance, search } = require("../../../services/search");
-const { getLimits } = require("../../../services/limits");
+const { getLimits, getPremiumLimits } = require("../../../services/limits");
 const { TRACK_TYPE, addTrack } = require("../../../services/track");
 const { isTracked } = require("../../../helpers/tracking");
 const { equalsCaseInsensitive } = require("../../../helpers/utils");
+const {
+  isActiveSubscription,
+  isSubscriptionsEnabled,
+  getSubscriptionByServerId,
+} = require("../../../services/subscriptions");
 
 const { t } = getLocale();
+const { DASHBOARD_URL } = process.env;
 
 const command = {
   data: new SlashCommandBuilder()
@@ -33,6 +39,8 @@ const command = {
     if (!track) throw new Error(t("TRACK.ERRORS.FETCH_FAILED"));
 
     const limits = await getLimits(interaction.guild.id);
+    const premiumLimits = getPremiumLimits();
+    const subscription = await getSubscriptionByServerId(interaction.guild.id);
 
     const server = interaction.options.getString("server");
     const playerName = interaction.options.getString("player");
@@ -53,12 +61,22 @@ const command = {
       content += msg + "\n";
     };
 
-    const searchAndAdd = async (type, value, limit = 5) => {
+    const searchAndAdd = async (type, value, { limit = 5, premiumLimit = 0 }) => {
+      const tType = t(`TRACK.${type.toUpperCase()}.TYPE`).toLowerCase();
+      const url = `${DASHBOARD_URL}/premium`;
+      const shouldBuyPremium = isSubscriptionsEnabled() && !isActiveSubscription(subscription) && premiumLimit > limit;
+
       if (limit == 0) {
-        const trackType = t(`TRACK.${type.toUpperCase()}.DESCRIPTION`).toLowerCase();
-        return addContent(t("TRACK.TRACKING_DISABLED", { type: trackType }));
+        if (shouldBuyPremium)
+          return addContent(t("TRACK.FREE_LIMIT_REACHED", { type: tType, limit, premiumLimit, url }));
+        return addContent(t("TRACK.TRACKING_DISABLED", { type: tType }));
       }
-      if (track[type].length >= limit) return addContent(t("TRACK.LIMIT_REACHED", { limit }));
+
+      if (track[type].length >= limit) {
+        if (shouldBuyPremium)
+          return addContent(t("TRACK.FREE_LIMIT_REACHED", { type: tType, limit, premiumLimit, url }));
+        return addContent(t("TRACK.LIMIT_REACHED", { limit }));
+      }
 
       let trackItem;
 
@@ -82,9 +100,21 @@ const command = {
       return addContent(t(`TRACK.${type.toUpperCase()}.TRACKED`, { name: trackItem.name }));
     };
 
-    if (allianceId) await searchAndAdd(TRACK_TYPE.ALLIANCES, allianceId, limits.alliances);
-    if (playerName) await searchAndAdd(TRACK_TYPE.PLAYERS, playerName, limits.players);
-    if (guildName) await searchAndAdd(TRACK_TYPE.GUILDS, guildName, limits.guilds);
+    if (allianceId)
+      await searchAndAdd(TRACK_TYPE.ALLIANCES, allianceId, {
+        limit: limits.alliances,
+        premiumLimit: premiumLimits.alliances,
+      });
+    if (playerName)
+      await searchAndAdd(TRACK_TYPE.PLAYERS, playerName, {
+        limit: limits.players,
+        premiumLimit: premiumLimits.players,
+      });
+    if (guildName)
+      await searchAndAdd(TRACK_TYPE.GUILDS, guildName, {
+        limit: limits.guilds,
+        premiumLimit: premiumLimits.guilds,
+      });
 
     await interaction.editReply({ content, ephemeral: true });
 

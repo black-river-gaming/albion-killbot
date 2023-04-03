@@ -35,6 +35,14 @@ async function getLimits(serverId) {
   });
 }
 
+function getPremiumLimits() {
+  return {
+    players: SUB_MAX_PLAYERS,
+    guilds: SUB_MAX_GUILDS,
+    alliances: SUB_MAX_ALLIANCES,
+  };
+}
+
 async function updateLimitsCache(timeout) {
   const subscriptions = await fetchAllSubscriptions();
   subscriptions.forEach((subscription) => {
@@ -47,5 +55,6 @@ async function updateLimitsCache(timeout) {
 
 module.exports = {
   getLimits,
+  getPremiumLimits,
   updateLimitsCache,
 };

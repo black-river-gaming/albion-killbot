@@ -114,18 +114,21 @@
   "TRACK": {
     "ALLIANCES": {
       "DESCRIPTION": "Alliance ID",
-      "NAME": "Alliances ({{ actual }}/{{ max }})",
+      "TITLE": "Alliances ({{ actual }}/{{ max }})",
       "TRACKED": "Suivi de l'alliance: {{ name }}.",
+      "TYPE": "Alliances",
       "UNTRACKED": "Désactivation de la suivi de l'alliance: {{ name }}."
     },
     "ALREADY_TRACKED": "Je suis déja ceci.",
     "ERRORS": {
       "FETCH_FAILED": "Impossible de récupérer les paramètres de suivi. Veuillez réessayer plus tard."
     },
+    "FREE_LIMIT_REACHED": "Vous avez atteint la limite de {{ limit }} {{ type }} pour les serveurs gratuits. La mise à niveau vers le statut Premium augmentera vos emplacements à {{ premiumLimit }} {{ type }}. Pour plus de détails, veuillez visiter la [page premium]({{{ url }}}).",
     "GUILDS": {
       "DESCRIPTION": "Guild name",
-      "NAME": "Guildes ({{ actual }}/{{ max }})",
+      "TITLE": "Guildes ({{ actual }}/{{ max }})",
       "TRACKED": "Suivi de la guilde: {{ name }}.",
+      "TYPE": "Guildes",
       "UNTRACKED": "Désactivation de la suivi de la guilde: {{ name }}."
     },
     "LIMIT_REACHED": "Tu as déja atteint la limite de {{ limit }} suivis dans la liste..",
@@ -135,12 +138,13 @@
     "NOT_FOUND": "Désolé, je ne trouve rien portant ce nom",
     "PLAYERS": {
       "DESCRIPTION": "Player name",
-      "NAME": "Joueurs ({{ actual }}/{{ max }})",
+      "TITLE": "Joueurs ({{ actual }}/{{ max }})",
       "TRACKED": "Suivi du joueur: {{ name }}.",
+      "TYPE": "Joueurs",
       "UNTRACKED": "Désactivation de la suivi du joueur: {{ name }}."
     },
     "SEARCH_FAILED": "Impossible de récupérer les données depuis les serveurs d'Albion Online. Rééssayez plus tard.",
-    "TRACKING_DISABLED": "Désolé, le suivi d'{{ type }} est désactivé. Contacter l'administrateur pour plus d'informations.",
+    "TRACKING_DISABLED": "Désolé, le suivi de {{ type }} est désactivé. Veuillez contacter l'administrateur du bot pour plus d'informations.",
     "UNSUPPORTED_TYPE": "Je ne peux pas suivre ceci. Ecrivez !help pour en savoir plus."
   },
   "VERSION": {

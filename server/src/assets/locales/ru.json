@@ -114,18 +114,21 @@
   "TRACK": {
     "ALLIANCES": {
       "DESCRIPTION": "Alliance ID",
-      "NAME": "Альянсы ({{ actual }}/{{ max }})",
+      "TITLE": "Альянсы ({{ actual }}/{{ max }})",
       "TRACKED": "Отслеживание альянса: {{ name }}.",
+      "TYPE": "Альянсы",
       "UNTRACKED": "Прекращение отслеживание альянса: {{ name }}."
     },
     "ALREADY_TRACKED": "Я уже отслеживаю это.",
     "ERRORS": {
       "FETCH_FAILED": "Не удалось загрузить настройки отслеживания. Пожалуйста, повторите попытку позже."
     },
+    "FREE_LIMIT_REACHED": "Вы достигли предела {{ limit }} {{ type }} для бесплатных серверов. Повышение статуса до Premium увеличит ваши слоты до {{ premiumLimit }} {{ type }}. Для получения более подробной информации посетите [премиум-страницу]({{{ url }}}).",
     "GUILDS": {
       "DESCRIPTION": "Guild name",
-      "NAME": "Гильдии ({{ actual }}/{{ max }})",
+      "TITLE": "Гильдии ({{ actual }}/{{ max }})",
       "TRACKED": "Отслеживание гильдии: {{ name }}.",
+      "TYPE": "Гильдии",
       "UNTRACKED": "Прекращение отслеживание гильдии: {{ name }}."
     },
     "LIMIT_REACHED": "Вы уже достигли лимита {{ limit }} элементов в этом списке.",
@@ -135,12 +138,13 @@
     "NOT_FOUND": "К сожалению, я не смог найти ничего с таким именем.",
     "PLAYERS": {
       "DESCRIPTION": "Player name",
-      "NAME": "Игроки ({{ actual }}/{{ max }})",
+      "TITLE": "Игроки ({{ actual }}/{{ max }})",
       "TRACKED": "Отслеживание игрока: {{ name }}.",
+      "TYPE": "Игроки",
       "UNTRACKED": "Прекращение отслеживание игрока: {{ name }}."
     },
     "SEARCH_FAILED": "Failed to fetch data from Albion Servers. Please try again.",
-    "TRACKING_DISABLED": "Sorry, tracking of {{ type }} is disabled for now. Please contact bot admin for more information.",
+    "TRACKING_DISABLED": "К сожалению, отслеживание {{ type }} отключено. Пожалуйста, свяжитесь с администратором бота для получения дополнительной информации.",
     "UNSUPPORTED_TYPE": "Неподдерживаемый тип. Введите !help чтобы увидеть больше"
   },
   "VERSION": {

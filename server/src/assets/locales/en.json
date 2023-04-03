@@ -114,18 +114,21 @@
   "TRACK": {
     "ALLIANCES": {
       "DESCRIPTION": "Alliance ID",
-      "NAME": "Alliances ({{ actual }}/{{ max }})",
+      "TITLE": "Alliances ({{ actual }}/{{ max }})",
       "TRACKED": "Tracking alliance: {{ name }}.",
+      "TYPE": "Alliances",
       "UNTRACKED": "Untracking alliance: {{ name }}."
     },
     "ALREADY_TRACKED": "I am already tracking this item.",
     "ERRORS": {
       "FETCH_FAILED": "Unable to fetch track settings. Please try again later."
     },
+    "FREE_LIMIT_REACHED": "You reached the limit of {{ limit }} {{ type }} for free servers. Upgrading to the Premium status will increase your slots to {{ premiumLimit }} {{ type }}. For more details, please visit the [premium page]({{{ url }}}).",
     "GUILDS": {
       "DESCRIPTION": "Guild name",
-      "NAME": "Guilds ({{ actual }}/{{ max }})",
+      "TITLE": "Guilds ({{ actual }}/{{ max }})",
       "TRACKED": "Tracking guild: {{ name }}.",
+      "TYPE": "Guilds",
       "UNTRACKED": "Untracking guild: {{ name }}."
     },
     "LIMIT_REACHED": "You already reached the limit of {{ limit }} items in this list.",
@@ -135,12 +138,13 @@
     "NOT_FOUND": "Sorry, I couldn't find anything with this name.",
     "PLAYERS": {
       "DESCRIPTION": "Player name",
-      "NAME": "Players ({{ actual }}/{{ max }})",
+      "TITLE": "Players ({{ actual }}/{{ max }})",
       "TRACKED": "Tracking player: {{ name }}.",
+      "TYPE": "Players",
       "UNTRACKED": "Untracking player: {{ name }}."
     },
     "SEARCH_FAILED": "Failed to fetch data from game servers. Please try again.",
-    "TRACKING_DISABLED": "Sorry, tracking of {{type}} is disabled for now. Please contact bot admin for more information.",
+    "TRACKING_DISABLED": "Sorry, tracking of {{ type }} is disabled. Please contact bot admin for more information.",
     "UNSUPPORTED_TYPE": "Unsupported type of tracking. Type !help to see more."
   },
   "VERSION": {
