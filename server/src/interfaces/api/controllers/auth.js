@@ -16,7 +16,7 @@ async function auth(req, res) {
 
     return res.sendStatus(200);
   } catch (error) {
-    logger.error(`Unable to authenticate with discord:`, error);
+    logger.warn(`Unable to authenticate with discord: ${error.message}`, { error });
     return res.sendStatus(403);
   }
 }
