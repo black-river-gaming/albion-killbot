@@ -28,6 +28,8 @@ async function getServer(req, res) {
     const { serverId } = req.params;
 
     const server = await serversService.getServer(serverId);
+    if (!server) return res.sendStatus(404);
+
     server.channels = await serversService.getServerChannels(serverId);
     server.settings = await settingsService.getSettings(serverId);
     server.subscription = await subscriptionService.getSubscriptionByServerId(serverId);

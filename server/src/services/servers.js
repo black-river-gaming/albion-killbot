@@ -32,8 +32,10 @@ async function getServer(serverId) {
   try {
     return await discord.getGuild(serverId);
   } catch (error) {
+    if (error.status === 404) return null;
+
     logger.error(`Error while retrieving discord server: ${error.message}`, { error });
-    return null;
+    throw error;
   }
 }
 
