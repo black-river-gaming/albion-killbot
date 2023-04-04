@@ -144,7 +144,7 @@ async function updateSubscriptionByServerId(serverId, data) {
 }
 
 async function updateSubscriptionByStripeId(stripeId, data) {
-  await updateOne(SUBSCRIPTIONS_COLLECTION, { stripe: stripeId }, { $set: data });
+  await updateOne(SUBSCRIPTIONS_COLLECTION, { stripe: stripeId }, { $set: data }, { upsert: true });
 
   const subscription = await getSubscriptionByStripeId(stripeId);
   subscriptionEvents.emit("update", subscription);
