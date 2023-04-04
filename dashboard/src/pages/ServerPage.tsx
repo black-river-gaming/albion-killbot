@@ -11,10 +11,11 @@ import {
   Row,
   Stack,
 } from "react-bootstrap";
-import { Link, Navigate, NavLink, Outlet, useParams } from "react-router-dom";
-import { useFetchServerQuery } from "store/api";
+import { Link, NavLink, Navigate, Outlet, useParams } from "react-router-dom";
+import { useFetchServerQuery, useFetchUserQuery } from "store/api";
 
-const Server = () => {
+const ServerPage = () => {
+  const { data: user } = useFetchUserQuery();
   const { serverId = "" } = useParams();
   const server = useFetchServerQuery(serverId);
 
@@ -28,11 +29,20 @@ const Server = () => {
       <Row className="g-3">
         <Col md={4}>
           <ServerCard server={server.data}>
-            <div className="d-flex justify-content-end">
+            <Stack
+              gap={2}
+              direction="horizontal"
+              className="justify-content-end"
+            >
+              {user?.admin && (
+                <Link to={`/admin/${server.data.id}`}>
+                  <Button variant="primary">Admin</Button>
+                </Link>
+              )}
               <Link to="/dashboard">
                 <Button variant="secondary">Change Server</Button>
               </Link>
-            </div>
+            </Stack>
           </ServerCard>
           <Card className="mt-3">
             <ListGroup>
@@ -74,4 +84,4 @@ const Server = () => {
   );
 };
 
-export default Server;
+export default ServerPage;
