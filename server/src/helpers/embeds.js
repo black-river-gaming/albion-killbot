@@ -446,7 +446,7 @@ const embedTrackList = (track, limits, { locale }) => {
     embeds: [
       {
         color: COLORS.GREY,
-        title: t("TRACK.PLAYERS.NAME", { actual: track.players.length, max: limits.players }),
+        title: t("TRACK.PLAYERS.TITLE", { actual: track.players.length, max: limits.players }),
         fields: SERVER_LIST.map((server) => ({
           name: server,
           value: printTrackList(server, track.players, limits.players),
@@ -455,7 +455,7 @@ const embedTrackList = (track, limits, { locale }) => {
       },
       {
         color: COLORS.LIGHT_GREEN,
-        title: t("TRACK.GUILDS.NAME", { actual: track.guilds.length, max: limits.guilds }),
+        title: t("TRACK.GUILDS.TITLE", { actual: track.guilds.length, max: limits.guilds }),
         fields: SERVER_LIST.map((server) => ({
           name: server,
           value: printTrackList(server, track.guilds, limits.guilds),
@@ -464,7 +464,7 @@ const embedTrackList = (track, limits, { locale }) => {
       },
       {
         color: COLORS.LIGHT_RED,
-        title: t("TRACK.ALLIANCES.NAME", { actual: track.alliances.length, max: limits.alliances }),
+        title: t("TRACK.ALLIANCES.TITLE", { actual: track.alliances.length, max: limits.alliances }),
         fields: SERVER_LIST.map((server) => ({
           name: server,
           value: printTrackList(server, track.alliances, limits.alliances),

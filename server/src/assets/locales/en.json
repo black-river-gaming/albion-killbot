@@ -6,12 +6,6 @@
     "NO_ALLIANCE": "Others",
     "NO_GUILD": "Players without Guild"
   },
-  "CHANNEL": {
-    "NOT_FOUND": "Sorry, I can't find the mentioned channel. Please verifiy if I have acess to it and try again.",
-    "NOT_SET": "WARNING: Channel to send notifications is not set. Please set up a channel in /settings.",
-    "NO_CHANNEL": "Please input a channel for notifications.",
-    "SET_CHANNEL": "Channel for category '{{ category }}' defined to {{{ channel }}}."
-  },
   "COMMAND_ERROR": "There was an error while executing this command. Please try again later.",
   "HELP": {
     "HELP": "Show bot command list.",
@@ -60,7 +54,12 @@
   },
   "SETTINGS": {
     "BATTLES": "Change settings for battle notifications.",
-    "CHANNEL": "Channel",
+    "CHANNEL": {
+      "DESCRIPTION": "Channel to send notifications",
+      "NOT_SET": "WARNING: Channel to send notifications is not set. Please set up a channel in /settings.",
+      "NULL": "Please input a channel for notifications.",
+      "SET": "Channel for category '{{ category }}' defined to {{{ channel }}}."
+    },
     "DEATHS": "Change settings for death notifications.",
     "DISABLED": "Disabled",
     "ENABLED": "Enabled",
@@ -120,6 +119,10 @@
       "UNTRACKED": "Untracking alliance: {{ name }}."
     },
     "ALREADY_TRACKED": "I am already tracking this item.",
+    "CHANNEL": {
+      "CUSTOM": "Notifications will be sent to the channel: {{{ channel }}}",
+      "DEFAULT": "Notifications will be sent to the default channel."
+    },
     "ERRORS": {
       "FETCH_FAILED": "Unable to fetch track settings. Please try again later."
     },
@@ -144,6 +147,9 @@
       "UNTRACKED": "Untracking player: {{ name }}."
     },
     "SEARCH_FAILED": "Failed to fetch data from game servers. Please try again.",
+    "SERVER": {
+      "DESCRIPTION": "Server"
+    },
     "TRACKING_DISABLED": "Sorry, tracking of {{ type }} is disabled. Please contact bot admin for more information.",
     "UNSUPPORTED_TYPE": "Unsupported type of tracking. Type !help to see more."
   },

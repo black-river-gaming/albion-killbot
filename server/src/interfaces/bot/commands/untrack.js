@@ -6,13 +6,12 @@ const { removeTrack, TRACK_TYPE } = require("../../../services/track");
 
 const { t } = getLocale();
 
-const command = {
-  data: new SlashCommandBuilder()
-    .setName("untrack")
+const player = (subcommand) =>
+  subcommand
+    .setName("player")
     .setDescription(t("HELP.UNTRACK"))
-    .setDefaultMemberPermissions("0")
     .addStringOption((option) =>
-      option.setName("server").setDescription(t("TRACK.ALLIANCES.DESCRIPTION")).setRequired(true).setChoices(
+      option.setName("server").setDescription(t("TRACK.SERVER.DESCRIPTION")).setRequired(true).setChoices(
         {
           name: SERVERS.WEST,
           value: SERVERS.WEST,
@@ -23,9 +22,58 @@ const command = {
         },
       ),
     )
-    .addStringOption((option) => option.setName("player").setDescription(t("TRACK.PLAYERS.DESCRIPTION")))
-    .addStringOption((option) => option.setName("guild").setDescription(t("TRACK.GUILDS.DESCRIPTION")))
-    .addStringOption((option) => option.setName("alliance").setDescription(t("TRACK.ALLIANCES.DESCRIPTION"))),
+    .addStringOption((option) =>
+      option.setName("player").setDescription(t("TRACK.PLAYERS.DESCRIPTION")).setRequired(true),
+    );
+
+const guild = (subcommand) =>
+  subcommand
+    .setName("guild")
+    .setDescription(t("HELP.UNTRACK"))
+    .addStringOption((option) =>
+      option.setName("server").setDescription(t("TRACK.SERVER.DESCRIPTION")).setRequired(true).setChoices(
+        {
+          name: SERVERS.WEST,
+          value: SERVERS.WEST,
+        },
+        {
+          name: SERVERS.EAST,
+          value: SERVERS.EAST,
+        },
+      ),
+    )
+    .addStringOption((option) =>
+      option.setName("guild").setDescription(t("TRACK.GUILDS.DESCRIPTION")).setRequired(true),
+    );
+
+const alliance = (subcommand) =>
+  subcommand
+    .setName("alliance")
+    .setDescription(t("HELP.UNTRACK"))
+    .addStringOption((option) =>
+      option.setName("server").setDescription(t("TRACK.SERVER.DESCRIPTION")).setRequired(true).setChoices(
+        {
+          name: SERVERS.WEST,
+          value: SERVERS.WEST,
+        },
+        {
+          name: SERVERS.EAST,
+          value: SERVERS.EAST,
+        },
+      ),
+    )
+    .addStringOption((option) =>
+      option.setName("alliance").setDescription(t("TRACK.ALLIANCE.DESCRIPTION")).setRequired(true),
+    );
+
+const command = {
+  data: new SlashCommandBuilder()
+    .setName("untrack")
+    .setDescription(t("HELP.UNTRACK"))
+    .setDefaultMemberPermissions("0")
+    .addSubcommand(player)
+    .addSubcommand(guild)
+    .addSubcommand(alliance),
   handle: async (interaction, { track, t }) => {
     if (!track) throw new Error(t("TRACK.ERRORS.FETCH_FAILED"));
 

@@ -6,12 +6,6 @@
     "NO_ALLIANCE": "Другие",
     "NO_GUILD": "Игроки без гильдии"
   },
-  "CHANNEL": {
-    "NOT_FOUND": "К сожалению, я не могу найти упомянутый канал. Пожалуйста, проверьте, есть ли у меня к нему доступ, и попробуйте еще раз.",
-    "NOT_SET": "Внимание: канал для отправки уведомлений не установлен. Пожалуйста используйте /settings настроить его.",
-    "NO_CHANNEL": "Пожалуйста, введите канал для уведомлений.",
-    "SET_CHANNEL": "Channel for category '{{ category }}' defined to {{{ channel }}}."
-  },
   "COMMAND_ERROR": "Ocorreu um erro ao executar o comando. Por favor tente novamente mais tarde.",
   "HELP": {
     "HELP": "Показать список команд бота.",
@@ -60,7 +54,12 @@
   },
   "SETTINGS": {
     "BATTLES": "Change settings for battle notifications.",
-    "CHANNEL": "Channel",
+    "CHANNEL": {
+      "DESCRIPTION": "Канал для отправки уведомлений",
+      "NOT_SET": "Внимание: канал для отправки уведомлений не установлен. Пожалуйста используйте /settings настроить его.",
+      "NULL": "Пожалуйста, введите канал для уведомлений.",
+      "SET": "Channel for category '{{ category }}' defined to {{{ channel }}}."
+    },
     "DEATHS": "Change settings for death notifications.",
     "DISABLED": "disabled",
     "ENABLED": "Enabled",
@@ -120,6 +119,10 @@
       "UNTRACKED": "Прекращение отслеживание альянса: {{ name }}."
     },
     "ALREADY_TRACKED": "Я уже отслеживаю это.",
+    "CHANNEL": {
+      "CUSTOM": "Уведомления будут отправляться на канал: {{{channel }}}",
+      "DEFAULT": "Уведомления будут отправляться на канал по умолчанию."
+    },
     "ERRORS": {
       "FETCH_FAILED": "Не удалось загрузить настройки отслеживания. Пожалуйста, повторите попытку позже."
     },
@@ -144,6 +147,9 @@
       "UNTRACKED": "Прекращение отслеживание игрока: {{ name }}."
     },
     "SEARCH_FAILED": "Failed to fetch data from Albion Servers. Please try again.",
+    "SERVER": {
+      "DESCRIPTION": "Сервер"
+    },
     "TRACKING_DISABLED": "К сожалению, отслеживание {{ type }} отключено. Пожалуйста, свяжитесь с администратором бота для получения дополнительной информации.",
     "UNSUPPORTED_TYPE": "Неподдерживаемый тип. Введите !help чтобы увидеть больше"
   },

@@ -15,13 +15,12 @@ const {
 const { t } = getLocale();
 const { DASHBOARD_URL } = process.env;
 
-const command = {
-  data: new SlashCommandBuilder()
-    .setName("track")
+const player = (subcommand) =>
+  subcommand
+    .setName("player")
     .setDescription(t("HELP.TRACK"))
-    .setDefaultMemberPermissions("0")
     .addStringOption((option) =>
-      option.setName("server").setDescription(t("TRACK.ALLIANCES.DESCRIPTION")).setRequired(true).setChoices(
+      option.setName("server").setDescription(t("TRACK.SERVER.DESCRIPTION")).setRequired(true).setChoices(
         {
           name: SERVERS.WEST,
           value: SERVERS.WEST,
@@ -32,9 +31,61 @@ const command = {
         },
       ),
     )
-    .addStringOption((option) => option.setName("player").setDescription(t("TRACK.PLAYERS.DESCRIPTION")))
-    .addStringOption((option) => option.setName("guild").setDescription(t("TRACK.GUILDS.DESCRIPTION")))
-    .addStringOption((option) => option.setName("alliance").setDescription(t("TRACK.ALLIANCES.DESCRIPTION"))),
+    .addStringOption((option) =>
+      option.setName("player").setDescription(t("TRACK.PLAYERS.DESCRIPTION")).setRequired(true),
+    )
+    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL.DESCRIPTION")));
+
+const guild = (subcommand) =>
+  subcommand
+    .setName("guild")
+    .setDescription(t("HELP.TRACK"))
+    .addStringOption((option) =>
+      option.setName("server").setDescription(t("TRACK.SERVER.DESCRIPTION")).setRequired(true).setChoices(
+        {
+          name: SERVERS.WEST,
+          value: SERVERS.WEST,
+        },
+        {
+          name: SERVERS.EAST,
+          value: SERVERS.EAST,
+        },
+      ),
+    )
+    .addStringOption((option) =>
+      option.setName("guild").setDescription(t("TRACK.GUILDS.DESCRIPTION")).setRequired(true),
+    )
+    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL.DESCRIPTION")));
+
+const alliance = (subcommand) =>
+  subcommand
+    .setName("alliance")
+    .setDescription(t("HELP.TRACK"))
+    .addStringOption((option) =>
+      option.setName("server").setDescription(t("TRACK.SERVER.DESCRIPTION")).setRequired(true).setChoices(
+        {
+          name: SERVERS.WEST,
+          value: SERVERS.WEST,
+        },
+        {
+          name: SERVERS.EAST,
+          value: SERVERS.EAST,
+        },
+      ),
+    )
+    .addStringOption((option) =>
+      option.setName("alliance").setDescription(t("TRACK.ALLIANCE.DESCRIPTION")).setRequired(true),
+    )
+    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL.DESCRIPTION")));
+
+const command = {
+  data: new SlashCommandBuilder()
+    .setName("track")
+    .setDescription(t("HELP.TRACK"))
+    .setDefaultMemberPermissions("0")
+    .addSubcommand(player)
+    .addSubcommand(guild)
+    .addSubcommand(alliance),
   handle: async (interaction, { settings, track, t }) => {
     if (!track) throw new Error(t("TRACK.ERRORS.FETCH_FAILED"));
 
@@ -46,6 +97,7 @@ const command = {
     const playerName = interaction.options.getString("player");
     const guildName = interaction.options.getString("guild");
     const allianceId = interaction.options.getString("alliance");
+    const channel = interaction.options.getChannel("channel");
 
     if (!server || (!playerName && !guildName && !allianceId)) {
       return await interaction.reply({
@@ -95,9 +147,15 @@ const command = {
 
       if (!trackItem) return addContent(t("TRACK.NOT_FOUND"));
       trackItem.server = server;
+      if (channel) trackItem.channel = channel.id;
 
       await addTrack(interaction.guild.id, type, trackItem);
-      return addContent(t(`TRACK.${type.toUpperCase()}.TRACKED`, { name: trackItem.name }));
+
+      let response = t(`TRACK.${type.toUpperCase()}.TRACKED`, { name: trackItem.name }) + " ";
+      if (channel) response += t("TRACK.CHANNEL.CUSTOM", { channel: channel.toString() });
+      else response += t("TRACK.CHANNEL.DEFAULT", { channel: channel.toString() });
+
+      return addContent(response);
     };
 
     if (allianceId)
@@ -119,7 +177,7 @@ const command = {
     await interaction.editReply({ content, ephemeral: true });
 
     if (!settings.kills.channel && !settings.deaths.channel) {
-      await interaction.followUp(t("CHANNEL.NOT_SET"));
+      await interaction.followUp(t("SETTINGS.CHANNEL.NOT_SET"));
     }
   },
 };

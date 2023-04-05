@@ -6,12 +6,6 @@
     "NO_ALLIANCE": "Outros",
     "NO_GUILD": "Jogadores sem Guilda"
   },
-  "CHANNEL": {
-    "NOT_FOUND": "Desculpe, não consigo encontrar o canal mencionado. Verifique se eu possuo acesso a ele e tente novamente.",
-    "NOT_SET": "AVISO: Canal para enviar notificações não configurado. Por favor, use /settings to configurá-lo.",
-    "NO_CHANNEL": "Por favor, insira o canal para receber as notificações.",
-    "SET_CHANNEL": "Canal para a categoria '{{ category }}' definido para {{{ channel }}}."
-  },
   "COMMAND_ERROR": "Ocorreu um erro ao executar o comando. Por favor tente novamente mais tarde.",
   "HELP": {
     "HELP": "Mostra a lista de comandos do bot.",
@@ -60,7 +54,12 @@
   },
   "SETTINGS": {
     "BATTLES": "Mudar configurações de batalhas.",
-    "CHANNEL": "Canal",
+    "CHANNEL": {
+      "DESCRIPTION": "Canal para enviar notificações",
+      "NOT_SET": "AVISO: Canal para enviar notificações não configurado. Por favor, use /settings to configurá-lo.",
+      "NULL": "Por favor, insira o canal para receber as notificações.",
+      "SET": "Canal para a categoria '{{ category }}' definido para {{{ channel }}}."
+    },
     "DEATHS": "Mudar configurações de mortes.",
     "DISABLED": "desativado",
     "ENABLED": "Ativado",
@@ -120,6 +119,10 @@
       "UNTRACKED": "Parando de rastrear aliança: {{ name }}."
     },
     "ALREADY_TRACKED": "Já estou rastreando este item.",
+    "CHANNEL": {
+      "CUSTOM": "As notificações serão enviadas para o canal: {{{ channel }}}",
+      "DEFAULT": "As notificações serão enviadas para o canal padrão."
+    },
     "ERRORS": {
       "FETCH_FAILED": "Não foi possível recuperar informações de rastreamento. Tente novamente mais tarde."
     },
@@ -144,6 +147,9 @@
       "UNTRACKED": "Parando de rastrear jogador: {{ name }}."
     },
     "SEARCH_FAILED": "Falha ao buscar dados nos servidores do jogo. Por favor, tente novamente.",
+    "SERVER": {
+      "DESCRIPTION": "Servidor"
+    },
     "TRACKING_DISABLED": "Desculpe, o rastreamento de {{ type }} está desativado. Entre em contato com o administrador do bot para obter mais informações.",
     "UNSUPPORTED_TYPE": "Tipo de rastreamento não suportado. Digite !help para ver mais."
   },

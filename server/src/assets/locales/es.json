@@ -6,12 +6,6 @@
     "NO_ALLIANCE": "Otros",
     "NO_GUILD": "Jugadores sin gremios."
   },
-  "CHANNEL": {
-    "NOT_FOUND": "Lo siento, no puedo encontrar el canal mencionado. Verifique si tengo acceso e intente nuevamente.",
-    "NOT_SET": "ADVERTENCIA: el canal para enviar notificaciones no está configurado. Utilice /settings para configurarlo.",
-    "NO_CHANNEL": "Ingrese un canal para las notificaciones",
-    "SET_CHANNEL": "Canal para categoria '{{ category }}' definido para {{{ channel }}}."
-  },
   "COMMAND_ERROR": "There was an error while executing this command. Please try again later.",
   "HELP": {
     "HELP": "Mostrar Lista de Comandos.",
@@ -60,7 +54,12 @@
   },
   "SETTINGS": {
     "BATTLES": "Change settings for battle notifications.",
-    "CHANNEL": "Channel",
+    "CHANNEL": {
+      "DESCRIPTION": "Canal para enviar notificaciones",
+      "NOT_SET": "ADVERTENCIA: el canal para enviar notificaciones no está configurado. Utilice /settings para configurarlo.",
+      "NULL": "Ingrese un canal para las notificaciones",
+      "SET": "Canal para categoria '{{ category }}' definido para {{{ channel }}}."
+    },
     "DEATHS": "Change settings for death notifications.",
     "DISABLED": "Disabled",
     "ENABLED": "Enabled",
@@ -120,6 +119,10 @@
       "UNTRACKED": "Dejar de rastrear Alianza: {{ name }}."
     },
     "ALREADY_TRACKED": "Ya estoy rastreando este artículo.",
+    "CHANNEL": {
+      "CUSTOM": "Las notificaciones se enviarán al canal: {{{ canal }}}",
+      "DEFAULT": "Las notificaciones se enviarán al canal predeterminado."
+    },
     "ERRORS": {
       "FETCH_FAILED": "No se puede obtener la configuración de la pista. Por favor, inténtelo de nuevo más tarde."
     },
@@ -144,6 +147,9 @@
       "UNTRACKED": "Dejar de rastrear Jugador: {{ name }}."
     },
     "SEARCH_FAILED": "Failed to fetch data from Albion Servers. Please try again.",
+    "SERVER": {
+      "DESCRIPTION": "Servidor"
+    },
     "TRACKING_DISABLED": "Lo sentimos, el seguimiento de {{ type }} está deshabilitado. Póngase en contacto con el administrador de bot para obtener más información.",
     "UNSUPPORTED_TYPE": "Tipo de seguimiento no compatible. Escriba !Help para ver más."
   },
