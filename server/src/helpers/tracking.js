@@ -27,27 +27,28 @@ function getTrackedEvent(event, track, limits) {
     return null;
   }
 
-  const playerIds = players.filter((item) => item.server === event.server).map((item) => item.id);
-  const guildIds = guilds.filter((item) => item.server === event.server).map((item) => item.id);
-  const allianceIds = alliances.filter((item) => item.server === event.server).map((item) => item.id);
-
   // Ignore Arena kills or Duel kills
   if (event.TotalVictimKillFame <= 0) {
     return null;
   }
 
-  // Check for kill in event.Killer / event.Victim for anything tracked
-  const goodEvent =
-    allianceIds.indexOf(event.Killer.AllianceId) >= 0 ||
-    guildIds.indexOf(event.Killer.GuildId) >= 0 ||
-    playerIds.indexOf(event.Killer.Id) >= 0;
-  const badEvent =
-    allianceIds.indexOf(event.Victim.AllianceId) >= 0 ||
-    guildIds.indexOf(event.Victim.GuildId) >= 0 ||
-    playerIds.indexOf(event.Victim.Id) >= 0;
-  if (goodEvent || badEvent) {
+  // Scan track lists until we find any tracked object
+  let good = false;
+  let tracked = null;
+
+  if (!tracked) good = true;
+  if (!tracked) tracked = players.find((item) => item.id === event.Killer.Id);
+  if (!tracked) tracked = guilds.find((item) => item.id === event.Killer.GuildId);
+  if (!tracked) tracked = alliances.find((item) => item.id === event.Killer.AllianceId);
+
+  if (!tracked) good = false;
+  if (!tracked) tracked = players.find((item) => item.id === event.Victim.Id);
+  if (!tracked) tracked = guilds.find((item) => item.id === event.Victim.GuildId);
+  if (!tracked) tracked = alliances.find((item) => item.id === event.Victim.AllianceId);
+
+  if (tracked) {
     // We need to create a new object here so we don't change the original event
-    return Object.assign({}, event, { good: goodEvent });
+    return Object.assign({}, event, { good, tracked });
   }
 
   return null;
