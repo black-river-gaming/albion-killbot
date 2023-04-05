@@ -153,7 +153,7 @@ const command = {
 
       let response = t(`TRACK.${type.toUpperCase()}.TRACKED`, { name: trackItem.name }) + " ";
       if (channel) response += t("TRACK.CHANNEL.CUSTOM", { channel: channel.toString() });
-      else response += t("TRACK.CHANNEL.DEFAULT", { channel: channel.toString() });
+      else response += t("TRACK.CHANNEL.DEFAULT");
 
       return addContent(response);
     };
