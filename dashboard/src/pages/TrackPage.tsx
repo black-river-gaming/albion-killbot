@@ -1,9 +1,10 @@
 import Loader from "components/Loader";
 import Search from "components/Search";
-import Track from "components/Track";
+import TrackList from "components/TrackList";
+import { TRACK_TYPE } from "helpers/constants";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { useEffect } from "react";
-import { Alert, Col, Row } from "react-bootstrap";
+import { Alert, Button, Card, Col, Row, Stack } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { useFetchServerQuery, useUpdateTrackMutation } from "store/api";
 import { loadTrack } from "store/track";
@@ -70,13 +71,53 @@ const TrackPage = () => {
           </Alert>
         )}
 
-        <Track
-          limits={limits}
-          onUpdateClick={() => dispatchUpdateTrack({ serverId: id, track })}
-          onResetClick={() => {
-            if (server?.data?.track) dispatch(loadTrack(server.data.track));
-          }}
-        />
+        <Card>
+          <Stack gap={3} className="p-2">
+            <TrackList
+              type={TRACK_TYPE.PLAYERS}
+              limit={limits.players}
+              list={track.players}
+            />
+            <TrackList
+              type={TRACK_TYPE.GUILDS}
+              limit={limits.guilds}
+              list={track.guilds}
+            />
+            <TrackList
+              type={TRACK_TYPE.ALLIANCES}
+              limit={limits.alliances}
+              list={track.alliances}
+            />
+          </Stack>
+
+          <Card.Footer>
+            {track.changed && (
+              <Alert variant="warning">You have unsaved changes.</Alert>
+            )}
+
+            <Stack
+              direction="horizontal"
+              gap={2}
+              className="justify-content-end"
+            >
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  if (server?.data?.track)
+                    dispatch(loadTrack(server.data.track));
+                }}
+              >
+                Reset
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => dispatchUpdateTrack({ serverId: id, track })}
+              >
+                Save
+              </Button>
+            </Stack>
+          </Card.Footer>
+        </Card>
       </Col>
 
       <Col sm={12}>

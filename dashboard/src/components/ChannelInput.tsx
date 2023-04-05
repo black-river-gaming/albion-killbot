@@ -8,13 +8,17 @@ import Paper from "./Paper";
 import StyledChannelInput from "./styles/ChannelInput";
 
 interface ChannelInputProps extends FormControlProps {
-  availableChannels: IChannel[];
+  availableChannels?: IChannel[];
   onChannelChange?: { (channel: string): void };
 }
 
 const ChannelInput = (props: ChannelInputProps) => {
-  const { availableChannels, value, onChannelChange, ...formControlProps } =
-    props;
+  const {
+    availableChannels = [],
+    value,
+    onChannelChange,
+    ...formControlProps
+  } = props;
 
   const [matchedChannels, setMatchedChannels] = useState<IChannel[]>(
     availableChannels.filter((channel) => channel.type === CHANNEL_TYPES.TEXT)

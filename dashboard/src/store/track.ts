@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ITrackList } from "types";
+import { TRACK_TYPE } from "helpers/constants";
+import { ITrackItem, ITrackList } from "types";
 
 interface ITrackState extends ITrackList {
   changed: boolean;
@@ -46,6 +47,26 @@ export const trackslice = createSlice({
       state.alliances.push(payload);
       state.changed = true;
     },
+    setItemChannel: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        type: TRACK_TYPE;
+        item: ITrackItem;
+        channel?: string;
+      }>
+    ) => {
+      const item = state[payload.type].find(
+        (item) =>
+          item.server === payload.item.server && item.id === payload.item.id
+      );
+
+      if (item) {
+        item.channel = payload.channel;
+        state.changed = true;
+      }
+    },
     untrackPlayer: (state, { payload }: PayloadAction<string>) => {
       const i = state.players.findIndex(({ id }) => id === payload);
       if (i < 0) return;
@@ -72,6 +93,7 @@ export const {
   trackPlayer,
   trackGuild,
   trackAlliance,
+  setItemChannel,
   untrackPlayer,
   untrackGuild,
   untrackAlliance,

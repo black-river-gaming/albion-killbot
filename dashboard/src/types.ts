@@ -1,3 +1,5 @@
+import { TRACK_TYPE } from "helpers/constants";
+
 export interface User {
   id: string;
   username: string;
@@ -77,9 +79,9 @@ export interface ITrackItem {
 }
 
 export interface ITrackList {
-  players: ITrackItem[];
-  guilds: ITrackItem[];
-  alliances: ITrackItem[];
+  [TRACK_TYPE.PLAYERS]: ITrackItem[];
+  [TRACK_TYPE.GUILDS]: ITrackItem[];
+  [TRACK_TYPE.ALLIANCES]: ITrackItem[];
 }
 
 export type ISearchResults = ITrackList;
