@@ -6,12 +6,6 @@
     "NO_ALLIANCE": "Autres",
     "NO_GUILD": "Joueur sans Guilde"
   },
-  "CHANNEL": {
-    "NOT_FOUND": "Désolé, je ne trouve pas le canal spécifié. Vérifiez que j'ai les permissions d'y acceder.",
-    "NOT_SET": "ATTENTION: Le channel d'envoi des messages du bot n'est pas défini. Veuillez utiliser /settings Pour le configurer.",
-    "NO_CHANNEL": "Veuillez sélectionner un canal dans lequel les notifications seront envoyées.",
-    "SET_CHANNEL": "Canal pour la catégorie '{{ category }}' sélectionné {{{ channel }}}."
-  },
   "COMMAND_ERROR": "There was an error while executing this command. Please try again later.",
   "HELP": {
     "HELP": "Afficher la liste des commandes du bot.",
@@ -60,7 +54,12 @@
   },
   "SETTINGS": {
     "BATTLES": "Change settings for battle notifications.",
-    "CHANNEL": "Channel",
+    "CHANNEL": {
+      "DESCRIPTION": "Canal pour envoyer des notifications",
+      "NOT_SET": "ATTENTION: Le channel d'envoi des messages du bot n'est pas défini. Veuillez utiliser /settings Pour le configurer.",
+      "NULL": "Veuillez sélectionner un canal dans lequel les notifications seront envoyées.",
+      "SET": "Canal pour la catégorie '{{ category }}' sélectionné {{{ channel }}}."
+    },
     "DEATHS": "Change settings for death notifications.",
     "DISABLED": "Désactivé",
     "ENABLED": "Activé",
@@ -120,6 +119,10 @@
       "UNTRACKED": "Désactivation de la suivi de l'alliance: {{ name }}."
     },
     "ALREADY_TRACKED": "Je suis déja ceci.",
+    "CHANNEL": {
+      "CUSTOM": "Les notifications seront envoyées au canal : {{{ channel }}}",
+      "DEFAULT": "Les notifications seront envoyées au canal par défaut."
+    },
     "ERRORS": {
       "FETCH_FAILED": "Impossible de récupérer les paramètres de suivi. Veuillez réessayer plus tard."
     },
@@ -144,6 +147,9 @@
       "UNTRACKED": "Désactivation de la suivi du joueur: {{ name }}."
     },
     "SEARCH_FAILED": "Impossible de récupérer les données depuis les serveurs d'Albion Online. Rééssayez plus tard.",
+    "SERVER": {
+      "DESCRIPTION": "Serveur"
+    },
     "TRACKING_DISABLED": "Désolé, le suivi de {{ type }} est désactivé. Veuillez contacter l'administrateur du bot pour plus d'informations.",
     "UNSUPPORTED_TYPE": "Je ne peux pas suivre ceci. Ecrivez !help pour en savoir plus."
   },

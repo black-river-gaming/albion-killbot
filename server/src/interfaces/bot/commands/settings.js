@@ -11,7 +11,7 @@ const kills = (subcommand) =>
     .setName("kills")
     .setDescription(t("SETTINGS.KILLS"))
     .addBooleanOption((option) => option.setName("enabled").setDescription(t("SETTINGS.ENABLED")))
-    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL")))
+    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL.DESCRIPTION")))
     .addStringOption((option) =>
       option
         .setName("mode")
@@ -33,7 +33,7 @@ const deaths = (subcommand) =>
     .setName("deaths")
     .setDescription(t("SETTINGS.DEATHS"))
     .addBooleanOption((option) => option.setName("enabled").setDescription(t("SETTINGS.ENABLED")))
-    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL")))
+    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL.DESCRIPTION")))
     .addStringOption((option) =>
       option
         .setName("mode")
@@ -55,7 +55,7 @@ const battles = (subcommand) =>
     .setName("battles")
     .setDescription(t("SETTINGS.BATTLES"))
     .addBooleanOption((option) => option.setName("enabled").setDescription(t("SETTINGS.ENABLED")))
-    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL")));
+    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL.DESCRIPTION")));
 
 const rankingFrequencies = [
   {
@@ -77,7 +77,7 @@ const rankings = (subcommand) =>
     .setName("rankings")
     .setDescription(t("SETTINGS.RANKINGS"))
     .addBooleanOption((option) => option.setName("enabled").setDescription(t("SETTINGS.ENABLED")))
-    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL")))
+    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL.DESCRIPTION")))
     .addStringOption((option) =>
       option
         .setName("pvp-ranking")
@@ -127,8 +127,8 @@ function printCommonOptions(settings, category, interaction, t) {
   const option = settings[category].enabled ? t("SETTINGS.ENABLED") : t("SETTINGS.DISABLED");
   const channel = interaction.guild.channels.cache.get(settings[category].channel);
   reply += t("SETTINGS.SET", { category, option }) + "\n";
-  if (channel) reply += t("CHANNEL.SET_CHANNEL", { category, channel: channel.toString() }) + "\n";
-  else reply += t("CHANNEL.NO_CHANNEL") + "\n";
+  if (channel) reply += t("SETTINGS.CHANNEL.SET", { category, channel: channel.toString() }) + "\n";
+  else reply += t("SETTINGS.CHANNEL.NULL") + "\n";
 
   return reply;
 }

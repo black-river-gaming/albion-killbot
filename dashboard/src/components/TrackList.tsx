@@ -1,64 +1,73 @@
-import { Badge, Button, ButtonGroup, ListGroup, Stack } from "react-bootstrap";
-import { TrackList as ITrackList } from "types";
+import { TRACK_TYPE } from "helpers/constants";
+import { useAppDispatch } from "helpers/hooks";
+import { capitalize } from "helpers/utils";
+import { Badge, Button, ListGroup, Stack } from "react-bootstrap";
+import { untrackAlliance, untrackGuild, untrackPlayer } from "store/track";
+import { ITrackList } from "types";
+import TrackItemOptions from "./TrackItemOptions";
 
 interface ITrackListItemProps {
-  title: string;
+  type: TRACK_TYPE;
   limit: number;
-  list: ITrackList["players" | "guilds" | "alliances"];
-  onUntrackClick: (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    id: string
-  ) => void;
+  list: ITrackList[TRACK_TYPE];
 }
 
-const TrackList = ({
-  title,
-  limit = 0,
-  list,
-  onUntrackClick,
-}: ITrackListItemProps) => {
+const TrackList = ({ type, limit = 0, list }: ITrackListItemProps) => {
+  const dispatch = useAppDispatch();
+
   return (
     <ListGroup>
       <ListGroup.Item
         variant="primary"
         className="d-flex justify-content-between align-items-baseline"
       >
-        <div>{title}</div>
+        <div>{capitalize(type)}</div>
         <Badge bg={list.length < limit ? "secondary" : "danger"}>
           {list.length}/{limit}
         </Badge>
       </ListGroup.Item>
 
-      {list.map(({ id, name, server }, i) => (
-        <ListGroup.Item key={id} className="paper">
-          <div className="d-flex justify-content-between align-items-center">
-            <Stack>
-              <span className="id-text">#{id}</span>
-              <Stack
-                direction="horizontal"
-                gap={2}
-                className="d-flex align-items-baseline"
-              >
-                <div className={i >= limit ? "text-danger" : ""}>{name}</div>
-                <Badge bg={server.toLowerCase().replace(" ", "-")}>
-                  {server}
-                </Badge>
+      {list.map((item, i) => {
+        const { id, name, server } = item;
+        return (
+          <ListGroup.Item key={id} className="paper">
+            <div className="d-flex justify-content-between align-items-center">
+              <Stack>
+                <span className="id-text">#{id}</span>
+                <Stack
+                  direction="horizontal"
+                  gap={2}
+                  className="d-flex align-items-baseline"
+                >
+                  <div className={i >= limit ? "text-danger" : ""}>{name}</div>
+                  <Badge bg={server.toLowerCase().replace(" ", "-")}>
+                    {server}
+                  </Badge>
+                </Stack>
               </Stack>
-            </Stack>
-            <ButtonGroup size="sm">
-              <Button
-                size="sm"
-                variant="danger"
-                onClick={(e) => {
-                  return onUntrackClick(e, id);
-                }}
-              >
-                Remove
-              </Button>
-            </ButtonGroup>
-          </div>
-        </ListGroup.Item>
-      ))}
+              <Stack direction="horizontal" gap={2}>
+                <TrackItemOptions type={type} item={item} />
+                <Button
+                  size="sm"
+                  variant="danger"
+                  onClick={() => {
+                    switch (type) {
+                      case TRACK_TYPE.PLAYERS:
+                        return dispatch(untrackPlayer(id));
+                      case TRACK_TYPE.GUILDS:
+                        return dispatch(untrackGuild(id));
+                      case TRACK_TYPE.ALLIANCES:
+                        return dispatch(untrackAlliance(id));
+                    }
+                  }}
+                >
+                  Remove
+                </Button>
+              </Stack>
+            </div>
+          </ListGroup.Item>
+        );
+      })}
     </ListGroup>
   );
 };

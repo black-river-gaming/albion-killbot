@@ -435,6 +435,10 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
 
   /* Bootstrap Modal overrides */
   .modal-dialog {
+    .modal-title {
+      line-height: 1.2rem;
+    }
+
     .modal-content {
       background-color: ${({ theme }) => theme.background};
       background-image: linear-gradient(

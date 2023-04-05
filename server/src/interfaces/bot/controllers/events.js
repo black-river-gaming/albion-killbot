@@ -32,21 +32,20 @@ async function subscribe(client) {
         if (!guildEvent) continue;
         const lootValue = await getEventVictimLootValue(event, { server });
 
-        const { enabled, channel, mode } = guildEvent.good ? settings.kills : settings.deaths;
+        const { good, tracked } = guildEvent;
+        const { enabled, mode } = good ? settings.kills : settings.deaths;
+        const channel = tracked.channel || (good ? settings.kills.channel : settings.deaths.channel);
         if (!enabled || !channel) continue;
 
         addRankingKill(guild.id, guildEvent);
 
-        logger.info(
-          `[${server}] Sending ${guildEvent.good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`,
-          {
-            guild: transformGuild(guild),
-            event: transformEvent(guildEvent),
-            settings,
-            track,
-            limits,
-          },
-        );
+        logger.info(`[${server}] Sending ${good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
+          guild: transformGuild(guild),
+          event: transformEvent(guildEvent),
+          settings,
+          track,
+          limits,
+        });
         const { locale, guildTags, splitLootValue } = settings.general;
 
         if (mode === REPORT_MODES.IMAGE) {

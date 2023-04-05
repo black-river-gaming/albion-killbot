@@ -3,11 +3,11 @@ import {
   ISearchResults,
   IServer,
   ISettings,
+  ITrackList,
   ServerPartial,
   Session,
   Subscription,
   SubscriptionPricesResponse,
-  TrackList,
   UpdateSubscription,
   User,
 } from "types";
@@ -134,7 +134,7 @@ export const api = createApi({
       }),
       updateTrack: builder.mutation<
         void,
-        { serverId: string; track: TrackList }
+        { serverId: string; track: ITrackList }
       >({
         query: ({ serverId, track }) => ({
           url: `/servers/${serverId}/track`,
