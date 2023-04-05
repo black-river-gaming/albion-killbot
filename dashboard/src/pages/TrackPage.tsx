@@ -73,6 +73,9 @@ const TrackPage = () => {
         <Track
           limits={limits}
           onUpdateClick={() => dispatchUpdateTrack({ serverId: id, track })}
+          onResetClick={() => {
+            if (server?.data?.track) dispatch(loadTrack(server.data.track));
+          }}
         />
       </Col>
 

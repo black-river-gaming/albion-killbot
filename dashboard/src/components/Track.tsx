@@ -1,20 +1,16 @@
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { Alert, Button, Card, Stack } from "react-bootstrap";
-import {
-  resetTrack,
-  untrackAlliance,
-  untrackGuild,
-  untrackPlayer,
-} from "store/track";
+import { untrackAlliance, untrackGuild, untrackPlayer } from "store/track";
 import { Limits } from "types";
 import TrackList from "./TrackList";
 
 interface ITrackListProps {
   limits: Limits;
   onUpdateClick: React.MouseEventHandler<HTMLButtonElement>;
+  onResetClick: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const Track = ({ limits, onUpdateClick }: ITrackListProps) => {
+const Track = ({ limits, onUpdateClick, onResetClick }: ITrackListProps) => {
   const track = useAppSelector((state) => state.track);
   const dispatch = useAppDispatch();
 
@@ -47,12 +43,7 @@ const Track = ({ limits, onUpdateClick }: ITrackListProps) => {
         )}
 
         <Stack direction="horizontal" gap={2} className="justify-content-end">
-          <Button
-            variant="secondary"
-            onClick={() => {
-              dispatch(resetTrack());
-            }}
-          >
+          <Button variant="secondary" onClick={onResetClick}>
             Reset
           </Button>
           <Button variant="primary" onClick={onUpdateClick}>

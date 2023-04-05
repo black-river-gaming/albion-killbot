@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { TrackList } from "types";
+import { ITrackList } from "types";
 
-interface ITrackState extends TrackList {
-  default: TrackList;
+interface ITrackState extends ITrackList {
   changed: boolean;
 }
 
@@ -10,11 +9,6 @@ const initialState: ITrackState = {
   players: [],
   guilds: [],
   alliances: [],
-  default: {
-    players: [],
-    guilds: [],
-    alliances: [],
-  },
   changed: false,
 };
 
@@ -22,27 +16,15 @@ export const trackslice = createSlice({
   name: "track",
   initialState,
   reducers: {
-    loadTrack: (state, { payload }: PayloadAction<TrackList>) => {
+    loadTrack: (state, { payload }: PayloadAction<ITrackList>) => {
       state.players = payload.players;
       state.guilds = payload.guilds;
       state.alliances = payload.alliances;
-
-      state.default.players = payload.players;
-      state.default.guilds = payload.guilds;
-      state.default.alliances = payload.alliances;
-
-      state.changed = false;
-    },
-    resetTrack: (state) => {
-      state.players = state.default.players;
-      state.guilds = state.default.guilds;
-      state.alliances = state.default.alliances;
-
       state.changed = false;
     },
     trackPlayer: (
       state,
-      { payload }: PayloadAction<TrackList["players"][number]>
+      { payload }: PayloadAction<ITrackList["players"][number]>
     ) => {
       if (state.players.find(({ id }) => id === payload.id)) return;
       state.players.push(payload);
@@ -50,7 +32,7 @@ export const trackslice = createSlice({
     },
     trackGuild: (
       state,
-      { payload }: PayloadAction<TrackList["guilds"][number]>
+      { payload }: PayloadAction<ITrackList["guilds"][number]>
     ) => {
       if (state.guilds.find(({ id }) => id === payload.id)) return;
       state.guilds.push(payload);
@@ -58,7 +40,7 @@ export const trackslice = createSlice({
     },
     trackAlliance: (
       state,
-      { payload }: PayloadAction<TrackList["alliances"][number]>
+      { payload }: PayloadAction<ITrackList["alliances"][number]>
     ) => {
       if (state.alliances.find(({ id }) => id === payload.id)) return;
       state.alliances.push(payload);
@@ -87,7 +69,6 @@ export const trackslice = createSlice({
 
 export const {
   loadTrack,
-  resetTrack,
   trackPlayer,
   trackGuild,
   trackAlliance,

@@ -30,7 +30,7 @@ export interface IServer extends ServerBase {
   settings: ISettings;
   limits: Limits;
   subscription: Subscription;
-  track: TrackList;
+  track: ITrackList;
 }
 
 export interface IChannel {
@@ -69,25 +69,20 @@ export interface ISettings {
   };
 }
 
-export interface TrackList {
-  players: {
-    id: string;
-    name: string;
-    server: string;
-  }[];
-  guilds: {
-    id: string;
-    name: string;
-    server: string;
-  }[];
-  alliances: {
-    id: string;
-    name: string;
-    server: string;
-  }[];
+export interface ITrackItem {
+  id: string;
+  name: string;
+  server: string;
+  channel?: string;
 }
 
-export type ISearchResults = TrackList;
+export interface ITrackList {
+  players: ITrackItem[];
+  guilds: ITrackItem[];
+  alliances: ITrackItem[];
+}
+
+export type ISearchResults = ITrackList;
 
 export interface Subscription {
   id: string;

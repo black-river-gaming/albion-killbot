@@ -1,5 +1,5 @@
 import { Badge, Button, ButtonGroup, ListGroup, Stack } from "react-bootstrap";
-import { TrackList as ITrackList } from "types";
+import { ITrackList } from "types";
 
 interface ISearchResultListsProps {
   title: string;
