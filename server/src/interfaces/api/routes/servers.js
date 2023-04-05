@@ -196,6 +196,10 @@ router.use(`/:serverId`, serverAdmin);
  *          type: string
  *          description: Albion server
  *          example: "Albion West"
+ *        channel:
+ *          type: string
+ *          description: Discord channel to send notifications
+ *          default: null
  */
 
 /**
