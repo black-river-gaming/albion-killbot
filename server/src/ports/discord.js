@@ -1,6 +1,7 @@
 const discordApiClient = require("./adapters/discordApiClient");
 const discordHelper = require("../helpers/discord");
 const { memoize } = require("../helpers/cache");
+const { DAY } = require("../helpers/constants");
 
 const { DISCORD_TOKEN } = process.env;
 
@@ -13,10 +14,16 @@ async function refreshToken(refreshToken) {
 }
 
 async function getUser(accessToken) {
-  return memoize(`discord.users.${accessToken}`, async () => {
-    const user = await discordApiClient.getCurrentUser(`Bearer ${accessToken}`);
-    return discordHelper.transformUser(user);
-  });
+  return memoize(
+    `discord.users.${accessToken}`,
+    async () => {
+      const user = await discordApiClient.getCurrentUser(`Bearer ${accessToken}`);
+      return discordHelper.transformUser(user);
+    },
+    {
+      timeout: DAY,
+    },
+  );
 }
 
 async function getUserGuilds(accessToken, params) {
