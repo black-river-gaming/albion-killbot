@@ -1,5 +1,5 @@
 function digitsFormatter(num) {
-  if (!num) return null;
+  if (!num) return 0;
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") || 0;
 }
 

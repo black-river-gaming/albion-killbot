@@ -363,8 +363,8 @@ const embedGuildRanking = (guild, { locale }) => {
   const ranking = {
     title: t("RANKING.MONTHLY", { guild: guild.Name }),
     description: t("RANKING.GUILD_RANKING_DESCRIPTION", {
-      killFame: digitsFormatter(guild.killFame),
-      deathFame: digitsFormatter(guild.DeathFame),
+      killFame: digitsFormatter(guild.killFame) || "-",
+      deathFame: digitsFormatter(guild.DeathFame) || "-",
     }),
     color: GOLD,
     thumbnail: {
