@@ -24,6 +24,12 @@ router.post(`/webhook`, async (req, res) => {
     event = req.body;
   }
 
+  if (!event.type && !event.data) {
+    return res
+      .status(422)
+      .json({ received: true, procesed: false, message: "Body does not have required fields or is not JSON object." });
+  }
+
   const { type, data } = event;
   const owner = data.object.client_reference_id;
 
