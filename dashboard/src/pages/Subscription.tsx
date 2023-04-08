@@ -2,9 +2,13 @@ import Loader from "components/Loader";
 import SubscriptionAssign from "components/SubscriptionAssign";
 import SubscriptionPriceCard from "components/SubscriptionPriceCard";
 import { useState } from "react";
-import { Button, Card, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Row, Stack } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import { useFetchServerQuery, useFetchUserQuery } from "store/api";
+import {
+  useFetchServerQuery,
+  useFetchUserQuery,
+  useManageSubscriptionMutation,
+} from "store/api";
 import { Subscription } from "types";
 
 const SubscriptionPage = () => {
@@ -12,6 +16,14 @@ const SubscriptionPage = () => {
   const user = useFetchUserQuery();
   const server = useFetchServerQuery(serverId);
   const [subscriptionAssignId, setSubscriptionAssignId] = useState("");
+  const [dispatchManageSubscription, manageSubscription] =
+    useManageSubscriptionMutation();
+
+  if (server.isFetching) return <Loader />;
+  if (manageSubscription.isLoading) return <Loader />;
+  if (manageSubscription.isSuccess && manageSubscription.data) {
+    window.location.href = manageSubscription.data.url;
+  }
 
   const renderServerSubscription = (subscription?: Subscription) => {
     const isSubscriptionOwner =
@@ -45,16 +57,40 @@ const SubscriptionPage = () => {
           <Row className="justify-content-center my-3">
             <Col lg={6}>
               <SubscriptionPriceCard price={subscription.stripe?.price}>
-                {isSubscriptionOwner && (
-                  <div className="d-flex justify-content-end px-2 pb-2">
-                    <Button
-                      variant="secondary"
-                      onClick={() => setSubscriptionAssignId(subscription.id)}
-                    >
-                      Transfer
-                    </Button>
+                <Stack gap={2} className="p-2">
+                  <div className="id-text">
+                    <span>#{subscription.id}</span>
+                    {subscription.stripe?.cancel_at_period_end && (
+                      <span className="cancelled-text">cancelled</span>
+                    )}
                   </div>
-                )}
+                  {isSubscriptionOwner && (
+                    <Stack gap={2}>
+                      <Button
+                        variant="secondary"
+                        onClick={() => setSubscriptionAssignId(subscription.id)}
+                      >
+                        Transfer
+                      </Button>
+
+                      {subscription.stripe?.customer && (
+                        <Button
+                          variant="danger"
+                          onClick={() => {
+                            if (subscription.stripe?.customer)
+                              dispatchManageSubscription(
+                                subscription.stripe.customer
+                              );
+                          }}
+                        >
+                          {subscription.stripe?.cancel_at_period_end
+                            ? "Renew"
+                            : "Cancel"}
+                        </Button>
+                      )}
+                    </Stack>
+                  )}
+                </Stack>
               </SubscriptionPriceCard>
             </Col>
           </Row>
@@ -65,7 +101,6 @@ const SubscriptionPage = () => {
 
   return (
     <>
-      {server.isFetching && <Loader />}
       {!server.data && <div>No data found.</div>}
       {renderServerSubscription(server.data?.subscription)}
       {subscriptionAssignId && (

@@ -24,6 +24,12 @@ router.post(`/webhook`, async (req, res) => {
     event = req.body;
   }
 
+  if (!event.type && !event.data) {
+    return res
+      .status(422)
+      .json({ received: true, procesed: false, message: "Body does not have required fields or is not JSON object." });
+  }
+
   const { type, data } = event;
   const owner = data.object.client_reference_id;
 
@@ -32,9 +38,14 @@ router.post(`/webhook`, async (req, res) => {
 
   switch (type) {
     case "checkout.session.completed":
-      logger.info(`[${data.object.subscription}] Creating new subscription for discord user [${owner}].`, {
-        metadata: data,
-      });
+      logger.info(
+        `[${data.object.subscription}] Checkout completed. Creating subscription for discord user [${owner}].`,
+        {
+          type,
+          data,
+          owner,
+        },
+      );
       await subscriptionsService.addSubscription({
         owner,
         expires: new Date(),
@@ -44,7 +55,8 @@ router.post(`/webhook`, async (req, res) => {
 
     case "customer.subscription.updated":
       logger.info(`[${data.object.id}] Updating expiration: ${new Date(data.object.current_period_end * 1000)}`, {
-        metadata: data,
+        type,
+        data,
       });
       await subscriptionsService.updateSubscriptionByStripeId(data.object.id, {
         expires: new Date(data.object.current_period_end * 1000),
@@ -53,7 +65,8 @@ router.post(`/webhook`, async (req, res) => {
 
     case "customer.subscription.deleted":
       logger.info(`[${data.object.id}] Deleting subscription.`, {
-        metadata: data,
+        type,
+        data,
       });
       await subscriptionsService.removeSubscriptionByStripeId(data.object.id);
       break;
