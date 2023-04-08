@@ -6,7 +6,7 @@ import Auth from "pages/Auth";
 import AuthGuard from "pages/AuthGuard";
 import Dashboard from "pages/Dashboard";
 import Home from "pages/Home";
-import Premium from "pages/Premium";
+import PremiumPage from "pages/PremiumPage";
 import ServerPage from "pages/ServerPage";
 import SettingsPage from "pages/SettingsPage";
 import SubscriptionPage from "pages/Subscription";
@@ -42,7 +42,7 @@ const routes = createRoutesFromElements(
           </AuthGuard>
         }
       >
-        <Route path="premium" element={<Premium />} />
+        <Route path="premium" element={<PremiumPage />} />
       </Route>
       <Route path="*" element={<h1>404 - Not found</h1>} />
     </Route>

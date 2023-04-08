@@ -35,7 +35,7 @@ import {
 import { ServerBase, SubscriptionPrice } from "types";
 import UserSubscriptionsCard from "./styles/Premium";
 
-const Premium = () => {
+const PremiumPage = () => {
   const user = useFetchUserQuery();
   const [currency, setCurrency] = useState(
     LocaleCurrency.getCurrency(user.data?.locale || "en-US")
@@ -302,4 +302,4 @@ const Premium = () => {
   );
 };
 
-export default Premium;
+export default PremiumPage;
