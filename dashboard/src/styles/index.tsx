@@ -300,12 +300,21 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
 
   /* Bootstrap Dropdown overrides */
   .dropdown-menu {
+    display: block;
     padding: 0;
 
+    transition-duration: 0.25s;
+    transition-timing-function: ease-in-out;
+    transition-property: opacity;
+    opacity: 0;
+
+    height: 0;
+    overflow: hidden;
+
     &.show {
-      animation-duration: 0.5s;
-      animation-timing-function: ease-in-out;
-      animation-name: slideDown;
+      opacity: 1;
+      overflow: visible;
+      height: auto;
     }
 
     .dropdown-item {
@@ -350,14 +359,12 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
     }
   }
 
-  @keyframes slideDown {
+  @keyframes fadeIn {
     from {
-      transform: translateY(-1rem);
       opacity: 0;
     }
 
     to {
-      transform: translateY(0rem);
       opacity: 1;
     }
   }
