@@ -1,7 +1,9 @@
 import App from "App";
-import AdminServersPage from "pages/AdminServersPage";
 import AdminGuard from "pages/AdminGuard";
+import AdminPage from "pages/AdminPage";
 import AdminServerPage from "pages/AdminServerPage";
+import AdminServersPage from "pages/AdminServersPage";
+import AdminSubscriptionsPage from "pages/AdminSubscriptionsPage";
 import Auth from "pages/Auth";
 import AuthGuard from "pages/AuthGuard";
 import Dashboard from "pages/Dashboard";
@@ -12,7 +14,6 @@ import SettingsPage from "pages/SettingsPage";
 import SubscriptionPage from "pages/Subscription";
 import TrackPage from "pages/TrackPage";
 import { createRoutesFromElements, Navigate, Route } from "react-router-dom";
-import AdminPage from "pages/AdminPage";
 
 const routes = createRoutesFromElements(
   <>
@@ -35,7 +36,7 @@ const routes = createRoutesFromElements(
           <Route index element={<Navigate to="servers" replace={true} />} />
           <Route path="servers" element={<AdminServersPage />} />
           <Route path="servers/:serverId" element={<AdminServerPage />} />
-          <Route path="subscriptions" element={<AdminServersPage />} />
+          <Route path="subscriptions" element={<AdminSubscriptionsPage />} />
         </Route>
       </Route>
       <Route

@@ -298,6 +298,70 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
     }
   }
 
+  /* Bootstrap Dropdown overrides */
+  .dropdown-menu {
+    padding: 0;
+
+    &.show {
+      animation-duration: 0.5s;
+      animation-timing-function: ease-in-out;
+      animation-name: slideDown;
+    }
+
+    .dropdown-item {
+      padding: 0.45rem 1rem;
+      width: auto;
+
+      &:first-child {
+        border-top-left-radius: 0.25rem;
+        border-top-right-radius: 0.25rem;
+      }
+
+      &:last-child {
+        border-bottom-left-radius: 0.25rem;
+        border-bottom-right-radius: 0.25rem;
+      }
+    }
+  }
+
+  .dropdown-menu-dark {
+    background-color: ${({ theme }) => theme.background};
+    border-radius: 10px;
+
+    .dropdown-item {
+      transition: color 0.25s ease-in-out;
+
+      &.active {
+        background-color: transparent;
+        background-image: linear-gradient(
+          rgba(255, 255, 255, 0.05),
+          rgba(255, 255, 255, 0.05)
+        );
+      }
+
+      &:hover {
+        background-color: transparent;
+        color: ${({ theme }) => theme.primary};
+      }
+
+      &:focus {
+        background-color: transparent;
+      }
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(-1rem);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0rem);
+      opacity: 1;
+    }
+  }
+
   /* Bootstrap Form overrides */
   form {
     label.form-label {
@@ -371,8 +435,8 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
     color: ${({ theme }) => theme.text};
 
     .list-group-item {
-      background-color: inherit;
       color: inherit;
+      background-color: transparent;
       border: 0px solid ${({ theme }) => theme.background}77;
       margin: 0;
 
@@ -403,8 +467,8 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
         &.active,
         &:active {
           background-image: linear-gradient(
-            rgba(255, 255, 255, 0.05),
-            rgba(255, 255, 255, 0.05)
+            rgba(255, 255, 255, 0.09),
+            rgba(255, 255, 255, 0.09)
           );
         }
       }
@@ -542,7 +606,6 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
         justify-content: center;
 
         &:hover {
-          border: none;
           color: ${({ theme }) => theme.primary};
         }
 
