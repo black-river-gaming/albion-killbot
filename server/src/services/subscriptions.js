@@ -3,6 +3,7 @@ const moment = require("moment");
 const stripe = require("../ports/stripe");
 const { find, findOne, insertOne, updateOne, updateMany, deleteOne } = require("../ports/database");
 const { remove } = require("../helpers/cache");
+const { SUBSCRIPTION_STATUS } = require("../helpers/constants");
 
 const SUBSCRIPTIONS_MODE = Boolean(process.env.SUBSCRIPTIONS_MODE);
 const SUBSCRIPTIONS_COLLECTION = "subscriptions";
@@ -34,6 +35,29 @@ async function manageSubscription(customerId) {
 }
 
 /* Subscriptions */
+async function fetchSubscriptions({ owner, stripe, server, status } = {}) {
+  const query = {};
+  if (owner) query.owner = owner;
+  if (server) query.server = server;
+  if (stripe) query.stripe = stripe;
+  if (status) {
+    switch (status) {
+      case SUBSCRIPTION_STATUS.FREE:
+        query.expires = "never";
+        break;
+      case SUBSCRIPTION_STATUS.ACTIVE:
+        query.expires = { $gte: new Date() };
+        break;
+      case SUBSCRIPTION_STATUS.EXPIRED:
+        query.expires = { $lt: new Date() };
+        break;
+      default:
+    }
+  }
+
+  return await find(SUBSCRIPTIONS_COLLECTION, query);
+}
+
 async function fetchAllSubscriptions() {
   return await find(SUBSCRIPTIONS_COLLECTION, {});
 }
@@ -177,6 +201,7 @@ module.exports = {
   buySubscription,
   fetchAllSubscriptions,
   fetchSubscriptionPrices,
+  fetchSubscriptions,
   fetchSubscriptionsByOwner,
   findSubscriptionsByServerId,
   getBuySubscription,

@@ -28,6 +28,7 @@ router.use(admin);
  *         description: Internal error
  */
 router.get(`/servers`, adminController.getServers);
+
 /**
  * @openapi
  * /admin/servers/{serverId}:
@@ -110,6 +111,52 @@ router.put(`/servers/:serverId/subscription`, adminController.setServerSubscript
  *         description: Internal error
  */
 router.delete(`/servers/:serverId/subscription`, adminController.removeServerSubscription);
+
+/**
+ * @openapi
+ * /admin/subscriptions:
+ *   get:
+ *     tags: [Admin]
+ *     summary: Get server subscriptions
+ *     operationId:  getSubscriptions
+ *     parameters:
+ *     - name: server
+ *       in: query
+ *       description: Filter by server id
+ *       schema:
+ *         type: string
+ *     - name: owner
+ *       in: query
+ *       description: Filter by subscription owner
+ *       schema:
+ *         type: string
+ *     - name: status
+ *       in: query
+ *       description: Filter by subscription status
+ *       schema:
+ *         type: string
+ *         enum: ["Free", "Active", "Expired"]
+ *     - name: stripe
+ *       in: query
+ *       description: Filter by stripe subscription id
+ *       schema:
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: List of subscriptions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/SubscriptionPartial'
+ *       403:
+ *         description: Unable to authenticate
+ *       500:
+ *         description: Internal error
+ *
+ */
+router.get(`/subscriptions`, adminController.getSubscriptions);
 
 module.exports = {
   path: "/admin",

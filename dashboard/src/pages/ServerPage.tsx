@@ -35,7 +35,7 @@ const ServerPage = () => {
               className="justify-content-end"
             >
               {user?.admin && (
-                <Link to={`/admin/${server.data.id}`}>
+                <Link to={`/admin/servers/${server.data.id}`}>
                   <Button variant="primary">Admin</Button>
                 </Link>
               )}

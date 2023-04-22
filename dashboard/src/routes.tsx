@@ -1,7 +1,9 @@
 import App from "App";
-import Admin from "pages/Admin";
 import AdminGuard from "pages/AdminGuard";
-import AdminServer from "pages/AdminServer";
+import AdminPage from "pages/AdminPage";
+import AdminServerPage from "pages/AdminServerPage";
+import AdminServersPage from "pages/AdminServersPage";
+import AdminSubscriptionsPage from "pages/AdminSubscriptionsPage";
 import Auth from "pages/Auth";
 import AuthGuard from "pages/AuthGuard";
 import Dashboard from "pages/Dashboard";
@@ -30,9 +32,11 @@ const routes = createRoutesFromElements(
         </Route>
       </Route>
       <Route element={<AdminGuard redirectTo="/" />}>
-        <Route path="admin">
-          <Route index element={<Admin />} />
-          <Route path=":serverId" element={<AdminServer />} />
+        <Route path="admin" element={<AdminPage />}>
+          <Route index element={<Navigate to="servers" replace={true} />} />
+          <Route path="servers" element={<AdminServersPage />} />
+          <Route path="servers/:serverId" element={<AdminServerPage />} />
+          <Route path="subscriptions" element={<AdminSubscriptionsPage />} />
         </Route>
       </Route>
       <Route

@@ -86,10 +86,19 @@ export interface ITrackList {
 
 export type ISearchResults = ITrackList;
 
-export interface Subscription {
+export interface SubscriptionBase {
   id: string;
   owner: string;
   expires: string | "never";
+  limits?: Limits;
+}
+
+export interface SubscriptionPartial extends SubscriptionBase {
+  server?: string;
+  stripe?: string;
+}
+
+export interface Subscription extends SubscriptionBase {
   server?: string | ServerBase;
   stripe?: {
     id: string;
@@ -98,7 +107,6 @@ export interface Subscription {
     customer: string;
     price: SubscriptionPrice;
   };
-  limits?: Limits;
 }
 export type UpdateSubscription = Omit<Subscription, "id">;
 

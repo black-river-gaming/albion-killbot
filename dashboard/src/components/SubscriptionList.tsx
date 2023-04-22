@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react";
-import { Button, Pagination, Stack } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { ServerPartial } from "types";
-import LeaveServer from "./LeaveServer";
-import ServerCard from "./ServerCard";
+import { Pagination, Stack } from "react-bootstrap";
+import { SubscriptionPartial } from "types";
+import SubscriptionListItem from "./SubscriptionListItem";
 
-interface ServerListProps {
+interface SubscriptionListProps {
   className?: string;
   pageSize?: number;
-  servers: ServerPartial[];
+  subscriptions?: SubscriptionPartial[];
 }
 
-const ServerList = ({ servers, className, pageSize = 10 }: ServerListProps) => {
+const SubscriptionList = ({
+  subscriptions = [],
+  className,
+  pageSize = 10,
+}: SubscriptionListProps) => {
   const [width, setWidth] = useState(window.innerWidth);
   const PAGE_GAP = 2 + Math.floor(width / 450);
 
   const [page, setPage] = useState(1);
-  const pages = Math.ceil(servers.length / pageSize);
+  const pages = Math.ceil(subscriptions.length / pageSize);
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
@@ -29,7 +31,7 @@ const ServerList = ({ servers, className, pageSize = 10 }: ServerListProps) => {
     else if (page > pages && pages > 0) setPage(pages);
   }, [page, pages]);
 
-  const items = servers.slice(
+  const items = subscriptions.slice(
     (page - 1) * pageSize,
     (page - 1) * pageSize + pageSize
   );
@@ -55,29 +57,20 @@ const ServerList = ({ servers, className, pageSize = 10 }: ServerListProps) => {
     pageList.push(i);
   }
 
-  if (servers.length === 0)
+  if (subscriptions.length === 0)
     return (
       <h5 className="d-flex justify-content-center py-5">
-        No servers to display.
+        No subscriptions to display.
       </h5>
     );
 
   return (
     <Stack gap={3} className={className}>
-      {items.map((server) => (
-        <ServerCard key={server.id} server={server} list>
-          <Stack gap={2} direction="horizontal">
-            <Link to={`/admin/servers/${server.id}`}>
-              <Button variant="primary">Manage</Button>
-            </Link>
-
-            <Link to={`/dashboard/${server.id}`}>
-              <Button variant="primary">Dashboard</Button>
-            </Link>
-
-            <LeaveServer server={server} />
-          </Stack>
-        </ServerCard>
+      {items.map((subscription) => (
+        <SubscriptionListItem
+          key={subscription.id}
+          subscription={subscription}
+        />
       ))}
 
       <div className="mw-w100 d-flex justify-content-center">
@@ -101,4 +94,4 @@ const ServerList = ({ servers, className, pageSize = 10 }: ServerListProps) => {
   );
 };
 
-export default ServerList;
+export default SubscriptionList;

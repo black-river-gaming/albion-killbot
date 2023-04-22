@@ -11,6 +11,8 @@ export const KILL_MODES = ["image", "text"];
 
 export const RANKING_MODES = ["off", "hourly", "daily"];
 
+export const SUBSCRIPTION_STATUSES = ["Free", "Active", "Expired"];
+
 export enum TRACK_TYPE {
   PLAYERS = "players",
   GUILDS = "guilds",

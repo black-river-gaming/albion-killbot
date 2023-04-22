@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Modal, Stack } from "react-bootstrap";
 import { useUpdateSubscriptionMutation } from "store/api";
-import { Subscription } from "types";
+import { Subscription, SubscriptionPartial } from "types";
 
-interface ManageSubscriptionProps {
-  subscription: Subscription;
+interface SubscriptionEditProps {
+  subscription: Subscription | SubscriptionPartial;
 }
 
-const SubscriptionEdit = ({ subscription }: ManageSubscriptionProps) => {
+const SubscriptionEdit = ({ subscription }: SubscriptionEditProps) => {
   const [showManage, setShowManage] = useState(false);
 
   const [owner, setOwner] = useState(subscription.owner);

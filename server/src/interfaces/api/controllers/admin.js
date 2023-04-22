@@ -31,7 +31,7 @@ async function setServerSubscription(req, res) {
 
     return res.send(subscription);
   } catch (error) {
-    logger.error(`Unable to update subscription for server #${serverId}: ${error.message}`, error);
+    logger.error(`Unable to update subscription for server #${serverId}: ${error.message}`, { error });
     return res.sendStatus(500);
   }
 }
@@ -44,7 +44,7 @@ async function removeServerSubscription(req, res) {
 
     return res.sendStatus(200);
   } catch (error) {
-    logger.error(`Unable to delete subscription for server #${serverId}: ${error.message}`, error);
+    logger.error(`Unable to delete subscription for server #${serverId}: ${error.message}`, { error });
     return res.sendStatus(500);
   }
 }
@@ -57,13 +57,27 @@ async function leaveServer(req, res) {
 
     return res.send({});
   } catch (error) {
-    logger.error(`Unable to leave server server #${serverId}: ${error.message}`, error);
+    logger.error(`Unable to leave server server #${serverId}: ${error.message}`, { error });
+    return res.sendStatus(500);
+  }
+}
+
+async function getSubscriptions(req, res) {
+  const { owner, stripe, status, server } = req.query;
+
+  try {
+    const subscriptions = await subscriptionsService.fetchSubscriptions({ owner, stripe, status, server });
+
+    return res.send(subscriptions);
+  } catch (error) {
+    logger.error(`Unable to retrieve subscription list: ${error.message}`, { error });
     return res.sendStatus(500);
   }
 }
 
 module.exports = {
   getServers,
+  getSubscriptions,
   leaveServer,
   removeServerSubscription,
   setServerSubscription,

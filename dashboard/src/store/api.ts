@@ -7,6 +7,7 @@ import {
   ServerPartial,
   Session,
   Subscription,
+  SubscriptionPartial,
   SubscriptionPricesResponse,
   UpdateSubscription,
   User,
@@ -97,6 +98,21 @@ export const api = createApi({
         }),
         invalidatesTags: ["Admin", "Server", "Subscription"],
       }),
+      fetchAdminSubscriptions: builder.query<
+        SubscriptionPartial[],
+        {
+          server?: string;
+          owner?: string;
+          status?: "free" | "active" | "expired";
+          stripe?: string;
+        }
+      >({
+        query: (params) => ({
+          url: `/admin/subscriptions`,
+          params,
+        }),
+        providesTags: ["Subscription"],
+      }),
       fetchPrices: builder.query<
         SubscriptionPricesResponse,
         { currency: string }
@@ -169,6 +185,7 @@ export const {
   useFetchServersQuery,
   useFetchSubscriptionsQuery,
   useFetchUserQuery,
+  useLazyFetchAdminSubscriptionsQuery,
   useLazyFetchUserQuery,
   useLazySearchQuery,
   useLogoutMutation,

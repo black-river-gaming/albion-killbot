@@ -8,7 +8,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "assets/logo_dark.svg";
-import Dropdown from "components/Dropdown";
 import Paper from "components/Paper";
 import {
   DISCORD_OAUTH_URL,
@@ -16,7 +15,14 @@ import {
   getUserPictureUrl,
 } from "helpers/discord";
 import theme from "helpers/theme";
-import { Button, Image, Nav, Navbar } from "react-bootstrap";
+import {
+  NavLink as BsNavLink,
+  Button,
+  Dropdown,
+  Image,
+  Nav,
+  Navbar,
+} from "react-bootstrap";
 import ContentLoader from "react-content-loader";
 import { NavLink } from "react-router-dom";
 import { useFetchUserQuery, useLogoutMutation } from "store/api";
@@ -58,7 +64,7 @@ const Header = () => {
         </ContentLoader>
       ) : data ? (
         <Dropdown>
-          <Dropdown.Toggle as="a" className="nav-link">
+          <Dropdown.Toggle as={BsNavLink} id="dropdown-header">
             <div>
               {data.username}#{data.discriminator}
             </div>
@@ -78,7 +84,7 @@ const Header = () => {
             <Dropdown.Item as={NavLink} to="/dashboard">
               Dashboard
             </Dropdown.Item>
-            <Dropdown.Item as="a" onClick={doLogout}>
+            <Dropdown.Item as="a" onClick={doLogout} href="#">
               Logout
             </Dropdown.Item>
           </Dropdown.Menu>

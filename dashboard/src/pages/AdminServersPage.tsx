@@ -3,11 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
 import ServerList from "components/ServerList";
 import { useEffect, useState } from "react";
-import { Button, Card, Form, InputGroup } from "react-bootstrap";
+import { Button, Card, Form, InputGroup, Stack } from "react-bootstrap";
 import { useFetchAdminServersQuery } from "store/api";
 import { ServerPartial } from "types";
 
-const Admin = () => {
+const AdminServersPage = () => {
   const serversQuery = useFetchAdminServersQuery();
   const [servers, setServers] = useState<ServerPartial[]>([]);
   const [searchServer, setSearchServer] = useState("");
@@ -44,11 +44,7 @@ const Admin = () => {
   }
 
   return (
-    <div>
-      <div className="d-flex justify-content-center pt-3">
-        <h1>Discord Servers</h1>
-      </div>
-
+    <Stack gap={3}>
       <Card className="p-2">
         <Form onSubmit={() => serversQuery.refetch()}>
           <Form.Group controlId="search">
@@ -69,9 +65,9 @@ const Admin = () => {
         </Form>
       </Card>
 
-      <ServerList servers={servers} className="py-4" />
-    </div>
+      <ServerList servers={servers} />
+    </Stack>
   );
 };
 
-export default Admin;
+export default AdminServersPage;
