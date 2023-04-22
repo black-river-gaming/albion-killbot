@@ -10,7 +10,7 @@ router.use(authenticated);
  * @openapi
  * components:
  *   schemas:
- *     Subscription:
+ *     SubscriptionBase:
  *       type: object
  *       properties:
  *         id:
@@ -23,13 +23,6 @@ router.use(authenticated);
  *           description: Discord user id that owns the subscription
  *           readOnly: true
  *           example: "155377266568855552"
- *         server:
- *             readOnly: true
- *             oneOf:
- *             - $ref: '#/components/schemas/ServerBase'
- *             - type: string
- *               description: Discord server id
- *               example: "738365346855256107"
  *         expires:
  *           description: Expiration date for a given subscription
  *           oneOf:
@@ -40,29 +33,51 @@ router.use(authenticated);
  *             example: "never"
  *         limits:
  *           $ref: "#/components/schemas/Limits"
- *         stripe:
- *           type: object
- *           description: Stripe subscription information
- *           readOnly: true
+ *
+ *     SubscriptionPartial:
+ *       allOf:
+ *         - $ref: '#components/schemas/SubscriptionBase'
+ *         - type: object
  *           properties:
- *             id:
+ *             server:
+ *               type: string
+ *               description: Discord server id
+ *               example: "738365346855256107"
+ *             stripe:
  *               type: string
  *               description: Stripe subscription id
  *               example: "sub_1LBsWDJDAy6upd5xtYnPln1B"
- *             cancel_at_period_end:
- *               type: boolean
- *               description: Cancel after subscription period end
- *               example: false
- *             current_period_end:
- *               type: number
- *               description: Timestamp in seconds for stripe subscription end
- *               example: 1687059617
- *             customer:
- *               type: string
- *               description: Stripe customer id
- *               example: "cus_Lvvu9FF2ehwSBF"
- *             price:
- *               $ref: "#/components/schemas/SubscriptionPrice"
+ *
+ *     Subscription:
+ *       allOf:
+ *         - $ref: '#components/schemas/SubscriptionBase'
+ *         - type: object
+ *           properties:
+ *             server:
+ *               $ref: '#/components/schemas/ServerBase'
+ *             stripe:
+ *               type: object
+ *               description: Stripe subscription information
+ *               readOnly: true
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   description: Stripe subscription id
+ *                   example: "sub_1LBsWDJDAy6upd5xtYnPln1B"
+ *                 cancel_at_period_end:
+ *                   type: boolean
+ *                   description: Cancel after subscription period end
+ *                   example: false
+ *                 current_period_end:
+ *                   type: number
+ *                   description: Timestamp in seconds for stripe subscription end
+ *                   example: 1687059617
+ *                 customer:
+ *                   type: string
+ *                   description: Stripe customer id
+ *                   example: "cus_Lvvu9FF2ehwSBF"
+ *                 price:
+ *                   $ref: "#/components/schemas/SubscriptionPrice"
  *
  *     Limits:
  *       type: object

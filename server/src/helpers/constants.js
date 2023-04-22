@@ -10,11 +10,18 @@ const SERVERS = {
 
 const SERVER_LIST = [SERVERS.WEST, SERVERS.EAST];
 
+const SUBSCRIPTION_STATUS = {
+  FREE: "Free",
+  ACTIVE: "Active",
+  EXPIRED: "Expired",
+};
+
 module.exports = {
-  SECOND,
-  MINUTE,
-  HOUR,
   DAY,
+  HOUR,
+  MINUTE,
+  SECOND,
   SERVERS,
   SERVER_LIST,
+  SUBSCRIPTION_STATUS,
 };
