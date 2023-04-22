@@ -37,7 +37,7 @@ const discordSession = async (req, _res, next) => {
 
 const authenticated = async (req, res, next) => {
   try {
-    if (!req.session.discord.user) throw new Error("Not authenticated");
+    if (!req.session.discord || !req.session.discord.user) throw new Error("Not authenticated");
 
     return next();
   } catch (error) {
