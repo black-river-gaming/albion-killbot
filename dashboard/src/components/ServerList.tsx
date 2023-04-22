@@ -6,7 +6,7 @@ import LeaveServer from "./LeaveServer";
 import ServerCard from "./ServerCard";
 
 interface ServerListProps {
-  className: string;
+  className?: string;
   pageSize?: number;
   servers: ServerPartial[];
 }
@@ -67,7 +67,7 @@ const ServerList = ({ servers, className, pageSize = 10 }: ServerListProps) => {
       {items.map((server) => (
         <ServerCard key={server.id} server={server} list>
           <Stack gap={2} direction="horizontal">
-            <Link to={`/admin/${server.id}`}>
+            <Link to={`/admin/servers/${server.id}`}>
               <Button variant="primary">Manage</Button>
             </Link>
 
