@@ -613,6 +613,19 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
     }
   }
 
+  /* Bootstrap Tble overrides */
+  .table {
+    color:  ${({ theme }) => theme.text};
+
+    margin: 0;
+
+    tr {
+      td {
+        padding: 0;
+      }
+    }
+  }
+
   /* Bootstrap Tabs overrides */
   .nav-tabs {
     border-bottom: 1px solid;

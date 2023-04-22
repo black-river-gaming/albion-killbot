@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pagination, Stack } from "react-bootstrap";
 import { SubscriptionPartial } from "types";
+import SubscriptionListItem from "./SubscriptionListItem";
 
 interface SubscriptionListProps {
   className?: string;
@@ -66,7 +67,10 @@ const SubscriptionList = ({
   return (
     <Stack gap={3} className={className}>
       {items.map((subscription) => (
-        <div>{subscription.id}</div>
+        <SubscriptionListItem
+          key={subscription.id}
+          subscription={subscription}
+        />
       ))}
 
       <div className="mw-w100 d-flex justify-content-center">

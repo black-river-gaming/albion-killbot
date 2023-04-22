@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useDeleteSubscriptionMutation } from "store/api";
-import { Subscription } from "types";
+import { Subscription, SubscriptionPartial } from "types";
 
-interface ManageSubscriptionProps {
-  subscription: Subscription;
+interface SubscriptionDeleteProps {
+  subscription: Subscription | SubscriptionPartial;
 }
 
-const ManageSubscription = ({ subscription }: ManageSubscriptionProps) => {
+const SubscriptionDelete = ({ subscription }: SubscriptionDeleteProps) => {
   const [showDelete, setShowDelete] = useState(false);
 
   const [dispatchDeleteSubscription, deleteSubscription] =
@@ -52,4 +52,4 @@ const ManageSubscription = ({ subscription }: ManageSubscriptionProps) => {
   );
 };
 
-export default ManageSubscription;
+export default SubscriptionDelete;
