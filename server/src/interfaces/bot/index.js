@@ -5,7 +5,7 @@ const logger = require("../../helpers/logger");
 let manager;
 
 async function run() {
-  const { DISCORD_TOKEN, SHARDS_TOTAL, SHARDS_TO_SPAWN } = process.env;
+  const { DISCORD_TOKEN, SHARDS_TOTAL = "auto", SHARDS_TO_SPAWN = "auto" } = process.env;
   if (!DISCORD_TOKEN) {
     throw new Error("Please define DISCORD_TOKEN environment variable with the discord token.");
   }
@@ -15,9 +15,8 @@ async function run() {
   const botFile = path.join(__dirname, "bot.js");
   require(botFile); // This can throw errors before spawning, preventing inconsistencies
 
-  const totalShards = SHARDS_TOTAL ? Number.parseInt(SHARDS_TOTAL) : "auto";
-  const shardList = SHARDS_TO_SPAWN ? SHARDS_TO_SPAWN.split(",").map((i) => Number.parseInt(i)) : "auto";
-  console.log(shardList);
+  const totalShards = SHARDS_TOTAL !== "auto" ? Number.parseInt(SHARDS_TOTAL) : "auto";
+  const shardList = SHARDS_TO_SPAWN !== "auto" ? SHARDS_TO_SPAWN.split(",").map((i) => Number.parseInt(i)) : "auto";
 
   manager = new ShardingManager(botFile, {
     token: DISCORD_TOKEN,
