@@ -19,9 +19,9 @@ services:
       - 27017:27017
 
   amqp:
-    image: cloudamqp/lavinmq
+    image: rabbitmq:3-management
     healthcheck:
-      test: lavinmqctl status
+      test: rabbitmqctl status
       interval: 5s
       timeout: 30s
       retries: 5

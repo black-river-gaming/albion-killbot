@@ -62,6 +62,7 @@ const init = (client) => {
   if (!isSubscriptionsEnabled()) return;
   if (!DISCORD_COMMUNITY_SERVER || !DISCORD_COMMUNITY_PREMIUM_ROLE) return;
 
+  // FIXME: Query trough all shards
   guild = client.guilds.resolve(DISCORD_COMMUNITY_SERVER);
   if (!guild) {
     logger.warn(

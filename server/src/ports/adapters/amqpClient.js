@@ -6,49 +6,53 @@ const QUEUE_MAX_LENGTH = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
 const QUEUE_MESSAGE_TTL = 1000 * 60 * 60 * 4; // 4 hours
 
 let client;
-let subscriptions = [];
 let pubChannel;
+let subscriptions = [];
 
-const connect = async (rabbitMQUrl) => {
+const connect = async (amqpUrl) => {
   try {
     logger.verbose("Connecting to message broker...");
-    client = await amqp.connect(rabbitMQUrl);
+    client = await amqp.connect(amqpUrl);
     logger.info("Connection to message broker stabilished.");
 
-    // Restore previous channels
-    if (pubChannel) pubChannel = await client.createChannel();
+    client.on("error", (error) => {
+      logger.error(`Message broker connection error: ${error.message}`, { error });
+    });
+
+    client.on("close", async () => {
+      logger.error("Message broker connection closed. Trying to reconnect...");
+      await sleep(5000);
+      return connect(amqpUrl);
+    });
+
+    pubChannel = null;
     subscriptions.forEach((fn) => fn());
   } catch (e) {
     logger.error(`Unable to connect to message broker:`, e);
     await sleep(5000);
-    return connect(rabbitMQUrl);
+    return connect(amqpUrl);
   }
-
-  client.on("err", (e) => logger.error(`Message broker connection error:`, e));
-
-  client.on("close", async () => {
-    logger.error("Message broker connection closed. Trying to reconnect...");
-    await sleep(5000);
-    return connect(rabbitMQUrl);
-  });
 };
 
-const publish = async (exchange, routingKey, content) => {
-  if (!pubChannel) {
-    pubChannel = await client.createChannel();
-  }
+const publish = async (exchange, data) => {
+  if (!client) throw new Error("Client not connected");
+  if (!pubChannel) pubChannel = await client.createChannel();
 
   await pubChannel.assertExchange(exchange, "fanout", {
     durable: false,
   });
 
-  await pubChannel.publish(exchange, routingKey, Buffer.from(JSON.stringify(content)));
+  await pubChannel.publish(exchange, "", Buffer.from(data), {
+    persistent: true,
+  });
 };
 
 // This will ensure that subscriptions will be restored when the connection resumes
 // It wraps the subscription function so it can be recalled on server reconnections
 const subscribe = async (exchange, queue, cb, { prefetch }) => {
   const subFn = async () => {
+    if (!client) throw new Error("Client not connected");
+
     // Create channel
     const channel = await client.createChannel();
     if (prefetch) {
@@ -60,28 +64,20 @@ const subscribe = async (exchange, queue, cb, { prefetch }) => {
     });
 
     // Assert Queue
-    const q = await channel.assertQueue(queue, {
+    await channel.assertQueue(queue, {
       exclusive: true,
       durable: false,
-      "x-queue-type": "classic",
       maxLength: QUEUE_MAX_LENGTH,
       messageTtl: QUEUE_MESSAGE_TTL,
     });
 
     // Bind Queue
-    await channel.bindQueue(q.queue, exchange, "");
+    await channel.bindQueue(queue, exchange, "");
 
     // Consume queue callback
-    await channel.consume(
-      q.queue,
-      async (msg) => {
-        if (await cb(msg)) channel.ack(msg);
-        else channel.nack(msg);
-      },
-      {
-        exclusive: false,
-      },
-    );
+    await channel.consume(queue, cb, {
+      noAck: true,
+    });
   };
 
   await subFn();
