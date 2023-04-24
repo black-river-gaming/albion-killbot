@@ -44,6 +44,6 @@ jobs:
           switches: -avzr --delete
           path: dashboard/build/
           remote_path: www/
-          remote_host: ${{ secrets.SSH_HOST }}
+          remote_host: ${{ secrets.SSH_HOST_0 }}
           remote_user: ${{ secrets.SSH_USER }}
           remote_key: ${{ secrets.SSH_KEY }}
