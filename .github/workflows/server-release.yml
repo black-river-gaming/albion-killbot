@@ -46,10 +46,10 @@ jobs:
       name: production
       url: https://albion-killbot.com/
     steps:
-      - name: Execute deploy script on production server
+      - name: Deploy albion-killbot
         uses: cross-the-world/ssh-pipeline@master
         with:
-          host: ${{ secrets.SSH_HOST }}
+          host: ${{ secrets.SSH_HOST_0 }}
           user: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
@@ -57,4 +57,15 @@ jobs:
             docker compose --ansi never down
             touch migration-state.json
             docker compose --ansi never run --rm bot npm run db:migrate
+            docker compose --ansi never up -d
+
+      - name: Deploy albion-killbot-1
+        uses: cross-the-world/ssh-pipeline@master
+        with:
+          host: ${{ secrets.SSH_HOST_1 }}
+          user: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker compose --ansi never pull
+            docker compose --ansi never down
             docker compose --ansi never up -d
