@@ -79,7 +79,7 @@ const subscribe = async (exchange, queue, cb, { prefetch }) => {
         else channel.nack(msg);
       },
       {
-        exclusive: true,
+        exclusive: false,
       },
     );
   };
