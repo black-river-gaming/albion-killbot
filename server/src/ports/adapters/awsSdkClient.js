@@ -1,41 +1,38 @@
-const AWS = require("aws-sdk");
+const { S3 } = require("@aws-sdk/client-s3");
 const logger = require("../../helpers/logger");
 
 const { AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_REGION, AWS_BUCKET } = process.env;
 
 const isEnabled = !!AWS_ACCESS_KEY && !!AWS_SECRET_KEY;
-const S3 = new AWS.S3({
-  apiVersion: "2006-03-01",
-  accessKeyId: AWS_ACCESS_KEY,
-  secretAccessKey: AWS_SECRET_KEY,
+const client = new S3({
   region: AWS_REGION || "us-east-1",
+  credentials: {
+    accessKeyId: AWS_ACCESS_KEY,
+    secretAccessKey: AWS_SECRET_KEY,
+  },
   maxRetries: 3,
   httpOptions: {
     timeout: 60000,
   },
 });
 
-async function getS3Object(name) {
-  return await S3.getObject({
-    Bucket: AWS_BUCKET || "albion-killbot",
-    Key: name,
-  }).promise();
-}
-
 async function downloadFromS3(name, writer) {
   try {
-    logger.verbose(`Downloading "${name}" from AWS Bucket`);
+    const response = await client.getObject({
+      Bucket: AWS_BUCKET || "albion-killbot",
+      Key: name,
+    });
 
-    const data = await getS3Object(name);
     return new Promise((resolve) => {
+      logger.verbose(`Downloading "${name}" from AWS Bucket`, { name });
+      response.Body.pipe(writer);
       writer.on("finish", () => resolve(true));
       writer.on("error", () => resolve(false));
-      writer.end(data.Body);
       // Emergency timeout
-      setTimeout(() => resolve(false), 60000);
+      setTimeout(() => resolve(false), 30000);
     });
-  } catch (e) {
-    logger.warn(`Error while downloading ${name} from AWS Bucket:`, e);
+  } catch (error) {
+    logger.warn(`Error while downloading ${name} from AWS Bucket: ${error.message}`, { name, error });
     return null;
   }
 }
@@ -44,15 +41,15 @@ async function uploadToS3(name, readStream) {
   try {
     logger.verbose(`Uploading "${name}" to AWS Bucket`);
 
-    await S3.putObject({
+    await client.putObject({
       Bucket: AWS_BUCKET || "albion-killbot",
       Key: name,
       Body: readStream,
-    }).promise();
+    });
 
     return true;
-  } catch (e) {
-    logger.warn(`Failed to upload ${name} from AWS Bucket:`, e);
+  } catch (error) {
+    logger.warn(`Failed to upload ${name} from AWS Bucket: ${error.message}`, { error, name });
     return false;
   }
 }
@@ -60,6 +57,5 @@ async function uploadToS3(name, readStream) {
 module.exports = {
   isEnabled,
   downloadFromS3,
-  getS3Object,
   uploadToS3,
 };
