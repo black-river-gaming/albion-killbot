@@ -1,3 +1,4 @@
+const logger = require("../../../helpers/logger");
 const usersService = require("../../../services/users");
 
 async function getUser(req, res) {
@@ -7,6 +8,9 @@ async function getUser(req, res) {
     const { accessToken } = req.session.discord;
     return res.send(await usersService.getCurrentUser(accessToken));
   } catch (error) {
+    logger.warn(`Unable to retrieve user: ${error.message}`, {
+      error,
+    });
     return res.sendStatus(401);
   }
 }
