@@ -38,9 +38,7 @@ app.use(
   }),
 );
 
-if (NODE_ENV == "development") {
-  app.use(cors());
-}
+app.use(cors());
 
 // Session
 app.use(session);
