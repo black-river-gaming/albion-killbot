@@ -4,7 +4,7 @@ const path = require("path");
 const fastRedact = require("fast-redact");
 const { printSpace } = require("./utils");
 
-const { MODE, DEBUG_LEVEL, LOGGLY_TOKEN, LOGGLY_SUBDOMAIN } = process.env;
+const { NODE_ENV, MODE, DEBUG_LEVEL, LOGGLY_TOKEN, LOGGLY_SUBDOMAIN } = process.env;
 const level = DEBUG_LEVEL || "info";
 
 const redact = fastRedact({
@@ -42,20 +42,24 @@ const logger = createLogger({
   ],
 });
 
-const consoleFormat = format.printf(({ level, message, timestamp, [Symbol.for("level")]: logLevel, shard }) => {
-  const maxLen = "verbose".length;
-  const count = maxLen - logLevel.length;
-  const spacing = printSpace(count);
-  const shardStr = shard ? `[#${shard}] ` : "";
-  return `${timestamp} [${level}] ${spacing}: ${shardStr}${message}`;
-});
+if (NODE_ENV !== "production") {
+  const consoleFormat = format.printf(({ level, message, timestamp, [Symbol.for("level")]: logLevel, shard }) => {
+    const maxLen = "verbose".length;
+    const count = maxLen - logLevel.length;
+    const spacing = printSpace(count);
+    const shardStr = shard ? `[#${shard}] ` : "";
+    return `${timestamp} [${level}] ${spacing}: ${shardStr}${message}`;
+  });
 
-logger.add(
-  new transports.Console({
-    format: format.combine(format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), format.colorize(), consoleFormat),
-    level,
-  }),
-);
+  logger.add(
+    new transports.Console({
+      format: format.combine(format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), format.colorize(), consoleFormat),
+      level,
+    }),
+  );
+} else {
+  logger.add(new transports.Console({ level }));
+}
 
 if (LOGGLY_TOKEN && LOGGLY_SUBDOMAIN) {
   logger.add(
