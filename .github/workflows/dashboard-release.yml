@@ -34,6 +34,7 @@ jobs:
 
       - name: Build for production
         env:
+          REACT_APP_API_URL: ${{ vars.API_URL }}
           REACT_APP_DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
           REACT_APP_DISCORD_REDIRECT_URI: ${{ secrets.DISCORD_REDIRECT_URL }}
         run: npm run build
@@ -44,6 +45,6 @@ jobs:
           switches: -avzr --delete
           path: dashboard/build/
           remote_path: www/
-          remote_host: ${{ secrets.SSH_HOST_0 }}
+          remote_host: ${{ vars.SSH_HOST_DASHBOARD }}
           remote_user: ${{ secrets.SSH_USER }}
           remote_key: ${{ secrets.SSH_KEY }}
