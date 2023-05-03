@@ -130,6 +130,7 @@ services:
     depends_on:
       nginx:
         condition: service_started
+    env_file: ../dashboard/.env
     environment:
       - PORT=80
       - NODE_ENV=development
