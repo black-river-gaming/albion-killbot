@@ -13,6 +13,10 @@ const app = express();
 
 const { NODE_ENV, RATE_LIMIT_WINDOW = 60000, RATE_LIMIT_REQUESTS = 0 } = process.env;
 
+app.get("/healthz", (req, res) => {
+  return res.send("healthy");
+});
+
 // This is supposed to run behind an nginx reverse proxy so trust it
 app.enable("trust proxy");
 
