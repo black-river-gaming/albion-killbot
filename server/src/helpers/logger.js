@@ -1,10 +1,12 @@
 const { createLogger, format, transports } = require("winston");
 const { Loggly } = require("winston-loggly-bulk");
+const DatadogWinston = require("datadog-winston");
 const path = require("path");
 const fastRedact = require("fast-redact");
+const os = require("os");
 const { printSpace } = require("./utils");
 
-const { NODE_ENV, MODE, DEBUG_LEVEL, LOGGLY_TOKEN, LOGGLY_SUBDOMAIN } = process.env;
+const { HOSTNAME, MODE, DEBUG_LEVEL, LOGGLY_TOKEN, LOGGLY_SUBDOMAIN, DATADOG_API_KEY } = process.env;
 const level = DEBUG_LEVEL || "info";
 
 const redact = fastRedact({
@@ -56,6 +58,18 @@ logger.add(
     level,
   }),
 );
+
+if (DATADOG_API_KEY) {
+  logger.add(
+    new DatadogWinston({
+      level: "debug",
+      apiKey: DATADOG_API_KEY,
+      hostname: HOSTNAME || os.hostname(),
+      service: MODE,
+      ddsource: "nodejs",
+    }),
+  );
+}
 
 if (LOGGLY_TOKEN && LOGGLY_SUBDOMAIN) {
   logger.add(
