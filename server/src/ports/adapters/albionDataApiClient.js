@@ -21,6 +21,13 @@ albionDataApiClient.interceptors.request.use((config) => {
     const server = ALBION_SERVERS.find((server) => server.name === config.server);
     if (server) config.baseURL = server.url;
   }
+
+  const source = axios.CancelToken.source();
+  setTimeout(() => {
+    source.cancel("Client timeout");
+  }, 10000);
+  config.cancelToken = source.token;
+
   return config;
 });
 
