@@ -19,7 +19,11 @@ async function subscribe(client) {
   const cb = async (event) => {
     const { server } = event;
 
-    logger.debug(`[${server}] Received event: ${event.EventId}`);
+    logger.debug(`[${server}] Processing event: ${event.EventId}`, {
+      server,
+      guilds: client.guilds.cache.size,
+      eventId: event.EventId,
+    });
 
     try {
       for (const guild of client.guilds.cache.values()) {
@@ -88,7 +92,12 @@ async function subscribe(client) {
     if (!Array.isArray(events) || events.length === 0) return true;
     const server = events[0].server;
 
-    logger.verbose(`[${server}] Processing ${events.length} events.`);
+    logger.verbose(`[${server}] Processing ${events.length} events.`, {
+      server,
+      events: events.length,
+      guilds: client.guilds.cache.size,
+    });
+
     for (const event of events) {
       await cb(event);
     }
