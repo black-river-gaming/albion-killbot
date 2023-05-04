@@ -38,10 +38,12 @@ const DEFAULT_SETTINGS = Object.freeze({
   },
 });
 
+const generateSettings = (settings) => Object.assign(clone(DEFAULT_SETTINGS), settings);
+
 async function getSettings(serverId) {
   return await memoize(`settings-${serverId}`, async () => {
     const settings = await findOne(SETTINGS_COLLECTION, { server: serverId });
-    return Object.assign(clone(DEFAULT_SETTINGS), settings);
+    return generateSettings(settings);
   });
 }
 
@@ -67,13 +69,12 @@ async function deleteSettings(serverId) {
   return await deleteOne(SETTINGS_COLLECTION, { server: serverId });
 }
 
-async function updateSettingsCache(timeout) {
+async function updateSettingsCache(serverIds, { timeout, debug } = {}) {
   const settings = await find(SETTINGS_COLLECTION, {});
-  settings.forEach((settings) => {
-    if (!settings.server) return;
 
-    const serverId = settings.server;
-    set(`settings-${serverId}`, settings, { timeout });
+  serverIds.forEach((serverId) => {
+    const setting = settings.find((setting) => setting.server === serverId);
+    set(`settings-${serverId}`, generateSettings(setting), { timeout, debug });
   });
 }
 

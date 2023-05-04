@@ -7,15 +7,12 @@ const { updateTrackCache } = require("../../../services/track");
 
 const REFRESH_INTERVAL = 60000;
 
-async function refreshServerCache() {
+async function refreshServerCache(client) {
   logger.debug(`Refreshing servers cache.`);
+  const guildIds = client.guilds.cache.map((guild) => guild.id);
 
   try {
-    await Promise.all([
-      updateLimitsCache(REFRESH_INTERVAL + 30000),
-      updateSettingsCache(REFRESH_INTERVAL + 30000),
-      updateTrackCache(REFRESH_INTERVAL + 30000),
-    ]);
+    await Promise.all([updateLimitsCache(guildIds), updateSettingsCache(guildIds), updateTrackCache(guildIds)]);
   } catch (error) {
     logger.error(`Unable to refresh servers cache: ${error.message}`, {
       error,
@@ -23,8 +20,9 @@ async function refreshServerCache() {
   }
 }
 
-async function init() {
-  runInterval("Refresh cache for server settings", refreshServerCache, {
+async function preinit(client) {
+  await runInterval("Refresh cache for server settings", refreshServerCache, {
+    fnOpts: [client],
     interval: REFRESH_INTERVAL,
     runOnStart: true,
   });
@@ -32,5 +30,5 @@ async function init() {
 
 module.exports = {
   name: "servers",
-  init,
+  preinit,
 };

@@ -43,13 +43,12 @@ function getPremiumLimits() {
   };
 }
 
-async function updateLimitsCache(timeout) {
+async function updateLimitsCache(serverIds, { timeout, debug } = {}) {
   const subscriptions = await fetchAllSubscriptions();
-  subscriptions.forEach((subscription) => {
-    if (!subscription.server) return;
 
-    const serverId = subscription.server;
-    set(`limits-${serverId}`, generateLimits(subscription), { timeout });
+  serverIds.forEach((serverId) => {
+    const subscription = subscriptions.find((subscription) => subscription.server === serverId);
+    set(`limits-${serverId}`, generateLimits(subscription), { timeout, debug });
   });
 }
 

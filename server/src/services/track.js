@@ -19,6 +19,8 @@ const DEFAULT_TRACK = Object.freeze({
   [TRACK_TYPE.ALLIANCES]: [],
 });
 
+const generateTrack = (track) => Object.assign(clone(DEFAULT_TRACK), track);
+
 async function setTrack(serverId, data) {
   // TODO: Schema validation
   const { players, guilds, alliances } = data;
@@ -72,17 +74,16 @@ async function fetchTracks(query = {}) {
 async function getTrack(serverId) {
   return await memoize(`track-${serverId}`, async () => {
     const track = await findOne(TRACK_COLLECTION, { server: serverId });
-    return Object.assign(clone(DEFAULT_TRACK), track);
+    return generateTrack(track);
   });
 }
 
-async function updateTrackCache(timeout) {
+async function updateTrackCache(serverIds, { timeout, debug } = {}) {
   const tracks = await find(TRACK_COLLECTION, {});
-  tracks.forEach((track) => {
-    if (!track.server) return;
 
-    const serverId = track.server;
-    set(`track-${serverId}`, track, { timeout });
+  serverIds.forEach((serverId) => {
+    const track = tracks.find((track) => track.server === serverId);
+    set(`track-${serverId}`, generateTrack(track), { timeout, debug });
   });
 }
 
