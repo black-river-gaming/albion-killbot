@@ -53,14 +53,18 @@ async function execFn(name, fn, ...fnOpts) {
 
 // Functions that fires daily (Default: 12:00 pm) until process stops
 async function runDaily(name, fn, { fnOpts = [], hour = 12, minute = 0, runOnStart = false }) {
+  if (!fn) return;
+  if (runOnStart) {
+    runInterval(name, fn, { fnOpts, hour, minute, runOnStart: false });
+    return await execFn(name, fn, ...fnOpts);
+  }
+
   logger.debug(`Scheduling daily function: ${name}`, {
     name,
     hour,
     minute,
     runOnStart,
   });
-  if (!fn) return;
-  if (runOnStart) execFn(name, fn, ...fnOpts);
   while (running) {
     await sleep(60000); // Wait 1 minute to eval time
     const now = moment();
@@ -73,13 +77,17 @@ async function runDaily(name, fn, { fnOpts = [], hour = 12, minute = 0, runOnSta
 // Functions that run on an interval after execFn completes,
 // then waits (Default: 30 seconds) and repeat until process stops
 async function runInterval(name, fn, { fnOpts = [], interval = 30000, runOnStart = false }) {
+  if (!fn) return;
+  if (runOnStart) {
+    runInterval(name, fn, { fnOpts, interval, runOnStart: false });
+    return await execFn(name, fn, ...fnOpts);
+  }
+
   logger.debug(`Scheduling interval function: ${name}`, {
     name,
     interval,
     runOnStart,
   });
-  if (!fn) return;
-  if (runOnStart) await execFn(name, fn, ...fnOpts);
   while (running) {
     await sleep(interval);
     await execFn(name, fn, ...fnOpts);

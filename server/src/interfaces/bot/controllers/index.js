@@ -16,12 +16,16 @@ const init = async (client) => {
       const name = controller.name || controllerFile.replace(/\.[^.]*$/, "");
       logger.debug(`Controller loaded: ${name}`);
 
-      if (controller.init) await controller.init(client);
+      if (controller.preinit) await controller.preinit(client);
 
       controllers.set(name, controller);
     } catch (error) {
       logger.error(`Error loading controller ${controllerFile}: ${error.message}`, error);
     }
+  }
+
+  for (const controller of controllers.values()) {
+    if (controller.init) await controller.init(client);
   }
 };
 
