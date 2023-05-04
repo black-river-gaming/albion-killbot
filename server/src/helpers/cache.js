@@ -16,15 +16,15 @@ const get = (key, { debug = false } = {}) => {
     const data = cache.get(key);
 
     if (data.expires >= Date.now()) {
-      if (debug) logger.verbose(`Cache hit: ${key}`);
+      if (debug) logger.verbose(`Cache hit: ${key}. Cache size: ${cache.size}`);
       return data.value;
     } else {
-      if (debug) logger.verbose(`Cache expired: ${key}`);
       remove(key);
+      if (debug) logger.verbose(`Cache expired: ${key}. Cache size: ${cache.size}`);
     }
   }
 
-  if (debug) logger.verbose(`Cache miss: ${key}`);
+  if (debug) logger.verbose(`Cache miss: ${key}. Cache size: ${cache.size}`);
   return null;
 };
 
@@ -53,15 +53,15 @@ const set = (key, value, { timeout = 60000, timeoutCallback, debug = false, igno
     }, timeout);
   }
 
-  if (debug) logger.verbose(`Cache set: ${key}`);
   cache.set(key, data);
+  if (debug) logger.verbose(`Cache set: ${key}. Cache size: ${cache.size}`);
 
   return value;
 };
 
 const memoize = async (key, fn, { timeout, timeoutCallback, debug, ignore } = {}) => {
   // If entry exists, return it
-  if (cache.has(key)) return get(key, { debug: false });
+  if (cache.has(key)) return get(key, { debug });
 
   if (timeout && typeof timeout !== "number") throw new Error("Timeout for cache must be a valid number.");
   if (timeoutCallback && typeof timeoutCallback !== "function")
