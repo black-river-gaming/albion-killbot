@@ -37,35 +37,68 @@ jobs:
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
 
-  deploy:
-    name: Deploy server
+  deploy-crawler:
+    name: Deploy crawler
     runs-on: ubuntu-latest
     needs:
       - publish
-    environment:
-      name: production
-      url: https://albion-killbot.com/
+    environment: production
     steps:
-      - name: Deploy albion-killbot
+      - name: Deploy crawler
         uses: cross-the-world/ssh-pipeline@master
         with:
-          host: ${{ secrets.SSH_HOST_0 }}
+          host: ${{ env.SSH_HOST_CRAWLER }}
+          user: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker compose --ansi never up -d --pull always --force-recreate
+
+  deploy-bot:
+    name: Deploy bot shards
+    runs-on: ubuntu-latest
+    needs:
+      - publish
+    environment: production
+    strategy:
+      matrix:
+        shard: [0, 1]
+        include:
+        - shard: 0
+          SSH_HOST: SSH_HOST_0
+        - shard: 1
+          SSH_HOST: SSH_HOST_1
+    steps:
+      - name: Deploy bot shard '#${{ matrix.shard }}'
+        uses: cross-the-world/ssh-pipeline@master
+        with:
+          host: ${{ secrets[matrix.SSH_HOST] }}
           user: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
             docker compose --ansi never pull
             docker compose --ansi never down
-            touch migration-state.json
-            docker compose --ansi never run --rm bot npm run db:migrate
+            if [[ ${{ matrix.shard }} == 0 ]]; do \
+              touch migration-state.json && \
+              docker compose --ansi never run --rm bot npm run db:migrate \
+            fi
             docker compose --ansi never up -d
 
-      - name: Deploy albion-killbot-1
-        uses: cross-the-world/ssh-pipeline@master
+  deploy-api:
+    name: Deploy api
+    runs-on: ubuntu-latest
+    needs:
+      - publish
+    environment: production
+    steps:
+      - id: auth
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
         with:
-          host: ${{ secrets.SSH_HOST_1 }}
-          user: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            docker compose --ansi never pull
-            docker compose --ansi never down
-            docker compose --ansi never up -d
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: Deploy api
+        uses: google-github-actions/deploy-cloudrun@v1
+        with:
+          image: agnjunio/albion-killbot:latest
+          service: api
+    
