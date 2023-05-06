@@ -44,13 +44,22 @@ jobs:
       - publish
     environment: production
     steps:
-      - name: Deploy crawler
-        uses: cross-the-world/ssh-pipeline@master
+      - id: auth
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
         with:
-          host: ${{ vars.SSH_HOST_CRAWLER }}
-          user: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: Deploy crawler
+        uses: google-github-actions/ssh-compute@v0
+        with:
+          instance_name: crawler
+          zone: us-central1-c
+          user: ${{ vars.SSH_USER }}
+          ssh_private_key: ${{ secrets.SSH_KEY }}
+          command: |
+            touch migration-state.json &&
+            docker compose --ansi never run --rm crawler npm run db:migrate &&
             docker compose --ansi never up -d --pull always --force-recreate
 
   deploy-bot:
@@ -61,24 +70,29 @@ jobs:
     environment: production
     strategy:
       matrix:
-        shard: [0, 1]
+        shard: [0, 1, 2]
         include:
         - shard: 0
-          SSH_HOST: SSH_HOST_0
+          instance_name: bot-0
         - shard: 1
-          SSH_HOST: SSH_HOST_1
+          instance_name: bot-1
+        - shard: 2
+          instance_name: bot-2
     steps:
-      - name: Deploy bot shard '#${{ matrix.shard }}'
-        uses: cross-the-world/ssh-pipeline@master
+      - id: auth
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
         with:
-          host: ${{ secrets[matrix.SSH_HOST] }}
-          user: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            docker compose --ansi never pull
-            docker compose --ansi never down
-            if [[ ${{ matrix.shard }} == 0 ]]; then touch migration-state.json; docker compose --ansi never run --rm bot npm run db:migrate; fi
-            docker compose --ansi never up -d
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: Deploy bot shard '#${{ matrix.shard }}'
+        uses: google-github-actions/ssh-compute@v0
+        with:
+          instance_name: ${{ matrix.instance_name }}
+          zone: us-central1-b
+          user: ${{ vars.SSH_USER }}
+          ssh_private_key: ${{ secrets.SSH_KEY }}
+          command: docker compose --ansi never up -d --pull always --force-recreate
 
   deploy-api:
     name: Deploy api

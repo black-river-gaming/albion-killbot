@@ -34,9 +34,9 @@ jobs:
 
       - name: Build for production
         env:
-          REACT_APP_API_URL: ${{ vars.API_URL }}
-          REACT_APP_DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
-          REACT_APP_DISCORD_REDIRECT_URI: ${{ vars.DISCORD_REDIRECT_URI }}
+          REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
+          REACT_APP_DISCORD_CLIENT_ID: ${{ vars.REACT_APP_DISCORD_CLIENT_ID }}
+          REACT_APP_DISCORD_REDIRECT_URI: ${{ vars.REACT_APP_DISCORD_REDIRECT_URI }}
         run: npm run build
 
       - id: auth
@@ -51,3 +51,4 @@ jobs:
           path: dashboard/build/
           destination: ak-dashboard
           parent: false
+          process_gcloudignore: false
