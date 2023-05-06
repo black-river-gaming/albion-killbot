@@ -47,7 +47,7 @@ jobs:
       - name: Deploy crawler
         uses: cross-the-world/ssh-pipeline@master
         with:
-          host: ${{ env.SSH_HOST_CRAWLER }}
+          host: ${{ vars.SSH_HOST_CRAWLER }}
           user: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
@@ -77,10 +77,7 @@ jobs:
           script: |
             docker compose --ansi never pull
             docker compose --ansi never down
-            if [[ ${{ matrix.shard }} == 0 ]]; do \
-              touch migration-state.json && \
-              docker compose --ansi never run --rm bot npm run db:migrate \
-            fi
+            if [[ ${{ matrix.shard }} == 0 ]]; then touch migration-state.json; docker compose --ansi never run --rm bot npm run db:migrate; fi
             docker compose --ansi never up -d
 
   deploy-api:
