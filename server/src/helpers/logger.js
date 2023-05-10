@@ -6,7 +6,7 @@ const fastRedact = require("fast-redact");
 const os = require("os");
 const { printSpace } = require("./utils");
 
-const { HOSTNAME, MODE, DEBUG_LEVEL, LOGGLY_TOKEN, LOGGLY_SUBDOMAIN, DATADOG_API_KEY } = process.env;
+const { NODE_ENV, HOSTNAME, MODE, DEBUG_LEVEL, LOGGLY_TOKEN, LOGGLY_SUBDOMAIN, DATADOG_API_KEY } = process.env;
 const level = DEBUG_LEVEL || "info";
 
 const redact = fastRedact({
@@ -52,12 +52,16 @@ const consoleFormat = format.printf(({ level, message, timestamp, [Symbol.for("l
   return `${timestamp} [${level}] ${spacing}: ${shardStr}${message}`;
 });
 
-logger.add(
-  new transports.Console({
-    format: format.combine(format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), format.colorize(), consoleFormat),
-    level,
-  }),
-);
+if (NODE_ENV !== "production") {
+  logger.add(
+    new transports.Console({
+      format: format.combine(format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), format.colorize(), consoleFormat),
+      level,
+    }),
+  );
+} else {
+  logger.add(new transports.Console({ level }));
+}
 
 if (DATADOG_API_KEY) {
   logger.add(
