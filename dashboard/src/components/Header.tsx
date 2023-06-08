@@ -65,9 +65,7 @@ const Header = () => {
       ) : data ? (
         <Dropdown>
           <Dropdown.Toggle as={BsNavLink} id="dropdown-header">
-            <div>
-              {data.username}#{data.discriminator}
-            </div>
+            <div>{data.username}</div>
             <Image
               className="user-avatar"
               roundedCircle
