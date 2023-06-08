@@ -23,10 +23,6 @@ router.use(disableCache);
  *          type: string
  *          description: Discord user avatar, to be used with the default avatar url.
  *          example: "268473310986240001"
- *        discriminator:
- *          type: string
- *          description: Discord user tag.
- *          example: "0001"
  *        locale:
  *          type: string
  *          description: User locale
