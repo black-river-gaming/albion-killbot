@@ -10,8 +10,7 @@ const isCommunityAdmin = (id) => {
 const transformUser = (user) => {
   return {
     id: user.id,
-    username: user.username,
-    discriminator: user.discriminator,
+    username: user.global_name,
     avatar: user.avatar,
     locale: user.locale,
     admin: isCommunityAdmin(user.id),
