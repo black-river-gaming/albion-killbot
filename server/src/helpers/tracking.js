@@ -117,10 +117,19 @@ const isTracked = ({ id, name, server }, trackList) => {
   return !!getTrackedItem({ id, name, server }, trackList);
 };
 
+const hasMinimumTreshold = (battle, { players, guilds, alliances } = {}) => {
+  if (!battle) return false;
+  if (players && Object.keys(battle.players || {}).length < players) return false;
+  if (guilds && Object.keys(battle.guilds || {}).length < guilds) return false;
+  if (alliances && Object.keys(battle.alliances || {}).length < alliances) return false;
+  return true;
+};
+
 module.exports = {
   getTrackedBattle,
   getTrackedEvent,
   getTrackedItem,
+  hasMinimumTreshold,
   isPlayerTracked,
   isTracked,
 };
