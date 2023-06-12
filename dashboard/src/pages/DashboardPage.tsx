@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useFetchServersQuery } from "store/api";
 import { ServerPartial } from "types";
 
-const Dashboard = () => {
+const DashboardPage = () => {
   const servers = useFetchServersQuery();
   const navigate = useNavigate();
 
@@ -88,4 +88,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardPage;
