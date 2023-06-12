@@ -7,7 +7,7 @@ import AdminSubscriptionsPage from "pages/AdminSubscriptionsPage";
 import Auth from "pages/Auth";
 import AuthGuard from "pages/AuthGuard";
 import DashboardPage from "pages/DashboardPage";
-import Home from "pages/Home";
+import HomePage from "pages/HomePage";
 import PremiumPage from "pages/PremiumPage";
 import ServerPage from "pages/ServerPage";
 import SettingsPage from "pages/SettingsPage";
@@ -19,7 +19,7 @@ const routes = createRoutesFromElements(
   <>
     <Route path="/auth" element={<Auth />} />
     <Route path="/" element={<App />}>
-      <Route index element={<Home />} />
+      <Route index element={<HomePage />} />
       <Route element={<AuthGuard redirectTo="/" />}>
         <Route path="dashboard">
           <Route index element={<DashboardPage />} />
