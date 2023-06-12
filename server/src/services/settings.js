@@ -29,6 +29,11 @@ const DEFAULT_SETTINGS = Object.freeze({
   battles: {
     enabled: true,
     channel: null,
+    threshold: {
+      players: 0,
+      guilds: 0,
+      allianceS: 0,
+    },
   },
   rankings: {
     enabled: true,
