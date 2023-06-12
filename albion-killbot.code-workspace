@@ -46,6 +46,10 @@
     "i18nJsonEditor.translationService": ""
   },
   "extensions": {
-    "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "thibault-vanderseypen.i18n-json-editor"
+    ]
   }
 }
