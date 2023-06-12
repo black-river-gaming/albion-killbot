@@ -1,7 +1,13 @@
 import ChannelInput from "components/ChannelInput";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
-import { Form } from "react-bootstrap";
-import { setBattlesChannel, setBattlesEnabled } from "store/settings";
+import { Form, Stack } from "react-bootstrap";
+import {
+  setBattlesChannel,
+  setBattlesEnabled,
+  setBattlesThresholdAlliances,
+  setBattlesThresholdGuilds,
+  setBattlesThresholdPlayers,
+} from "store/settings";
 import { IChannel } from "types";
 
 interface ISettingsBattlesProps {
@@ -34,6 +40,38 @@ const SettingsBattles = ({ channels }: ISettingsBattlesProps) => {
           }
         />
       </Form.Group>
+      <Stack direction="horizontal" gap={2} className="justify-content-between">
+        <Form.Group controlId="threshold-players">
+          <Form.Label>Minimum Players</Form.Label>
+          <Form.Control
+            type="number"
+            value={battles.threshold.players || 0}
+            onChange={(e) =>
+              dispatch(setBattlesThresholdPlayers(Number(e.target.value)))
+            }
+          />
+        </Form.Group>
+        <Form.Group controlId="threshold-guilds">
+          <Form.Label>Minimum Guilds</Form.Label>
+          <Form.Control
+            type="number"
+            value={battles.threshold.guilds || 0}
+            onChange={(e) =>
+              dispatch(setBattlesThresholdGuilds(Number(e.target.value)))
+            }
+          />
+        </Form.Group>
+        <Form.Group controlId="threshold-alliances">
+          <Form.Label>Minimum Alliances</Form.Label>
+          <Form.Control
+            type="number"
+            value={battles.threshold.alliances || 0}
+            onChange={(e) =>
+              dispatch(setBattlesThresholdAlliances(Number(e.target.value)))
+            }
+          />
+        </Form.Group>
+      </Stack>
     </>
   );
 };

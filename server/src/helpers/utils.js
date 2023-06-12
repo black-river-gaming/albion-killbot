@@ -52,6 +52,28 @@ const average = (...numbers) => {
 
 const equalsCaseInsensitive = (a, b) => a && a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
 
+const isObject = (obj) => {
+  return obj && typeof obj === "object" && !Array.isArray(obj);
+};
+
+const mergeObjects = (target, ...sources) => {
+  if (!sources.length) return target;
+  const source = sources.shift();
+
+  if (isObject(target) && isObject(source)) {
+    for (const key in source) {
+      if (isObject(source[key])) {
+        if (!target[key]) Object.assign(target, { [key]: {} });
+        mergeObjects(target[key], source[key]);
+      } else {
+        Object.assign(target, { [key]: source[key] });
+      }
+    }
+  }
+
+  return mergeObjects(target, ...sources);
+};
+
 module.exports = {
   average,
   clone,
@@ -60,6 +82,7 @@ module.exports = {
   fileSizeFormatter,
   getNumber,
   humanFormatter,
+  mergeObjects,
   parseFileSize,
   printSpace,
 };

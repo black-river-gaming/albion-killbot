@@ -6,8 +6,8 @@ import AdminServersPage from "pages/AdminServersPage";
 import AdminSubscriptionsPage from "pages/AdminSubscriptionsPage";
 import Auth from "pages/Auth";
 import AuthGuard from "pages/AuthGuard";
-import Dashboard from "pages/Dashboard";
-import Home from "pages/Home";
+import DashboardPage from "pages/DashboardPage";
+import HomePage from "pages/HomePage";
 import PremiumPage from "pages/PremiumPage";
 import ServerPage from "pages/ServerPage";
 import SettingsPage from "pages/SettingsPage";
@@ -19,10 +19,10 @@ const routes = createRoutesFromElements(
   <>
     <Route path="/auth" element={<Auth />} />
     <Route path="/" element={<App />}>
-      <Route index element={<Home />} />
+      <Route index element={<HomePage />} />
       <Route element={<AuthGuard redirectTo="/" />}>
         <Route path="dashboard">
-          <Route index element={<Dashboard />} />
+          <Route index element={<DashboardPage />} />
           <Route path=":serverId" element={<ServerPage />}>
             <Route index element={<Navigate to="settings" replace={true} />} />
             <Route path="settings" element={<SettingsPage />} />

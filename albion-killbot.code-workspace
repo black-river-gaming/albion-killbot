@@ -43,9 +43,13 @@
     "i18nJsonEditor": {
       "supportedFolders": ["locales", "i18n"]
     },
-    "i18nJsonEditor.translationService": ""
+    "prettier.prettierPath": "./node_modules/prettier"
   },
   "extensions": {
-    "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "thibault-vanderseypen.i18n-json-editor"
+    ]
   }
 }

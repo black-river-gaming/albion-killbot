@@ -67,7 +67,7 @@ const features = [
   },
 ];
 
-const Home = () => {
+const HomePage = () => {
   const screenshot =
     screenshots[Math.floor(Math.random() * screenshots.length)];
 
@@ -121,4 +121,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;

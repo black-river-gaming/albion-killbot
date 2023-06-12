@@ -3,7 +3,7 @@ const { find, findOne, updateOne } = require("../ports/database");
 const { isTrackEntity } = require("../helpers/albion");
 const { memoize, set, remove } = require("../helpers/cache");
 const logger = require("../helpers/logger");
-const { clone } = require("../helpers/utils");
+const { clone, mergeObjects } = require("../helpers/utils");
 
 const TRACK_COLLECTION = "track";
 
@@ -19,7 +19,7 @@ const DEFAULT_TRACK = Object.freeze({
   [TRACK_TYPE.ALLIANCES]: [],
 });
 
-const generateTrack = (track) => Object.assign(clone(DEFAULT_TRACK), track);
+const generateTrack = (track) => mergeObjects(clone(DEFAULT_TRACK), track);
 
 async function setTrack(serverId, data) {
   // TODO: Schema validation

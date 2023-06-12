@@ -1,7 +1,7 @@
 const { find, findOne, updateOne, deleteOne } = require("../ports/database");
 
 const { memoize, set, remove } = require("../helpers/cache");
-const { clone } = require("../helpers/utils");
+const { clone, mergeObjects } = require("../helpers/utils");
 
 const SETTINGS_COLLECTION = "settings";
 
@@ -29,6 +29,11 @@ const DEFAULT_SETTINGS = Object.freeze({
   battles: {
     enabled: true,
     channel: null,
+    threshold: {
+      players: 0,
+      guilds: 0,
+      allianceS: 0,
+    },
   },
   rankings: {
     enabled: true,
@@ -38,7 +43,7 @@ const DEFAULT_SETTINGS = Object.freeze({
   },
 });
 
-const generateSettings = (settings) => Object.assign(clone(DEFAULT_SETTINGS), settings);
+const generateSettings = (settings) => mergeObjects(clone(DEFAULT_SETTINGS), settings);
 
 async function getSettings(serverId) {
   return await memoize(`settings-${serverId}`, async () => {

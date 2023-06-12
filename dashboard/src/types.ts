@@ -61,6 +61,11 @@ export interface ISettings {
   battles: {
     enabled: boolean;
     channel: string;
+    threshold: {
+      players: number;
+      guilds: number;
+      alliances: number;
+    };
   };
   rankings: {
     enabled: boolean;

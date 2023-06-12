@@ -1,5 +1,5 @@
 const logger = require("../../../helpers/logger");
-const { getTrackedBattle } = require("../../../helpers/tracking");
+const { getTrackedBattle, hasMinimumTreshold } = require("../../../helpers/tracking");
 const { embedBattle } = require("../../../helpers/embeds");
 const { transformGuild } = require("../../../helpers/discord");
 
@@ -27,13 +27,20 @@ async function subscribe(client) {
         const settings = await getSettings(guild.id);
         const track = await getTrack(guild.id);
         const limits = await getLimits(guild.id);
+
         if (!settings || !track || !limits) continue;
+        if (!getTrackedBattle(battle, track, limits)) continue;
 
-        const guildBattle = getTrackedBattle(battle, track, limits);
-        if (!guildBattle) continue;
-
-        const { enabled, channel } = settings.battles;
+        const { enabled, channel, threshold } = settings.battles;
         if (!enabled || !channel) continue;
+        if (!hasMinimumTreshold(battle, threshold)) {
+          logger.verbose(`[${server}] Skipping battle ${battle.id} to ${guild.name} due to threshold.`, {
+            guild: transformGuild(guild),
+            battle,
+            settings,
+          });
+          continue;
+        }
 
         logger.info(`[${server}] Sending battle ${battle.id} to "${guild.name}".`, {
           guild: transformGuild(guild),

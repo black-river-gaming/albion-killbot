@@ -129,6 +129,20 @@ router.use(`/:serverId`, serverAdmin);
  *        battles:
  *          allOf:
  *          - $ref: '#/components/schemas/Category'
+ *          - type: object
+ *            properties:
+ *              threshold:
+ *                type: object
+ *                properties:
+ *                  players:
+ *                    type: number
+ *                    description: Minimum number of players to show a battle
+ *                  guilds:
+ *                    type: number
+ *                    description: Minimum number of guilds to show a battle
+ *                  alliances:
+ *                    type: number
+ *                    description: Minimum number of alliances to show a battle
  *        kills:
  *          allOf:
  *          - $ref: '#/components/schemas/Category'
