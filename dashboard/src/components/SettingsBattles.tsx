@@ -45,7 +45,7 @@ const SettingsBattles = ({ channels }: ISettingsBattlesProps) => {
           <Form.Label>Minimum Players</Form.Label>
           <Form.Control
             type="number"
-            value={battles.threshold.players}
+            value={battles.threshold.players || 0}
             onChange={(e) =>
               dispatch(setBattlesThresholdPlayers(Number(e.target.value)))
             }
@@ -55,7 +55,7 @@ const SettingsBattles = ({ channels }: ISettingsBattlesProps) => {
           <Form.Label>Minimum Guilds</Form.Label>
           <Form.Control
             type="number"
-            value={battles.threshold.guilds}
+            value={battles.threshold.guilds || 0}
             onChange={(e) =>
               dispatch(setBattlesThresholdGuilds(Number(e.target.value)))
             }
@@ -65,7 +65,7 @@ const SettingsBattles = ({ channels }: ISettingsBattlesProps) => {
           <Form.Label>Minimum Alliances</Form.Label>
           <Form.Control
             type="number"
-            value={battles.threshold.alliances}
+            value={battles.threshold.alliances || 0}
             onChange={(e) =>
               dispatch(setBattlesThresholdAlliances(Number(e.target.value)))
             }
