@@ -20,7 +20,7 @@ const SettingsBattles = ({ channels }: ISettingsBattlesProps) => {
 
   return (
     <>
-      <Form.Group controlId="kills-enabled">
+      <Form.Group controlId="battles-enabled">
         <Form.Check
           type="switch"
           label="Enabled"

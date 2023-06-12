@@ -29,7 +29,7 @@ const SettingsRankings = ({ channels }: ISettingsRankingsProps) => {
 
   return (
     <>
-      <Form.Group controlId="kills-enabled">
+      <Form.Group controlId="rankings-enabled">
         <Form.Check
           type="switch"
           label="Enabled"
