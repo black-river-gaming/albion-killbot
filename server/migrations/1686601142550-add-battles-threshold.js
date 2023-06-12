@@ -8,7 +8,7 @@ async function run() {
   while (await settings.hasNext()) {
     const setting = await settings.next();
 
-    if (setting.battles.threshold) {
+    if (setting.battle && setting.battles.threshold) {
       logger.debug(`Skipping setting ${setting._id}`, { setting });
       continue;
     }
