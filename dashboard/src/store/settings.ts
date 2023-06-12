@@ -21,6 +21,11 @@ const initialState: ISettings = {
   battles: {
     enabled: true,
     channel: "",
+    threshold: {
+      players: 0,
+      guilds: 0,
+      alliances: 0,
+    },
   },
   rankings: {
     enabled: true,
@@ -75,6 +80,24 @@ export const settingsSlice = createSlice({
     setBattlesChannel: (state, action: PayloadAction<string>) => {
       state.battles.channel = action.payload;
     },
+    setBattlesThresholdPlayers: (state, action: PayloadAction<number>) => {
+      state.battles.threshold = {
+        ...state.battles.threshold,
+        players: Math.max(0, action.payload),
+      };
+    },
+    setBattlesThresholdGuilds: (state, action: PayloadAction<number>) => {
+      state.battles.threshold = {
+        ...state.battles.threshold,
+        guilds: Math.max(0, action.payload),
+      };
+    },
+    setBattlesThresholdAlliances: (state, action: PayloadAction<number>) => {
+      state.battles.threshold = {
+        ...state.battles.threshold,
+        alliances: Math.max(0, action.payload),
+      };
+    },
     setRankingsEnabled: (state, action: PayloadAction<boolean>) => {
       state.rankings.enabled = action.payload;
     },
@@ -103,6 +126,9 @@ export const {
   setDeathsMode,
   setBattlesEnabled,
   setBattlesChannel,
+  setBattlesThresholdPlayers,
+  setBattlesThresholdGuilds,
+  setBattlesThresholdAlliances,
   setRankingsEnabled,
   setRankingsChannel,
   setRankingsPvpRanking,
