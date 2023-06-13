@@ -32,7 +32,7 @@ const DEFAULT_SETTINGS = Object.freeze({
     threshold: {
       players: 0,
       guilds: 0,
-      allianceS: 0,
+      alliances: 0,
     },
   },
   rankings: {
