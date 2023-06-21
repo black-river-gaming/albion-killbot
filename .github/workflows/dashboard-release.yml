@@ -39,16 +39,12 @@ jobs:
           REACT_APP_DISCORD_REDIRECT_URI: ${{ vars.REACT_APP_DISCORD_REDIRECT_URI }}
         run: npm run build
 
-      - id: auth
-        name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
-
       - name: Sync files to production server
-        uses: google-github-actions/upload-cloud-storage@v1
+        uses: burnett01/rsync-deployments@6.0.0
         with:
+          switches: -avzr --delete
           path: dashboard/build/
-          destination: ak-dashboard
-          parent: false
-          process_gcloudignore: false
+          remote_host: ${{ vars.SSH_HOST_DASHBOARD }}
+          remote_user: ${{ vars.SSH_USER }}
+          remote_key: ${{ secrets.SSH_KEY }}
+          remote_path: www/
