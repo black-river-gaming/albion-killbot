@@ -243,16 +243,15 @@ const PremiumPage = () => {
                     {subscription.stripe?.customer && (
                       <Button
                         variant="danger"
-                        onClick={() => {
-                          if (subscription.stripe?.customer)
-                            dispatchManageSubscription(
-                              subscription.stripe.customer
-                            );
-                        }}
+                        onClick={() =>
+                          subscription.stripe?.customer &&
+                          dispatchManageSubscription(
+                            subscription.stripe.customer
+                          )
+                        }
                       >
-                        {subscription.stripe?.cancel_at_period_end
-                          ? "Renew"
-                          : "Cancel"}
+                        <FontAwesomeIcon icon={faStripe} className="s-2" />
+                        <div>Manage</div>
                       </Button>
                     )}
                   </Col>
