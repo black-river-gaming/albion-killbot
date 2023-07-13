@@ -66,16 +66,16 @@ jobs:
         shard: [0, 1, 2]
         include:
         - shard: 0
-          SSH_HOST: ${{ vars.SSH_HOST_BOT_0 }}
+          SSH_HOST: SSH_HOST_BOT_0
         - shard: 1
-          SSH_HOST: ${{ vars.SSH_HOST_BOT_1 }}
+          SSH_HOST: SSH_HOST_BOT_1
         - shard: 2
-          SSH_HOST: ${{ vars.SSH_HOST_BOT_2 }}
+          SSH_HOST: SSH_HOST_BOT_2
     steps:
       - name: Deploy bot shard '#${{ matrix.shard }}'
         uses: cross-the-world/ssh-pipeline@master
         with:
-          host: ${{ matrix.SSH_HOST }}
+          host: ${{ vars[matrix.SSH_HOST] }}
           user: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
