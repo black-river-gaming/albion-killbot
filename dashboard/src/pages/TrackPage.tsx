@@ -66,7 +66,7 @@ const TrackPage = () => {
               You do not have configured a channel to display kills or death
               notifications. Please go to the{" "}
             </span>
-            <Link to="/settings">Settings</Link>
+            <Link to={`/dashboard/${id}/settings`}>Settings</Link>
             <span> page to set up notification channels.</span>
           </Alert>
         )}
