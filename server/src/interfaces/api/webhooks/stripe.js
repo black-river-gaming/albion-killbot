@@ -38,17 +38,17 @@ router.post(`/webhook`, async (req, res) => {
 
   switch (type) {
     case "checkout.session.completed":
-      logger.info(
-        `[${data.object.subscription}] Checkout completed. Creating subscription for discord user [${owner}].`,
-        {
-          type,
+      if (!data.object.subscription || !owner)
+        return logger.error(`Failed to create subscription because of missing stripe id or client reference id`, {
           data,
-          owner,
-        },
-      );
-      await subscriptionsService.addSubscription({
+        });
+      logger.info(`[${data.object.subscription}] Checkout completed. Linking subscription to owner [${owner}].`, {
+        type,
+        data,
         owner,
-        expires: new Date(),
+      });
+      await subscriptionsService.updateSubscriptionByStripeId(data.object.subscription, {
+        owner,
         stripe: data.object.subscription,
       });
       break;
