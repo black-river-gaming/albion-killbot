@@ -15,7 +15,7 @@ const { sendPrivateMessage } = require("./notifications");
 const { getLocale } = require("../../../helpers/locale");
 const { getSettings } = require("../../../services/settings");
 
-const { DISCORD_COMMUNITY_SERVER, DISCORD_COMMUNITY_PREMIUM_ROLE, DASHBOARD_URL } = process.env;
+const { DISCORD_COMMUNITY_SERVER, DISCORD_COMMUNITY_PREMIUM_ROLE, DASHBOARD_URL, NODE_ENV } = process.env;
 
 let guild;
 
@@ -134,7 +134,7 @@ const initExpirationNotice = (client) => {
   runInterval("Send subscription expire notice", checkExpireNotice, {
     interval: MINUTE,
     fnOpts: [client],
-    runOnStart: true,
+    runOnStart: NODE_ENV === "development",
   });
 };
 
