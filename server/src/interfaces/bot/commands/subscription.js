@@ -1,7 +1,10 @@
 const { SlashCommandBuilder } = require("discord.js");
-const moment = require("moment");
 const { getLocale } = require("../../../helpers/locale");
-const { isSubscriptionsEnabled, getSubscriptionByServerId } = require("../../../services/subscriptions");
+const {
+  isSubscriptionsEnabled,
+  getSubscriptionByServerId,
+  getSubscriptionExpires,
+} = require("../../../services/subscriptions");
 
 const { t } = getLocale();
 
@@ -33,9 +36,9 @@ const command = {
       });
     }
 
-    const days = moment(subscription.expires).diff(moment(), "days");
+    const days = getSubscriptionExpires(subscription, "days");
     return await interaction.reply({
-      content: days <= 0 ? t("SUBSCRIPTION.STATUS.EXPIRED") : t("SUBSCRIPTION.STATUS.DAYS_REMAINING", { days }),
+      content: days < 0 ? t("SUBSCRIPTION.STATUS.EXPIRED") : t("SUBSCRIPTION.STATUS.DAYS_REMAINING", { days }),
       ephemeral,
     });
   },

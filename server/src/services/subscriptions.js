@@ -9,8 +9,14 @@ const SUBSCRIPTIONS_MODE = Boolean(process.env.SUBSCRIPTIONS_MODE);
 const SUBSCRIPTIONS_COLLECTION = "subscriptions";
 const subscriptionEvents = new EventEmitter();
 
+/* Helpers */
 function isSubscriptionsEnabled() {
   return SUBSCRIPTIONS_MODE;
+}
+
+function getSubscriptionExpires(subscription, unit = "days") {
+  if (!subscription || !subscription.expires) return 0;
+  return moment(subscription.expires).diff(moment(), unit);
 }
 
 /* Stripe */
@@ -101,7 +107,7 @@ function isActiveSubscription(subscription) {
   if (!isSubscriptionsEnabled()) return false;
   if (!subscription) return false;
   if (subscription.expires === "never") return true;
-  return moment(subscription.expires).diff() > 0;
+  return getSubscriptionExpires(subscription) > 0;
 }
 
 async function hasSubscriptionByServerId(server) {
@@ -211,6 +217,7 @@ module.exports = {
   getSubscriptionByOwner,
   getSubscriptionByServerId,
   getSubscriptionByStripeId,
+  getSubscriptionExpires,
   hasSubscriptionByServerId,
   isActiveSubscription,
   isSubscriptionsEnabled,

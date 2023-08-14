@@ -2,7 +2,9 @@ import { faCrown, faGear, faList } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
+import { isSubscriptionActive } from "helpers/subscriptions";
 import {
+  Alert,
   Button,
   Card,
   Col,
@@ -23,6 +25,8 @@ const ServerPage = () => {
 
   if (server.isFetching) return <Loader />;
   if (!server.data) return redirectToDashboard;
+
+  const { subscription } = server.data;
 
   return (
     <Container fluid className="py-3">
@@ -77,6 +81,13 @@ const ServerPage = () => {
           </Card>
         </Col>
         <Col md={8}>
+          {subscription && !isSubscriptionActive(subscription) && (
+            <Alert variant="warning">
+              You server subscription has expired, please visit the{" "}
+              <Link to="/premium">Premium page</Link> to verify and renew your
+              subscription.
+            </Alert>
+          )}
           <Outlet />
         </Col>
       </Row>

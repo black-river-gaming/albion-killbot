@@ -1,5 +1,5 @@
 const { PermissionFlagsBits } = require("discord.js");
-const { DAY } = require("../../../helpers/constants");
+const { DAY, MINUTE } = require("../../../helpers/constants");
 const logger = require("../../../helpers/logger");
 const { runInterval } = require("../../../helpers/scheduler");
 const {
@@ -7,9 +7,15 @@ const {
   isActiveSubscription,
   fetchAllSubscriptions,
   subscriptionEvents,
+  getSubscriptionByServerId,
+  getSubscriptionExpires,
 } = require("../../../services/subscriptions");
+const { transformGuild } = require("../../../helpers/discord");
+const { sendPrivateMessage } = require("./notifications");
+const { getLocale } = require("../../../helpers/locale");
+const { getSettings } = require("../../../services/settings");
 
-const { DISCORD_COMMUNITY_SERVER, DISCORD_COMMUNITY_PREMIUM_ROLE } = process.env;
+const { DISCORD_COMMUNITY_SERVER, DISCORD_COMMUNITY_PREMIUM_ROLE, DASHBOARD_URL, NODE_ENV } = process.env;
 
 let guild;
 
@@ -58,8 +64,7 @@ const checkPremiumRoles = async (guild) => {
   logger.debug("Check for Premium Users on Discord Community Server finished.");
 };
 
-const init = (client) => {
-  if (!isSubscriptionsEnabled()) return;
+const initPremiumRoles = (client) => {
   if (!DISCORD_COMMUNITY_SERVER || !DISCORD_COMMUNITY_PREMIUM_ROLE) return;
 
   guild = client.guilds.resolve(DISCORD_COMMUNITY_SERVER);
@@ -100,7 +105,44 @@ const init = (client) => {
   subscriptionEvents.on("remove", checkPremiumRole);
 };
 
+const checkExpireNotice = async (client) => {
+  for (const guild of client.guilds.cache.values()) {
+    const subscription = await getSubscriptionByServerId(guild.id);
+    if (!subscription || isActiveSubscription(subscription)) continue;
+
+    // The check occurs every minute so this is expected to run only once
+    if (getSubscriptionExpires(subscription, "minutes") === 0) {
+      logger.verbose(`[${guild.name}] Subscription has expired. Notifying subscription owner.`, {
+        guild: transformGuild(guild),
+        subscription,
+      });
+
+      const settings = await getSettings(guild.id);
+      const { t } = getLocale(settings.general.locale);
+      sendPrivateMessage(
+        client,
+        subscription.owner,
+        `${t("SUBSCRIPTION.STATUS.EXPIRED")} ${t("SUBSCRIPTION.RENEW", {
+          link: `${DASHBOARD_URL}/premium`,
+        })}`,
+      );
+    }
+  }
+};
+
+const initExpirationNotice = (client) => {
+  runInterval("Send subscription expire notice", checkExpireNotice, {
+    interval: MINUTE,
+    fnOpts: [client],
+    runOnStart: NODE_ENV === "development",
+  });
+};
+
 module.exports = {
   name: "subscriptions",
-  init,
+  init: (client) => {
+    if (!isSubscriptionsEnabled()) return;
+    initPremiumRoles(client);
+    initExpirationNotice(client);
+  },
 };
