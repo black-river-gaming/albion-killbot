@@ -103,6 +103,7 @@
       "PATREON_DISCORD_NOT_FOUND": "Não encontrei sua conta na lista de assinantes. Por favor, vincule sua conta Discord com a conta Patreon e tente novamente."
     },
     "FAILED": "Não foi possível validar assinatura: {{ reason }}",
+    "RENEW": "Por favor, acesse {{{link}}} para renová-la.",
     "STATUS": {
       "ACTIVE": "Sua assinatura está ativada.",
       "DAYS_REMAINING": "Sua assinatura possui {{{ days }}} dia(s) restando",

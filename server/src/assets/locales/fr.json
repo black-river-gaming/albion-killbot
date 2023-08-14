@@ -103,6 +103,7 @@
       "PATREON_DISCORD_NOT_FOUND": "Couldn't find your account subscriber list. Please link your Discord account with patreon account and try again."
     },
     "FAILED": "Failed to validate subscription: {{ reason }}",
+    "RENEW": "Veuillez visiter {{{link}}} pour le renouveler.",
     "STATUS": {
       "ACTIVE": "Your subscription is active.",
       "DAYS_REMAINING": "Votre souscription contient {{{ days }}} jour(s) restant",

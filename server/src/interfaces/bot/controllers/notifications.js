@@ -1,4 +1,4 @@
-const { transformGuild, transformChannel } = require("../../../helpers/discord");
+const { transformGuild, transformChannel, transformUser } = require("../../../helpers/discord");
 const logger = require("../../../helpers/logger");
 const { timeout } = require("../../../helpers/scheduler");
 
@@ -24,6 +24,26 @@ async function sendNotification(client, channelId, notification) {
   }
 }
 
+async function sendPrivateMessage(client, userId, message) {
+  const user = await client.users.fetch(userId);
+  if (!user || !user.send) return;
+
+  try {
+    await timeout(user.send(message), NOTIFICATION_TIMEOUT);
+
+    logger.debug(`[${userId}] send private message.`, {
+      user: transformUser(user),
+      message,
+    });
+  } catch (error) {
+    logger.warn(`Unable to send message to ${user.name}: ${error.message}.`, {
+      user: userId,
+      error,
+    });
+  }
+}
+
 module.exports = {
   sendNotification,
+  sendPrivateMessage,
 };
