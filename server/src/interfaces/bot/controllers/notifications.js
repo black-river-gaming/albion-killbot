@@ -24,20 +24,20 @@ async function sendNotification(client, channelId, notification) {
   }
 }
 
-async function sendPrivateMessage(client, userId, message) {
+async function sendPrivateMessage(client, userId, notification) {
   const user = await client.users.fetch(userId);
   if (!user || !user.send) return;
 
   try {
-    await timeout(user.send(message), NOTIFICATION_TIMEOUT);
+    await timeout(user.send(notification), NOTIFICATION_TIMEOUT);
 
-    logger.debug(`[${userId}] send private message.`, {
+    logger.debug(`[${user.username}] send private message.`, {
       user: transformUser(user),
-      message,
+      notification,
     });
   } catch (error) {
     logger.warn(`Unable to send message to ${user.name}: ${error.message}.`, {
-      user: userId,
+      user: transformUser(user),
       error,
     });
   }
