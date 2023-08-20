@@ -47,7 +47,7 @@ export const trackslice = createSlice({
       state.alliances.push(payload);
       state.changed = true;
     },
-    setItemChannel: (
+    setItemKillsChannel: (
       state,
       {
         payload,
@@ -63,7 +63,33 @@ export const trackslice = createSlice({
       );
 
       if (item) {
-        item.channel = payload.channel;
+        item.kills = {
+          ...item.kills,
+          channel: payload.channel,
+        };
+        state.changed = true;
+      }
+    },
+    setItemDeathsChannel: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        type: TRACK_TYPE;
+        item: ITrackItem;
+        channel?: string;
+      }>
+    ) => {
+      const item = state[payload.type].find(
+        (item) =>
+          item.server === payload.item.server && item.id === payload.item.id
+      );
+
+      if (item) {
+        item.deaths = {
+          ...item.deaths,
+          channel: payload.channel,
+        };
         state.changed = true;
       }
     },
@@ -93,7 +119,8 @@ export const {
   trackPlayer,
   trackGuild,
   trackAlliance,
-  setItemChannel,
+  setItemKillsChannel,
+  setItemDeathsChannel,
   untrackPlayer,
   untrackGuild,
   untrackAlliance,
