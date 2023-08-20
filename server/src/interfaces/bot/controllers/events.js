@@ -38,7 +38,10 @@ async function subscribe(client) {
 
         const { good, tracked } = guildEvent;
         const { enabled, mode } = good ? settings.kills : settings.deaths;
-        const channel = tracked.channel || (good ? settings.kills.channel : settings.deaths.channel);
+
+        let channel = null;
+        if (good) channel = (tracked.kills && tracked.kills.channel) || settings.kills.channel;
+        else channel = (tracked.deaths && tracked.deaths.channel) || settings.deaths.channel;
         if (!enabled || !channel) continue;
 
         addRankingKill(guild.id, guildEvent);

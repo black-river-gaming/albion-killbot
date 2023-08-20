@@ -70,7 +70,6 @@ router.use(`/:serverId`, serverAdmin);
  *            track:
  *              $ref: '#/components/schemas/Track'
  *
- *
  *    Channel:
  *      type: object
  *      properties:
@@ -210,10 +209,18 @@ router.use(`/:serverId`, serverAdmin);
  *          type: string
  *          description: Albion server
  *          example: "Albion West"
- *        channel:
- *          type: string
- *          description: Discord channel to send notifications
- *          default: null
+ *        kills:
+ *          type: object
+ *          description: Custom settings for kills
+ *          required: false
+ *          properties:
+ *            channel: Channel to send notifications
+ *        deaths:
+ *          type: object
+ *          description: Custom settings for deaths
+ *          required: false
+ *          properties:
+ *            channel: Channel to send notifications
  */
 
 /**

@@ -79,7 +79,12 @@ export interface ITrackItem {
   id: string;
   name: string;
   server: string;
-  channel?: string;
+  kills?: {
+    channel?: string;
+  };
+  deaths?: {
+    channel?: string;
+  };
 }
 
 export interface ITrackList {
