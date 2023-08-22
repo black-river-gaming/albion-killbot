@@ -120,9 +120,12 @@
       "UNTRACKED": "Dejar de rastrear Alianza: {{ name }}."
     },
     "ALREADY_TRACKED": "Ya estoy rastreando este artículo.",
-    "CHANNEL": {
-      "CUSTOM": "Las notificaciones se enviarán al canal: {{{ canal }}}",
-      "DEFAULT": "Las notificaciones se enviarán al canal predeterminado."
+    "DEATHS": {
+      "CHANNEL": {
+        "CUSTOM": "Las notificaciones de muerte se mostrarán en el canal personalizado: {{{ canal }}}",
+        "DEFAULT": "Las notificaciones de muerte se mostrarán en el canal predeterminado.",
+        "DESCRIPTION": "Envía notificaciones de muertes a un canal personalizado."
+      }
     },
     "ERRORS": {
       "FETCH_FAILED": "No se puede obtener la configuración de la pista. Por favor, inténtelo de nuevo más tarde."
@@ -134,6 +137,13 @@
       "TRACKED": "Gremio rastreado: {{ name }}.",
       "TYPE": "Gremios",
       "UNTRACKED": "Dejar de rastrear gremio: {{ name }}."
+    },
+    "KILLS": {
+      "CHANNEL": {
+        "CUSTOM": "Las notificaciones de eliminación se enviarán al canal personalizado: {{{ channel }}}",
+        "DEFAULT": "Las notificaciones se enviarán al canal predeterminado.",
+        "DESCRIPTION": "Envía notificaciones de bajas a un canal personalizado."
+      }
     },
     "LIMIT_REACHED": "Limite Alcanzado de {{ limit }} articulos en esta lista.",
     "LIST": "Lista de rastreo",

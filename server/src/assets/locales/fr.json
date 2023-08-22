@@ -120,9 +120,12 @@
       "UNTRACKED": "Désactivation de la suivi de l'alliance: {{ name }}."
     },
     "ALREADY_TRACKED": "Je suis déja ceci.",
-    "CHANNEL": {
-      "CUSTOM": "Les notifications seront envoyées au canal : {{{ channel }}}",
-      "DEFAULT": "Les notifications seront envoyées au canal par défaut."
+    "DEATHS": {
+      "CHANNEL": {
+        "CUSTOM": "Les notifications de décès seront affichées sur le canal personnalisé : {{{ channel }}}",
+        "DEFAULT": "Les notifications de décès seront affichées sur le canal par défaut.",
+        "DESCRIPTION": "Envoyez des notifications de décès à un canal personnalisé."
+      }
     },
     "ERRORS": {
       "FETCH_FAILED": "Impossible de récupérer les paramètres de suivi. Veuillez réessayer plus tard."
@@ -134,6 +137,13 @@
       "TRACKED": "Suivi de la guilde: {{ name }}.",
       "TYPE": "Guildes",
       "UNTRACKED": "Désactivation de la suivi de la guilde: {{ name }}."
+    },
+    "KILLS": {
+      "CHANNEL": {
+        "CUSTOM": "Les notifications d'élimination seront envoyées au canal personnalisé: {{{ channel }}}",
+        "DEFAULT": "Les notifications seront envoyées au canal par défaut.",
+        "DESCRIPTION": "Envoyez des notifications de mise à mort à un canal personnalisé."
+      }
     },
     "LIMIT_REACHED": "Tu as déja atteint la limite de {{ limit }} suivis dans la liste..",
     "LIST": "Liste des suivis",

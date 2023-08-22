@@ -34,7 +34,10 @@ const player = (subcommand) =>
     .addStringOption((option) =>
       option.setName("player").setDescription(t("TRACK.PLAYERS.DESCRIPTION")).setRequired(true),
     )
-    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL.DESCRIPTION")));
+    .addChannelOption((option) => option.setName("kills_channel").setDescription(t("TRACK.KILLS.CHANNEL.DESCRIPTION")))
+    .addChannelOption((option) =>
+      option.setName("deaths_channel").setDescription(t("TRACK.DEATHS.CHANNEL.DESCRIPTION")),
+    );
 
 const guild = (subcommand) =>
   subcommand
@@ -55,7 +58,10 @@ const guild = (subcommand) =>
     .addStringOption((option) =>
       option.setName("guild").setDescription(t("TRACK.GUILDS.DESCRIPTION")).setRequired(true),
     )
-    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL.DESCRIPTION")));
+    .addChannelOption((option) => option.setName("kills_channel").setDescription(t("TRACK.KILLS.CHANNEL.DESCRIPTION")))
+    .addChannelOption((option) =>
+      option.setName("deaths_channel").setDescription(t("TRACK.DEATHS.CHANNEL.DESCRIPTION")),
+    );
 
 const alliance = (subcommand) =>
   subcommand
@@ -76,7 +82,10 @@ const alliance = (subcommand) =>
     .addStringOption((option) =>
       option.setName("alliance").setDescription(t("TRACK.ALLIANCE.DESCRIPTION")).setRequired(true),
     )
-    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.CHANNEL.DESCRIPTION")));
+    .addChannelOption((option) => option.setName("kills_channel").setDescription(t("TRACK.KILLS.CHANNEL.DESCRIPTION")))
+    .addChannelOption((option) =>
+      option.setName("deaths_channel").setDescription(t("TRACK.DEATHS.CHANNEL.DESCRIPTION")),
+    );
 
 const command = {
   data: new SlashCommandBuilder()
@@ -97,7 +106,8 @@ const command = {
     const playerName = interaction.options.getString("player");
     const guildName = interaction.options.getString("guild");
     const allianceId = interaction.options.getString("alliance");
-    const channel = interaction.options.getChannel("channel");
+    const killsChannel = interaction.options.getChannel("kills_channel");
+    const deathsChannel = interaction.options.getChannel("deaths_channel");
 
     if (!server || (!playerName && !guildName && !allianceId)) {
       return await interaction.reply({
@@ -147,13 +157,27 @@ const command = {
 
       if (!trackItem) return addContent(t("TRACK.NOT_FOUND"));
       trackItem.server = server;
-      if (channel) trackItem.channel = channel.id;
+
+      if (killsChannel) {
+        trackItem.kills = {
+          channel: killsChannel.id,
+        };
+      }
+      if (deathsChannel) {
+        trackItem.deaths = {
+          channel: deathsChannel.id,
+        };
+      }
 
       await addTrack(interaction.guild.id, type, trackItem);
 
-      let response = t(`TRACK.${type.toUpperCase()}.TRACKED`, { name: trackItem.name }) + " ";
-      if (channel) response += t("TRACK.CHANNEL.CUSTOM", { channel: channel.toString() });
-      else response += t("TRACK.CHANNEL.DEFAULT");
+      let response = t(`TRACK.${type.toUpperCase()}.TRACKED`, { name: trackItem.name }) + "\n";
+
+      if (killsChannel) response += t("TRACK.KILLS.CHANNEL.CUSTOM", { channel: killsChannel.toString() }) + "\n";
+      else response += t("TRACK.KILLS.CHANNEL.DEFAULT") + "\n";
+
+      if (deathsChannel) response += t("TRACK.DEATHS.CHANNEL.CUSTOM", { channel: deathsChannel.toString() });
+      else response += t("TRACK.DEATHS.CHANNEL.DEFAULT") + "\n";
 
       return addContent(response);
     };
