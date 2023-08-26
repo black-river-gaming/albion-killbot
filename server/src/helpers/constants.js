@@ -16,11 +16,18 @@ const SUBSCRIPTION_STATUS = {
   EXPIRED: "Expired",
 };
 
+const REPORT_MODES = {
+  IMAGE: "image",
+  TEXT: "text",
+};
+
 module.exports = {
   DAY,
   HOUR,
   MINUTE,
   SECOND,
+
+  REPORT_MODES,
   SERVERS,
   SERVER_LIST,
   SUBSCRIPTION_STATUS,

@@ -1,4 +1,5 @@
 const logger = require("../../../helpers/logger");
+const { REPORT_MODES } = require("../../../helpers/constants");
 const { getTrackedEvent } = require("../../../helpers/tracking");
 const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../../../helpers/embeds");
 const { transformGuild } = require("../../../helpers/discord");
@@ -6,7 +7,7 @@ const { transformEvent } = require("../../../helpers/albion");
 
 const { subscribeEvents, getEventVictimLootValue } = require("../../../services/events");
 const { generateEventImage, generateInventoryImage } = require("../../../services/images");
-const { REPORT_MODES, getSettings } = require("../../../services/settings");
+const { getSettings } = require("../../../services/settings");
 const { addRankingKill } = require("../../../services/rankings");
 const { getTrack } = require("../../../services/track");
 const { getLimits } = require("../../../services/limits");
