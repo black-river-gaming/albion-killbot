@@ -7,8 +7,6 @@ export const SERVERS = [SERVER.WEST, SERVER.EAST];
 
 export const LANGUAGES = ["en", "pt", "es", "fr", "ru"];
 
-export const KILL_MODES = ["image", "text"];
-
 export const RANKING_MODES = ["off", "hourly", "daily"];
 
 export const SUBSCRIPTION_STATUSES = ["Free", "Active", "Expired"];

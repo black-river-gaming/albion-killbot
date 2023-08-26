@@ -65,6 +65,9 @@ export const settingsSlice = createSlice({
     setKillsMode: (state, action: PayloadAction<string>) => {
       state.kills.mode = action.payload;
     },
+    setKillsProvider: (state, action: PayloadAction<string>) => {
+      state.kills.provider = action.payload;
+    },
     setDeathsEnabled: (state, action: PayloadAction<boolean>) => {
       state.deaths.enabled = action.payload;
     },
@@ -73,6 +76,9 @@ export const settingsSlice = createSlice({
     },
     setDeathsMode: (state, action: PayloadAction<string>) => {
       state.deaths.mode = action.payload;
+    },
+    setDeathsProvider: (state, action: PayloadAction<string>) => {
+      state.kills.provider = action.payload;
     },
     setBattlesEnabled: (state, action: PayloadAction<boolean>) => {
       state.battles.enabled = action.payload;
@@ -98,6 +104,9 @@ export const settingsSlice = createSlice({
         alliances: Math.max(0, action.payload),
       };
     },
+    setBattlesProvider: (state, action: PayloadAction<string>) => {
+      state.battles.provider = action.payload;
+    },
     setRankingsEnabled: (state, action: PayloadAction<boolean>) => {
       state.rankings.enabled = action.payload;
     },
@@ -121,14 +130,17 @@ export const {
   setKillsEnabled,
   setKillsChannel,
   setKillsMode,
+  setKillsProvider,
   setDeathsEnabled,
   setDeathsChannel,
   setDeathsMode,
+  setDeathsProvider,
   setBattlesEnabled,
   setBattlesChannel,
   setBattlesThresholdPlayers,
   setBattlesThresholdGuilds,
   setBattlesThresholdAlliances,
+  setBattlesProvider,
   setRankingsEnabled,
   setRankingsChannel,
   setRankingsPvpRanking,
