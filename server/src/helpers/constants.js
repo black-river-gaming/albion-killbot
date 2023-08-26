@@ -21,6 +21,38 @@ const REPORT_MODES = {
   TEXT: "text",
 };
 
+const albionKillboardServers = {
+  "Albion West": "live_us",
+  "Albion East": "live_sgp",
+};
+
+const REPORT_PROVIDERS = [
+  {
+    id: "albion-killboard",
+    name: "Albion Killboard",
+    events: ({ id, server }) =>
+      `https://albiononline.com/killboard/kill/${id}?server=${albionKillboardServers[server]}`,
+    battles: ({ id, server }) =>
+      `https://albiononline.com/killboard/battles/${id}?server=${albionKillboardServers[server]}`,
+  },
+  {
+    id: "albion2d",
+    name: "Albion Online 2D",
+    events: ({ id, lang }) => `https://albiononline2d.com/${lang}/scoreboard/events/${id}`,
+    battles: ({ id, lang }) => `https://albiononline2d.com/${lang}/scoreboard/battles/${id}`,
+  },
+  {
+    id: "albion-battles",
+    name: "Albion Battles",
+    battles: ({ id }) => `https://albionbattles.com/battles/${id}`,
+  },
+  {
+    id: "kill-board",
+    name: "Kill-board",
+    battles: ({ id }) => `https://kill-board.com/battles/${id}`,
+  },
+];
+
 module.exports = {
   DAY,
   HOUR,
@@ -28,6 +60,7 @@ module.exports = {
   SECOND,
 
   REPORT_MODES,
+  REPORT_PROVIDERS,
   SERVERS,
   SERVER_LIST,
   SUBSCRIPTION_STATUS,

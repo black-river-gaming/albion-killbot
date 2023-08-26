@@ -53,30 +53,40 @@
     "TOTAL_KILL_FAME": "Fama Total Kills"
   },
   "SETTINGS": {
-    "BATTLES": "Change settings for battle notifications.",
+    "CATEGORY": {
+      "DISABLED": "Disabled",
+      "ENABLED": "Enabled",
+      "SET": "Notifications for category `{{ category }}` are `{{ option }}`"
+    },
     "CHANNEL": {
-      "DESCRIPTION": "Canal para enviar notificaciones",
       "NOT_SET": "ADVERTENCIA: el canal para enviar notificaciones no está configurado. Utilice /settings para configurarlo.",
       "NULL": "Ingrese un canal para las notificaciones",
       "SET": "Canal para categoria '{{ category }}' definido para {{{ channel }}}."
     },
-    "DEATHS": "Change settings for death notifications.",
-    "DISABLED": "Disabled",
-    "ENABLED": "Enabled",
+    "DESCRIPTION": {
+      "BATTLES": "Change settings for battle notifications.",
+      "CHANNEL": "Canal para enviar notificaciones",
+      "DEATHS": "Change settings for death notifications.",
+      "GENERAL": "Cambiar la configuración general",
+      "GUILD_RANKING": "Guild Ranking",
+      "GUILD_TAGS": "Mostrar etiquetas de gremio en los nombres de los jugadores.",
+      "KILLS": "Change settings for kill notifications.",
+      "LANG": "Change language.",
+      "MODE": "Establecer formato de notificación.",
+      "PROVIDER": "Establecer proveedor para enlaces en notificaciones.",
+      "PVP_RANKING": "PvP Ranking",
+      "RANKINGS": "Change settings for ranking notifications.",
+      "SPLIT_LOOT_VALUE": "Divide el valor del loot entre equipo e inventario."
+    },
     "FREQUENCIES": {
       "DAILY": "Daily",
       "HOURLY": "Every hour",
       "OFF": "Off"
     },
-    "GENERAL": "Cambiar la configuración general",
-    "GUILD_RANKING": "Guild Ranking",
     "GUILD_TAGS": {
-      "DESCRIPTION": "Mostrar etiquetas de gremio en los nombres de los jugadores.",
       "SET": "Mostrar etiquetas de gremio: {{ enabled }}"
     },
-    "KILLS": "Change settings for kill notifications.",
     "LANG": {
-      "DESCRIPTION": "Change language.",
       "NOT_SUPPORTED": "Este idioma no es soportado.",
       "SET": "Idioma definido '{{ lang }}'"
     },
@@ -85,11 +95,10 @@
       "SET": "Modo de salida establecido en: {{ mode }}",
       "TEXT": "Text"
     },
-    "PVP_RANKING": "PvP Ranking",
-    "RANKINGS": "Change settings for ranking notifications.",
-    "SET": "Notifications for category `{{ category }}` are `{{ option }}`",
+    "PROVIDER": {
+      "SET": "Los enlaces serán proporcionados por {{ provider }}."
+    },
     "SPLIT_LOOT_VALUE": {
-      "DESCRIPTION": "Divide el valor del loot entre equipo e inventario.",
       "SET": "Valor de loot dividido: {{ enabled }}"
     }
   },

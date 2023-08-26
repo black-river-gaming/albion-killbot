@@ -53,30 +53,40 @@
     "TOTAL_KILL_FAME": "Total Kill Fame"
   },
   "SETTINGS": {
-    "BATTLES": "Change settings for battle notifications.",
+    "CATEGORY": {
+      "DISABLED": "disabled",
+      "ENABLED": "Enabled",
+      "SET": "Notifications for category `{{ category }}` are `{{ option }}`"
+    },
     "CHANNEL": {
-      "DESCRIPTION": "Канал для отправки уведомлений",
       "NOT_SET": "Внимание: канал для отправки уведомлений не установлен. Пожалуйста используйте /settings настроить его.",
       "NULL": "Пожалуйста, введите канал для уведомлений.",
       "SET": "Channel for category '{{ category }}' defined to {{{ channel }}}."
     },
-    "DEATHS": "Change settings for death notifications.",
-    "DISABLED": "disabled",
-    "ENABLED": "Enabled",
+    "DESCRIPTION": {
+      "BATTLES": "Change settings for battle notifications.",
+      "CHANNEL": "Канал для отправки уведомлений",
+      "DEATHS": "Change settings for death notifications.",
+      "GENERAL": "Изменить общие настройки",
+      "GUILD_RANKING": "Guild Ranking",
+      "GUILD_TAGS": "Показывать теги гильдии в именах игроков.",
+      "KILLS": "Change settings for kill notifications.",
+      "LANG": "Change language.",
+      "MODE": "Установите формат уведомления.",
+      "PROVIDER": "Установите поставщика для ссылок в уведомлениях.",
+      "PVP_RANKING": "PvP Ranking",
+      "RANKINGS": "Change settings for ranking notifications.",
+      "SPLIT_LOOT_VALUE": "Разделите стоимость добычи между снаряжением и инвентарем."
+    },
     "FREQUENCIES": {
       "DAILY": "Daily",
       "HOURLY": "Every hour",
       "OFF": "Off"
     },
-    "GENERAL": "Изменить общие настройки",
-    "GUILD_RANKING": "Guild Ranking",
     "GUILD_TAGS": {
-      "DESCRIPTION": "Показывать теги гильдии в именах игроков.",
       "SET": "Показать теги гильдии: {{ enabled }}"
     },
-    "KILLS": "Change settings for kill notifications.",
     "LANG": {
-      "DESCRIPTION": "Change language.",
       "NOT_SUPPORTED": "Этот язык не поддерживается.",
       "SET": "Язык установлен на '{{ lang }}'"
     },
@@ -85,11 +95,10 @@
       "SET": "Режим установлен на: {{ mode }}",
       "TEXT": "Text"
     },
-    "PVP_RANKING": "PvP Ranking",
-    "RANKINGS": "Change settings for ranking notifications.",
-    "SET": "Notifications for category `{{ category }}` are `{{ option }}`",
+    "PROVIDER": {
+      "SET": "Ссылки будут предоставлены {{ provider }}."
+    },
     "SPLIT_LOOT_VALUE": {
-      "DESCRIPTION": "Разделите стоимость добычи между снаряжением и инвентарем.",
       "SET": "Разделить стоимость добычи: {{ enabled }}"
     }
   },
