@@ -53,30 +53,40 @@
     "TOTAL_KILL_FAME": "Total Kill Fame"
   },
   "SETTINGS": {
-    "BATTLES": "Change settings for battle notifications.",
+    "CATEGORY": {
+      "DISABLED": "Désactivé",
+      "ENABLED": "Activé",
+      "SET": "Les notifications pour la catégorie `{{ category }}` sont `{{ option }}`"
+    },
     "CHANNEL": {
-      "DESCRIPTION": "Canal pour envoyer des notifications",
       "NOT_SET": "ATTENTION: Le channel d'envoi des messages du bot n'est pas défini. Veuillez utiliser /settings Pour le configurer.",
       "NULL": "Veuillez sélectionner un canal dans lequel les notifications seront envoyées.",
       "SET": "Canal pour la catégorie '{{ category }}' sélectionné {{{ channel }}}."
     },
-    "DEATHS": "Change settings for death notifications.",
-    "DISABLED": "Désactivé",
-    "ENABLED": "Activé",
+    "DESCRIPTION": {
+      "BATTLES": "Change settings for battle notifications.",
+      "CHANNEL": "Canal pour envoyer des notifications",
+      "DEATHS": "Change settings for death notifications.",
+      "GENERAL": "Modifier les paramètres généraux",
+      "GUILD_RANKING": "Guild Ranking",
+      "GUILD_TAGS": "Afficher les tags de guilde dans les noms des joueurs.",
+      "KILLS": "Change settings for kill notifications.",
+      "LANG": "Change language.",
+      "MODE": "Définir le format de notification.",
+      "PROVIDER": "Définir le fournisseur pour les liens dans les notifications.",
+      "PVP_RANKING": "PvP Ranking",
+      "RANKINGS": "Change settings for ranking notifications.",
+      "SPLIT_LOOT_VALUE": "Divisez la valeur du butin entre l'équipement et l'inventaire."
+    },
     "FREQUENCIES": {
       "DAILY": "Daily",
       "HOURLY": "Every hour",
       "OFF": "Off"
     },
-    "GENERAL": "Modifier les paramètres généraux",
-    "GUILD_RANKING": "Guild Ranking",
     "GUILD_TAGS": {
-      "DESCRIPTION": "Afficher les tags de guilde dans les noms des joueurs.",
       "SET": "Afficher les tags de guilde: {{ enabled }}"
     },
-    "KILLS": "Change settings for kill notifications.",
     "LANG": {
-      "DESCRIPTION": "Change language.",
       "NOT_SUPPORTED": "Cette langue n'est pas disponible.",
       "SET": "Langue sélectionné '{{ lang }}'"
     },
@@ -85,11 +95,10 @@
       "SET": "Mode de sortie défini sur: {{ mode }}",
       "TEXT": "Text"
     },
-    "PVP_RANKING": "PvP Ranking",
-    "RANKINGS": "Change settings for ranking notifications.",
-    "SET": "Les notifications pour la catégorie `{{ category }}` sont `{{ option }}`",
+    "PROVIDER": {
+      "SET": "Les liens seront fournis par {{ provider }}."
+    },
     "SPLIT_LOOT_VALUE": {
-      "DESCRIPTION": "Divisez la valeur du butin entre l'équipement et l'inventaire.",
       "SET": "Valeur du butin partagé : {{ enabled }}"
     }
   },

@@ -1,4 +1,5 @@
 const logger = require("../../../helpers/logger");
+const { REPORT_MODES } = require("../../../helpers/constants");
 const { getTrackedEvent } = require("../../../helpers/tracking");
 const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../../../helpers/embeds");
 const { transformGuild } = require("../../../helpers/discord");
@@ -6,7 +7,7 @@ const { transformEvent } = require("../../../helpers/albion");
 
 const { subscribeEvents, getEventVictimLootValue } = require("../../../services/events");
 const { generateEventImage, generateInventoryImage } = require("../../../services/images");
-const { REPORT_MODES, getSettings } = require("../../../services/settings");
+const { getSettings } = require("../../../services/settings");
 const { addRankingKill } = require("../../../services/rankings");
 const { getTrack } = require("../../../services/track");
 const { getLimits } = require("../../../services/limits");
@@ -37,7 +38,8 @@ async function subscribe(client) {
         const lootValue = await getEventVictimLootValue(event, { server });
 
         const { good, tracked } = guildEvent;
-        const { enabled, mode } = good ? settings.kills : settings.deaths;
+        const { enabled, mode, provider: providerId } = good ? settings.kills : settings.deaths;
+        const { locale, guildTags, splitLootValue } = settings.general;
 
         let channel = null;
         if (good) channel = (tracked.kills && tracked.kills.channel) || settings.kills.channel;
@@ -53,7 +55,6 @@ async function subscribe(client) {
           track,
           limits,
         });
-        const { locale, guildTags, splitLootValue } = settings.general;
 
         if (mode === REPORT_MODES.IMAGE) {
           const inventory = guildEvent.Victim.Inventory.filter((i) => i != null);
@@ -66,6 +67,7 @@ async function subscribe(client) {
               locale,
               guildTags,
               addFooter: !hasInventory,
+              providerId,
             }),
           );
           if (hasInventory) {
@@ -75,11 +77,12 @@ async function subscribe(client) {
               channel,
               embedEventInventoryImage(guildEvent, inventoryImage, {
                 locale,
+                providerId,
               }),
             );
           }
         } else if (mode === REPORT_MODES.TEXT) {
-          await sendNotification(client, channel, embedEvent(guildEvent, { lootValue, locale, guildTags }));
+          await sendNotification(client, channel, embedEvent(guildEvent, { lootValue, locale, guildTags, providerId }));
         }
       }
     } catch (error) {

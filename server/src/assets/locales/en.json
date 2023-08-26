@@ -53,30 +53,40 @@
     "TOTAL_KILL_FAME": "Total Kill Fame"
   },
   "SETTINGS": {
-    "BATTLES": "Change settings for battle notifications.",
+    "CATEGORY": {
+      "DISABLED": "Disabled",
+      "ENABLED": "Enabled",
+      "SET": "Notifications for category `{{ category }}` are `{{ option }}`"
+    },
     "CHANNEL": {
-      "DESCRIPTION": "Channel to send notifications",
       "NOT_SET": "WARNING: Channel to send notifications is not set. Please set up a channel in /settings.",
       "NULL": "Please input a channel for notifications.",
       "SET": "Channel for category '{{ category }}' defined to {{{ channel }}}."
     },
-    "DEATHS": "Change settings for death notifications.",
-    "DISABLED": "Disabled",
-    "ENABLED": "Enabled",
+    "DESCRIPTION": {
+      "BATTLES": "Change settings for battle notifications.",
+      "CHANNEL": "Channel to send notifications",
+      "DEATHS": "Change settings for death notifications.",
+      "GENERAL": "Change general settings",
+      "GUILD_RANKING": "Guild Ranking",
+      "GUILD_TAGS": "Show guild tags in player's names.",
+      "KILLS": "Change settings for kill notifications.",
+      "LANG": "Change language.",
+      "MODE": "Set notification format.",
+      "PROVIDER": "Set provider for links in notifications.",
+      "PVP_RANKING": "PvP Ranking",
+      "RANKINGS": "Change settings for ranking notifications.",
+      "SPLIT_LOOT_VALUE": "Split the loot value between gear and inventory."
+    },
     "FREQUENCIES": {
       "DAILY": "Daily",
       "HOURLY": "Every hour",
       "OFF": "Off"
     },
-    "GENERAL": "Change general settings",
-    "GUILD_RANKING": "Guild Ranking",
     "GUILD_TAGS": {
-      "DESCRIPTION": "Show guild tags in player's names.",
       "SET": "Display guild tags: {{ enabled }}"
     },
-    "KILLS": "Change settings for kill notifications.",
     "LANG": {
-      "DESCRIPTION": "Change language.",
       "NOT_SUPPORTED": "This language is not supported.",
       "SET": "Language set to '{{ lang }}'"
     },
@@ -85,11 +95,10 @@
       "SET": "Output mode set to: {{ mode }}",
       "TEXT": "Text"
     },
-    "PVP_RANKING": "PvP Ranking",
-    "RANKINGS": "Change settings for ranking notifications.",
-    "SET": "Notifications for category `{{ category }}` are `{{ option }}`",
+    "PROVIDER": {
+      "SET": "Links will be provided by {{ provider }}."
+    },
     "SPLIT_LOOT_VALUE": {
-      "DESCRIPTION": "Split the loot value between gear and inventory.",
       "SET": "Split loot value: {{ enabled }}"
     }
   },

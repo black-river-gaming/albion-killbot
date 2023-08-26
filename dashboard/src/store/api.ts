@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
+  IConstants,
   ISearchResults,
   IServer,
   ISettings,
@@ -23,6 +24,9 @@ export const api = createApi({
   tagTypes: ["Admin", "User", "Subscription", "Server"],
   endpoints(builder) {
     return {
+      fetchConstants: builder.query<IConstants, void>({
+        query: () => `/constants`,
+      }),
       auth: builder.mutation<void, string>({
         query: (code) => ({
           url: `/auth`,
@@ -180,6 +184,7 @@ export const {
   useDeleteSubscriptionMutation,
   useDoLeaveServerMutation,
   useFetchAdminServersQuery,
+  useFetchConstantsQuery,
   useFetchPricesQuery,
   useFetchServerQuery,
   useFetchServersQuery,

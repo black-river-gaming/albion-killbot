@@ -1,18 +1,28 @@
 import ChannelInput from "components/ChannelInput";
-import { KILL_MODES } from "helpers/constants";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { capitalize } from "helpers/utils";
 import { Form } from "react-bootstrap";
-import { setKillsChannel, setKillsEnabled, setKillsMode } from "store/settings";
+import { useFetchConstantsQuery } from "store/api";
+import {
+  setKillsChannel,
+  setKillsEnabled,
+  setKillsMode,
+  setKillsProvider,
+} from "store/settings";
 import { IChannel } from "types";
+import Loader from "./Loader";
 
 interface ISettingsKillsProps {
   channels: IChannel[];
 }
 
 const SettingsKills = ({ channels }: ISettingsKillsProps) => {
+  const constants = useFetchConstantsQuery();
   const kills = useAppSelector((state) => state.settings.kills);
   const dispatch = useAppDispatch();
+
+  if (constants.isFetching || !constants.data) return <Loader />;
+  const { modes, providers } = constants.data;
 
   return (
     <>
@@ -42,11 +52,28 @@ const SettingsKills = ({ channels }: ISettingsKillsProps) => {
           value={kills.mode}
           onChange={(e) => dispatch(setKillsMode(e.target.value))}
         >
-          {KILL_MODES.map((mode) => (
+          {modes.map((mode) => (
             <option key={mode} value={mode}>
               {capitalize(mode)}
             </option>
           ))}
+        </Form.Select>
+      </Form.Group>
+      <Form.Group controlId="kills-provider" className="py-2">
+        <Form.Label>Link Provider</Form.Label>
+        <Form.Select
+          aria-label="Links provider"
+          disabled={!kills.enabled}
+          value={kills.provider}
+          onChange={(e) => dispatch(setKillsProvider(e.target.value))}
+        >
+          {providers
+            .filter((provider) => provider.events)
+            .map((provider) => (
+              <option key={provider.id} value={provider.id}>
+                {provider.name}
+              </option>
+            ))}
         </Form.Select>
       </Form.Group>
     </>

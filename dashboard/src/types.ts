@@ -1,5 +1,19 @@
 import { TRACK_TYPE } from "helpers/constants";
 
+export interface IConstants {
+  modes: string[];
+  providers: {
+    id: string;
+    name: string;
+    events: boolean;
+    battles: boolean;
+  }[];
+  servers: string[];
+  subscriptionStatuses: {
+    [status: string]: string;
+  };
+}
+
 export interface User {
   id: string;
   username: string;
@@ -52,11 +66,13 @@ export interface ISettings {
     enabled: boolean;
     channel: string;
     mode: string;
+    provider?: string;
   };
   deaths: {
     enabled: boolean;
     channel: string;
     mode: string;
+    provider?: string;
   };
   battles: {
     enabled: boolean;
@@ -66,6 +82,7 @@ export interface ISettings {
       guilds: number;
       alliances: number;
     };
+    provider?: string;
   };
   rankings: {
     enabled: boolean;

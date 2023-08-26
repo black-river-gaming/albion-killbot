@@ -1,12 +1,7 @@
 const moment = require("moment");
-const { SERVER_LIST } = require("./constants");
+const { SERVER_LIST, REPORT_PROVIDERS } = require("./constants");
 const { getLocale } = require("./locale");
 const { digitsFormatter, humanFormatter, printSpace } = require("./utils");
-
-// TODO: Give users the ability to choose these
-const KILL_URL = "https://albiononline.com/{lang}/killboard/kill/{kill}";
-const BATTLE_URL = "https://albiononline.com/killboard/battles/{battle}";
-const GUILD_RANKING_URL = "https://albiononline.com/pt/killboard/guild/{guild}";
 
 const GREEN = 52224;
 const RED = 13369344;
@@ -36,7 +31,7 @@ const footer = {
   text: "Powered by Albion Killbot",
 };
 
-const embedEvent = (event, { lootValue, locale, guildTags = true }) => {
+const embedEvent = (event, { lootValue, locale, guildTags = true, providerId } = {}) => {
   const l = getLocale(locale);
   const { t } = l;
 
@@ -94,12 +89,22 @@ const embedEvent = (event, { lootValue, locale, guildTags = true }) => {
     victimGuildValue += event.Victim.GuildName;
   }
 
+  const provider = REPORT_PROVIDERS.find((provider) => provider.id === providerId) || REPORT_PROVIDERS[0];
+  const url =
+    provider &&
+    provider.events &&
+    provider.events({
+      id: event.EventId,
+      server: event.server,
+      lang: l.getLocale(),
+    });
+
   return {
     embeds: [
       {
         color: good ? GREEN : RED,
         title,
-        url: KILL_URL.replace("{lang}", l.getLocale()).replace("{kill}", event.EventId),
+        url,
         description,
         thumbnail: {
           url: "https://user-images.githubusercontent.com/13356774/76129825-ee15b580-5fde-11ea-9f77-7ae16bd65368.png",
@@ -158,7 +163,7 @@ const embedEvent = (event, { lootValue, locale, guildTags = true }) => {
   };
 };
 
-const embedEventImage = (event, image, { locale, guildTags = true, addFooter }) => {
+const embedEventImage = (event, image, { locale, guildTags = true, addFooter, providerId }) => {
   const l = getLocale(locale);
   const { t } = l;
 
@@ -182,12 +187,22 @@ const embedEventImage = (event, image, { locale, guildTags = true, addFooter }) 
   });
   const filename = `${event.EventId}-event.png`;
 
+  const provider = REPORT_PROVIDERS.find((provider) => provider.id === providerId) || REPORT_PROVIDERS[0];
+  const url =
+    provider &&
+    provider.events &&
+    provider.events({
+      id: event.EventId,
+      server: event.server,
+      lang: l.getLocale(),
+    });
+
   return {
     embeds: [
       {
         color: good ? GREEN : RED,
         title,
-        url: KILL_URL.replace("{lang}", l.getLocale()).replace("{kill}", event.EventId),
+        url,
         image: {
           url: `attachment://${filename}`,
         },
@@ -204,17 +219,27 @@ const embedEventImage = (event, image, { locale, guildTags = true, addFooter }) 
   };
 };
 
-const embedEventInventoryImage = (event, image, { locale }) => {
+const embedEventInventoryImage = (event, image, { locale, providerId }) => {
   const l = getLocale(locale);
 
   const good = event.good;
   const filename = `${event.EventId}-inventory.png`;
 
+  const provider = REPORT_PROVIDERS.find((provider) => provider.id === providerId) || REPORT_PROVIDERS[0];
+  const url =
+    provider &&
+    provider.events &&
+    provider.events({
+      id: event.EventId,
+      server: event.server,
+      lang: l.getLocale(),
+    });
+
   return {
     embeds: [
       {
         color: good ? GREEN : RED,
-        url: KILL_URL.replace("{lang}", l.getLocale()).replace("{kill}", event.EventId),
+        url,
         image: {
           url: `attachment://${filename}`,
         },
@@ -231,8 +256,9 @@ const embedEventInventoryImage = (event, image, { locale }) => {
   };
 };
 
-const embedBattle = (battle, { locale }) => {
-  const { t } = getLocale(locale);
+const embedBattle = (battle, { locale, providerId }) => {
+  const l = getLocale(locale);
+  const { t } = l;
 
   const guildCount = Object.keys(battle.guilds || {}).length;
 
@@ -315,12 +341,22 @@ const embedBattle = (battle, { locale }) => {
     });
   }
 
+  const provider = REPORT_PROVIDERS.find((provider) => provider.id === providerId) || REPORT_PROVIDERS[0];
+  const url =
+    provider &&
+    provider.battles &&
+    provider.battles({
+      id: battle.id,
+      server: battle.server,
+      lang: l.getLocale(),
+    });
+
   return {
     embeds: [
       {
         color: BATTLE,
         title: t("BATTLE.EVENT", { guilds: guildCount }),
-        url: BATTLE_URL.replace("{battle}", battle.id),
+        url,
         description,
         thumbnail: {
           url: "https://user-images.githubusercontent.com/13356774/76130049-b9eec480-5fdf-11ea-95c0-7de130a705a3.png",
@@ -334,6 +370,8 @@ const embedBattle = (battle, { locale }) => {
 };
 
 const embedGuildRanking = (guild, { locale }) => {
+  const GUILD_RANKING_URL = "https://albiononline.com/pt/killboard/guild/{guild}";
+
   const { t } = getLocale(locale);
 
   const generateRankFieldValue = (ranking, pvp = false) => {

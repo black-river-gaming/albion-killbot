@@ -53,30 +53,40 @@
     "TOTAL_KILL_FAME": "Fama Total de Abates"
   },
   "SETTINGS": {
-    "BATTLES": "Mudar configurações de batalhas.",
+    "CATEGORY": {
+      "DISABLED": "desativado",
+      "ENABLED": "Ativado",
+      "SET": "Notificações da categoria `{{ category }}` estão `{{ option }}s`"
+    },
     "CHANNEL": {
-      "DESCRIPTION": "Canal para enviar notificações",
       "NOT_SET": "AVISO: Canal para enviar notificações não configurado. Por favor, use /settings to configurá-lo.",
       "NULL": "Por favor, insira o canal para receber as notificações.",
       "SET": "Canal para a categoria '{{ category }}' definido para {{{ channel }}}."
     },
-    "DEATHS": "Mudar configurações de mortes.",
-    "DISABLED": "desativado",
-    "ENABLED": "Ativado",
+    "DESCRIPTION": {
+      "BATTLES": "Mudar configurações de batalhas.",
+      "CHANNEL": "Canal para enviar notificações",
+      "DEATHS": "Mudar configurações de mortes.",
+      "GENERAL": "Mudar configurações gerais",
+      "GUILD_RANKING": "Ranking de Guilda",
+      "GUILD_TAGS": "Mostra as tags da guilda nos nomes dos jogadores.",
+      "KILLS": "Mudar configurações de abates.",
+      "LANG": "Alterar idioma.",
+      "MODE": "Definir o formato das notificações.",
+      "PROVIDER": "Definir provedor de links para notificações.",
+      "PVP_RANKING": "Ranking PvP",
+      "RANKINGS": "Mudar configurações de rankings.",
+      "SPLIT_LOOT_VALUE": "Divida o valor do loot entre equipamento e inventário."
+    },
     "FREQUENCIES": {
       "DAILY": "Diariamente",
       "HOURLY": "A cada hora",
       "OFF": "Desligado"
     },
-    "GENERAL": "Mudar configurações gerais",
-    "GUILD_RANKING": "Ranking de Guilda",
     "GUILD_TAGS": {
-      "DESCRIPTION": "Mostra as tags da guilda nos nomes dos jogadores.",
       "SET": "Mostra as tags da guilda: {{ enabled }}"
     },
-    "KILLS": "Mudar configurações de abates.",
     "LANG": {
-      "DESCRIPTION": "Alterar idioma.",
       "NOT_SUPPORTED": "Este idioma não é suportado.",
       "SET": "Idioma definido para '{{ lang }}'"
     },
@@ -85,11 +95,10 @@
       "SET": "Modo de saida definido para: {{ mode }}",
       "TEXT": "Texto"
     },
-    "PVP_RANKING": "Ranking PvP",
-    "RANKINGS": "Mudar configurações de rankings.",
-    "SET": "Notificações da categoria `{{ category }}` estão `{{ option }}s`",
+    "PROVIDER": {
+      "SET": "Links serão providos por {{ provider }}."
+    },
     "SPLIT_LOOT_VALUE": {
-      "DESCRIPTION": "Divida o valor do loot entre equipamento e inventário.",
       "SET": "Valor do loot dividido: {{ enabled }}"
     }
   },

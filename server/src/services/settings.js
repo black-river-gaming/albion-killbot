@@ -1,14 +1,10 @@
 const { find, findOne, updateOne, deleteOne } = require("../ports/database");
 
 const { memoize, set, remove } = require("../helpers/cache");
+const { REPORT_MODES } = require("../helpers/constants");
 const { clone, mergeObjects } = require("../helpers/utils");
 
 const SETTINGS_COLLECTION = "settings";
-
-const REPORT_MODES = Object.freeze({
-  IMAGE: "image",
-  TEXT: "text",
-});
 
 const DEFAULT_SETTINGS = Object.freeze({
   general: {

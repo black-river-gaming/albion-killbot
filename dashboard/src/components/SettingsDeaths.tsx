@@ -1,22 +1,28 @@
 import ChannelInput from "components/ChannelInput";
-import { KILL_MODES } from "helpers/constants";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { capitalize } from "helpers/utils";
 import { Form } from "react-bootstrap";
+import { useFetchConstantsQuery } from "store/api";
 import {
   setDeathsChannel,
   setDeathsEnabled,
   setDeathsMode,
+  setKillsProvider,
 } from "store/settings";
 import { IChannel } from "types";
+import Loader from "./Loader";
 
 interface ISettingsDeathsProps {
   channels: IChannel[];
 }
 
 const SettingsDeaths = ({ channels }: ISettingsDeathsProps) => {
+  const constants = useFetchConstantsQuery();
   const deaths = useAppSelector((state) => state.settings.deaths);
   const dispatch = useAppDispatch();
+
+  if (constants.isFetching || !constants.data) return <Loader />;
+  const { modes, providers } = constants.data;
 
   return (
     <>
@@ -46,11 +52,28 @@ const SettingsDeaths = ({ channels }: ISettingsDeathsProps) => {
           value={deaths.mode}
           onChange={(e) => dispatch(setDeathsMode(e.target.value))}
         >
-          {KILL_MODES.map((mode) => (
+          {modes.map((mode) => (
             <option key={mode} value={mode}>
               {capitalize(mode)}
             </option>
           ))}
+        </Form.Select>
+      </Form.Group>
+      <Form.Group controlId="deaths-provider" className="py-2">
+        <Form.Label>Link Provider</Form.Label>
+        <Form.Select
+          aria-label="Links provider"
+          disabled={!deaths.enabled}
+          value={deaths.provider}
+          onChange={(e) => dispatch(setKillsProvider(e.target.value))}
+        >
+          {providers
+            .filter((provider) => provider.events)
+            .map((provider) => (
+              <option key={provider.id} value={provider.id}>
+                {provider.name}
+              </option>
+            ))}
         </Form.Select>
       </Form.Group>
     </>

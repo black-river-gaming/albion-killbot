@@ -31,7 +31,9 @@ async function subscribe(client) {
         if (!settings || !track || !limits) continue;
         if (!getTrackedBattle(battle, track, limits)) continue;
 
-        const { enabled, channel, threshold } = settings.battles;
+        const { enabled, channel, threshold, provider: providerId } = settings.battles;
+        const { locale } = settings.general;
+
         if (!enabled || !channel) continue;
         if (!hasMinimumTreshold(battle, threshold)) {
           logger.verbose(`[${server}] Skipping battle ${battle.id} to ${guild.name} due to threshold.`, {
@@ -49,7 +51,7 @@ async function subscribe(client) {
           track,
           limits,
         });
-        await sendNotification(client, channel, embedBattle(battle, settings.general.locale));
+        await sendNotification(client, channel, embedBattle(battle, { locale, providerId }));
       }
     } catch (error) {
       logger.error(`[${server}] Error processing battle ${battle.id}: ${error.message}`, { error });

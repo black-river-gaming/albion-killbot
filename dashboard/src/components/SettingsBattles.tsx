@@ -1,22 +1,29 @@
 import ChannelInput from "components/ChannelInput";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { Form, Stack } from "react-bootstrap";
+import { useFetchConstantsQuery } from "store/api";
 import {
   setBattlesChannel,
   setBattlesEnabled,
+  setBattlesProvider,
   setBattlesThresholdAlliances,
   setBattlesThresholdGuilds,
   setBattlesThresholdPlayers,
 } from "store/settings";
 import { IChannel } from "types";
+import Loader from "./Loader";
 
 interface ISettingsBattlesProps {
   channels: IChannel[];
 }
 
 const SettingsBattles = ({ channels }: ISettingsBattlesProps) => {
+  const constants = useFetchConstantsQuery();
   const battles = useAppSelector((state) => state.settings.battles);
   const dispatch = useAppDispatch();
+
+  if (constants.isFetching || !constants.data) return <Loader />;
+  const { providers } = constants.data;
 
   return (
     <>
@@ -40,7 +47,11 @@ const SettingsBattles = ({ channels }: ISettingsBattlesProps) => {
           }
         />
       </Form.Group>
-      <Stack direction="horizontal" gap={2} className="justify-content-between">
+      <Stack
+        direction="horizontal"
+        gap={2}
+        className="justify-content-between py-2"
+      >
         <Form.Group controlId="threshold-players">
           <Form.Label>Minimum Players</Form.Label>
           <Form.Control
@@ -72,6 +83,23 @@ const SettingsBattles = ({ channels }: ISettingsBattlesProps) => {
           />
         </Form.Group>
       </Stack>
+      <Form.Group controlId="battles-provider" className="py-2">
+        <Form.Label>Link Provider</Form.Label>
+        <Form.Select
+          aria-label="Links provider"
+          disabled={!battles.enabled}
+          value={battles.provider}
+          onChange={(e) => dispatch(setBattlesProvider(e.target.value))}
+        >
+          {providers
+            .filter((provider) => provider.battles)
+            .map((provider) => (
+              <option key={provider.id} value={provider.id}>
+                {provider.name}
+              </option>
+            ))}
+        </Form.Select>
+      </Form.Group>
     </>
   );
 };
