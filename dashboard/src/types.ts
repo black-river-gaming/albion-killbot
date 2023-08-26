@@ -2,6 +2,7 @@ import { TRACK_TYPE } from "helpers/constants";
 
 export interface IConstants {
   modes: string[];
+  rankingModes: string[];
   providers: {
     id: string;
     name: string;

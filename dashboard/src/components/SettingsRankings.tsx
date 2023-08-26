@@ -1,8 +1,8 @@
 import ChannelInput from "components/ChannelInput";
-import { RANKING_MODES } from "helpers/constants";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { capitalize } from "helpers/utils";
 import { Col, Form, Row } from "react-bootstrap";
+import { useFetchConstantsQuery } from "store/api";
 import {
   setRankingsChannel,
   setRankingsEnabled,
@@ -10,22 +10,19 @@ import {
   setRankingsPvpRanking,
 } from "store/settings";
 import { IChannel } from "types";
+import Loader from "./Loader";
 
 interface ISettingsRankingsProps {
   channels: IChannel[];
 }
 
 const SettingsRankings = ({ channels }: ISettingsRankingsProps) => {
+  const constants = useFetchConstantsQuery();
   const rankings = useAppSelector((state) => state.settings.rankings);
   const dispatch = useAppDispatch();
 
-  const renderRankingModeOptions = (rankingMode: string) => {
-    return (
-      <option key={rankingMode} value={rankingMode}>
-        {capitalize(rankingMode)}
-      </option>
-    );
-  };
+  if (constants.isFetching || !constants.data) return <Loader />;
+  const { rankingModes } = constants.data;
 
   return (
     <>
@@ -59,7 +56,11 @@ const SettingsRankings = ({ channels }: ISettingsRankingsProps) => {
               value={rankings.pvpRanking}
               onChange={(e) => dispatch(setRankingsPvpRanking(e.target.value))}
             >
-              {RANKING_MODES.map(renderRankingModeOptions)}
+              {rankingModes.map((rankingMode) => (
+                <option key={rankingMode} value={rankingMode}>
+                  {capitalize(rankingMode)}
+                </option>
+              ))}
             </Form.Select>
           </Form.Group>
         </Col>
@@ -74,7 +75,11 @@ const SettingsRankings = ({ channels }: ISettingsRankingsProps) => {
                 dispatch(setRankingsGuildRanking(e.target.value))
               }
             >
-              {RANKING_MODES.map(renderRankingModeOptions)}
+              {rankingModes.map((rankingMode) => (
+                <option key={rankingMode} value={rankingMode}>
+                  {capitalize(rankingMode)}
+                </option>
+              ))}
             </Form.Select>
           </Form.Group>
         </Col>
