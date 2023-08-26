@@ -1,4 +1,10 @@
-const { REPORT_PROVIDERS, REPORT_MODES, SERVER_LIST, SUBSCRIPTION_STATUS } = require("../../../helpers/constants");
+const {
+  REPORT_PROVIDERS,
+  REPORT_MODES,
+  SERVER_LIST,
+  SUBSCRIPTION_STATUS,
+  RANKING_MODES,
+} = require("../../../helpers/constants");
 
 const router = require("express").Router();
 
@@ -24,6 +30,7 @@ router.get(`/`, (req, res) => {
       events: !!events,
       battles: !!battles,
     })),
+    rankingModes: RANKING_MODES,
     servers: SERVER_LIST,
     subscriptionStatuses: SUBSCRIPTION_STATUS,
   });

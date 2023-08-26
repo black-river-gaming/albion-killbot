@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("discord.js");
 const { getLocale } = require("../../../helpers/locale");
 const { setSettings } = require("../../../services/settings");
-const { REPORT_PROVIDERS } = require("../../../helpers/constants");
+const { REPORT_PROVIDERS, RANKING_MODES } = require("../../../helpers/constants");
 
 const locale = getLocale();
 const localeList = locale.getLocales();
@@ -91,20 +91,10 @@ const battles = (subcommand) =>
         ),
     );
 
-const rankingFrequencies = [
-  {
-    name: t("SETTINGS.FREQUENCIES.OFF"),
-    value: "off",
-  },
-  {
-    name: t("SETTINGS.FREQUENCIES.HOURLY"),
-    value: "hourly",
-  },
-  {
-    name: t("SETTINGS.FREQUENCIES.DAILY"),
-    value: "daily",
-  },
-];
+const rankingFrequencies = RANKING_MODES.map((mode) => ({
+  name: t(`SETTINGS.FREQUENCIES.${mode.toUpperCase()}`),
+  value: mode,
+}));
 
 const rankings = (subcommand) =>
   subcommand

@@ -53,12 +53,15 @@ const REPORT_PROVIDERS = [
   },
 ];
 
+const RANKING_MODES = ["off", "hourly", "daily"];
+
 module.exports = {
   DAY,
   HOUR,
   MINUTE,
   SECOND,
 
+  RANKING_MODES,
   REPORT_MODES,
   REPORT_PROVIDERS,
   SERVERS,

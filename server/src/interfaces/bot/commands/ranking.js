@@ -18,11 +18,11 @@ const command = {
         .setRequired(true)
         .addChoices(
           {
-            name: t("SETTINGS.PVP_RANKING"),
+            name: t("SETTINGS.DESCRIPTION.PVP_RANKING"),
             value: "pvpRanking",
           },
           {
-            name: t("SETTINGS.GUILD_RANKING"),
+            name: t("SETTINGS.DESCRIPTION.GUILD_RANKING"),
             value: "guildRanking",
           },
         ),
