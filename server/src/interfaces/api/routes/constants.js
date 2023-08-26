@@ -32,7 +32,7 @@ router.get(`/`, (req, res) => {
     })),
     rankingModes: RANKING_MODES,
     servers: SERVER_LIST,
-    subscriptionStatuses: SUBSCRIPTION_STATUS,
+    subscriptionStatuses: Object.values(SUBSCRIPTION_STATUS),
   });
 });
 

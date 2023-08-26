@@ -8,9 +8,7 @@ export interface IConstants {
     battles: boolean;
   }[];
   servers: string[];
-  subscriptionStatuses: {
-    [status: string]: string;
-  };
+  subscriptionStatuses: string[];
 }
 
 export interface User {

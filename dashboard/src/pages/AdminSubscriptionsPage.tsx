@@ -2,18 +2,24 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
 import SubscriptionList from "components/SubscriptionList";
-import { SUBSCRIPTION_STATUSES } from "helpers/constants";
 import { useState } from "react";
 import { Button, Card, Col, Dropdown, Form, Row, Stack } from "react-bootstrap";
-import { useLazyFetchAdminSubscriptionsQuery } from "store/api";
+import {
+  useFetchConstantsQuery,
+  useLazyFetchAdminSubscriptionsQuery,
+} from "store/api";
 
 const AdminSubscriptionsPage = () => {
+  const constants = useFetchConstantsQuery();
   const [search, { isFetching, data }] = useLazyFetchAdminSubscriptionsQuery();
 
   const [server, setServer] = useState("");
   const [owner, setOwner] = useState("");
   const [status, setStatus] = useState("All");
   const [stripe, setStripe] = useState("");
+
+  if (constants.isFetching || !constants.data) return <Loader />;
+  const { subscriptionStatuses } = constants.data;
 
   return (
     <Stack gap={3}>
@@ -71,7 +77,7 @@ const AdminSubscriptionsPage = () => {
                       <Dropdown.Item onClick={() => setStatus("All")}>
                         All
                       </Dropdown.Item>
-                      {SUBSCRIPTION_STATUSES.map((status) => (
+                      {subscriptionStatuses.map((status) => (
                         <Dropdown.Item
                           key={status}
                           onClick={() => setStatus(status)}
