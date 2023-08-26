@@ -1,5 +1,3 @@
-import { TRACK_TYPE } from "helpers/constants";
-
 export interface IConstants {
   modes: string[];
   rankingModes: string[];
@@ -103,6 +101,12 @@ export interface ITrackItem {
   deaths?: {
     channel?: string;
   };
+}
+
+export enum TRACK_TYPE {
+  PLAYERS = "players",
+  GUILDS = "guilds",
+  ALLIANCES = "alliances",
 }
 
 export interface ITrackList {

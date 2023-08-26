@@ -1,11 +1,10 @@
-import { TRACK_TYPE } from "helpers/constants";
 import { useAppDispatch } from "helpers/hooks";
 import { useState } from "react";
 import { Button, Form, Modal, Stack } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useFetchServerQuery } from "store/api";
 import { setItemDeathsChannel, setItemKillsChannel } from "store/track";
-import { ITrackItem } from "types";
+import { ITrackItem, TRACK_TYPE } from "types";
 import ChannelInput from "./ChannelInput";
 
 interface ITrackItemOptionsProps {

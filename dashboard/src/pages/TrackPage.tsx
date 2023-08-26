@@ -1,13 +1,13 @@
 import Loader from "components/Loader";
 import Search from "components/Search";
 import TrackList from "components/TrackList";
-import { TRACK_TYPE } from "helpers/constants";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { useEffect } from "react";
 import { Alert, Button, Card, Col, Row, Stack } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { useFetchServerQuery, useUpdateTrackMutation } from "store/api";
 import { loadTrack } from "store/track";
+import { TRACK_TYPE } from "types";
 
 const TrackPage = () => {
   const { serverId = "" } = useParams();

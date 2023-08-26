@@ -1,9 +1,8 @@
-import { TRACK_TYPE } from "helpers/constants";
 import { useAppDispatch } from "helpers/hooks";
 import { capitalize } from "helpers/utils";
 import { Badge, Button, ListGroup, Stack } from "react-bootstrap";
 import { untrackAlliance, untrackGuild, untrackPlayer } from "store/track";
-import { ITrackList } from "types";
+import { ITrackList, TRACK_TYPE } from "types";
 import TrackItemOptions from "./TrackItemOptions";
 
 interface ITrackListItemProps {
