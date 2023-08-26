@@ -1,5 +1,3 @@
-import { SERVER } from "./constants";
-
 export interface ThemeProps {
   name: string;
 
@@ -49,8 +47,8 @@ const theme: ThemeProps = {
   },
 
   servers: {
-    [SERVER.WEST]: "#33673b",
-    [SERVER.EAST]: "#cc3f0c",
+    "Albion West": "#33673b",
+    "Albion East": "#cc3f0c",
   },
 };
 

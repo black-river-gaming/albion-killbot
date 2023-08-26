@@ -1,9 +1,8 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { SERVER, SERVERS } from "helpers/constants";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, Dropdown, Form, InputGroup } from "react-bootstrap";
-import { useLazySearchQuery } from "store/api";
+import { useFetchConstantsQuery, useLazySearchQuery } from "store/api";
 import { Limits } from "types";
 import Loader from "./Loader";
 import SearchResults from "./SearchResults";
@@ -13,11 +12,21 @@ interface ISearchProps {
 }
 
 const Search = ({ limits }: ISearchProps) => {
+  const constants = useFetchConstantsQuery();
   const [query, setQuery] = useState("");
-  const [server, setServer] = useState(SERVER.WEST);
+  const [server, setServer] = useState<string>("");
   const [search, searchResults] = useLazySearchQuery();
 
+  useEffect(() => {
+    if (constants.data?.servers) setServer(constants.data.servers[0]);
+  }, [constants.data?.servers]);
+
+  if (constants.isLoading || !constants.data) return <Loader />;
+  const { servers } = constants.data;
+
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    if (!server) return;
+
     e?.preventDefault();
     search({ server, query }, true);
   };
@@ -40,7 +49,7 @@ const Search = ({ limits }: ISearchProps) => {
                 <Dropdown.Toggle variant="primary">{server}</Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  {SERVERS.map((server) => (
+                  {servers.map((server) => (
                     <Dropdown.Item
                       key={server}
                       onClick={() => setServer(server)}
