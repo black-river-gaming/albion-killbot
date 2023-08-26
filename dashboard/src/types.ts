@@ -1,4 +1,5 @@
 export interface IConstants {
+  languages: string[];
   modes: string[];
   rankingModes: string[];
   providers: {

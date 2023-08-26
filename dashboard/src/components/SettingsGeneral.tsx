@@ -2,27 +2,24 @@ import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import guildTags from "assets/settings/guildTags.png";
 import splitLootValue from "assets/settings/splitLootValue.png";
-import { LANGUAGES } from "helpers/constants";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { getLocaleName } from "helpers/utils";
 import { Button, Form, OverlayTrigger, Stack, Tooltip } from "react-bootstrap";
+import { useFetchConstantsQuery } from "store/api";
 import {
   setGeneralGuildTags,
   setGeneralLocale,
   setGeneralSplitLootValue,
 } from "store/settings";
+import Loader from "./Loader";
 
 const SettingsGeneral = () => {
+  const constants = useFetchConstantsQuery();
   const general = useAppSelector((state) => state.settings.general);
   const dispatch = useAppDispatch();
 
-  const renderLanguageOptions = (lang: string) => {
-    return (
-      <option key={lang} value={lang}>
-        {getLocaleName(lang)}
-      </option>
-    );
-  };
+  if (constants.isLoading || !constants.data) return <Loader />;
+  const { languages } = constants.data;
 
   return (
     <Stack gap={2}>
@@ -33,7 +30,11 @@ const SettingsGeneral = () => {
           value={general.locale}
           onChange={(e) => dispatch(setGeneralLocale(e.target.value))}
         >
-          {LANGUAGES.map(renderLanguageOptions)}
+          {languages.map((lang) => (
+            <option key={lang} value={lang}>
+              {getLocaleName(lang)}
+            </option>
+          ))}
         </Form.Select>
       </Form.Group>
 

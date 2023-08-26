@@ -5,6 +5,7 @@ const {
   SUBSCRIPTION_STATUS,
   RANKING_MODES,
 } = require("../../../helpers/constants");
+const { getLocale } = require("../../../helpers/locale");
 
 const router = require("express").Router();
 
@@ -23,6 +24,7 @@ const router = require("express").Router();
  */
 router.get(`/`, (req, res) => {
   return res.send({
+    languages: getLocale().getLocales(),
     modes: Object.values(REPORT_MODES),
     providers: REPORT_PROVIDERS.map(({ id, name, events, battles }) => ({
       id,
