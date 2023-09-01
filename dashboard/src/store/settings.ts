@@ -78,7 +78,7 @@ export const settingsSlice = createSlice({
       state.deaths.mode = action.payload;
     },
     setDeathsProvider: (state, action: PayloadAction<string>) => {
-      state.kills.provider = action.payload;
+      state.deaths.provider = action.payload;
     },
     setBattlesEnabled: (state, action: PayloadAction<boolean>) => {
       state.battles.enabled = action.payload;
