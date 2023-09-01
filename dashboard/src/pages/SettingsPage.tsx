@@ -1,83 +1,126 @@
+import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import guildTags from "assets/settings/guildTags.png";
+import splitLootValue from "assets/settings/splitLootValue.png";
 import Loader from "components/Loader";
-import SettingsBattles from "components/SettingsBattles";
-import SettingsDeaths from "components/SettingsDeaths";
-import SettingsGeneral from "components/SettingsGeneral";
-import SettingsKills from "components/SettingsKills";
-import SettingsRankings from "components/SettingsRankings";
+import Settings from "components/Settings";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
-import { useEffect } from "react";
-import { Button, Card, Form, Tab, Tabs } from "react-bootstrap";
-import { useParams } from "react-router-dom";
-import { useFetchServerQuery, useUpdateSettingsMutation } from "store/api";
-import { loadSettings } from "store/settings";
+import { getLocaleName } from "helpers/utils";
+import { Button, Form, OverlayTrigger, Stack, Tooltip } from "react-bootstrap";
+import { useFetchConstantsQuery } from "store/api";
+import {
+  setGeneralGuildTags,
+  setGeneralLocale,
+  setGeneralSplitLootValue,
+} from "store/settings";
 
 const SettingsPage = () => {
-  const { serverId = "" } = useParams();
-  const server = useFetchServerQuery(serverId);
-  const [dispatchUpdateSettings, updateSettings] = useUpdateSettingsMutation();
-  const settings = useAppSelector((state) => state.settings);
+  const constants = useFetchConstantsQuery();
+  const general = useAppSelector((state) => state.settings.general);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    if (server?.data?.settings) {
-      dispatch(loadSettings(server.data.settings));
-    }
-  }, [dispatch, server.data]);
-
-  if (server.isFetching || updateSettings.isLoading) return <Loader />;
-  if (!server.data || !server.data.settings)
-    return (
-      <div className="p-2 d-flex justify-content-center">No data found</div>
-    );
-
-  const { channels } = server.data;
+  if (constants.isLoading || !constants.data) return <Loader />;
+  const { languages } = constants.data;
 
   return (
-    <Card>
-      <Form
-        onSubmit={async () => {
-          await dispatchUpdateSettings({ serverId, settings });
-        }}
-      >
-        <Tabs fill={true}>
-          <Tab eventKey="general" title="General" className="p-3">
-            <SettingsGeneral />
-          </Tab>
-
-          <Tab eventKey="kills" title="Kills" className="p-3">
-            <SettingsKills channels={channels} />
-          </Tab>
-
-          <Tab eventKey="deaths" title="Deaths" className="p-3">
-            <SettingsDeaths channels={channels} />
-          </Tab>
-
-          <Tab eventKey="battles" title="Battles" className="p-3">
-            <SettingsBattles channels={channels} />
-          </Tab>
-
-          <Tab eventKey="rankings" title="Rankings" className="p-3">
-            <SettingsRankings channels={channels} />
-          </Tab>
-        </Tabs>
-
-        <div className="p-3 pt-0 d-flex justify-content-end">
-          <Button
-            variant="secondary"
-            onClick={() => {
-              if (server?.data?.settings)
-                dispatch(loadSettings(server.data.settings));
-            }}
+    <Settings>
+      <Stack gap={2}>
+        <Form.Group controlId="language">
+          <Form.Label>Language</Form.Label>
+          <Form.Select
+            aria-label="Language select"
+            value={general.locale}
+            onChange={(e) => dispatch(setGeneralLocale(e.target.value))}
           >
-            Reset
-          </Button>
-          <div className="px-2" />
-          <Button variant="primary" type="submit">
-            Save
-          </Button>
-        </div>
-      </Form>
-    </Card>
+            {languages.map((lang) => (
+              <option key={lang} value={lang}>
+                {getLocaleName(lang)}
+              </option>
+            ))}
+          </Form.Select>
+        </Form.Group>
+
+        <Form.Group controlId="guildTags">
+          <Form.Switch>
+            <Form.Switch.Input
+              checked={general.guildTags}
+              type="checkbox"
+              onChange={(e) => dispatch(setGeneralGuildTags(e.target.checked))}
+            />
+            <Form.Switch.Label>
+              <Stack
+                direction="horizontal"
+                gap={1}
+                className="align-items-center"
+              >
+                <div>Show Guild Tags</div>
+                <OverlayTrigger
+                  placement="auto-end"
+                  overlay={
+                    <Tooltip>
+                      <Stack gap={2} className="align-items-start">
+                        <div>When bot mentions a player, show the guild:</div>
+                        <img
+                          src={guildTags}
+                          alt="Example of Guild Tags"
+                          style={{ borderRadius: "0.2rem" }}
+                        />
+                      </Stack>
+                    </Tooltip>
+                  }
+                >
+                  <Button className="btn-icon" variant="secondary" size="sm">
+                    <FontAwesomeIcon icon={faQuestionCircle} />
+                  </Button>
+                </OverlayTrigger>
+              </Stack>
+            </Form.Switch.Label>
+          </Form.Switch>
+        </Form.Group>
+
+        <Form.Group controlId="splitLootValue">
+          <Form.Switch>
+            <Form.Switch.Input
+              checked={general.splitLootValue}
+              type="checkbox"
+              onChange={(e) =>
+                dispatch(setGeneralSplitLootValue(e.target.checked))
+              }
+            />
+            <Form.Switch.Label>
+              <Stack
+                direction="horizontal"
+                gap={1}
+                className="align-items-center"
+              >
+                <div>Split Loot Value</div>
+                <OverlayTrigger
+                  placement="auto-end"
+                  overlay={
+                    <Tooltip>
+                      <Stack gap={2} className="align-items-start">
+                        <div>
+                          Split the loot value between gear and inventory:
+                        </div>
+                        <img
+                          src={splitLootValue}
+                          alt="Example of Split Loot"
+                          style={{ borderRadius: "0.2rem" }}
+                        />
+                      </Stack>
+                    </Tooltip>
+                  }
+                >
+                  <Button className="btn-icon" variant="secondary" size="sm">
+                    <FontAwesomeIcon icon={faQuestionCircle} />
+                  </Button>
+                </OverlayTrigger>
+              </Stack>
+            </Form.Switch.Label>
+          </Form.Switch>
+        </Form.Group>
+      </Stack>
+    </Settings>
   );
 };
 

@@ -172,6 +172,7 @@ export const api = createApi({
           method: "PUT",
           body: settings,
         }),
+        invalidatesTags: ["Server"],
       }),
     };
   },

@@ -17,7 +17,7 @@ const TrackList = ({ type, limit = 0, list }: ITrackListItemProps) => {
   return (
     <ListGroup>
       <ListGroup.Item
-        variant="primary"
+        variant="secondary"
         className="d-flex justify-content-between align-items-baseline"
       >
         <div>{capitalize(type)}</div>

@@ -1,4 +1,12 @@
-import { faCrown, faGear, faList } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCrown,
+  faGear,
+  faList,
+  faPeopleGroup,
+  faSkull,
+  faSkullCrossbones,
+  faTrophy,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
@@ -28,6 +36,44 @@ const ServerPage = () => {
 
   const { subscription } = server.data;
 
+  const menu = [
+    {
+      path: "settings",
+      name: "Settings",
+      icon: faGear,
+    },
+    {
+      path: "kills",
+      name: "Kills",
+      icon: faSkull,
+    },
+    {
+      path: "deaths",
+      name: "Deaths",
+      icon: faSkullCrossbones,
+    },
+    {
+      path: "battles",
+      name: "Battles",
+      icon: faPeopleGroup,
+    },
+    {
+      path: "rankings",
+      name: "Rankings",
+      icon: faTrophy,
+    },
+    {
+      path: "track",
+      name: "Tracking List",
+      icon: faList,
+    },
+    {
+      path: "subscription",
+      name: "Subscription",
+      icon: faCrown,
+    },
+  ];
+
   return (
     <Container fluid className="py-3">
       <Row className="g-3">
@@ -50,33 +96,21 @@ const ServerPage = () => {
           </ServerCard>
           <Card className="mt-3">
             <ListGroup>
-              <NavLink
-                to="settings"
-                className="list-group-item list-group-item-action"
-              >
-                <Stack direction="horizontal" gap={2}>
-                  <FontAwesomeIcon icon={faGear} size="sm" />
-                  <div>Settings</div>
-                </Stack>
-              </NavLink>
-              <NavLink
-                to="track"
-                className="list-group-item list-group-item-action"
-              >
-                <Stack direction="horizontal" gap={2}>
-                  <FontAwesomeIcon icon={faList} size="sm" />
-                  <div>Tracking List</div>
-                </Stack>
-              </NavLink>
-              <NavLink
-                to="subscription"
-                className="list-group-item list-group-item-action"
-              >
-                <Stack direction="horizontal" gap={2}>
-                  <FontAwesomeIcon icon={faCrown} size="sm" />
-                  <div>Subscription</div>
-                </Stack>
-              </NavLink>
+              {menu.map((item) => (
+                <NavLink
+                  to={item.path}
+                  className="list-group-item list-group-item-action"
+                >
+                  <Stack direction="horizontal" gap={2}>
+                    <FontAwesomeIcon
+                      icon={item.icon}
+                      size="sm"
+                      style={{ flexBasis: 20 }}
+                    />
+                    <div>{item.name}</div>
+                  </Stack>
+                </NavLink>
+              ))}
             </ListGroup>
           </Card>
         </Col>
