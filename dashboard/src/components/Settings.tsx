@@ -1,6 +1,6 @@
 import Loader from "components/Loader";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
-import { ReactNode, useEffect } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { Button, Card, Form, Stack } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useFetchServerQuery, useUpdateSettingsMutation } from "store/api";
@@ -26,13 +26,14 @@ const Settings = ({ children }: ISettingsPageProps) => {
 
   if (updateSettings.isLoading) return <Loader />;
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    dispatchUpdateSettings({ serverId, settings });
+  };
+
   return (
     <Card>
-      <Form
-        onSubmit={async () => {
-          await dispatchUpdateSettings({ serverId, settings });
-        }}
-      >
+      <Form onSubmit={handleSubmit}>
         <Card.Body>{children}</Card.Body>
 
         <Card.Footer>

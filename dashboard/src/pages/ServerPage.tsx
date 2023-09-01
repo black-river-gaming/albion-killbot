@@ -98,6 +98,7 @@ const ServerPage = () => {
             <ListGroup>
               {menu.map((item) => (
                 <NavLink
+                  key={item.path}
                   to={item.path}
                   className="list-group-item list-group-item-action"
                 >
