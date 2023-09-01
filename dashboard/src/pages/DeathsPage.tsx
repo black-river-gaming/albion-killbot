@@ -11,7 +11,7 @@ import {
   setDeathsChannel,
   setDeathsEnabled,
   setDeathsMode,
-  setKillsProvider,
+  setDeathsProvider,
 } from "store/settings";
 
 const DeathsPage = () => {
@@ -75,7 +75,7 @@ const DeathsPage = () => {
             aria-label="Links provider"
             disabled={!deaths.enabled}
             value={deaths.provider}
-            onChange={(e) => dispatch(setKillsProvider(e.target.value))}
+            onChange={(e) => dispatch(setDeathsProvider(e.target.value))}
           >
             {providers
               .filter((provider) => provider.events)
