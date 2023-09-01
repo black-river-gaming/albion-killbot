@@ -12,13 +12,20 @@ router.use(express.raw({ type: "*/*" }));
 router.post(`/webhook`, async (req, res) => {
   // Verify webhook secret and construct event
   let event;
+
   if (STRIPE_WEBHOOK_SECRET) {
     try {
       const signature = req.headers["stripe-signature"];
       event = stripe.webhooks.constructEvent(req.body, signature, STRIPE_WEBHOOK_SECRET);
     } catch (error) {
-      logger.error(`Error in construct event:`, error);
-      return res.status(400).send(`Webhook Error: ${error.message}`);
+      logger.error("Failed to construct event.", {
+        error,
+      });
+      return res.status(400).json({
+        received: true,
+        procesed: false,
+        message: "Failed to construct event.",
+      });
     }
   } else {
     event = req.body;
