@@ -38,6 +38,11 @@ const ServerPage = () => {
 
   const menu = [
     {
+      path: "track",
+      name: "Notification List",
+      icon: faList,
+    },
+    {
       path: "settings",
       name: "Settings",
       icon: faGear,
@@ -61,11 +66,6 @@ const ServerPage = () => {
       path: "rankings",
       name: "Rankings",
       icon: faTrophy,
-    },
-    {
-      path: "track",
-      name: "Tracking List",
-      icon: faList,
     },
     {
       path: "subscription",

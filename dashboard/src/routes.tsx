@@ -28,7 +28,7 @@ const routes = createRoutesFromElements(
         <Route path="dashboard">
           <Route index element={<DashboardPage />} />
           <Route path=":serverId" element={<ServerPage />}>
-            <Route index element={<Navigate to="settings" replace={true} />} />
+            <Route index element={<Navigate to="track" replace={true} />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="kills" element={<KillsPage />} />
             <Route path="deaths" element={<DeathsPage />} />
