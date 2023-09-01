@@ -2,6 +2,7 @@ import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import guildTags from "assets/settings/guildTags.png";
 import splitLootValue from "assets/settings/splitLootValue.png";
+import LoadError from "components/LoadError";
 import Loader from "components/Loader";
 import Settings from "components/Settings";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
@@ -19,7 +20,9 @@ const SettingsPage = () => {
   const general = useAppSelector((state) => state.settings.general);
   const dispatch = useAppDispatch();
 
-  if (constants.isLoading || !constants.data) return <Loader />;
+  if (constants.isFetching) return <Loader />;
+  if (!constants.data) return <LoadError />;
+
   const { languages } = constants.data;
 
   return (
