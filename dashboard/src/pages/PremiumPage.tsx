@@ -3,6 +3,7 @@ import {
   faCircleCheck,
   faCircleQuestion,
   faPeopleGroup,
+  faPerson,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
@@ -107,8 +108,12 @@ const PremiumPage = () => {
                       <span className="ps-2">No ads</span>
                     </ListGroup.Item>
                     <ListGroup.Item className="d-flex align-items-center">
+                      <FontAwesomeIcon icon={faPerson} className="s-1" />
+                      <span className="ps-2">10 Player slots</span>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="d-flex align-items-center">
                       <FontAwesomeIcon icon={faPeopleGroup} className="s-1" />
-                      <span className="ps-2">Guild track slot</span>
+                      <span className="ps-2">1 Guild slot</span>
                     </ListGroup.Item>
                     <ListGroup.Item className="d-flex align-items-center">
                       <FontAwesomeIcon
