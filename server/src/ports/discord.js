@@ -1,7 +1,7 @@
 const discordApiClient = require("./adapters/discordApiClient");
 const discordHelper = require("../helpers/discord");
 const { memoize } = require("../helpers/cache");
-const { DAY } = require("../helpers/constants");
+const { DAY, MINUTE } = require("../helpers/constants");
 
 const { DISCORD_TOKEN } = process.env;
 
@@ -59,7 +59,7 @@ async function getBotGuilds() {
       return guilds.map(discordHelper.transformGuild);
     },
     {
-      refresh: 60000,
+      refresh: 10 * MINUTE,
     },
   );
 }
