@@ -2,6 +2,7 @@ const discordApiClient = require("./adapters/discordApiClient");
 const discordHelper = require("../helpers/discord");
 const { memoize } = require("../helpers/cache");
 const { DAY, MINUTE } = require("../helpers/constants");
+const { sleep } = require("../helpers/scheduler");
 
 const { DISCORD_TOKEN } = process.env;
 
@@ -54,6 +55,7 @@ async function getBotGuilds() {
 
         after = guilds[guilds.length - 1].id;
         if (guildList.length < 200) foundAll = true;
+        else await sleep(2000);
       }
 
       return guilds.map(discordHelper.transformGuild);
