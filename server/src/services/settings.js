@@ -1,7 +1,7 @@
 const { find, findOne, updateOne, deleteOne } = require("../ports/database");
 
 const { memoize, set, remove } = require("../helpers/cache");
-const { REPORT_MODES } = require("../helpers/constants");
+const { REPORT_MODES, MINUTE } = require("../helpers/constants");
 const { clone, mergeObjects } = require("../helpers/utils");
 
 const SETTINGS_COLLECTION = "settings";
@@ -42,10 +42,16 @@ const DEFAULT_SETTINGS = Object.freeze({
 const generateSettings = (settings) => mergeObjects(clone(DEFAULT_SETTINGS), settings);
 
 async function getSettings(serverId) {
-  return await memoize(`settings-${serverId}`, async () => {
-    const settings = await findOne(SETTINGS_COLLECTION, { server: serverId });
-    return generateSettings(settings);
-  });
+  return await memoize(
+    `settings-${serverId}`,
+    async () => {
+      const settings = await findOne(SETTINGS_COLLECTION, { server: serverId });
+      return generateSettings(settings);
+    },
+    {
+      timeout: MINUTE,
+    },
+  );
 }
 
 async function fetchAllSettings() {

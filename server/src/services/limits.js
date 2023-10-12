@@ -1,6 +1,7 @@
 const { getNumber } = require("../helpers/utils");
 const { memoize, set } = require("../helpers/cache");
 const { getSubscriptionByServerId, fetchAllSubscriptions, isActiveSubscription } = require("./subscriptions");
+const { MINUTE } = require("../helpers/constants");
 
 const { MAX_PLAYERS, MAX_GUILDS, MAX_ALLIANCES, SUB_MAX_PLAYERS, SUB_MAX_GUILDS, SUB_MAX_ALLIANCES } = process.env;
 
@@ -29,10 +30,16 @@ const generateLimits = (subscription) => {
 };
 
 async function getLimits(serverId) {
-  return await memoize(`limits-${serverId}`, async () => {
-    const subscription = await getSubscriptionByServerId(serverId);
-    return generateLimits(subscription);
-  });
+  return await memoize(
+    `limits-${serverId}`,
+    async () => {
+      const subscription = await getSubscriptionByServerId(serverId);
+      return generateLimits(subscription);
+    },
+    {
+      timeout: MINUTE,
+    },
+  );
 }
 
 function getPremiumLimits() {

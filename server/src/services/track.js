@@ -4,6 +4,7 @@ const { isTrackEntity } = require("../helpers/albion");
 const { memoize, set, remove } = require("../helpers/cache");
 const logger = require("../helpers/logger");
 const { clone, mergeObjects } = require("../helpers/utils");
+const { MINUTE } = require("../helpers/constants");
 
 const TRACK_COLLECTION = "track";
 
@@ -72,10 +73,16 @@ async function fetchTracks(query = {}) {
 }
 
 async function getTrack(serverId) {
-  return await memoize(`track-${serverId}`, async () => {
-    const track = await findOne(TRACK_COLLECTION, { server: serverId });
-    return generateTrack(track);
-  });
+  return await memoize(
+    `track-${serverId}`,
+    async () => {
+      const track = await findOne(TRACK_COLLECTION, { server: serverId });
+      return generateTrack(track);
+    },
+    {
+      timeout: MINUTE,
+    },
+  );
 }
 
 async function updateTrackCache(serverIds, { timeout, debug } = {}) {

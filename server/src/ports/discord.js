@@ -1,7 +1,7 @@
 const discordApiClient = require("./adapters/discordApiClient");
 const discordHelper = require("../helpers/discord");
 const { memoize } = require("../helpers/cache");
-const { DAY, MINUTE } = require("../helpers/constants");
+const { DAY, MINUTE, SECOND } = require("../helpers/constants");
 const { sleep } = require("../helpers/scheduler");
 
 const { DISCORD_TOKEN } = process.env;
@@ -35,7 +35,7 @@ async function getUserGuilds(accessToken, params) {
       return guilds.map(discordHelper.transformGuild);
     },
     {
-      timeout: 60000,
+      timeout: MINUTE,
     },
   );
 }
@@ -67,10 +67,16 @@ async function getBotGuilds() {
 }
 
 async function getGuild(guildId) {
-  return memoize(`discord.guilds.${guildId}`, async () => {
-    const guild = await discordApiClient.getGuild(`Bot ${DISCORD_TOKEN}`, guildId);
-    return discordHelper.transformGuild(guild);
-  });
+  return memoize(
+    `discord.guilds.${guildId}`,
+    async () => {
+      const guild = await discordApiClient.getGuild(`Bot ${DISCORD_TOKEN}`, guildId);
+      return discordHelper.transformGuild(guild);
+    },
+    {
+      timeout: DAY,
+    },
+  );
 }
 
 async function getGuildChannels(guildId) {
@@ -81,7 +87,7 @@ async function getGuildChannels(guildId) {
       return channels.map(discordHelper.transformChannel);
     },
     {
-      timeout: 30000,
+      timeout: 30 * SECOND,
     },
   );
 }

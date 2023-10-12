@@ -9,7 +9,7 @@ const logger = require("../helpers/logger");
 const { getVictimItems } = require("../helpers/albion");
 const { memoize } = require("../helpers/cache");
 const { average } = require("../helpers/utils");
-const { SERVERS } = require("../helpers/constants");
+const { SERVERS, SECOND } = require("../helpers/constants");
 
 const ITEMS_DIR = "items";
 
@@ -237,7 +237,7 @@ async function getLootValue(event, { server = SERVERS.WEST }) {
       }
     },
     {
-      timeout: 30000,
+      timeout: 30 * SECOND,
       ignore: null,
     },
   );
