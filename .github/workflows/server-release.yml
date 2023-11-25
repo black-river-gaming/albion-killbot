@@ -38,7 +38,9 @@ jobs:
           labels: ${{ steps.docker_meta.outputs.labels }}
 
   deploy:
+    name: Deploy
     uses: ./.github/workflows/deploy.yml
+    needs: publish
     with:
       api-crawler: true
       bot: true
