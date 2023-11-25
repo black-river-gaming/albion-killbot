@@ -1,0 +1,65 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      api-crawler:
+        required: true
+        type: boolean
+      bot:
+        required: true
+        type: boolean
+  workflow_dispatch:
+    inputs:
+      api-crawler:
+        required: true
+        type: boolean
+      bot:
+        required: true
+        type: boolean
+
+jobs:
+  deploy-api-crawler:
+    name: Deploy api & crawler
+    if: ${{ inputs.api-crawler }}
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Deploy api and crawler
+        uses: cross-the-world/ssh-pipeline@master
+        with:
+          host: ${{ vars.SSH_HOST_API }}
+          user: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker compose pull &&
+            touch migration-state.json &&
+            docker compose --ansi never run --rm crawler npm run db:migrate &&
+            docker compose --ansi never up -d --force-recreate
+    
+  deploy-bot:
+    name: Deploy bot shards
+    if: ${{ inputs.bot }}
+    runs-on: ubuntu-latest
+    environment: production
+    strategy:
+      matrix:
+        shard: [0, 1, 2]
+        include:
+        - shard: 0
+          SSH_HOST: SSH_HOST_BOT_0
+        - shard: 1
+          SSH_HOST: SSH_HOST_BOT_1
+        - shard: 2
+          SSH_HOST: SSH_HOST_BOT_2
+    steps:
+      - name: Deploy bot shard '#${{ matrix.shard }}'
+        uses: cross-the-world/ssh-pipeline@master
+        with:
+          host: ${{ vars[matrix.SSH_HOST] }}
+          user: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            touch migration-state.json &&
+            docker compose --ansi never up -d --pull always --force-recreate
+
