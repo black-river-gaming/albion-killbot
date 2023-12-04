@@ -125,8 +125,24 @@ async function removeGuildMemberRole(Authorization, { guildId, memberId, roleId,
   return res.data;
 }
 
+async function createMessage(Authorization, channelId, { payload, files = [] }) {
+  const form = new FormData();
+  form.append("payload_json", JSON.stringify(payload));
+  files.forEach((file) => {
+    form.append(`files[${file.id}]`, new Blob([file.image]), file.name);
+  });
+
+  const res = await discordApiClient.postForm(`/channels/${channelId}/messages`, form, {
+    headers: {
+      Authorization,
+    },
+  });
+  return res.data;
+}
+
 module.exports = {
   addGuildMemberRole,
+  createMessage,
   exchangeCode,
   getCurrentUser,
   getCurrentUserGuilds,
