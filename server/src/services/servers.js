@@ -1,5 +1,11 @@
 const discord = require("../ports/discord");
 const logger = require("../helpers/logger");
+const settingsService = require("./settings");
+const { fetchEventsTo } = require("./events");
+const channel = require("sharp/lib/channel");
+const { embedEvent, embedEventImage } = require("../helpers/embeds");
+const { generateEventImage } = require("./images");
+const { FAKE_EVENT } = require("../helpers/albion");
 
 async function getBotServers() {
   try {
@@ -85,6 +91,35 @@ async function removeMemberRole(serverId, userId, roleId, reason) {
   }
 }
 
+async function testNotification(serverId, { channelId, type = "kills", mode = "image" } = {}) {
+  const event = { ...FAKE_EVENT, good: type === "kills" };
+
+  try {
+    if (!channelId) {
+      const settings = await settingsService.getSettings(serverId);
+      channelId = settings[type].channel;
+    }
+
+    switch (mode) {
+      case "text":
+        return await discord.sendMessage(channelId, embedEvent(event, { test: true }));
+      case "image":
+        // eslint-disable-next-line no-case-declarations
+        const image = await generateEventImage(event);
+        return await discord.sendMessage(channelId, embedEventImage(event, image, { test: true }));
+      default:
+        throw new Error(`Unknown mode ${mode}`);
+    }
+  } catch (error) {
+    logger.error(`Error while sending test to server: ${error.message}`, {
+      error,
+      serverId,
+      type,
+    });
+    throw error;
+  }
+}
+
 module.exports = {
   addMemberRole,
   getBotServers,
@@ -93,4 +128,5 @@ module.exports = {
   getServers,
   leaveServer,
   removeMemberRole,
+  testNotification,
 };
