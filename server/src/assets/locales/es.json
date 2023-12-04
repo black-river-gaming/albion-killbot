@@ -32,6 +32,7 @@
     "SOLO_3": "No se necesitan asistencias.",
     "SOLO_4": "Obtener rekt! Matar solo.",
     "SOLO_5": "Solo asesinado. No se hicieron preguntas.",
+    "TEST": "## Esta es una prueba de muerte y debe ignorarse.",
     "VICTIM_GUILD": "Gremio de Victima",
     "VICTIM_IP": "IP de la Victima"
   },

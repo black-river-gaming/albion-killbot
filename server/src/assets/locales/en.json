@@ -32,6 +32,7 @@
     "SOLO_3": "No assists needed.",
     "SOLO_4": "Get rekt! Solo kill.",
     "SOLO_5": "Solo killed. No questions asked.",
+    "TEST": "## This is a test kill and should be ignored",
     "VICTIM_GUILD": "Victim's Guild",
     "VICTIM_IP": "Victim's IP"
   },
