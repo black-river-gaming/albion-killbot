@@ -1,18 +1,15 @@
-FROM node:16 AS build
+FROM node:18 AS build
 WORKDIR /app
-
-# Set npm version
-RUN npm i -g npm@8.5.5
 
 # Install project dependencies and prune unecessary files
 COPY package*.json ./
-RUN npm ci --force
+RUN npm ci
 RUN npx node-prune
 
 # Copy all files except those listed in .dockerignore
 COPY . .
 
-FROM node:16-slim
+FROM node:18-slim
 WORKDIR /app
 
 # Copy artifacts from build stage to reduce image size
