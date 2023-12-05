@@ -338,6 +338,40 @@ router.put(`/:serverId/settings`, serversController.setServerSettings);
  */
 router.put(`/:serverId/track`, serversController.setServerTrack);
 
+/**
+ * @openapi
+ * /servers/{serverId}/test:
+ *   post:
+ *     tags: [Servers]
+ *     parameters:
+ *     - name: serverId
+ *       in: path
+ *       required: true
+ *       schema:
+ *         type: string
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *                 enum: [kills, deaths]
+ *               mode:
+ *                 type: string
+ *                 enum: ["image", "text"]
+ *               channelId:
+ *                 type: string
+ *                 required: false
+ *                 example: 738365346855256107
+ *     summary: Test the server notifications for a server.
+ *     responses:
+ *       200:
+ *         description: Test initiated
+ */
+router.post(`/:serverId/test`, serversController.testServerSettings);
+
 module.exports = {
   path: "/servers",
   router,

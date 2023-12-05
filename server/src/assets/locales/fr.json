@@ -32,6 +32,7 @@
     "SOLO_3": "Pas besoin d'aide.",
     "SOLO_4": "Il s'est fait soulever! Solo kill.",
     "SOLO_5": "Solo kill. Quelle facilitée.",
+    "TEST": "## Il s'agit d'un test de mise à mort et doit être ignoré",
     "VICTIM_GUILD": "Guilde victime",
     "VICTIM_IP": "IP de la victime"
   },

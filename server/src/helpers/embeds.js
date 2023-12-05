@@ -31,7 +31,7 @@ const footer = {
   text: "Powered by Albion Killbot",
 };
 
-const embedEvent = (event, { lootValue, locale, guildTags = true, providerId } = {}) => {
+const embedEvent = (event, { lootValue, locale, guildTags = true, providerId, test } = {}) => {
   const l = getLocale(locale);
   const { t } = l;
 
@@ -100,6 +100,7 @@ const embedEvent = (event, { lootValue, locale, guildTags = true, providerId } =
     });
 
   return {
+    content: test ? t("KILL.TEST") : undefined,
     embeds: [
       {
         color: good ? GREEN : RED,
@@ -163,7 +164,7 @@ const embedEvent = (event, { lootValue, locale, guildTags = true, providerId } =
   };
 };
 
-const embedEventImage = (event, image, { locale, guildTags = true, addFooter, providerId }) => {
+const embedEventImage = (event, image, { locale, guildTags = true, addFooter, providerId, test }) => {
   const l = getLocale(locale);
   const { t } = l;
 
@@ -198,6 +199,7 @@ const embedEventImage = (event, image, { locale, guildTags = true, addFooter, pr
     });
 
   return {
+    content: test ? t("KILL.TEST") : undefined,
     embeds: [
       {
         color: good ? GREEN : RED,

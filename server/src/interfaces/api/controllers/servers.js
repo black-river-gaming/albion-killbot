@@ -58,9 +58,20 @@ async function setServerTrack(req, res) {
   return res.send(await trackService.setTrack(serverId, track));
 }
 
+async function testServerSettings(req, res) {
+  const { serverId } = req.params;
+  try {
+    await serversService.testNotification(serverId, req.body);
+    return res.send({});
+  } catch {
+    return res.sendStatus(500);
+  }
+}
+
 module.exports = {
   getServer,
   getServers,
   setServerSettings,
   setServerTrack,
+  testServerSettings,
 };
