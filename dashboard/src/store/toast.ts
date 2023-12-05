@@ -89,6 +89,29 @@ export const toastSlice = createSlice({
       }
     );
 
+    builder.addMatcher(
+      api.endpoints.testNotificationSettings.matchFulfilled,
+      (state) => {
+        state.push({
+          id: uid(),
+          theme: "success",
+          message:
+            "A test notification has been sent. Please verify on discord.",
+        });
+      }
+    );
+    builder.addMatcher(
+      api.endpoints.testNotificationSettings.matchRejected,
+      (state) => {
+        state.push({
+          id: uid(),
+          theme: "danger",
+          message:
+            "Failed to send test notification. Please verify the bot permissions and try again later.",
+        });
+      }
+    );
+
     builder.addMatcher(api.endpoints.updateTrack.matchFulfilled, (state) => {
       state.push({ id: uid(), theme: "success", message: "Track list saved." });
     });

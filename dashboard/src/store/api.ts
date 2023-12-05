@@ -174,6 +174,21 @@ export const api = createApi({
         }),
         invalidatesTags: ["Server"],
       }),
+      testNotificationSettings: builder.mutation<
+        void,
+        {
+          serverId: string;
+          type: string;
+          mode?: string;
+          channelId?: string;
+        }
+      >({
+        query: ({ serverId, ...body }) => ({
+          url: `/servers/${serverId}/test`,
+          method: "POST",
+          body,
+        }),
+      }),
     };
   },
 });
@@ -200,4 +215,5 @@ export const {
   useUpdateSettingsMutation,
   useUpdateSubscriptionMutation,
   useUpdateTrackMutation,
+  useTestNotificationSettingsMutation,
 } = api;

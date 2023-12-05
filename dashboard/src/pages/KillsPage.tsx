@@ -4,9 +4,13 @@ import Loader from "components/Loader";
 import Settings from "components/Settings";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { capitalize } from "helpers/utils";
-import { Form, Stack } from "react-bootstrap";
+import { Button, Form, Stack } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { useFetchConstantsQuery, useFetchServerQuery } from "store/api";
+import {
+  useFetchConstantsQuery,
+  useFetchServerQuery,
+  useTestNotificationSettingsMutation,
+} from "store/api";
 import {
   setKillsChannel,
   setKillsEnabled,
@@ -17,10 +21,12 @@ import {
 const KillsPage = () => {
   const { serverId = "" } = useParams();
 
+  const dispatch = useAppDispatch();
   const constants = useFetchConstantsQuery();
   const server = useFetchServerQuery(serverId);
   const kills = useAppSelector((state) => state.settings.kills);
-  const dispatch = useAppDispatch();
+  const [dispatchTestNotification, testNotification] =
+    useTestNotificationSettingsMutation();
 
   if (server.isFetching || constants.isFetching) return <Loader />;
   if (!server.data || !constants.data) return <LoadError />;
@@ -40,18 +46,40 @@ const KillsPage = () => {
           />
         </Form.Group>
 
-        <Form.Group controlId="kills-channel">
-          <Form.Label>Notification Channel</Form.Label>
-          <ChannelInput
-            aria-label="Kills channel"
-            disabled={!kills.enabled}
-            availableChannels={channels}
-            value={kills.channel}
-            onChannelChange={(channelId) =>
-              dispatch(setKillsChannel(channelId))
-            }
-          />
-        </Form.Group>
+        <Stack
+          direction="horizontal"
+          gap={2}
+          className="justify-content-between align-items-end"
+        >
+          <Form.Group controlId="kills-channel" className="flex-grow-1">
+            <Form.Label>Notification Channel</Form.Label>
+            <ChannelInput
+              aria-label="Kills channel"
+              disabled={!kills.enabled}
+              availableChannels={channels}
+              value={kills.channel}
+              onChannelChange={(channelId) =>
+                dispatch(setKillsChannel(channelId))
+              }
+            />
+          </Form.Group>
+
+          <Button
+            disabled={!kills.enabled || testNotification.isLoading}
+            variant="secondary"
+            type="button"
+            onClick={() => {
+              dispatchTestNotification({
+                serverId,
+                type: "kills",
+                channelId: kills.channel,
+                mode: kills.mode,
+              });
+            }}
+          >
+            Test Notification
+          </Button>
+        </Stack>
 
         <Form.Group controlId="kills-mode">
           <Form.Label>Mode</Form.Label>
