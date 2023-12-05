@@ -39,9 +39,10 @@ jobs:
 
   deploy:
     name: Deploy
-    uses: ./.github/workflows/deploy.yml
     needs: publish
+    uses: ./.github/workflows/deploy.yml
     with:
       api-crawler: true
       bot: true
+    secrets: inherit
 
