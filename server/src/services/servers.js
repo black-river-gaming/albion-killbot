@@ -1,8 +1,6 @@
 const discord = require("../ports/discord");
 const logger = require("../helpers/logger");
 const settingsService = require("./settings");
-const { fetchEventsTo } = require("./events");
-const channel = require("sharp/lib/channel");
 const { embedEvent, embedEventImage } = require("../helpers/embeds");
 const { generateEventImage } = require("./images");
 const { FAKE_EVENT } = require("../helpers/albion");
