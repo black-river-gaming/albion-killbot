@@ -57,7 +57,7 @@ const BattlesPage = () => {
         <Stack
           direction="horizontal"
           gap={2}
-          className="justify-content-between"
+          className="justify-content-between align-items-end"
         >
           <Form.Group controlId="threshold-players">
             <Form.Label>Minimum Players</Form.Label>
