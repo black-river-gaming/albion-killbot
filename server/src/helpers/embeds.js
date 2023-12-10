@@ -258,7 +258,7 @@ const embedEventInventoryImage = (event, image, { locale, providerId }) => {
   };
 };
 
-const embedBattle = (battle, { locale, providerId }) => {
+const embedBattle = (battle, { locale, providerId, test }) => {
   const l = getLocale(locale);
   const { t } = l;
 
@@ -354,6 +354,7 @@ const embedBattle = (battle, { locale, providerId }) => {
     });
 
   return {
+    content: test ? t("BATTLE.TEST") : undefined,
     embeds: [
       {
         color: BATTLE,

@@ -1,9 +1,10 @@
 const discord = require("../ports/discord");
 const logger = require("../helpers/logger");
 const settingsService = require("./settings");
-const { embedEvent, embedEventImage } = require("../helpers/embeds");
+const { embedEvent, embedEventImage, embedBattle } = require("../helpers/embeds");
 const { generateEventImage } = require("./images");
-const { FAKE_EVENT } = require("../helpers/albion");
+const FAKE_EVENT = require("../assets/mocks/event_934270718.json");
+const FAKE_BATTLE = require("../assets/mocks/battle_934264285.json");
 
 async function getBotServers() {
   try {
@@ -90,24 +91,38 @@ async function removeMemberRole(serverId, userId, roleId, reason) {
 }
 
 async function testNotification(serverId, { channelId, type = "kills", mode = "image" } = {}) {
-  const event = { ...FAKE_EVENT, good: type === "kills" };
-
   try {
     if (!channelId) {
       const settings = await settingsService.getSettings(serverId);
       channelId = settings[type].channel;
     }
 
-    switch (mode) {
-      case "text":
-        return await discord.sendMessage(channelId, embedEvent(event, { test: true }));
-      case "image":
-        // eslint-disable-next-line no-case-declarations
-        const image = await generateEventImage(event);
-        return await discord.sendMessage(channelId, embedEventImage(event, image, { test: true }));
-      default:
-        throw new Error(`Unknown mode ${mode}`);
-    }
+    const testEvent = async () => {
+      const event = { ...FAKE_EVENT, good: type === "kills" };
+      const testEventMode = {
+        text: async () => {
+          return await discord.sendMessage(channelId, embedEvent(event, { test: true }));
+        },
+        image: async () => {
+          const image = await generateEventImage(event);
+          return await discord.sendMessage(channelId, embedEventImage(event, image, { test: true }));
+        },
+      };
+
+      if (!testEventMode[mode]) throw new Error(`Unknown mode ${mode}`);
+      return await testEventMode[mode]();
+    };
+
+    const battles = async () => discord.sendMessage(channelId, embedBattle(FAKE_BATTLE, { test: true }));
+
+    const testNotification = {
+      kills: testEvent,
+      deaths: testEvent,
+      battles,
+    };
+
+    if (!testNotification[type]) throw new Error(`Unkown type ${type}`);
+    return await testNotification[type]();
   } catch (error) {
     logger.error(`Error while sending test to server: ${error.message}`, {
       error,

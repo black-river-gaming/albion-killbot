@@ -4,7 +4,8 @@
     "EVENT": "Битва произошла между {{ guilds }} гильдиями!",
     "LINE": "{{ name }} [{{ total }}] ({{ kills }}/{{ deaths }}) - Слава: {{fame}}",
     "NO_ALLIANCE": "Другие",
-    "NO_GUILD": "Игроки без гильдии"
+    "NO_GUILD": "Игроки без гильдии",
+    "TEST": "## Это тестовый бой, его следует игнорировать"
   },
   "COMMAND_ERROR": "Ocorreu um erro ao executar o comando. Por favor tente novamente mais tarde.",
   "HELP": {

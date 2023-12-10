@@ -4,7 +4,8 @@
     "EVENT": "Ocurrio una batalla entre {{ guilds }} guilds!",
     "LINE": "{{ name }} [{{ total }}] ({{ kills }}/{{ deaths }}) - Fama: {{fame}}",
     "NO_ALLIANCE": "Otros",
-    "NO_GUILD": "Jugadores sin gremios."
+    "NO_GUILD": "Jugadores sin gremios.",
+    "TEST": "## Esta es una batalla de prueba y debe ignorarse."
   },
   "COMMAND_ERROR": "There was an error while executing this command. Please try again later.",
   "HELP": {
