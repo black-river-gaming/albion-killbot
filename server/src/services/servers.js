@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 const discord = require("../ports/discord");
 const logger = require("../helpers/logger");
 const settingsService = require("./settings");
@@ -98,33 +99,28 @@ async function testNotification(serverId, { channelId, type = "kills", mode = "i
       channelId = settings[type].channel;
     }
 
-    const testEvent = async () => {
-      const event = { ...FAKE_EVENT, good: type === "kills" };
-      const testEventMode = {
-        text: async () => {
+    switch (type) {
+      case "kills":
+      case "deaths":
+        const event = { ...FAKE_EVENT, good: type === "kills" };
+        const actions = new Map();
+        actions.set("text", async () => {
           return await discord.sendMessage(channelId, embedEvent(event, { test: true }));
-        },
-        image: async () => {
+        });
+        actions.set("image", async () => {
           const image = await generateEventImage(event);
           return await discord.sendMessage(channelId, embedEventImage(event, image, { test: true }));
-        },
-      };
+        });
 
-      if (!testEventMode[mode]) throw new Error(`Unknown mode ${mode}`);
-      return await testEventMode[mode]();
-    };
-    const battles = async () => discord.sendMessage(channelId, embedBattle(FAKE_BATTLE, { test: true }));
-    const rankings = async () => discord.sendMessage(channelId, embedPvpRanking(FAKE_PVP_RANKING, { test: true }));
-
-    const testNotification = {
-      kills: testEvent,
-      deaths: testEvent,
-      battles,
-      rankings,
-    };
-
-    if (!testNotification[type]) throw new Error(`Unkown type ${type}`);
-    return await testNotification[type]();
+        if (!actions.has(mode) || typeof actions.get(mode) !== "function") throw new Error(`Unknown mode ${mode}`);
+        return await actions.get(mode)();
+      case "battles":
+        return await discord.sendMessage(channelId, embedBattle(FAKE_BATTLE, { test: true }));
+      case "rankings":
+        return await discord.sendMessage(channelId, embedPvpRanking(FAKE_PVP_RANKING, { test: true }));
+      default:
+        throw new Error(`Unkown type ${type}`);
+    }
   } catch (error) {
     logger.error(`Error while sending test to server: ${error.message}`, {
       error,
