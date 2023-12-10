@@ -4,7 +4,8 @@
     "EVENT": "Ocorreu uma batalha entre {{ guilds }} guildas!",
     "LINE": "{{ name }} [{{ total }}] ({{ kills }}/{{ deaths }}) - Fama: {{fame}}",
     "NO_ALLIANCE": "Outros",
-    "NO_GUILD": "Jogadores sem Guilda"
+    "NO_GUILD": "Jogadores sem Guilda",
+    "TEST": "## Esta é uma batalha de testes e deve ser ignorada"
   },
   "COMMAND_ERROR": "Ocorreu um erro ao executar o comando. Por favor tente novamente mais tarde.",
   "HELP": {
@@ -50,6 +51,7 @@
     "PVE": "Ranking PvE",
     "PVP": "Ranking PvP",
     "PVP_RANKING_SET": "Ranking PvP está definido no modo '{{ pvpRanking }}'",
+    "TEST": "## Este é um teste de classificação e deve ser ignorado.",
     "TOTAL_DEATH_FAME": "Fama Total de Mortes",
     "TOTAL_KILL_FAME": "Fama Total de Abates"
   },

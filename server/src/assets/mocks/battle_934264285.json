@@ -1,0 +1,108 @@
+{
+  "id": 934264285,
+  "startTime": "2023-12-10T07:01:40.711246300Z",
+  "endTime": "2023-12-10T07:02:14.393359300Z",
+  "timeout": "2023-12-10T07:05:14.393359300Z",
+  "totalFame": 265830,
+  "totalKills": 3,
+  "clusterName": null,
+  "players": {
+    "NCPXpEiEScSCL0VtofXHBA": {
+      "name": "CoBa420",
+      "kills": 0,
+      "deaths": 1,
+      "killFame": 0,
+      "guildName": "",
+      "guildId": "",
+      "allianceName": "",
+      "allianceId": "",
+      "id": "NCPXpEiEScSCL0VtofXHBA"
+    },
+    "I0Z4sQUIQFSVN1nRKHI-Ng": {
+      "name": "sashafunk",
+      "kills": 1,
+      "deaths": 0,
+      "killFame": 15576,
+      "guildName": "Golden-Horde",
+      "guildId": "ofllbvNVRRy7QiAN8FxWCw",
+      "allianceName": "Hord",
+      "allianceId": "8gn0SCuiSpuaO7E7K-gJGg",
+      "id": "I0Z4sQUIQFSVN1nRKHI-Ng"
+    },
+    "PFj-oF5MRUqCDe9llDX0zA": {
+      "name": "Veropher",
+      "kills": 1,
+      "deaths": 1,
+      "killFame": 107751,
+      "guildName": "Gridlocke",
+      "guildId": "GJSwi_DqRE2LZ5tmPf4AlA",
+      "allianceName": "W1ND",
+      "allianceId": "PUoptJ8vQLyJl3WAQlSpww",
+      "id": "PFj-oF5MRUqCDe9llDX0zA"
+    },
+    "aNJm3GLoSh6S4plyTgaLXg": {
+      "name": "NiikoCute",
+      "kills": 1,
+      "deaths": 1,
+      "killFame": 142503,
+      "guildName": "Take Down",
+      "guildId": "HELOjN-WRyW-SlyquWUEhQ",
+      "allianceName": "H3AT",
+      "allianceId": "d4ZZ2ijvSOCEPdC0Q1OApg",
+      "id": "aNJm3GLoSh6S4plyTgaLXg"
+    }
+  },
+  "guilds": {
+    "HELOjN-WRyW-SlyquWUEhQ": {
+      "name": "Take Down",
+      "kills": 1,
+      "deaths": 1,
+      "killFame": 142503,
+      "alliance": "H3AT",
+      "allianceId": "d4ZZ2ijvSOCEPdC0Q1OApg",
+      "id": "HELOjN-WRyW-SlyquWUEhQ"
+    },
+    "ofllbvNVRRy7QiAN8FxWCw": {
+      "name": "Golden-Horde",
+      "kills": 1,
+      "deaths": 0,
+      "killFame": 15576,
+      "alliance": "Hord",
+      "allianceId": "8gn0SCuiSpuaO7E7K-gJGg",
+      "id": "ofllbvNVRRy7QiAN8FxWCw"
+    },
+    "GJSwi_DqRE2LZ5tmPf4AlA": {
+      "name": "Gridlocke",
+      "kills": 1,
+      "deaths": 1,
+      "killFame": 107751,
+      "alliance": "W1ND",
+      "allianceId": "PUoptJ8vQLyJl3WAQlSpww",
+      "id": "GJSwi_DqRE2LZ5tmPf4AlA"
+    }
+  },
+  "alliances": {
+    "PUoptJ8vQLyJl3WAQlSpww": {
+      "name": "W1ND",
+      "kills": 1,
+      "deaths": 1,
+      "killFame": 107751,
+      "id": "PUoptJ8vQLyJl3WAQlSpww"
+    },
+    "d4ZZ2ijvSOCEPdC0Q1OApg": {
+      "name": "H3AT",
+      "kills": 1,
+      "deaths": 1,
+      "killFame": 142503,
+      "id": "d4ZZ2ijvSOCEPdC0Q1OApg"
+    },
+    "8gn0SCuiSpuaO7E7K-gJGg": {
+      "name": "Hord",
+      "kills": 1,
+      "deaths": 0,
+      "killFame": 15576,
+      "id": "8gn0SCuiSpuaO7E7K-gJGg"
+    }
+  },
+  "battle_TIMEOUT": 180
+}

@@ -4,7 +4,8 @@
     "EVENT": "Битва произошла между {{ guilds }} гильдиями!",
     "LINE": "{{ name }} [{{ total }}] ({{ kills }}/{{ deaths }}) - Слава: {{fame}}",
     "NO_ALLIANCE": "Другие",
-    "NO_GUILD": "Игроки без гильдии"
+    "NO_GUILD": "Игроки без гильдии",
+    "TEST": "## Это тестовый бой, его следует игнорировать"
   },
   "COMMAND_ERROR": "Ocorreu um erro ao executar o comando. Por favor tente novamente mais tarde.",
   "HELP": {
@@ -50,6 +51,7 @@
     "PVE": "Рейтинг PvE",
     "PVP": "Рейтинг PvP",
     "PVP_RANKING_SET": "PvP Ranking display mode is set to '{{ pvpRanking }}'",
+    "TEST": "## Это проверка рейтинга, и ее следует игнорировать.",
     "TOTAL_DEATH_FAME": "Total Death Fame",
     "TOTAL_KILL_FAME": "Total Kill Fame"
   },

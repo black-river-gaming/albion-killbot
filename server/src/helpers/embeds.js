@@ -258,7 +258,7 @@ const embedEventInventoryImage = (event, image, { locale, providerId }) => {
   };
 };
 
-const embedBattle = (battle, { locale, providerId }) => {
+const embedBattle = (battle, { locale, providerId, test }) => {
   const l = getLocale(locale);
   const { t } = l;
 
@@ -354,6 +354,7 @@ const embedBattle = (battle, { locale, providerId }) => {
     });
 
   return {
+    content: test ? t("BATTLE.TEST") : undefined,
     embeds: [
       {
         color: BATTLE,
@@ -515,7 +516,7 @@ const embedTrackList = (track, limits, { locale }) => {
   };
 };
 
-const embedPvpRanking = (rankings, { locale }) => {
+const embedPvpRanking = (rankings, { locale, test }) => {
   const { t } = getLocale(locale);
 
   const generateRankFieldValue = (ranking, name = "name", number = "fame") => {
@@ -536,6 +537,7 @@ const embedPvpRanking = (rankings, { locale }) => {
   };
 
   return {
+    content: test ? t("RANKING.TEST") : undefined,
     embeds: [
       {
         title: t("RANKING.DAILY"),
