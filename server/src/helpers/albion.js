@@ -58,16 +58,16 @@ const transformEventPlayer = (player) => ({
   deathFame: player.DeathFame,
   guild: player.GuildId
     ? {
-      id: player.GuildId,
-      name: player.GuildName,
-    }
+        id: player.GuildId,
+        name: player.GuildName,
+      }
     : null,
   alliance: player.AllianceId
     ? {
-      id: player.AllianceId,
-      tag: player.AllianceTag,
-      name: player.AllianceName,
-    }
+        id: player.AllianceId,
+        tag: player.AllianceTag,
+        name: player.AllianceName,
+      }
     : null,
   equipment: player.Equipment,
 });

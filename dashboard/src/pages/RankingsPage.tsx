@@ -6,7 +6,11 @@ import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { capitalize } from "helpers/utils";
 import { Button, Col, Form, Row, Stack } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { useFetchConstantsQuery, useFetchServerQuery, useTestNotificationSettingsMutation } from "store/api";
+import {
+  useFetchConstantsQuery,
+  useFetchServerQuery,
+  useTestNotificationSettingsMutation,
+} from "store/api";
 import {
   setRankingsChannel,
   setRankingsEnabled,
