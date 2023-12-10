@@ -4,9 +4,9 @@ import Loader from "components/Loader";
 import Settings from "components/Settings";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { capitalize } from "helpers/utils";
-import { Col, Form, Row, Stack } from "react-bootstrap";
+import { Button, Col, Form, Row, Stack } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { useFetchConstantsQuery, useFetchServerQuery } from "store/api";
+import { useFetchConstantsQuery, useFetchServerQuery, useTestNotificationSettingsMutation } from "store/api";
 import {
   setRankingsChannel,
   setRankingsEnabled,
@@ -17,10 +17,12 @@ import {
 const RankingsPage = () => {
   const { serverId = "" } = useParams();
 
+  const dispatch = useAppDispatch();
   const constants = useFetchConstantsQuery();
   const server = useFetchServerQuery(serverId);
   const rankings = useAppSelector((state) => state.settings.rankings);
-  const dispatch = useAppDispatch();
+  const [dispatchTestNotification, testNotification] =
+    useTestNotificationSettingsMutation();
 
   if (server.isFetching || constants.isFetching) return <Loader />;
   if (!server.data || !constants.data) return <LoadError />;
@@ -40,18 +42,38 @@ const RankingsPage = () => {
           />
         </Form.Group>
 
-        <Form.Group controlId="rankings-channel">
-          <Form.Label>Notification Channel</Form.Label>
-          <ChannelInput
-            aria-label="Rankings channel"
-            disabled={!rankings.enabled}
-            availableChannels={channels}
-            value={rankings.channel}
-            onChannelChange={(channelId) =>
-              dispatch(setRankingsChannel(channelId))
-            }
-          />
-        </Form.Group>
+        <Row className="g-2 align-items-end">
+          <Col xs={12} md={true}>
+            <Form.Group controlId="rankings-channel">
+              <Form.Label>Notification Channel</Form.Label>
+              <ChannelInput
+                aria-label="Rankings channel"
+                disabled={!rankings.enabled}
+                availableChannels={channels}
+                value={rankings.channel}
+                onChannelChange={(channelId) =>
+                  dispatch(setRankingsChannel(channelId))
+                }
+              />
+            </Form.Group>
+          </Col>
+          <Col xs={12} md="auto">
+            <Button
+              disabled={!rankings.enabled || testNotification.isLoading}
+              variant="secondary"
+              type="button"
+              onClick={() => {
+                dispatchTestNotification({
+                  serverId,
+                  type: "rankings",
+                  channelId: rankings.channel,
+                });
+              }}
+            >
+              Test Notification
+            </Button>
+          </Col>
+        </Row>
 
         <Row className="gy-2">
           <Col sm={6}>
