@@ -51,6 +51,7 @@
     "PVE": "Ranking de PVE",
     "PVP": "Ranking de PVP",
     "PVP_RANKING_SET": "PvP Ranking display mode is set to '{{ pvpRanking }}'",
+    "TEST": "## Esta es una prueba de clasificación y debe ignorarse.",
     "TOTAL_DEATH_FAME": "Fama Total Deaths",
     "TOTAL_KILL_FAME": "Fama Total Kills"
   },

@@ -516,7 +516,7 @@ const embedTrackList = (track, limits, { locale }) => {
   };
 };
 
-const embedPvpRanking = (rankings, { locale }) => {
+const embedPvpRanking = (rankings, { locale, test }) => {
   const { t } = getLocale(locale);
 
   const generateRankFieldValue = (ranking, name = "name", number = "fame") => {
@@ -537,6 +537,7 @@ const embedPvpRanking = (rankings, { locale }) => {
   };
 
   return {
+    content: test ? t("RANKING.TEST") : undefined,
     embeds: [
       {
         title: t("RANKING.DAILY"),

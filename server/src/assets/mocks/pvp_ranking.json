@@ -1,0 +1,24 @@
+{
+  "totalKillFame": 120000,
+  "totalDeathFame": 66987,
+  "killRanking": [
+    {
+      "name": "Anjek",
+      "killFame": 60500
+    },
+    {
+      "name": "Greyth",
+      "killFame": 59500
+    }
+  ],
+  "deathRanking": [
+    {
+      "name": "Anjek",
+      "deathFame": 36987
+    },
+    {
+      "name": "Greyth",
+      "deathFame": 30000
+    }
+  ]
+}

@@ -51,6 +51,7 @@
     "PVE": "Ranking PvE",
     "PVP": "Ranking PvP",
     "PVP_RANKING_SET": "Ranking PvP está definido no modo '{{ pvpRanking }}'",
+    "TEST": "## Este é um teste de classificação e deve ser ignorado.",
     "TOTAL_DEATH_FAME": "Fama Total de Mortes",
     "TOTAL_KILL_FAME": "Fama Total de Abates"
   },

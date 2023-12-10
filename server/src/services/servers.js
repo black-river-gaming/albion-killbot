@@ -1,10 +1,11 @@
 const discord = require("../ports/discord");
 const logger = require("../helpers/logger");
 const settingsService = require("./settings");
-const { embedEvent, embedEventImage, embedBattle } = require("../helpers/embeds");
+const { embedEvent, embedEventImage, embedBattle, embedPvpRanking } = require("../helpers/embeds");
 const { generateEventImage } = require("./images");
 const FAKE_EVENT = require("../assets/mocks/event_934270718.json");
 const FAKE_BATTLE = require("../assets/mocks/battle_934264285.json");
+const FAKE_PVP_RANKING = require("../assets/mocks/pvp_ranking.json");
 
 async function getBotServers() {
   try {
@@ -112,13 +113,14 @@ async function testNotification(serverId, { channelId, type = "kills", mode = "i
       if (!testEventMode[mode]) throw new Error(`Unknown mode ${mode}`);
       return await testEventMode[mode]();
     };
-
     const battles = async () => discord.sendMessage(channelId, embedBattle(FAKE_BATTLE, { test: true }));
+    const rankings = async () => discord.sendMessage(channelId, embedPvpRanking(FAKE_PVP_RANKING, { test: true }));
 
     const testNotification = {
       kills: testEvent,
       deaths: testEvent,
       battles,
+      rankings,
     };
 
     if (!testNotification[type]) throw new Error(`Unkown type ${type}`);
