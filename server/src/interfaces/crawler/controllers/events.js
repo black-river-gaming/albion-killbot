@@ -23,7 +23,10 @@ async function fetchEvents(server) {
 
   // Publish new events, from oldest to newest
   const eventsToPublish = [];
-  logger.verbose(`[${server}] Publishing ${events.length} new events to exchange...`);
+  logger.verbose(`[${server}] Publishing ${events.length} new events to exchange...`, {
+    length: events.length,
+    eventIds: events.map((event) => event.EventId),
+  });
   for (const evt of events) {
     if (latestEvent[server] && evt.EventId <= latestEvent[server].EventId) {
       logger.warn(`[${server}] The published id is lower than latestEvent! Skipping.`, {

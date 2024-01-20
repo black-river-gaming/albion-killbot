@@ -23,7 +23,10 @@ async function fetchBattles(server) {
 
   // Publish new battles, from oldest to newest
   const battlesToPublish = [];
-  logger.verbose(`[${server}] Publishing ${battles.length} new battles to exchange...`);
+  logger.verbose(`[${server}] Publishing ${battles.length} new battles to exchange...`, {
+    length: battles.length,
+    battleIds: battles.map((battle) => battle.id),
+  });
   for (const batl of battles) {
     if (latestBattle[server] && batl.id <= latestBattle[server].id) {
       logger.warn(`[${server}] The published id is lower than latestBattle! Skipping.`, {
