@@ -227,6 +227,7 @@ async function getLootValue(event, { server = SERVERS.WEST }) {
         return {
           equipment: calculateLootValue(victimItems.equipment),
           inventory: calculateLootValue(victimItems.inventory),
+          itemPriceData,
         };
       } catch (error) {
         logger.warn(`Failed to fetch kill loot value for event ${event.EventId}: ${error.message}`, {
