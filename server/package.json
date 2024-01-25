@@ -27,6 +27,7 @@
     "amqplib": "^0.9.1",
     "axios": "^1.6.2",
     "canvas": "^2.11.2",
+    "config": "^3.3.10",
     "connect-mongo": "^4.6.0",
     "cors": "^2.8.5",
     "datadog-winston": "^1.5.1",

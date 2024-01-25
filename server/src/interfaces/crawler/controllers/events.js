@@ -1,10 +1,10 @@
+const config = require("config");
+
 const { SECOND, SERVERS } = require("../../../helpers/constants");
 const logger = require("../../../helpers/logger");
 const { runInterval } = require("../../../helpers/scheduler");
 
 const { fetchEventsTo, publishEvent } = require("../../../services/events");
-
-const { AMQP_QUEUE_EVENTS_BATCH } = process.env;
 
 const latestEvent = {
   [SERVERS.WEST]: null,
@@ -37,7 +37,7 @@ async function fetchEvents(server) {
       continue;
     }
 
-    if (!AMQP_QUEUE_EVENTS_BATCH) {
+    if (!config.get("events.batch")) {
       logger.debug(`[${server}] Publishing event ${evt.EventId}`);
       await publishEvent(evt);
     } else {
@@ -47,8 +47,7 @@ async function fetchEvents(server) {
     latestEvent[server] = evt;
   }
 
-  // Batch publish
-  if (AMQP_QUEUE_EVENTS_BATCH) {
+  if (config.get("events.batch")) {
     await publishEvent(eventsToPublish);
   }
 
@@ -56,16 +55,20 @@ async function fetchEvents(server) {
 }
 
 const init = async () => {
-  runInterval("Fetch events for west server", fetchEvents, {
-    interval: 30 * SECOND,
-    runOnStart: true,
-    fnOpts: [SERVERS.WEST],
-  });
-  runInterval("Fetch events for east server", fetchEvents, {
-    interval: 30 * SECOND,
-    runOnStart: true,
-    fnOpts: [SERVERS.EAST],
-  });
+  if (config.get("crawler.events.west")) {
+    runInterval("Fetch events for west server", fetchEvents, {
+      interval: 30 * SECOND,
+      runOnStart: true,
+      fnOpts: [SERVERS.WEST],
+    });
+  }
+  if (config.get("crawler.events.east")) {
+    runInterval("Fetch events for east server", fetchEvents, {
+      interval: 30 * SECOND,
+      runOnStart: true,
+      fnOpts: [SERVERS.EAST],
+    });
+  }
 };
 
 module.exports = {

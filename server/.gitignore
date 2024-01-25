@@ -107,6 +107,5 @@ dist
 debug.js
 debug/
 
-# Test commands
-commands/testImage.js
-commands/testRanking.js
+# Local config files
+src/config/local*

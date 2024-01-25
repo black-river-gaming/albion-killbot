@@ -7,9 +7,9 @@ const args = parseArgs(process.argv.slice(2));
 if (args.mode) {
   process.env.MODE = args.mode;
 }
-const { MODE } = process.env;
+process.env.NODE_CONFIG_DIR = args.configDir || path.join(__dirname, "..", "src", "config");
 
-const interfaces = path.join("..", "src", "interfaces");
+const interfaces = path.join(__dirname, "..", "src", "interfaces");
 const modes = [
   {
     name: "crawler",
@@ -29,7 +29,7 @@ const modes = [
 ];
 
 async function start() {
-  const mode = modes.find((m) => m.name == MODE);
+  const mode = modes.find((m) => m.name == process.env.MODE);
   if (!mode) {
     logger.info(`Please select an mode from the following:\n`);
     modes.forEach((mode) => {

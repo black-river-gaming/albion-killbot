@@ -1,6 +1,6 @@
 {
   "exec": "npm run start:api",
-  "watch": ["./src/adapters", "./src/helpers", "./src/ports", "./src/services", "./src/interfaces/api"],
+  "watch": ["./src/config", "./src/helpers", "./src/ports", "./src/services", "./src/interfaces/api"],
   "ignore": ["node_modules", "__tests__"],
   "delay": 500
 }

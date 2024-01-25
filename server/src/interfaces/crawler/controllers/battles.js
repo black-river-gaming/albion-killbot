@@ -1,10 +1,10 @@
+const config = require("config");
+
 const { SECOND, SERVERS } = require("../../../helpers/constants");
 const logger = require("../../../helpers/logger");
 const { runInterval } = require("../../../helpers/scheduler");
 
 const { fetchBattlesTo, publishBattle } = require("../../../services/battles");
-
-const { AMQP_QUEUE_BATTLES_BATCH } = process.env;
 
 const latestBattle = {
   [SERVERS.WEST]: null,
@@ -37,7 +37,7 @@ async function fetchBattles(server) {
       continue;
     }
 
-    if (!AMQP_QUEUE_BATTLES_BATCH) {
+    if (!config.get("battles.batch")) {
       logger.debug(`[${server}] Publishing battle ${batl.id}`);
       await publishBattle(batl);
     } else {
@@ -47,8 +47,7 @@ async function fetchBattles(server) {
     latestBattle[server] = batl;
   }
 
-  // Batch publish
-  if (AMQP_QUEUE_BATTLES_BATCH) {
+  if (config.get("battles.batch")) {
     await publishBattle(battlesToPublish);
   }
 
@@ -56,16 +55,20 @@ async function fetchBattles(server) {
 }
 
 const init = async () => {
-  runInterval("Fetch battles for west server", fetchBattles, {
-    interval: 61 * SECOND,
-    runOnStart: true,
-    fnOpts: [SERVERS.WEST],
-  });
-  runInterval("Fetch battles for east server", fetchBattles, {
-    interval: 61 * SECOND,
-    runOnStart: true,
-    fnOpts: [SERVERS.EAST],
-  });
+  if (config.get("crawler.battles.west")) {
+    runInterval("Fetch battles for west server", fetchBattles, {
+      interval: 61 * SECOND,
+      runOnStart: true,
+      fnOpts: [SERVERS.WEST],
+    });
+  }
+  if (config.get("crawler.battles.east")) {
+    runInterval("Fetch battles for east server", fetchBattles, {
+      interval: 61 * SECOND,
+      runOnStart: true,
+      fnOpts: [SERVERS.EAST],
+    });
+  }
 };
 
 module.exports = {
