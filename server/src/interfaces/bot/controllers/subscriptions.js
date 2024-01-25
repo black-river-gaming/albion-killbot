@@ -1,4 +1,6 @@
+const config = require("config");
 const { PermissionFlagsBits } = require("discord.js");
+
 const { DAY, MINUTE } = require("../../../helpers/constants");
 const logger = require("../../../helpers/logger");
 const { runInterval } = require("../../../helpers/scheduler");
@@ -15,8 +17,6 @@ const { sendPrivateMessage } = require("./notifications");
 const { getLocale } = require("../../../helpers/locale");
 const { getSettings } = require("../../../services/settings");
 
-const { DISCORD_COMMUNITY_SERVER, DISCORD_COMMUNITY_PREMIUM_ROLE, DASHBOARD_URL, NODE_ENV } = process.env;
-
 let guild;
 
 const checkPremiumRole = async (subscription) => {
@@ -25,7 +25,7 @@ const checkPremiumRole = async (subscription) => {
     subscription,
   });
 
-  const role = guild.roles.resolve(DISCORD_COMMUNITY_PREMIUM_ROLE);
+  const role = guild.roles.resolve(config.get("discord.community.premiumRole"));
   if (!role) throw new Error("Cannot find Premium Role.");
 
   try {
@@ -52,7 +52,7 @@ const checkPremiumRole = async (subscription) => {
 };
 
 const checkPremiumRoles = async (guild) => {
-  const role = guild.roles.resolve(DISCORD_COMMUNITY_PREMIUM_ROLE);
+  const role = guild.roles.resolve(config.get("discord.community.premiumRole"));
   if (!role) throw new Error("Cannot find Premium Role.");
 
   logger.info("Checking for Premium Users on Discord Community Server.");
@@ -65,14 +65,14 @@ const checkPremiumRoles = async (guild) => {
 };
 
 const initPremiumRoles = (client) => {
-  if (!DISCORD_COMMUNITY_SERVER || !DISCORD_COMMUNITY_PREMIUM_ROLE) return;
+  if (!config.has("discord.community.server") || !config.has("discord.community.premiumRole")) return;
 
-  guild = client.guilds.resolve(DISCORD_COMMUNITY_SERVER);
+  guild = client.guilds.resolve(config.get("discord.community.server"));
   if (!guild) {
     logger.warn(
       "Community Server not found. Please make sure the bot has joined the server specified in DISCORD_COMMUNITY_SERVER.",
       {
-        DISCORD_COMMUNITY_SERVER,
+        serverId: config.get("discord.community.server"),
         guilds: client.guilds.cache.keys,
       },
     );
@@ -91,10 +91,10 @@ const initPremiumRoles = (client) => {
     return;
   }
 
-  if (!guild.roles.cache.has(DISCORD_COMMUNITY_PREMIUM_ROLE)) {
+  if (!guild.roles.cache.has(config.get("discord.community.premiumRole"))) {
     logger.warn("Cannot find Premium Role. Please ensure the correct role id", {
       guild,
-      roleId: DISCORD_COMMUNITY_PREMIUM_ROLE,
+      roleId: config.get("discord.community.premiumRole"),
     });
     return;
   }
@@ -123,7 +123,7 @@ const checkExpireNotice = async (client) => {
         client,
         subscription.owner,
         `${t("SUBSCRIPTION.STATUS.EXPIRED")} ${t("SUBSCRIPTION.RENEW", {
-          link: `${DASHBOARD_URL}/premium`,
+          link: `${config.get("dashboard.url")}/premium`,
         })}`,
       );
     }
@@ -134,7 +134,7 @@ const initExpirationNotice = (client) => {
   runInterval("Send subscription expire notice", checkExpireNotice, {
     interval: MINUTE,
     fnOpts: [client],
-    runOnStart: NODE_ENV === "development",
+    runOnStart: process.env.NODE_ENV === "development",
   });
 };
 

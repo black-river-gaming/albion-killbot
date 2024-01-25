@@ -1,3 +1,5 @@
+const config = require("config");
+
 const logger = require("../../../helpers/logger");
 
 const { sendNotification } = require("./notifications");
@@ -10,10 +12,8 @@ const { getGuildByTrackGuild } = require("../../../services/guilds");
 const { getSettings } = require("../../../services/settings");
 const { getTrack } = require("../../../services/track");
 
-const { GUILD_RANKINGS } = process.env;
-
 async function displayRankings(client, rankingType) {
-  if (!GUILD_RANKINGS) return;
+  if (!config.get("bot.guildRankings")) return;
   logger.info(`Guild Ranking on '${rankingType}' setting: start.`, { rankingType });
 
   for (const guild of client.guilds.cache.values()) {

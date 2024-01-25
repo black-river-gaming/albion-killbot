@@ -1,11 +1,11 @@
+const config = require("config");
+
 const logger = require("../../../helpers/logger");
 const { runInterval } = require("../../../helpers/scheduler");
 
 const { updateLimitsCache } = require("../../../services/limits");
 const { updateSettingsCache } = require("../../../services/settings");
 const { updateTrackCache } = require("../../../services/track");
-
-const REFRESH_INTERVAL = 60000;
 
 async function refreshServerCache(client) {
   logger.debug(`Refreshing servers cache.`);
@@ -23,7 +23,7 @@ async function refreshServerCache(client) {
 async function preinit(client) {
   await runInterval("Refresh cache for server settings", refreshServerCache, {
     fnOpts: [client],
-    interval: REFRESH_INTERVAL,
+    interval: config.get("bot.servers.cacheInterval"),
     runOnStart: true,
   });
 }

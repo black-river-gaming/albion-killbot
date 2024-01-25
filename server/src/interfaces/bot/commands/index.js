@@ -1,3 +1,4 @@
+const config = require("config");
 const { Collection, REST, Routes } = require("discord.js");
 const { readdirSync } = require("fs");
 const path = require("node:path");
@@ -7,8 +8,7 @@ const logger = require("../../../helpers/logger");
 const { getSettings } = require("../../../services/settings");
 const { getTrack } = require("../../../services/track");
 
-const { DISCORD_TOKEN } = process.env;
-const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
+const rest = new REST({ version: "10" }).setToken(config.get("discord.token"));
 
 async function init(client) {
   client.commands = new Collection();

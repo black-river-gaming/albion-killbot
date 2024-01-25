@@ -1,3 +1,5 @@
+const config = require("config");
+
 const logger = require("../../../helpers/logger");
 const { REPORT_MODES } = require("../../../helpers/constants");
 const { getTrackedEvent } = require("../../../helpers/tracking");
@@ -13,8 +15,6 @@ const { getTrack } = require("../../../services/track");
 const { getLimits } = require("../../../services/limits");
 
 const { sendNotification } = require("./notifications");
-
-const { AMQP_QUEUE_EVENTS_BATCH } = process.env;
 
 async function subscribe(client) {
   const cb = async (event) => {
@@ -115,7 +115,7 @@ async function subscribe(client) {
 
   const queue_suffix = process.env.SHARD;
 
-  if (AMQP_QUEUE_EVENTS_BATCH) return subscribeEvents(batchCb, { queue_suffix });
+  if (config.get("events.batch")) return subscribeEvents(batchCb, { queue_suffix });
   return await subscribeEvents(cb, { queue_suffix });
 }
 
