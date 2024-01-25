@@ -51,6 +51,7 @@ async function subscribe(client) {
         logger.info(`[${server}] Sending ${good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
           guild: transformGuild(guild),
           event: transformEvent(guildEvent),
+          lootValue,
           settings,
           track,
           limits,

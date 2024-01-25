@@ -78,7 +78,6 @@ const transformEvent = (event) => ({
   battle: event.BattleId,
   timestamp: event.TimeStamp,
   fame: event.TotalVictimKillFame,
-  lootValue: event.lootValue,
   killer: transformEventPlayer(event.Killer),
   victim: transformEventPlayer(event.Victim),
   participants: event.Participants.map(transformEventPlayer),
