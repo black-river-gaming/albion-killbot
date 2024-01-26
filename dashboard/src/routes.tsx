@@ -1,6 +1,6 @@
 import App from "App";
+import AdminPage from "pages/admin/AdminPage";
 import AdminGuard from "pages/AdminGuard";
-import AdminPage from "pages/AdminPage";
 import AdminServerPage from "pages/AdminServerPage";
 import AdminServersPage from "pages/AdminServersPage";
 import AdminSubscriptionsPage from "pages/AdminSubscriptionsPage";
