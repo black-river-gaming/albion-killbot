@@ -1,8 +1,8 @@
+const config = require("config");
 const logger = require("../../../helpers/logger");
 const subscriptionsService = require("../../../services/subscriptions");
 const serversService = require("../../../services/servers");
 
-const { DISCORD_COMMUNITY_SERVER, DISCORD_COMMUNITY_PREMIUM_ROLE } = process.env;
 // TODO: Get this list from stripe
 const SUPPORTED_CURRENCIES = ["usd", "brl"];
 
@@ -102,22 +102,22 @@ async function manageSubscription(req, res) {
 }
 
 subscriptionsService.subscriptionEvents.on("add", (subscription) => {
-  if (DISCORD_COMMUNITY_SERVER && DISCORD_COMMUNITY_PREMIUM_ROLE && subscription.owner) {
+  if (config.has("discord.community.server") && config.has("discord.community.premiumRole") && subscription.owner) {
     serversService.addMemberRole(
-      DISCORD_COMMUNITY_SERVER,
+      config.get("discord.community.server"),
       subscription.owner,
-      DISCORD_COMMUNITY_PREMIUM_ROLE,
+      config.get("discord.community.premiumRole"),
       "Add Premium User role",
     );
   }
 });
 
 subscriptionsService.subscriptionEvents.on("remove", (subscription) => {
-  if (DISCORD_COMMUNITY_SERVER && DISCORD_COMMUNITY_PREMIUM_ROLE && subscription.owner) {
+  if (config.has("discord.community.server") && config.has("discord.community.premiumRole") && subscription.owner) {
     serversService.removeMemberRole(
-      DISCORD_COMMUNITY_SERVER,
+      config.get("discord.community.server"),
       subscription.owner,
-      DISCORD_COMMUNITY_PREMIUM_ROLE,
+      config.get("discord.community.premiumRole"),
       "Remove Premium User role",
     );
   }

@@ -1,3 +1,4 @@
+const config = require("config");
 const express = require("express");
 const router = express.Router();
 const stripe = require("stripe");
@@ -5,18 +6,16 @@ const logger = require("../../../helpers/logger");
 const { disableCache } = require("../middlewares/cache");
 const subscriptionsService = require("../../../services/subscriptions");
 
-const { STRIPE_WEBHOOK_SECRET } = process.env;
-
 router.use(disableCache);
 router.use(express.raw({ type: "*/*" }));
 router.post(`/webhook`, async (req, res) => {
   // Verify webhook secret and construct event
   let event;
 
-  if (STRIPE_WEBHOOK_SECRET) {
+  if (config.has("stripe.webhookSecret")) {
     try {
       const signature = req.headers["stripe-signature"];
-      event = stripe.webhooks.constructEvent(req.body, signature, STRIPE_WEBHOOK_SECRET);
+      event = stripe.webhooks.constructEvent(req.body, signature, config.get("stripe.webhookSecret"));
     } catch (error) {
       logger.error("Failed to construct event.", {
         error,

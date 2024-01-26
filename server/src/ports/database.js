@@ -1,7 +1,5 @@
 const { ObjectId } = require("mongodb");
-const dbClient = require("./adapters/mongoDbClient");
-
-const { client } = dbClient;
+const mongodb = require("./adapters/mongoDbClient");
 
 // TODO: Extract helper functions
 function convertObjectId(query) {
@@ -27,22 +25,22 @@ async function init() {
     throw new Error("Please define MONGODB_URL environment variable with the MongoDB location.");
   }
 
-  await dbClient.connect(MONGODB_URL);
+  await mongodb.connect(MONGODB_URL);
 }
 
 async function cleanup() {
-  await dbClient.close();
+  await mongodb.close();
 }
 
 function getCollection(collectionName) {
-  const collection = dbClient.getCollection(collectionName);
+  const collection = mongodb.getCollection(collectionName);
   if (!collection) throw new Error("Database not connected");
   return collection;
 }
 
 async function dropColection(collectionName) {
   try {
-    await dbClient.getCollection(collectionName).drop();
+    await mongodb.getCollection(collectionName).drop();
   } catch (e) {
     // In case the collection does not exist, just ignore
     if (e.message.match(/ns not found/)) return true;
@@ -100,7 +98,6 @@ async function deleteOne(collectionName, filter) {
 }
 
 module.exports = {
-  client,
   cleanup,
   deleteMany,
   deleteOne,
@@ -110,6 +107,7 @@ module.exports = {
   getCollection,
   init,
   insertOne,
+  mongodb,
   replaceOne,
   updateMany,
   updateOne,

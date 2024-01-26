@@ -44,10 +44,12 @@ function getCollection(collection) {
   return db.collection(collection);
 }
 
+const getClient = () => client;
+
 module.exports = {
-  client,
-  connect,
   close,
-  isConnected,
+  connect,
+  getClient,
   getCollection,
+  isConnected,
 };
