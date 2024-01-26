@@ -3,9 +3,11 @@ const Stripe = require("stripe");
 const logger = require("../helpers/logger");
 
 const isEnabled = config.has("stripe.accessToken") && config.has("stripe.product");
-const stripe = Stripe(config.get("stripe.accessToken"), {
-  apiVersion: "2020-08-27",
-});
+const stripe = isEnabled
+  ? Stripe(config.get("stripe.accessToken"), {
+      apiVersion: "2020-08-27",
+    })
+  : null;
 
 async function getPrices({ currency = "usd", product = config.get("stripe.product") }) {
   try {
