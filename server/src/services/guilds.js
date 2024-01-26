@@ -1,7 +1,7 @@
+const config = require("config");
 const { findOne, replaceOne } = require("../ports/database");
 const albion = require("../ports/albion");
 
-const { GUILD_RANKINGS } = process.env;
 const GUILDS_COLLECTION = "guilds";
 
 async function getGuildByTrackGuild(trackGuild) {
@@ -9,7 +9,10 @@ async function getGuildByTrackGuild(trackGuild) {
 }
 
 async function updateGuildDataByTrackGuild(trackGuild) {
-  const guild = await albion.getGuild(trackGuild.id, { server: trackGuild.server, rankings: GUILD_RANKINGS });
+  const guild = await albion.getGuild(trackGuild.id, {
+    server: trackGuild.server,
+    rankings: config.get("features.guildRankings"),
+  });
 
   if (!guild) return;
   guild.server = trackGuild.server;

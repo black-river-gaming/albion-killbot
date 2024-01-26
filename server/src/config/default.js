@@ -1,15 +1,17 @@
+const { getNumber, getBool } = require("../helpers/utils");
+
 module.exports = {
   amqp: {
     uri: process.env.AMQP_URL,
     queue: {
-      maxLength: Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000,
-      messageTtl: Number(process.env.AMQP_QUEUE_MESSAGE_TTL) || 1000 * 60 * 60 * 4, // 4 hours
+      maxLength: getNumber(process.env.AMQP_QUEUE_MAX_LENGTH, 10000),
+      messageTtl: getNumber(process.env.AMQP_QUEUE_MESSAGE_TTL, 1000 * 60 * 60 * 4), // 4 hours
     },
     events: {
-      batch: process.env.AMQP_QUEUE_EVENTS_BATCH || true,
+      batch: getBool(process.env.AMQP_QUEUE_EVENTS_BATCH, true),
     },
     battles: {
-      batch: process.env.AMQP_QUEUE_BATTLES_BATCH || true,
+      batch: getBool(process.env.AMQP_QUEUE_BATTLES_BATCH, true),
     },
   },
 
@@ -35,6 +37,23 @@ module.exports = {
     },
   },
 
+  features: {
+    guildRankings: getBool(process.env.GUILD_RANKINGS, false),
+    limits: {
+      players: getNumber(process.env.MAX_PLAYERS, 10),
+      guilds: getNumber(process.env.MAX_GUILDS, 10),
+      alliances: getNumber(process.env.MAX_ALLIANCES, 10),
+    },
+    subscriptions: {
+      enabled: getBool(process.env.SUBSCRIPTIONS_MODE, false),
+      limits: {
+        players: getNumber(process.env.MAX_PLAYERS, 10),
+        guilds: getNumber(process.env.MAX_GUILDS, 10),
+        alliances: getNumber(process.env.MAX_ALLIANCES, 10),
+      },
+    },
+  },
+
   logger: {
     level: process.env.DEBUG_LEVEL || "info",
   },
@@ -55,16 +74,16 @@ module.exports = {
   },
 
   api: {
-    port: process.env.PORT || 80,
+    port: getNumber(process.env.PORT, 80),
     session: {
       cookieName: process.env.SESSION_COOKIE_NAME || "albion-killbot",
       domain: process.env.SESSION_DOMAIN || null,
-      maxAge: process.env.SESSION_MAX_AGE || 604800000,
+      maxAge: getNumber(process.env.SESSION_MAX_AGE, 604800000),
       secret: process.env.SESSION_SECRET || "defaultSecret",
     },
     rateLimit: {
-      interval: process.env.RATE_LIMIT_WINDOW || 60000,
-      requests: process.env.RATE_LIMIT_REQUESTS || 0,
+      interval: getNumber(process.env.RATE_LIMIT_WINDOW, 60000),
+      requests: getNumber(process.env.RATE_LIMIT_REQUESTS, 0),
     },
   },
 

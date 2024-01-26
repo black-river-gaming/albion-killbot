@@ -1,3 +1,4 @@
+const config = require("config");
 const { SlashCommandBuilder } = require("discord.js");
 const { SERVERS } = require("../../../helpers/constants");
 const { getLocale } = require("../../../helpers/locale");
@@ -13,7 +14,6 @@ const {
 } = require("../../../services/subscriptions");
 
 const { t } = getLocale();
-const { DASHBOARD_URL } = process.env;
 
 const player = (subcommand) =>
   subcommand
@@ -125,7 +125,7 @@ const command = {
 
     const searchAndAdd = async (type, value, { limit = 5, premiumLimit = 0 }) => {
       const tType = t(`TRACK.${type.toUpperCase()}.TYPE`).toLowerCase();
-      const url = `${DASHBOARD_URL}/premium`;
+      const url = `${config.get("dashboard.url")}/premium`;
       const shouldBuyPremium = isSubscriptionsEnabled() && !isActiveSubscription(subscription) && premiumLimit > limit;
 
       if (limit == 0) {

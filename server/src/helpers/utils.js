@@ -35,6 +35,10 @@ function parseFileSize(sizeStr) {
   return m[1] * Math.pow(1024, ["B", "KB", "MB", "GB", "TB"].indexOf(unit));
 }
 
+function getBool(v, def) {
+  return v === undefined ? def : /^(on|true|1)$/i.test(v);
+}
+
 function getNumber(v, def) {
   const n = Number(v);
   return isNaN(n) ? def : n;
@@ -80,6 +84,7 @@ module.exports = {
   digitsFormatter,
   equalsCaseInsensitive,
   fileSizeFormatter,
+  getBool,
   getNumber,
   humanFormatter,
   mergeObjects,

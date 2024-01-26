@@ -1,14 +1,13 @@
+const config = require("config");
 const { getNumber } = require("../helpers/utils");
 const { memoize, set } = require("../helpers/cache");
 const { getSubscriptionByServerId, fetchAllSubscriptions, isActiveSubscription } = require("./subscriptions");
 const { MINUTE } = require("../helpers/constants");
 
-const { MAX_PLAYERS, MAX_GUILDS, MAX_ALLIANCES, SUB_MAX_PLAYERS, SUB_MAX_GUILDS, SUB_MAX_ALLIANCES } = process.env;
-
 const generateLimits = (subscription) => {
-  let players = getNumber(MAX_PLAYERS, 10);
-  let guilds = getNumber(MAX_GUILDS, 1);
-  let alliances = getNumber(MAX_ALLIANCES, 1);
+  let players = config.get("features.limits.players");
+  let guilds = config.get("features.limits.guilds");
+  let alliances = config.get("features.limits.alliances");
 
   if (subscription && isActiveSubscription(subscription)) {
     if (subscription.limits) {
@@ -16,9 +15,9 @@ const generateLimits = (subscription) => {
       guilds = getNumber(subscription.limits.guilds, guilds);
       alliances = getNumber(subscription.limits.alliances, alliances);
     } else {
-      players = getNumber(SUB_MAX_PLAYERS, players);
-      guilds = getNumber(SUB_MAX_GUILDS, guilds);
-      alliances = getNumber(SUB_MAX_ALLIANCES, alliances);
+      players = getNumber(config.get("features.subscriptions.limits.players"), players);
+      guilds = getNumber(config.get("features.subscriptions.limits.guilds"), guilds);
+      alliances = getNumber(config.get("features.subscriptions.limits.alliances"), alliances);
     }
   }
 
@@ -44,9 +43,9 @@ async function getLimits(serverId) {
 
 function getPremiumLimits() {
   return {
-    players: SUB_MAX_PLAYERS,
-    guilds: SUB_MAX_GUILDS,
-    alliances: SUB_MAX_ALLIANCES,
+    players: config.get("features.subscriptions.limits.players"),
+    guilds: config.get("features.subscriptions.limits.guilds"),
+    alliances: config.get("features.subscriptions.limits.alliances"),
   };
 }
 

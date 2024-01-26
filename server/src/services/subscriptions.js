@@ -1,3 +1,4 @@
+const config = require("config");
 const EventEmitter = require("events");
 const moment = require("moment");
 const stripe = require("../ports/stripe");
@@ -5,13 +6,12 @@ const { find, findOne, insertOne, updateOne, updateMany, deleteOne } = require("
 const { remove } = require("../helpers/cache");
 const { SUBSCRIPTION_STATUS } = require("../helpers/constants");
 
-const SUBSCRIPTIONS_MODE = Boolean(process.env.SUBSCRIPTIONS_MODE);
 const SUBSCRIPTIONS_COLLECTION = "subscriptions";
 const subscriptionEvents = new EventEmitter();
 
 /* Helpers */
 function isSubscriptionsEnabled() {
-  return SUBSCRIPTIONS_MODE;
+  return config.get("features.subscriptions.enabled");
 }
 
 function getSubscriptionExpires(subscription, unit = "days") {
