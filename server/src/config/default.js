@@ -33,7 +33,7 @@ module.exports = {
     community: {
       server: process.env.DISCORD_COMMUNITY_SERVER,
       premiumRole: process.env.DISCORD_COMMUNITY_PREMIUM_ROLE,
-      admins: process.env.DISCORD_COMMUNITY_ADMINS.split(",") || [],
+      admins: (process.env.DISCORD_COMMUNITY_ADMINS || "").split(","),
     },
   },
 
