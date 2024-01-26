@@ -7,7 +7,7 @@ interface SubscriptionListItemProps {
 }
 
 const SubscriptionListItem = ({ subscription }: SubscriptionListItemProps) => (
-  <Card className="p-2">
+  <Card className="p-3">
     <Row key={subscription.id} className="gy-2">
       <Col xs={12} xl={8} className="d-flex flex-column justify-content-center">
         <Table borderless responsive>
@@ -52,18 +52,16 @@ const SubscriptionListItem = ({ subscription }: SubscriptionListItemProps) => (
       <Col
         xs={12}
         xl={4}
-        className="actions d-flex align-items-center justify-content-end"
+        className="actions d-flex align-items-start justify-content-end"
       >
         <Stack gap={2} direction="horizontal">
+          <Link to={`/admin/subscriptions/${subscription.id}`}>
+            <Button variant="primary">Manage</Button>
+          </Link>
           {subscription.server && (
-            <>
-              <Link to={`/admin/servers/${subscription.server}`}>
-                <Button variant="primary">Manage</Button>
-              </Link>
-              <Link to={`/dashboard/${subscription.server}`}>
-                <Button variant="primary">Dashboard</Button>
-              </Link>
-            </>
+            <Link to={`/dashboard/${subscription.server}`}>
+              <Button variant="primary">Dashboard</Button>
+            </Link>
           )}
         </Stack>
       </Col>

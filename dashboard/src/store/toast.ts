@@ -20,7 +20,7 @@ const uid = () =>
   );
 
 export const toastSlice = createSlice({
-  name: "toasts",
+  name: "toast",
   initialState,
   reducers: {
     addToast: (
@@ -156,4 +156,4 @@ export const toastSlice = createSlice({
 
 export const { addToast, removeToast } = toastSlice.actions;
 
-export default toastSlice;
+export default toastSlice.reducer;
