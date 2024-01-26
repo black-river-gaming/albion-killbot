@@ -3,17 +3,20 @@ const { S3 } = require("@aws-sdk/client-s3");
 const logger = require("../../helpers/logger");
 
 const isEnabled = config.has("aws.accessKeyId") && config.has("aws.secretAccessKey");
-const client = new S3({
-  region: config.get("aws.region"),
-  credentials: {
-    accessKeyId: config.get("aws.accessKeyId"),
-    secretAccessKey: config.get("aws.secretAccessKey"),
-  },
-  maxRetries: 3,
-  httpOptions: {
-    timeout: 60000,
-  },
-});
+let client = null;
+if (isEnabled) {
+  client = new S3({
+    region: config.get("aws.region"),
+    credentials: {
+      accessKeyId: config.get("aws.accessKeyId"),
+      secretAccessKey: config.get("aws.secretAccessKey"),
+    },
+    maxRetries: 3,
+    httpOptions: {
+      timeout: 60000,
+    },
+  });
+}
 
 async function downloadFromS3(name, writer) {
   try {

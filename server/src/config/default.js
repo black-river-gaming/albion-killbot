@@ -47,9 +47,9 @@ module.exports = {
     subscriptions: {
       enabled: getBool(process.env.SUBSCRIPTIONS_MODE, false),
       limits: {
-        players: getNumber(process.env.MAX_PLAYERS, 10),
-        guilds: getNumber(process.env.MAX_GUILDS, 10),
-        alliances: getNumber(process.env.MAX_ALLIANCES, 10),
+        players: getNumber(process.env.SUB_MAX_PLAYERS, 10),
+        guilds: getNumber(process.env.SUN_MAX_GUILDS, 10),
+        alliances: getNumber(process.env.SUB_MAX_ALLIANCES, 10),
       },
     },
   },
