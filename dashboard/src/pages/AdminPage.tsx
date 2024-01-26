@@ -1,41 +1,38 @@
 import { faCrown, faList } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Card, Col, Container, ListGroup, Row, Stack } from "react-bootstrap";
+import { Col, Container, Nav, Row, Stack } from "react-bootstrap";
 import { NavLink, Outlet } from "react-router-dom";
 
 const AdminPage = () => {
   return (
     <Container fluid className="py-3">
-      <Row className="g-3">
-        <Col md={4}>
-          <Card>
-            <ListGroup>
-              <NavLink
-                to="servers"
-                className="list-group-item list-group-item-action"
-              >
-                <Stack direction="horizontal" gap={2}>
-                  <FontAwesomeIcon icon={faList} size="sm" />
-                  <div>Servers</div>
-                </Stack>
-              </NavLink>
-              <NavLink
-                to="subscriptions"
-                className="list-group-item list-group-item-action"
-              >
-                <Stack direction="horizontal" gap={2}>
-                  <FontAwesomeIcon icon={faCrown} size="sm" />
-                  <div>Subscriptions</div>
-                </Stack>
-              </NavLink>
-            </ListGroup>
-          </Card>
-        </Col>
+      <Stack gap={3}>
+        <Nav variant="pills">
+          <Nav.Item>
+            <Nav.Link as={NavLink} to="servers">
+              <Stack direction="horizontal" gap={2}>
+                <FontAwesomeIcon icon={faList} size="sm" />
+                <div>Servers</div>
+              </Stack>
+            </Nav.Link>
+          </Nav.Item>
 
-        <Col md={8}>
-          <Outlet />
-        </Col>
-      </Row>
+          <Nav.Item>
+            <Nav.Link as={NavLink} to="subscriptions">
+              <Stack direction="horizontal" gap={2}>
+                <FontAwesomeIcon icon={faCrown} size="sm" />
+                <div>Subscriptions</div>
+              </Stack>
+            </Nav.Link>
+          </Nav.Item>
+        </Nav>
+
+        <Row>
+          <Col md={12}>
+            <Outlet />
+          </Col>
+        </Row>
+      </Stack>
     </Container>
   );
 };

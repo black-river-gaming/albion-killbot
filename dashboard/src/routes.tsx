@@ -41,7 +41,10 @@ const routes = createRoutesFromElements(
       </Route>
       <Route element={<AdminGuard redirectTo="/" />}>
         <Route path="admin" element={<AdminPage />}>
-          <Route index element={<Navigate to="servers" replace={true} />} />
+          <Route
+            index
+            element={<Navigate to="subscriptions" replace={true} />}
+          />
           <Route path="servers" element={<AdminServersPage />} />
           <Route path="servers/:serverId" element={<AdminServerPage />} />
           <Route path="subscriptions" element={<AdminSubscriptionsPage />} />

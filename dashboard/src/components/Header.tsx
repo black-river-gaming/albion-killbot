@@ -22,6 +22,7 @@ import {
   Image,
   Nav,
   Navbar,
+  Stack,
 } from "react-bootstrap";
 import ContentLoader from "react-content-loader";
 import { NavLink } from "react-router-dom";
@@ -44,12 +45,16 @@ const Header = () => {
   const renderDesktopNav = ({ data, isFetching }: typeof user) => (
     <Nav className="d-none d-lg-flex">
       <Nav.Link href={DISCORD_SERVER_URL} target="_blank" rel="noreferrer">
-        <FontAwesomeIcon icon={faDiscord} />
-        <div>Join Server</div>
+        <Stack direction="horizontal" gap={2} className="py-2">
+          <FontAwesomeIcon icon={faDiscord} />
+          <div>Join Server</div>
+        </Stack>
       </Nav.Link>
       <Nav.Link as={NavLink} eventKey="premium" to="/premium">
-        <FontAwesomeIcon icon={faCrown} />
-        <div>Premium</div>
+        <Stack direction="horizontal" gap={2} className="py-2">
+          <FontAwesomeIcon icon={faCrown} />
+          <div>Premium</div>
+        </Stack>
       </Nav.Link>
 
       {isFetching ? (
@@ -65,12 +70,14 @@ const Header = () => {
       ) : data ? (
         <Dropdown>
           <Dropdown.Toggle as={BsNavLink} id="dropdown-header">
-            <div>{data.username}</div>
-            <Image
-              className="user-avatar"
-              roundedCircle
-              src={getUserPictureUrl(data)}
-            />
+            <Stack direction="horizontal" gap={2} className="py-2">
+              <div>{data.username}</div>
+              <Image
+                className="user-avatar"
+                roundedCircle
+                src={getUserPictureUrl(data)}
+              />
+            </Stack>
           </Dropdown.Toggle>
 
           <Dropdown.Menu variant="dark" align="end">
