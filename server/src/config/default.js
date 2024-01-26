@@ -1,14 +1,23 @@
 module.exports = {
-  events: {
-    batch: process.env.AMQP_QUEUE_EVENTS_BATCH || true,
+  amqp: {
+    uri: process.env.AMQP_URL,
+    queue: {
+      maxLength: Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000,
+      messageTtl: Number(process.env.AMQP_QUEUE_MESSAGE_TTL) || 1000 * 60 * 60 * 4, // 4 hours
+    },
+    events: {
+      batch: process.env.AMQP_QUEUE_EVENTS_BATCH || true,
+    },
+    battles: {
+      batch: process.env.AMQP_QUEUE_BATTLES_BATCH || true,
+    },
   },
 
-  battles: {
-    batch: process.env.AMQP_QUEUE_BATTLES_BATCH || true,
-  },
-
-  database: {
-    uri: process.env.MONGODB_URL,
+  aws: {
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_KEY,
+    region: process.env.AWS_REGION || "us-east-1",
+    bucket: process.env.AWS_BUCKET || "albion-killbot",
   },
 
   datadog: {
@@ -16,6 +25,8 @@ module.exports = {
   },
 
   discord: {
+    clientId: process.env.DISCORD_CLIENT_ID,
+    clientSecret: process.env.DISCORD_CLIENT_SECRET,
     token: process.env.DISCORD_TOKEN,
     community: {
       server: process.env.DISCORD_COMMUNITY_SERVER,
@@ -33,7 +44,13 @@ module.exports = {
     subdomain: process.env.LOGGLY_SUBDOMAIN,
   },
 
+  mongodb: {
+    uri: process.env.MONGODB_URL,
+  },
+
   stripe: {
+    accessToken: process.env.STRIPE_ACCESS_TOKEN,
+    product: process.env.STRIPE_PRODUCT,
     webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
   },
 

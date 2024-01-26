@@ -80,7 +80,7 @@ async function subscribe(client) {
 
   const queue_suffix = process.env.SHARD;
 
-  if (config.get("battles.batch")) return subscribeBattles(batchCb, { queue_suffix });
+  if (config.get("amqp.battles.batch")) return subscribeBattles(batchCb, { queue_suffix });
   return subscribeBattles(cb, { queue_suffix });
 }
 

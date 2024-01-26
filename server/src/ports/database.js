@@ -1,3 +1,4 @@
+const config = require("config");
 const { ObjectId } = require("mongodb");
 const mongodb = require("./adapters/mongoDbClient");
 
@@ -19,13 +20,11 @@ function returnObjectId(document) {
 }
 
 async function init() {
-  const { MONGODB_URL } = process.env;
-
-  if (!MONGODB_URL) {
+  if (!config.has("mongodb.uri")) {
     throw new Error("Please define MONGODB_URL environment variable with the MongoDB location.");
   }
 
-  await mongodb.connect(MONGODB_URL);
+  await mongodb.connect(config.get("mongodb.uri"));
 }
 
 async function cleanup() {

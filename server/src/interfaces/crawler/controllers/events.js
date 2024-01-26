@@ -37,7 +37,7 @@ async function fetchEvents(server) {
       continue;
     }
 
-    if (!config.get("events.batch")) {
+    if (!config.get("amqp.events.batch")) {
       logger.debug(`[${server}] Publishing event ${evt.EventId}`);
       await publishEvent(evt);
     } else {
@@ -47,7 +47,7 @@ async function fetchEvents(server) {
     latestEvent[server] = evt;
   }
 
-  if (config.get("events.batch")) {
+  if (config.get("amqp.events.batch")) {
     await publishEvent(eventsToPublish);
   }
 

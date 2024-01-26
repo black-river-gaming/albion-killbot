@@ -2,9 +2,6 @@ const amqp = require("amqplib");
 const logger = require("../../helpers/logger");
 const { sleep } = require("../../helpers/scheduler");
 
-const QUEUE_MAX_LENGTH = Number(process.env.AMQP_QUEUE_MAX_LENGTH) || 10000;
-const QUEUE_MESSAGE_TTL = 1000 * 60 * 60 * 4; // 4 hours
-
 let client;
 let pubChannel;
 let subscriptions = [];
@@ -49,7 +46,7 @@ const publish = async (exchange, data) => {
 
 // This will ensure that subscriptions will be restored when the connection resumes
 // It wraps the subscription function so it can be recalled on server reconnections
-const subscribe = async (exchange, queue, cb, { prefetch }) => {
+const subscribe = async (exchange, queue, cb, { prefetch, maxLength, messageTtl }) => {
   const subFn = async () => {
     if (!client) throw new Error("Client not connected");
 
@@ -67,8 +64,8 @@ const subscribe = async (exchange, queue, cb, { prefetch }) => {
     await channel.assertQueue(queue, {
       exclusive: true,
       durable: false,
-      maxLength: QUEUE_MAX_LENGTH,
-      messageTtl: QUEUE_MESSAGE_TTL,
+      maxLength,
+      messageTtl,
     });
 
     // Bind Queue

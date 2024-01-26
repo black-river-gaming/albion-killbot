@@ -115,7 +115,7 @@ async function subscribe(client) {
 
   const queue_suffix = process.env.SHARD;
 
-  if (config.get("events.batch")) return subscribeEvents(batchCb, { queue_suffix });
+  if (config.get("amqp.events.batch")) return subscribeEvents(batchCb, { queue_suffix });
   return await subscribeEvents(cb, { queue_suffix });
 }
 

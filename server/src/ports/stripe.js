@@ -1,14 +1,13 @@
+const config = require("config");
 const Stripe = require("stripe");
 const logger = require("../helpers/logger");
 
-const { DASHBOARD_URL, STRIPE_ACCESS_TOKEN, STRIPE_PRODUCT } = process.env;
-
-const isEnabled = STRIPE_ACCESS_TOKEN && STRIPE_PRODUCT;
-const stripe = Stripe(STRIPE_ACCESS_TOKEN, {
+const isEnabled = config.has("stripe.accessToken") && config.has("stripe.product");
+const stripe = Stripe(config.get("stripe.accessToken"), {
   apiVersion: "2020-08-27",
 });
 
-async function getPrices({ currency = "usd", product = STRIPE_PRODUCT }) {
+async function getPrices({ currency = "usd", product = config.get("stripe.product") }) {
   try {
     const prices = await stripe.prices.list({
       currency,
@@ -36,8 +35,8 @@ async function getPrices({ currency = "usd", product = STRIPE_PRODUCT }) {
 async function createCheckoutSession(priceId, owner) {
   try {
     const checkout = await stripe.checkout.sessions.create({
-      success_url: `${DASHBOARD_URL}/premium?status=success&checkout_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${DASHBOARD_URL}/premium?status=cancel`,
+      success_url: `${config.get("dashboard.url")}/premium?status=success&checkout_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${config.get("dashboard.url")}/premium?status=cancel`,
       client_reference_id: owner,
       mode: "subscription",
       line_items: [
@@ -63,7 +62,7 @@ async function createPortalSession(customerId) {
   try {
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: `${DASHBOARD_URL}/premium`,
+      return_url: `${config.get("dashboard.url")}/premium`,
     });
 
     return {

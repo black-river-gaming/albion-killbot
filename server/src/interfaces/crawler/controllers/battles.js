@@ -37,7 +37,7 @@ async function fetchBattles(server) {
       continue;
     }
 
-    if (!config.get("battles.batch")) {
+    if (!config.get("amqp.battles.batch")) {
       logger.debug(`[${server}] Publishing battle ${batl.id}`);
       await publishBattle(batl);
     } else {
@@ -47,7 +47,7 @@ async function fetchBattles(server) {
     latestBattle[server] = batl;
   }
 
-  if (config.get("battles.batch")) {
+  if (config.get("amqp.battles.batch")) {
     await publishBattle(battlesToPublish);
   }
 

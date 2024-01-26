@@ -1,10 +1,11 @@
+const config = require("config");
 const discordApiClient = require("./adapters/discordApiClient");
 const discordHelper = require("../helpers/discord");
 const { memoize } = require("../helpers/cache");
 const { DAY, MINUTE, SECOND } = require("../helpers/constants");
 const { sleep } = require("../helpers/scheduler");
 
-const { DISCORD_TOKEN } = process.env;
+const DISCORD_TOKEN = config.get("discord.token");
 
 async function getToken(code) {
   return await discordApiClient.exchangeCode(code);

@@ -1,16 +1,14 @@
+const config = require("config");
 const amqpClient = require("./adapters/amqpClient");
 const logger = require("../helpers/logger");
 
 const PREFETCH_COUNT = 1;
 
 async function init() {
-  const { AMQP_URL } = process.env;
-
-  if (!AMQP_URL) {
+  if (!config.has("amqp.uri")) {
     throw new Error("Please set AMQP_URL environment variable with the RabbitMQ location.");
   }
-
-  await amqpClient.connect(AMQP_URL);
+  await amqpClient.connect(config.get("amqp.uri"));
 }
 
 async function publish(exchange, data) {
@@ -44,6 +42,8 @@ async function subscribe(exchange, queue, callback) {
   };
   return await amqpClient.subscribe(exchange, queue, parsedAndCallback, {
     prefetch: PREFETCH_COUNT,
+    maxLength: config.get("amqp.queue.maxLength"),
+    messageTtl: config.get("amqp.queue.messageTtl"),
   });
 }
 

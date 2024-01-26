@@ -1,14 +1,13 @@
+const config = require("config");
 const { S3 } = require("@aws-sdk/client-s3");
 const logger = require("../../helpers/logger");
 
-const { AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_REGION, AWS_BUCKET } = process.env;
-
-const isEnabled = !!AWS_ACCESS_KEY && !!AWS_SECRET_KEY;
+const isEnabled = config.has("aws.accessKeyId") && config.has("aws.secretAccessKey");
 const client = new S3({
-  region: AWS_REGION || "us-east-1",
+  region: config.get("aws.region"),
   credentials: {
-    accessKeyId: AWS_ACCESS_KEY,
-    secretAccessKey: AWS_SECRET_KEY,
+    accessKeyId: config.get("aws.accessKeyId"),
+    secretAccessKey: config.get("aws.secretAccessKey"),
   },
   maxRetries: 3,
   httpOptions: {
@@ -19,7 +18,7 @@ const client = new S3({
 async function downloadFromS3(name, writer) {
   try {
     const response = await client.getObject({
-      Bucket: AWS_BUCKET || "albion-killbot",
+      Bucket: config.get("aws.bucket"),
       Key: name,
     });
 
@@ -42,7 +41,7 @@ async function uploadToS3(name, readStream) {
     logger.verbose(`Uploading "${name}" to AWS Bucket`);
 
     await client.putObject({
-      Bucket: AWS_BUCKET || "albion-killbot",
+      Bucket: config.get("aws.bucket"),
       Key: name,
       Body: readStream,
     });

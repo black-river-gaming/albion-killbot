@@ -1,12 +1,11 @@
 const axios = require("axios");
+const config = require("config");
 const logger = require("../../helpers/logger");
 const { sleep } = require("../../helpers/scheduler");
 
 const TOKEN_ENDPOINT = "/oauth2/token";
 const USERS_ENDPOINT = "/users";
 const GUILDS_ENDPOINT = "/guilds";
-
-const { DASHBOARD_URL, DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET } = process.env;
 
 const discordApiClient = axios.create({
   baseURL: "https://discord.com/api/v10",
@@ -36,11 +35,11 @@ discordApiClient.interceptors.response.use(null, async (error) => {
 
 async function exchangeCode(code) {
   const params = new URLSearchParams();
-  params.append("client_id", DISCORD_CLIENT_ID);
-  params.append("client_secret", DISCORD_CLIENT_SECRET);
+  params.append("client_id", config.get("discord.clientId"));
+  params.append("client_secret", config.get("discord.clientSecret"));
   params.append("grant_type", "authorization_code");
   params.append("code", code);
-  params.append("redirect_uri", `${DASHBOARD_URL}/auth`);
+  params.append("redirect_uri", `${config.get("dashboard.url")}/auth`);
 
   const res = await discordApiClient.post(TOKEN_ENDPOINT, params);
   return res.data;
@@ -48,8 +47,8 @@ async function exchangeCode(code) {
 
 async function refreshToken(refreshToken) {
   const params = new URLSearchParams();
-  params.append("client_id", DISCORD_CLIENT_ID);
-  params.append("client_secret", DISCORD_CLIENT_SECRET);
+  params.append("client_id", config.get("discord.clientId"));
+  params.append("client_secret", config.get("discord.clientSecret"));
   params.append("grant_type", "refresh_token");
   params.append("refresh_token", refreshToken);
 
