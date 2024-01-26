@@ -1,7 +1,6 @@
 require("dotenv").config();
 const parseArgs = require("minimist");
 const path = require("node:path");
-const logger = require("../src/helpers/logger");
 
 const args = parseArgs(process.argv.slice(2));
 if (args.mode) {
@@ -29,6 +28,8 @@ const modes = [
 ];
 
 async function start() {
+  const logger = require("../src/helpers/logger");
+
   const mode = modes.find((m) => m.name == process.env.MODE);
   if (!mode) {
     logger.info(`Please select an mode from the following:\n`);

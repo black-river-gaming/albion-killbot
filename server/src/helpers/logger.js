@@ -1,3 +1,4 @@
+const config = require("config");
 const { createLogger, format, transports } = require("winston");
 const { Loggly } = require("winston-loggly-bulk");
 const DatadogWinston = require("datadog-winston");
@@ -6,8 +7,8 @@ const fastRedact = require("fast-redact");
 const os = require("os");
 const { printSpace } = require("./utils");
 
-const { NODE_ENV, HOSTNAME, MODE, DEBUG_LEVEL, LOGGLY_TOKEN, LOGGLY_SUBDOMAIN, DATADOG_API_KEY } = process.env;
-const level = DEBUG_LEVEL || "info";
+const { NODE_ENV, HOSTNAME, MODE } = process.env;
+const level = config.get("logger.level");
 
 const redact = fastRedact({
   paths: ["notification.files", "error.requestBody.files", "response.request"],
@@ -63,11 +64,11 @@ if (NODE_ENV !== "production") {
   logger.add(new transports.Console({ level }));
 }
 
-if (DATADOG_API_KEY) {
+if (config.has("datadog.apiKey")) {
   logger.add(
     new DatadogWinston({
       level: "debug",
-      apiKey: DATADOG_API_KEY,
+      apiKey: config.get("datadog.apiKey"),
       hostname: HOSTNAME || os.hostname(),
       service: MODE,
       ddsource: "nodejs",
@@ -75,11 +76,11 @@ if (DATADOG_API_KEY) {
   );
 }
 
-if (LOGGLY_TOKEN && LOGGLY_SUBDOMAIN) {
+if (config.has("loggly.token") && config.has("loggly.subdomain")) {
   logger.add(
     new Loggly({
-      token: LOGGLY_TOKEN,
-      subdomain: LOGGLY_SUBDOMAIN,
+      token: config.get("loggly.token"),
+      subdomain: config.get("loggly.subdomain"),
       tags: [`albion-killbot`, MODE],
       json: true,
     }),

@@ -11,16 +11,26 @@ module.exports = {
     uri: process.env.MONGODB_URL,
   },
 
+  datadog: {
+    apiKey: process.env.DATADOG_API_KEY,
+  },
+
   discord: {
     token: process.env.DISCORD_TOKEN,
     community: {
       server: process.env.DISCORD_COMMUNITY_SERVER,
       premiumRole: process.env.DISCORD_COMMUNITY_PREMIUM_ROLE,
+      admins: process.env.DISCORD_COMMUNITY_ADMINS.split(",") || [],
     },
   },
 
-  dashboard: {
-    url: process.env.DASHBOARD_URL || "http://localhost",
+  logger: {
+    level: process.env.DEBUG_LEVEL || "info",
+  },
+
+  loggly: {
+    token: process.env.LOGGLY_TOKEN,
+    subdomain: process.env.LOGGLY_SUBDOMAIN,
   },
 
   stripe: {
@@ -39,6 +49,10 @@ module.exports = {
       interval: process.env.RATE_LIMIT_WINDOW || 60000,
       requests: process.env.RATE_LIMIT_REQUESTS || 0,
     },
+  },
+
+  dashboard: {
+    url: process.env.DASHBOARD_URL || "http://localhost",
   },
 
   bot: {

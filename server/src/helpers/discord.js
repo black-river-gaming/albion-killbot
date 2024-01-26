@@ -1,10 +1,9 @@
+const config = require("config");
 const { PermissionFlagsBits, PermissionsBitField } = require("discord.js");
 
-const { DISCORD_COMMUNITY_ADMINS = "" } = process.env;
-
 const isCommunityAdmin = (id) => {
-  const communityAdmins = DISCORD_COMMUNITY_ADMINS.split(",");
-  return communityAdmins.includes(id);
+  if (!config.has("discord.community.admins")) return false;
+  return config.get("discord.community.admins").includes(id);
 };
 
 const transformUser = (user) => {
