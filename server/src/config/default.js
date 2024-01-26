@@ -68,9 +68,9 @@ module.exports = {
   },
 
   stripe: {
-    accessToken: process.env.STRIPE_ACCESS_TOKEN,
-    product: process.env.STRIPE_PRODUCT,
-    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+    accessToken: process.env.STRIPE_ACCESS_TOKEN || null,
+    product: process.env.STRIPE_PRODUCT || null,
+    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || null,
   },
 
   api: {
