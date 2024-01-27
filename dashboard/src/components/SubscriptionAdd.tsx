@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Modal, Stack } from "react-bootstrap";
-import { useUpdateSubscriptionMutation } from "store/api/admin";
+import { useCreateAdminSubscriptionMutation } from "store/api/admin";
 
 interface Props {
   serverId?: string;
@@ -28,18 +28,18 @@ const SubscriptionAdd = ({ serverId }: Props) => {
   const [players, setPlayers] = useState(0);
   const [guilds, setGuilds] = useState(0);
   const [alliances, setAlliances] = useState(0);
-  const [dispatchUpdateSubscription, updateSubscription] =
-    useUpdateSubscriptionMutation();
+  const [dispatchCreateSubscription, createSubscription] =
+    useCreateAdminSubscriptionMutation();
 
   useEffect(() => {
-    if (updateSubscription.isSuccess) setShow(false);
-  }, [updateSubscription.isSuccess]);
+    if (createSubscription.isSuccess) setShow(false);
+  }, [createSubscription.isSuccess]);
 
   const handleSubscriptionForm = async () => {
-    dispatchUpdateSubscription({
-      serverId: server,
+    dispatchCreateSubscription({
       subscription: {
         owner,
+        server,
         expires: expiresNever ? "never" : new Date(expires).toISOString(),
         limits: limits
           ? {

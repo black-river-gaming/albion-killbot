@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Modal, Stack } from "react-bootstrap";
-import { useUpdateSubscriptionMutation } from "store/api/admin";
-import { Subscription, SubscriptionPartial } from "types";
+import { useUpdateAdminSubscriptionMutation } from "store/api/admin";
+import { ISubscriptionPartial, Subscription } from "types";
 
 interface SubscriptionEditProps {
-  subscription: Subscription | SubscriptionPartial;
+  subscription: Subscription | ISubscriptionPartial;
 }
 
 const SubscriptionEdit = ({ subscription }: SubscriptionEditProps) => {
@@ -36,7 +36,7 @@ const SubscriptionEdit = ({ subscription }: SubscriptionEditProps) => {
     subscription.limits?.alliances || 0
   );
   const [dispatchUpdateSubscription, updateSubscription] =
-    useUpdateSubscriptionMutation();
+    useUpdateAdminSubscriptionMutation();
 
   useEffect(() => {
     if (updateSubscription.isSuccess) setShowManage(false);

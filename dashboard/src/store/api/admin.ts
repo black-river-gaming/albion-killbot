@@ -1,10 +1,10 @@
-import {
-  ServerPartial,
-  Subscription,
-  SubscriptionPartial,
-  UpdateSubscription,
-} from "types";
+import { ISubscriptionPartial, ServerPartial, Subscription } from "types";
 import api from "./index";
+import {
+  ICreateSubscription,
+  IFetchSubscriptions,
+  IUpdateSubscription,
+} from "./types";
 
 const admin = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -19,9 +19,30 @@ const admin = api.injectEndpoints({
       }),
       invalidatesTags: ["Admin"],
     }),
-    updateSubscription: builder.mutation<
+
+    fetchAdminSubscriptions: builder.query<
+      ISubscriptionPartial[],
+      IFetchSubscriptions
+    >({
+      query: (params) => ({
+        url: `/admin/subscriptions`,
+        params,
+      }),
+      providesTags: ["Subscription"],
+    }),
+    createAdminSubscription: builder.mutation<
       Subscription,
-      { serverId: string; subscription: UpdateSubscription }
+      { subscription: ICreateSubscription }
+    >({
+      query: ({ subscription }) => ({
+        url: `/admin/subscriptions`,
+        method: "POST",
+        body: subscription,
+      }),
+    }),
+    updateAdminSubscription: builder.mutation<
+      Subscription,
+      { serverId: string; subscription: IUpdateSubscription }
     >({
       query: ({ serverId, subscription }) => ({
         url: `/admin/servers/${serverId}/subscription`,
@@ -32,37 +53,24 @@ const admin = api.injectEndpoints({
       }),
       invalidatesTags: ["Admin", "Server", "Subscription"],
     }),
-    deleteSubscription: builder.mutation<void, { serverId: string }>({
+    deleteAdminSubscription: builder.mutation<void, { serverId: string }>({
       query: ({ serverId }) => ({
         url: `/admin/servers/${serverId}/subscription`,
         method: "DELETE",
       }),
       invalidatesTags: ["Admin", "Server", "Subscription"],
     }),
-    fetchAdminSubscriptions: builder.query<
-      SubscriptionPartial[],
-      {
-        server?: string;
-        owner?: string;
-        status?: "free" | "active" | "expired";
-        stripe?: string;
-      }
-    >({
-      query: (params) => ({
-        url: `/admin/subscriptions`,
-        params,
-      }),
-      providesTags: ["Subscription"],
-    }),
   }),
 });
 
 export const {
   useFetchAdminServersQuery,
-  useDeleteSubscriptionMutation,
   useDoLeaveServerMutation,
+
   useLazyFetchAdminSubscriptionsQuery,
-  useUpdateSubscriptionMutation,
+  useCreateAdminSubscriptionMutation,
+  useUpdateAdminSubscriptionMutation,
+  useDeleteAdminSubscriptionMutation,
 } = admin;
 
 export default admin;

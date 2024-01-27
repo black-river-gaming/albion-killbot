@@ -1,9 +1,9 @@
 import { Button, Card, Col, Row, Stack, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { SubscriptionPartial } from "types";
+import { ISubscriptionPartial } from "types";
 
 interface SubscriptionListItemProps {
-  subscription: SubscriptionPartial;
+  subscription: ISubscriptionPartial;
 }
 
 const SubscriptionListItem = ({ subscription }: SubscriptionListItemProps) => (

@@ -132,19 +132,39 @@ export const toastSlice = createSlice({
     );
 
     builder.addMatcher(
-      admin.endpoints.updateSubscription.matchRejected,
+      admin.endpoints.createAdminSubscription.matchFulfilled,
+      (state) => {
+        state.push({
+          id: uid(),
+          theme: "success",
+          message: "Subscription created.",
+        });
+      }
+    );
+    builder.addMatcher(
+      admin.endpoints.createAdminSubscription.matchRejected,
       (state, action) => {
         if (!isRejectedWithValue(action)) return;
         state.push({
           id: uid(),
           theme: "danger",
-          message:
-            "Failed to update server subscription. Please try again later.",
+          message: "Failed to create subscription. Please try again later.",
         });
       }
     );
     builder.addMatcher(
-      admin.endpoints.deleteSubscription.matchRejected,
+      admin.endpoints.updateAdminSubscription.matchRejected,
+      (state, action) => {
+        if (!isRejectedWithValue(action)) return;
+        state.push({
+          id: uid(),
+          theme: "danger",
+          message: "Failed to update subscription. Please try again later.",
+        });
+      }
+    );
+    builder.addMatcher(
+      admin.endpoints.deleteAdminSubscription.matchRejected,
       (state, action) => {
         if (!isRejectedWithValue(action)) return;
         state.push({

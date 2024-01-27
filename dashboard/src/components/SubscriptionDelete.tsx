@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { useDeleteSubscriptionMutation } from "store/api/admin";
-import { Subscription, SubscriptionPartial } from "types";
+import { useDeleteAdminSubscriptionMutation } from "store/api/admin";
+import { ISubscriptionPartial, Subscription } from "types";
 
 interface SubscriptionDeleteProps {
-  subscription: Subscription | SubscriptionPartial;
+  subscription: Subscription | ISubscriptionPartial;
 }
 
 const SubscriptionDelete = ({ subscription }: SubscriptionDeleteProps) => {
   const [showDelete, setShowDelete] = useState(false);
 
   const [dispatchDeleteSubscription, deleteSubscription] =
-    useDeleteSubscriptionMutation();
+    useDeleteAdminSubscriptionMutation();
 
   useEffect(() => {
     if (deleteSubscription.isSuccess) setShowDelete(false);
