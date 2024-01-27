@@ -232,7 +232,6 @@ const useHistoryLootValue = async (server, itemList, qualities) => {
           };
     delete item.data;
   });
-  console.log(history);
 
   const calculateLootValue = (items) =>
     items.reduce((lootValue, item) => {
