@@ -33,26 +33,36 @@ const SubscriptionPage = () => {
 
     return (
       <div>
-        <Card className="d-flex justify-content-start p-2">
-          {subscription ? (
-            <div>
-              <span>Server Status: </span>
-              <span className="text-primary">
-                {subscription.expires === "never"
-                  ? `Activated`
-                  : `${
-                      new Date(subscription.expires).getTime() >
-                      new Date().getTime()
-                        ? `Active until `
-                        : `Expired at `
-                    } ${new Date(subscription.expires).toLocaleString()}`}
-              </span>
-            </div>
-          ) : (
-            <div>
-              This server doesn't have an active subscription. Please, go to{" "}
-              <Link to="/premium">Premium</Link> page to assign a subscription.
-            </div>
+        <Card className="d-flex justify-content-start">
+          <Card.Body>
+            {subscription ? (
+              <div>
+                <span>Server Status: </span>
+                <span className="text-primary">
+                  {subscription.expires === "never"
+                    ? `Activated`
+                    : `${
+                        new Date(subscription.expires).getTime() >
+                        new Date().getTime()
+                          ? `Active until `
+                          : `Expired at `
+                      } ${new Date(subscription.expires).toLocaleString()}`}
+                </span>
+              </div>
+            ) : (
+              <div>
+                This server doesn't have an active subscription. Please, go to{" "}
+                <Link to="/premium">Premium</Link> page to assign a
+                subscription.
+              </div>
+            )}
+          </Card.Body>
+          {user.data?.admin && (
+            <Card.Footer className="d-flex justify-content-end">
+              <Link to={`/admin/subscriptions/${server.data?.subscription.id}`}>
+                <Button variant="primary">Admin</Button>
+              </Link>
+            </Card.Footer>
           )}
         </Card>
         {subscription?.stripe && subscription.stripe?.price && (

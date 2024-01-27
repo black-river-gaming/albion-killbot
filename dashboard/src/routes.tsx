@@ -15,7 +15,7 @@ import PremiumPage from "pages/PremiumPage";
 import RankingsPage from "pages/RankingsPage";
 import ServerPage from "pages/ServerPage";
 import SettingsPage from "pages/SettingsPage";
-import SubscriptionPage from "pages/Subscription";
+import SubscriptionPage from "pages/SubscriptionPage";
 import TrackPage from "pages/TrackPage";
 import { createRoutesFromElements, Navigate, Route } from "react-router-dom";
 
