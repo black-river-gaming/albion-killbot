@@ -20,7 +20,7 @@ const admin = api.injectEndpoints({
       invalidatesTags: ["Admin"],
     }),
 
-    fetchAdminSubscriptions: builder.query<
+    findAdminSubscriptions: builder.query<
       ISubscriptionPartial[],
       IFetchSubscriptions
     >({
@@ -30,6 +30,7 @@ const admin = api.injectEndpoints({
       }),
       providesTags: ["Subscription"],
     }),
+
     createAdminSubscription: builder.mutation<
       Subscription,
       { subscription: ICreateSubscription }
@@ -67,7 +68,7 @@ export const {
   useFetchAdminServersQuery,
   useDoLeaveServerMutation,
 
-  useLazyFetchAdminSubscriptionsQuery,
+  useLazyFindAdminSubscriptionsQuery,
   useCreateAdminSubscriptionMutation,
   useUpdateAdminSubscriptionMutation,
   useDeleteAdminSubscriptionMutation,
