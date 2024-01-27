@@ -31,7 +31,7 @@ albionDataApiClient.interceptors.request.use((config) => {
   return config;
 });
 
-async function getPrices(itemList, { server, locations, qualities }) {
+async function getCurrentPrices(itemList, { server, locations, qualities }) {
   const res = await albionDataApiClient.get(`Prices/${itemList}.json`, {
     server,
     params: {
@@ -42,6 +42,19 @@ async function getPrices(itemList, { server, locations, qualities }) {
   return res.data;
 }
 
+async function getHistoryPrices(itemList, { server, locations, qualities, timeScale = 24 }) {
+  const res = await albionDataApiClient.get(`history/${itemList}.json`, {
+    server,
+    params: {
+      locations,
+      qualities,
+      "time-scale": timeScale,
+    },
+  });
+  return res.data;
+}
+
 module.exports = {
-  getPrices,
+  getCurrentPrices,
+  getHistoryPrices,
 };

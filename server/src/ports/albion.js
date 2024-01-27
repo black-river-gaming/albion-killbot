@@ -1,3 +1,5 @@
+const config = require("config");
+
 const albionApiClient = require("./adapters/albionApiClient");
 const albionDataApiClient = require("./adapters/albionDataApiClient");
 const itemCDNClient = require("./adapters/itemCDNClient");
@@ -177,6 +179,82 @@ async function search(query, { server = SERVERS.WEST }) {
   }
 }
 
+const useCurrentLootValue = async (server, itemList, qualities) => {
+  const itemPriceData = await albionDataApiClient.getCurrentPrices(itemList.join(), {
+    server,
+    locations: ["Thetford", "Fort Sterling", "Martlock", "Bridgewatch", "Lymhurst"].join(),
+    qualities,
+  });
+  if (!itemPriceData && itemPriceData.length === 0) return { itemPriceData: null };
+
+  const calculateLootValue = (items) =>
+    items.reduce((lootValue, item) => {
+      let prices = itemPriceData
+        .filter(
+          (priceData) =>
+            priceData.item_id === item.Type &&
+            priceData.quality === Math.max(item.Quality, 1) &&
+            priceData.sell_price_min > 0,
+        )
+        .map((priceData) => priceData.sell_price_min);
+      if (prices.length === 0) return lootValue;
+      // Remove values that are too unrealistic (150% diff tolerance to min value)
+      if (prices.length >= 2) {
+        const minPrice = prices.reduce((min, price) => Math.min(min, price), prices[0]);
+        prices = prices.filter((price) => Math.abs(price - minPrice) < minPrice * 1.5);
+      }
+
+      return Math.round(lootValue + average(...prices) * item.Count);
+    }, 0);
+
+  return {
+    calculateLootValue,
+    itemPriceData,
+  };
+};
+
+const useHistoryLootValue = async (server, itemList, qualities) => {
+  const history = await albionDataApiClient.getHistoryPrices(itemList, {
+    server,
+    locations: ["Thetford", "Fort Sterling", "Martlock", "Bridgewatch", "Lymhurst"].join(),
+    qualities,
+  });
+  if (!history && history.length === 0) return { itemPriceData: null };
+  // We are only interested in the last item of data
+  history.forEach((item) => {
+    item.lastData =
+      item.data.length > 0
+        ? item.data.pop()
+        : {
+            item_count: 0,
+            avg_price: 0,
+            timestamp: null,
+          };
+    delete item.data;
+  });
+  console.log(history);
+
+  const calculateLootValue = (items) =>
+    items.reduce((lootValue, item) => {
+      const prices = history
+        .filter(
+          (priceData) =>
+            priceData.item_id === item.Type &&
+            priceData.quality === Math.max(item.Quality, 1) &&
+            priceData.lastData.avg_price > 0,
+        )
+        .map((priceData) => priceData.lastData.avg_price);
+      if (prices.length === 0) return lootValue;
+
+      return Math.round(lootValue + average(...prices) * item.Count);
+    }, 0);
+
+  return {
+    calculateLootValue,
+    itemPriceData: history,
+  };
+};
+
 async function getLootValue(event, { server = SERVERS.WEST }) {
   return memoize(
     `albion.events.${server}.${event.EventId}.lootValue`,
@@ -197,33 +275,11 @@ async function getLootValue(event, { server = SERVERS.WEST }) {
           .filter((item, i, items) => items.indexOf(item) === i)
           .sort();
 
-        const itemPriceData = await albionDataApiClient.getPrices(itemList.join(), {
-          server,
-          locations: ["Thetford", "Fort Sterling", "Martlock", "Bridgewatch", "Lymhurst"].join(),
-          qualities,
-        });
-        if (!itemPriceData && itemPriceData.length === 0) return null;
+        const { itemPriceData, calculateLootValue } = config.get("features.events.useHistoryPrices")
+          ? await useHistoryLootValue(server, itemList.join(), qualities)
+          : await useCurrentLootValue(server, itemList.join(), qualities);
 
-        const calculateLootValue = (items) =>
-          items.reduce((lootValue, item) => {
-            let prices = itemPriceData
-              .filter(
-                (priceData) =>
-                  priceData.item_id === item.Type &&
-                  priceData.quality === Math.max(item.Quality, 1) &&
-                  priceData.sell_price_min > 0,
-              )
-              .map((priceData) => priceData.sell_price_min);
-            if (prices.length === 0) return lootValue;
-            // Remove values that are too unrealistic (150% diff tolerance to min value)
-            if (prices.length >= 2) {
-              const minPrice = prices.reduce((min, price) => Math.min(min, price), prices[0]);
-              prices = prices.filter((price) => Math.abs(price - minPrice) < minPrice * 1.5);
-            }
-
-            return Math.round(lootValue + average(...prices) * item.Count);
-          }, 0);
-
+        if (!itemPriceData || !calculateLootValue) return null;
         return {
           equipment: calculateLootValue(victimItems.equipment),
           inventory: calculateLootValue(victimItems.inventory),

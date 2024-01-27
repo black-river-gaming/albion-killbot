@@ -38,6 +38,9 @@ module.exports = {
   },
 
   features: {
+    events: {
+      useHistoryPrices: getBool(process.env.FEATURE_USE_HISTORY_PRICES, false),
+    },
     guildRankings: getBool(process.env.GUILD_RANKINGS, false),
     limits: {
       players: getNumber(process.env.MAX_PLAYERS, 10),

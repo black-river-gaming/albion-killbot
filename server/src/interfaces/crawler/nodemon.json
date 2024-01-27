@@ -2,5 +2,5 @@
   "exec": "npm run start:crawler",
   "watch": ["./src/config", "./src/helpers", "./src/ports", "./src/services", "./src/interfaces/crawler"],
   "ignore": ["node_modules", "__tests__"],
-  "legacyWatch": true
+  "delay": 5000
 }
