@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { useDeleteSubscriptionMutation } from "store/api";
+import { useDeleteSubscriptionMutation } from "store/api/admin";
 import { Subscription, SubscriptionPartial } from "types";
 
 interface SubscriptionDeleteProps {

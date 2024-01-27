@@ -1,6 +1,7 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
+import SubscriptionAdd from "components/SubscriptionAdd";
 import SubscriptionList from "components/SubscriptionList";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { useEffect } from "react";
@@ -11,10 +12,8 @@ import {
   setSubscriptionStatus,
   setSubscriptionStripe,
 } from "store/admin";
-import {
-  useFetchConstantsQuery,
-  useLazyFetchAdminSubscriptionsQuery,
-} from "store/api";
+import { useFetchConstantsQuery } from "store/api";
+import { useLazyFetchAdminSubscriptionsQuery } from "store/api/admin";
 
 const AdminSubscriptionsPage = () => {
   const constants = useFetchConstantsQuery();
@@ -124,6 +123,7 @@ const AdminSubscriptionsPage = () => {
               className="justify-content-end"
               gap={2}
             >
+              <SubscriptionAdd />
               <Button variant="primary" type="submit">
                 <FontAwesomeIcon icon={faSearch} />
                 <div>Search</div>

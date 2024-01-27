@@ -4,7 +4,7 @@ import Loader from "components/Loader";
 import ServerList from "components/ServerList";
 import { useEffect, useState } from "react";
 import { Button, Card, Form, InputGroup, Stack } from "react-bootstrap";
-import { useFetchAdminServersQuery } from "store/api";
+import { useFetchAdminServersQuery } from "store/api/admin";
 import { ServerPartial } from "types";
 
 const AdminServersPage = () => {

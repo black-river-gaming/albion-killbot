@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import admin from "./admin";
-import { api } from "./api";
+import api from "./api";
 import settings from "./settings";
 import toast from "./toast";
 import track from "./track";

@@ -3,7 +3,8 @@ import {
   isRejectedWithValue,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import { api } from "./api";
+import admin from "./api/admin";
+import api from "./api/index";
 
 interface ToastMsg {
   id: string;
@@ -59,11 +60,14 @@ export const toastSlice = createSlice({
       }
     );
 
-    builder.addMatcher(api.endpoints.doLeaveServer.matchFulfilled, (state) => {
-      state.push({ id: uid(), theme: "success", message: "Left server." });
-    });
     builder.addMatcher(
-      api.endpoints.doLeaveServer.matchRejected,
+      admin.endpoints.doLeaveServer.matchFulfilled,
+      (state) => {
+        state.push({ id: uid(), theme: "success", message: "Left server." });
+      }
+    );
+    builder.addMatcher(
+      admin.endpoints.doLeaveServer.matchRejected,
       (state, action) => {
         if (!isRejectedWithValue(action)) return;
         state.push({
@@ -128,7 +132,7 @@ export const toastSlice = createSlice({
     );
 
     builder.addMatcher(
-      api.endpoints.updateSubscription.matchRejected,
+      admin.endpoints.updateSubscription.matchRejected,
       (state, action) => {
         if (!isRejectedWithValue(action)) return;
         state.push({
@@ -140,7 +144,7 @@ export const toastSlice = createSlice({
       }
     );
     builder.addMatcher(
-      api.endpoints.deleteSubscription.matchRejected,
+      admin.endpoints.deleteSubscription.matchRejected,
       (state, action) => {
         if (!isRejectedWithValue(action)) return;
         state.push({

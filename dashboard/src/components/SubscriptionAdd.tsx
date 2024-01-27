@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Modal, Stack } from "react-bootstrap";
-import { useUpdateSubscriptionMutation } from "store/api";
+import { useUpdateSubscriptionMutation } from "store/api/admin";
 
-interface ManageSubscriptionProps {
-  serverId: string;
+interface Props {
+  serverId?: string;
 }
 
-const SubscriptionEdit = ({ serverId }: ManageSubscriptionProps) => {
+const SubscriptionAdd = ({ serverId }: Props) => {
   const [show, setShow] = useState(false);
 
   const [owner, setOwner] = useState("");
+  const [server, setServer] = useState(serverId || "");
   const [expires, setExpires] = useState(
     new Date()
       .toLocaleString("sv-SE", {
@@ -36,7 +37,7 @@ const SubscriptionEdit = ({ serverId }: ManageSubscriptionProps) => {
 
   const handleSubscriptionForm = async () => {
     dispatchUpdateSubscription({
-      serverId,
+      serverId: server,
       subscription: {
         owner,
         expires: expiresNever ? "never" : new Date(expires).toISOString(),
@@ -76,6 +77,17 @@ const SubscriptionEdit = ({ serverId }: ManageSubscriptionProps) => {
                   value={owner}
                   onChange={(e) => setOwner(e.target.value)}
                   required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Please input an owner.
+                </Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group controlId="server">
+                <Form.Label>Server</Form.Label>
+                <Form.Control
+                  value={server}
+                  onChange={(e) => setServer(e.target.value)}
                 />
                 <Form.Control.Feedback type="invalid">
                   Please input an owner.
@@ -157,4 +169,4 @@ const SubscriptionEdit = ({ serverId }: ManageSubscriptionProps) => {
   );
 };
 
-export default SubscriptionEdit;
+export default SubscriptionAdd;

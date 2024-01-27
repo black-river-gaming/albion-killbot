@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Modal, Stack } from "react-bootstrap";
-import { useUpdateSubscriptionMutation } from "store/api";
+import { useUpdateSubscriptionMutation } from "store/api/admin";
 import { Subscription, SubscriptionPartial } from "types";
 
 interface SubscriptionEditProps {
