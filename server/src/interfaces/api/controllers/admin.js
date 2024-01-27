@@ -75,10 +75,40 @@ async function getSubscriptions(req, res) {
   }
 }
 
+async function createSubscription(req, res) {
+  const { owner, server, expires, limits } = req.body;
+  const subscription = {
+    owner,
+    server,
+    expires,
+    limits,
+  };
+
+  try {
+    if (expires !== "never") {
+      const date = moment(expires, moment.ISO_8601, true);
+      if (!date.isValid()) return res.sendStatus(422);
+      subscription.expires = date.toDate();
+    }
+
+    const createdSubscription = await subscriptionsService.addSubscription(subscription);
+
+    return res.send(createdSubscription);
+  } catch (error) {
+    logger.error(`Unable to create subscription: ${error.message}`, {
+      error,
+      subscription,
+    });
+    return res.sendStatus(500);
+  }
+}
+
 module.exports = {
   getServers,
-  getSubscriptions,
   leaveServer,
   removeServerSubscription,
   setServerSubscription,
+
+  getSubscriptions,
+  createSubscription,
 };

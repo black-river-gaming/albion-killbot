@@ -116,9 +116,9 @@ router.delete(`/servers/:serverId/subscription`, adminController.removeServerSub
  * @openapi
  * /admin/subscriptions:
  *   get:
- *     tags: [Admin]
- *     summary: Get server subscriptions
- *     operationId:  getSubscriptions
+ *     tags: [Admin, Subscriptions]
+ *     summary: Get subscriptions
+ *     operationId: getSubscriptions
  *     parameters:
  *     - name: server
  *       in: query
@@ -157,6 +157,30 @@ router.delete(`/servers/:serverId/subscription`, adminController.removeServerSub
  *
  */
 router.get(`/subscriptions`, adminController.getSubscriptions);
+
+/**
+ * @openapi
+ * /admin/subscriptions:
+ *   post:
+ *     tags: [Admin, Subscriptions]
+ *     summary: Create subscription
+ *     operationId: createSubscription
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SubscriptionPartial'
+ *     responses:
+ *       201:
+ *         description: "Subscription created"
+ *       403:
+ *         $ref: "#/components/responses/Unauthorized"
+ *       422:
+ *         description: "Invalid expire date"
+ *       500:
+ *         $ref: "#/components/responses/ServerError"
+ */
+router.post(`/subscriptions`, adminController.createSubscription);
 
 module.exports = {
   path: "/admin",

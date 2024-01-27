@@ -24,3 +24,13 @@ function init(app) {
 module.exports = {
   init,
 };
+
+/**
+ * @openapi
+ * components:
+ *   responses:
+ *     Unauthorized:
+ *       description: Unable to authenticate
+ *     ServerError:
+ *       description: Internal server error
+ */
