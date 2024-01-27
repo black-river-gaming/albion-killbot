@@ -1,3 +1,5 @@
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Button, Form, Modal, Stack } from "react-bootstrap";
 import { useCreateAdminSubscriptionMutation } from "store/api/admin";
@@ -54,8 +56,9 @@ const SubscriptionAdd = ({ serverId }: Props) => {
 
   return (
     <>
-      <Button variant="primary" onClick={() => setShow(true)}>
-        Add
+      <Button variant="secondary" onClick={() => setShow(true)}>
+        <FontAwesomeIcon icon={faPlus} />
+        <div>Add</div>
       </Button>
 
       <Modal show={show} onHide={() => setShow(false)}>

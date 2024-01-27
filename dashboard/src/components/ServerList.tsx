@@ -1,6 +1,13 @@
+import { useAppDispatch } from "helpers/hooks";
 import { useEffect, useState } from "react";
 import { Button, Pagination, Stack } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  setSubscriptionOwner,
+  setSubscriptionServer,
+  setSubscriptionStatus,
+  setSubscriptionStripe,
+} from "store/admin";
 import { ServerPartial } from "types";
 import LeaveServer from "./LeaveServer";
 import ServerCard from "./ServerCard";
@@ -12,6 +19,9 @@ interface ServerListProps {
 }
 
 const ServerList = ({ servers, className, pageSize = 10 }: ServerListProps) => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const [width, setWidth] = useState(window.innerWidth);
   const PAGE_GAP = 2 + Math.floor(width / 450);
 
@@ -62,14 +72,26 @@ const ServerList = ({ servers, className, pageSize = 10 }: ServerListProps) => {
       </h5>
     );
 
+  const navigateServerSubscriptions = (serverId: string) => {
+    dispatch(setSubscriptionServer(serverId));
+    dispatch(setSubscriptionOwner(""));
+    dispatch(setSubscriptionStatus("All"));
+    dispatch(setSubscriptionStripe(""));
+
+    navigate("/admin/subscriptions");
+  };
+
   return (
     <Stack gap={3} className={className}>
       {items.map((server) => (
         <ServerCard key={server.id} server={server} list>
           <Stack gap={2} direction="horizontal">
-            <Link to={`/admin/servers/${server.id}`}>
-              <Button variant="primary">Manage</Button>
-            </Link>
+            <Button
+              variant="primary"
+              onClick={() => navigateServerSubscriptions(server.id)}
+            >
+              Subscriptions
+            </Button>
 
             <Link to={`/dashboard/${server.id}`}>
               <Button variant="primary">Dashboard</Button>
