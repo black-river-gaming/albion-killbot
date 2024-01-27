@@ -1,8 +1,8 @@
 import App from "App";
 import AdminGuard from "pages/admin/AdminGuard";
 import AdminPage from "pages/admin/AdminPage";
-import AdminServerPage from "pages/admin/servers/AdminServerPage";
 import AdminServersPage from "pages/admin/servers/AdminServersPage";
+import AdminSubscriptionPage from "pages/admin/subscriptions/AdminSubscriptionPage";
 import AdminSubscriptionsPage from "pages/admin/subscriptions/AdminSubscriptionsPage";
 import Auth from "pages/Auth";
 import AuthGuard from "pages/AuthGuard";
@@ -46,8 +46,11 @@ const routes = createRoutesFromElements(
             element={<Navigate to="subscriptions" replace={true} />}
           />
           <Route path="servers" element={<AdminServersPage />} />
-          <Route path="servers/:serverId" element={<AdminServerPage />} />
           <Route path="subscriptions" element={<AdminSubscriptionsPage />} />
+          <Route
+            path="subscriptions/:subscriptionId"
+            element={<AdminSubscriptionPage />}
+          />
         </Route>
       </Route>
       <Route

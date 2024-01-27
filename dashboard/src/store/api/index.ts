@@ -153,14 +153,15 @@ export const {
   useFetchServersQuery,
   useFetchSubscriptionsQuery,
   useFetchUserQuery,
+  useLazyFetchServerQuery,
   useLazyFetchUserQuery,
   useLazySearchQuery,
   useLogoutMutation,
   useManageSubscriptionMutation,
   useSearchQuery,
+  useTestNotificationSettingsMutation,
   useUpdateSettingsMutation,
   useUpdateTrackMutation,
-  useTestNotificationSettingsMutation,
 } = api;
 
 export default api;
