@@ -2,46 +2,22 @@ import LeaveServer from "components/LeaveServer";
 import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
 import SubscriptionDelete from "components/SubscriptionDelete";
-import SubscriptionEdit from "components/SubscriptionEdit";
 import SubscriptionPriceCard from "components/SubscriptionPriceCard";
-import { useEffect } from "react";
 import { Button, Card, Stack } from "react-bootstrap";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { useLazyFetchServerQuery } from "store/api";
 import { useGetAdminSubscriptionQuery } from "store/api/admin";
 
 const AdminSubscriptionPage = () => {
   const { subscriptionId = "" } = useParams();
   const subscription = useGetAdminSubscriptionQuery({ id: subscriptionId });
-  const [fetchServer, server] = useLazyFetchServerQuery();
-
-  useEffect(() => {
-    if (
-      subscription.data?.server &&
-      typeof subscription.data.server === "string"
-    ) {
-      fetchServer(subscription.data.server, true);
-    }
-  }, [fetchServer, subscription.data?.server]);
 
   if (subscription.isFetching) return <Loader />;
   if (!subscription.data) return <Navigate to=".." replace={true} />;
 
-  const { owner, expires, limits, stripe } = subscription.data;
+  const { owner, server, expires, limits, stripe } = subscription.data;
 
   return (
     <Stack gap={3}>
-      {server.data && (
-        <ServerCard server={server.data} list>
-          <Stack direction="horizontal" gap={2} className="justify-content-end">
-            <Link to={`/dashboard/${subscriptionId}`}>
-              <Button variant="primary">Dashboard</Button>
-            </Link>
-            <LeaveServer server={server.data} />
-          </Stack>
-        </ServerCard>
-      )}
-
       <Card>
         <Card.Header>Subscription</Card.Header>
         <Card.Body>
@@ -93,11 +69,26 @@ const AdminSubscriptionPage = () => {
         </Card.Body>
         <Card.Footer>
           <Stack direction="horizontal" gap={2} className="justify-content-end">
-            <SubscriptionEdit subscription={subscription.data} />
+            {/* <SubscriptionEdit subscription={subscription.data} /> */}
             <SubscriptionDelete subscription={subscription.data} />
           </Stack>
         </Card.Footer>
       </Card>
+
+      {server && (
+        <ServerCard
+          list
+          server={server}
+          header={<Card.Header>Assigned to:</Card.Header>}
+        >
+          <Stack direction="horizontal" gap={2} className="justify-content-end">
+            <Link to={`/dashboard/${subscriptionId}`}>
+              <Button variant="primary">Dashboard</Button>
+            </Link>
+            <LeaveServer server={server} />
+          </Stack>
+        </ServerCard>
+      )}
     </Stack>
   );
 };

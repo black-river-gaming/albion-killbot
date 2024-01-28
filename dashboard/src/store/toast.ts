@@ -153,6 +153,18 @@ export const toastSlice = createSlice({
       }
     );
     builder.addMatcher(
+      admin.endpoints.getAdminSubscription.matchRejected,
+      (state, action) => {
+        if (!isRejectedWithValue(action)) return;
+        state.push({
+          id: uid(),
+          theme: "danger",
+          message:
+            "Failed to retrieve subscription details. Please try again later.",
+        });
+      }
+    );
+    builder.addMatcher(
       admin.endpoints.updateAdminSubscription.matchRejected,
       (state, action) => {
         if (!isRejectedWithValue(action)) return;

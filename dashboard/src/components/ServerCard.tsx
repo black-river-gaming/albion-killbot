@@ -6,25 +6,41 @@ import StyledServerCard from "./styles/ServerCard";
 interface ServerCardProps {
   server: ServerBase;
   list?: boolean;
+  header?: JSX.Element | string | number;
   children?: JSX.Element | string | number;
 }
 
-const ServerCard = ({ server, list = false, children }: ServerCardProps) => {
+const ServerCard = ({
+  server,
+  list = false,
+  header,
+  children,
+}: ServerCardProps) => {
   if (list) {
     return (
-      <StyledServerCard className="list">
-        <Row className="gy-2">
+      <Card>
+        {header}
+        <Row className="gy-2 p-3">
           <Col xs={12} md={6} className="d-flex align-items-center">
-            <div className="server-img-container">
+            <div style={{ position: "relative" }}>
               <Card.Img
                 className="server-img-icon"
                 variant="top"
                 src={getServerPictureUrl(server, true)}
+                style={{
+                  width: 75,
+                  height: 75,
+                }}
               />
             </div>
             <div className="px-4">
-              <div className="server-id">#{server.id}</div>
-              <div className="server-name">{server.name}</div>
+              <div
+                className="text-muted"
+                style={{ fontSize: 10, lineHeight: 1 }}
+              >
+                #{server.id}
+              </div>
+              <div className="m-0">{server.name}</div>
             </div>
           </Col>
           <Col
@@ -35,25 +51,54 @@ const ServerCard = ({ server, list = false, children }: ServerCardProps) => {
             {children}
           </Col>
         </Row>
-      </StyledServerCard>
+      </Card>
     );
   }
 
   return (
     <StyledServerCard>
-      <div className="server-img-container">
-        <Card.Img
-          className="server-img-blurred"
-          src={getServerPictureUrl(server, false)}
-        />
-        <Card.Img
-          className="server-img-icon"
-          variant="top"
-          src={getServerPictureUrl(server, true)}
-        />
-      </div>
+      {header}
       <Card.Body>
-        <Card.Title className="server-name">{server.name}</Card.Title>
+        <div style={{ position: "relative" }}>
+          <Card.Img
+            style={{
+              height: 120,
+              width: "100%",
+              objectFit: "cover",
+              filter: "blur(8px)",
+              pointerEvents: "none",
+              userSelect: "none",
+            }}
+            src={getServerPictureUrl(server, false)}
+          />
+          <Card.Img
+            variant="top"
+            src={getServerPictureUrl(server, true)}
+            style={{
+              position: "absolute",
+
+              top: "40%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+
+              width: 75,
+              height: 75,
+
+              borderRadius: "50%",
+              userSelect: "none",
+            }}
+          />
+        </div>
+        <Card.Title
+          className="server-name"
+          style={{
+            position: "absolute",
+            left: "50%",
+            transform: "translate(-50%, -10%)",
+          }}
+        >
+          {server.name}
+        </Card.Title>
         <hr />
         {children}
       </Card.Body>
