@@ -29,7 +29,7 @@ export interface Limits {
 export interface ServerBase {
   id: string;
   name: string;
-  icon: string;
+  icon?: string;
 }
 
 export interface ServerPartial extends ServerBase {

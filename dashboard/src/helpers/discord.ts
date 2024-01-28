@@ -25,6 +25,8 @@ export const getServerPictureUrl = (server: ServerBase, animated?: boolean) => {
 
   if (server.id)
     return `${DISCORD_CDN_URL}/embed/avatars/${Number(server.id) % 5}.png`;
+
+  return `${DISCORD_CDN_URL}/embed/avatars/${Math.ceil(Math.random() * 5)}.png`;
 };
 
 export const getServerInviteUrl = (server?: ServerBase) => {

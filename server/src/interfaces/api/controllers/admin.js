@@ -110,7 +110,10 @@ async function getSubscription(req, res) {
     const subscription = await subscriptionsService.getSubscriptionById(subscriptionId);
     if (!subscription) return res.sendStatus(404);
 
-    if (subscription.server) subscription.server = await serversService.getServer(subscription.server);
+    if (subscription.server) {
+      const server = await serversService.getServer(subscription.server);
+      if (server) subscription.server = server;
+    }
     if (subscription.stripe)
       subscription.stripe = await subscriptionsService.getStripeSubscription(subscription.stripe);
 

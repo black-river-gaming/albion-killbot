@@ -16,6 +16,13 @@ const ServerCard = ({
   header,
   children,
 }: ServerCardProps) => {
+  if (typeof server == "string") {
+    server = {
+      id: server,
+      name: "Unknown Server",
+    };
+  }
+
   if (list) {
     return (
       <Card>
@@ -28,18 +35,26 @@ const ServerCard = ({
                 variant="top"
                 src={getServerPictureUrl(server, true)}
                 style={{
+                  borderRadius: "50%",
                   width: 75,
                   height: 75,
+
+                  boxShadow:
+                    "0px 3px 5px -1px rgb(0 0 0 / 80%), 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)",
+
+                  userSelect: "none",
                 }}
               />
             </div>
-            <div className="px-4">
-              <div
-                className="text-muted"
-                style={{ fontSize: 10, lineHeight: 1 }}
-              >
-                #{server.id}
-              </div>
+            <div className="px-3">
+              {server.id && (
+                <div
+                  className="text-muted"
+                  style={{ fontSize: 10, lineHeight: 1 }}
+                >
+                  #{server.id}
+                </div>
+              )}
               <div className="m-0">{server.name}</div>
             </div>
           </Col>
