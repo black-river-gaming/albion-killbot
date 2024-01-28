@@ -116,7 +116,7 @@ router.delete(`/servers/:serverId/subscription`, adminController.removeServerSub
  * @openapi
  * /admin/subscriptions:
  *   get:
- *     tags: [Admin, Subscriptions]
+ *     tags: [Admin]
  *     summary: Get subscriptions
  *     operationId: getSubscriptions
  *     parameters:
@@ -162,7 +162,7 @@ router.get(`/subscriptions`, adminController.getSubscriptions);
  * @openapi
  * /admin/subscriptions:
  *   post:
- *     tags: [Admin, Subscriptions]
+ *     tags: [Admin]
  *     summary: Create subscription
  *     operationId: createSubscription
  *     requestBody:
@@ -181,6 +181,36 @@ router.get(`/subscriptions`, adminController.getSubscriptions);
  *         $ref: "#/components/responses/ServerError"
  */
 router.post(`/subscriptions`, adminController.createSubscription);
+
+/**
+ * @openapi
+ * /admin/subscriptions/{subscriptionId}:
+ *   get:
+ *     tags: [Admin]
+ *     summary: Retrieve subscription details
+ *     operationId: getSubscription
+ *     parameters:
+ *     - name: subscriptionId
+ *       in: path
+ *       description: Subscription id.
+ *       schema:
+ *         type: string
+ *       required: true
+ *     responses:
+ *       200:
+ *         description: Subscription details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Subscription"
+ *       403:
+ *         $ref: "#/components/responses/Unauthorized"
+ *       404:
+ *         description: Subscription not found
+ *       500:
+ *         $ref: "#/components/responses/ServerError"
+ */
+router.get(`/subscriptions/:subscriptionId`, adminController.getSubscription);
 
 module.exports = {
   path: "/admin",

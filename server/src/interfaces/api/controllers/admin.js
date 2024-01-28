@@ -103,6 +103,24 @@ async function createSubscription(req, res) {
   }
 }
 
+async function getSubscription(req, res) {
+  const { subscriptionId } = req.params;
+
+  try {
+    const subscription = await subscriptionsService.getSubscriptionById(subscriptionId);
+    if (!subscription) return res.sendStatus(404);
+
+    if (subscription.server) subscription.server = await serversService.getServer(subscription.server);
+    if (subscription.stripe)
+      subscription.stripe = await subscriptionsService.getStripeSubscription(subscription.stripe);
+
+    return res.send(subscription);
+  } catch (error) {
+    logger.error(`Unable to fetch subscription ${subscriptionId}: ${error.message}`, { error, subscriptionId });
+    return res.sendStatus(500);
+  }
+}
+
 module.exports = {
   getServers,
   leaveServer,
@@ -111,4 +129,5 @@ module.exports = {
 
   getSubscriptions,
   createSubscription,
+  getSubscription,
 };
