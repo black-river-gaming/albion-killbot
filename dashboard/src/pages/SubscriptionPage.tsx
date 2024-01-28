@@ -11,7 +11,7 @@ import {
   useFetchUserQuery,
   useManageSubscriptionMutation,
 } from "store/api";
-import { Subscription } from "types";
+import { ISubscription } from "types";
 
 const SubscriptionPage = () => {
   const { serverId = "" } = useParams();
@@ -27,7 +27,7 @@ const SubscriptionPage = () => {
     window.location.href = manageSubscription.data.url;
   }
 
-  const renderServerSubscription = (subscription?: Subscription) => {
+  const renderServerSubscription = (subscription?: ISubscription) => {
     const isSubscriptionOwner =
       subscription?.owner === user.data?.id || user.data?.admin;
 

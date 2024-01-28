@@ -1,7 +1,8 @@
-import { ISubscriptionPartial, ServerPartial, Subscription } from "types";
+import { ISubscription, ISubscriptionPartial, ServerPartial } from "types";
 import api from "./index";
 import {
   ICreateSubscription,
+  IDeleteSubscription,
   IFindSubscriptions,
   IGetSubscription,
   IUpdateSubscription,
@@ -31,14 +32,14 @@ const admin = api.injectEndpoints({
       }),
       providesTags: ["Subscription"],
     }),
-    getAdminSubscription: builder.query<Subscription, IGetSubscription>({
+    getAdminSubscription: builder.query<ISubscription, IGetSubscription>({
       query: ({ id }) => ({
         url: `/admin/subscriptions/${id}`,
       }),
       providesTags: ["Subscription"],
     }),
     createAdminSubscription: builder.mutation<
-      Subscription,
+      ISubscription,
       { subscription: ICreateSubscription }
     >({
       query: ({ subscription }) => ({
@@ -48,7 +49,7 @@ const admin = api.injectEndpoints({
       }),
     }),
     updateAdminSubscription: builder.mutation<
-      Subscription,
+      ISubscription,
       { serverId: string; subscription: IUpdateSubscription }
     >({
       query: ({ serverId, subscription }) => ({
@@ -60,9 +61,9 @@ const admin = api.injectEndpoints({
       }),
       invalidatesTags: ["Admin", "Server", "Subscription"],
     }),
-    deleteAdminSubscription: builder.mutation<void, { serverId: string }>({
-      query: ({ serverId }) => ({
-        url: `/admin/servers/${serverId}/subscription`,
+    deleteAdminSubscription: builder.mutation<void, IDeleteSubscription>({
+      query: ({ id }) => ({
+        url: `/admin/subscriptions/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Admin", "Server", "Subscription"],

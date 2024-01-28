@@ -4,10 +4,10 @@ import {
   ISearchResults,
   IServer,
   ISettings,
+  ISubscription,
   ITrackList,
   ServerPartial,
   Session,
-  Subscription,
   SubscriptionPricesResponse,
   User,
 } from "types";
@@ -40,7 +40,7 @@ const api = createApi({
       invalidatesTags: ["User"],
     }),
     assignSubscription: builder.mutation<
-      Subscription,
+      ISubscription,
       { server: string; checkoutId?: string; subscriptionId?: string }
     >({
       query: (body) => ({
@@ -91,7 +91,7 @@ const api = createApi({
       query: (serverId) => `/servers/${serverId}`,
       providesTags: ["Server"],
     }),
-    fetchSubscriptions: builder.query<Subscription[], void>({
+    fetchSubscriptions: builder.query<ISubscription[], void>({
       query: () => `/subscriptions`,
       providesTags: ["Subscription"],
     }),

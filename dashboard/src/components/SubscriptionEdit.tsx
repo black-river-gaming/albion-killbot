@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Modal, Stack } from "react-bootstrap";
 import { useUpdateAdminSubscriptionMutation } from "store/api/admin";
-import { ISubscriptionPartial, Subscription } from "types";
+import { ISubscriptionPartial } from "types";
 
 interface SubscriptionEditProps {
-  subscription: Subscription | ISubscriptionPartial;
+  subscription: ISubscriptionPartial;
 }
 
 const SubscriptionEdit = ({ subscription }: SubscriptionEditProps) => {

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useDeleteAdminSubscriptionMutation } from "store/api/admin";
-import { ISubscriptionPartial, Subscription } from "types";
+import { ISubscriptionBase } from "types";
 
 interface SubscriptionDeleteProps {
-  subscription: Subscription | ISubscriptionPartial;
+  subscription: ISubscriptionBase;
 }
 
 const SubscriptionDelete = ({ subscription }: SubscriptionDeleteProps) => {
@@ -17,8 +17,8 @@ const SubscriptionDelete = ({ subscription }: SubscriptionDeleteProps) => {
     if (deleteSubscription.isSuccess) setShowDelete(false);
   }, [deleteSubscription.isSuccess]);
 
-  const serverId = subscription.server as string;
-  if (!serverId) return null;
+  const id = subscription.id;
+  if (!id) return null;
 
   return (
     <>
@@ -42,7 +42,7 @@ const SubscriptionDelete = ({ subscription }: SubscriptionDeleteProps) => {
           <Button
             type="submit"
             variant="danger"
-            onClick={() => dispatchDeleteSubscription({ serverId })}
+            onClick={() => dispatchDeleteSubscription({ id })}
           >
             Delete
           </Button>
