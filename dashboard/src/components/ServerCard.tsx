@@ -110,6 +110,7 @@ const ServerCard = ({
             position: "absolute",
             left: "50%",
             transform: "translate(-50%, -10%)",
+            whiteSpace: "nowrap",
           }}
         >
           {server.name}

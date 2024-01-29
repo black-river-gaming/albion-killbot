@@ -14,7 +14,7 @@ const AdminSubscriptionPage = () => {
   if (subscription.isFetching) return <Loader />;
   if (!subscription.data) return <Navigate to=".." replace={true} />;
 
-  const { owner, server, expires, limits, stripe } = subscription.data;
+  const { id, owner, server, expires, limits, stripe } = subscription.data;
 
   return (
     <Stack gap={3}>
@@ -22,11 +22,10 @@ const AdminSubscriptionPage = () => {
         <Card.Header>Subscription</Card.Header>
         <Card.Body>
           <Stack gap={2}>
-            {stripe?.price && (
-              <div className="d-flex justify-content-center justify-content-md-center">
-                <SubscriptionPriceCard price={stripe.price} />
-              </div>
-            )}
+            <Stack direction="horizontal" gap={1}>
+              <span>Id: </span>
+              <span className="text-primary">{id}</span>
+            </Stack>
 
             <Stack direction="horizontal" gap={1}>
               <span>Status: </span>
@@ -88,6 +87,12 @@ const AdminSubscriptionPage = () => {
             <LeaveServer server={server} />
           </Stack>
         </ServerCard>
+      )}
+
+      {stripe?.price && (
+        <div className="d-flex justify-content-center justify-content-md-center">
+          <SubscriptionPriceCard price={stripe.price} />
+        </div>
       )}
     </Stack>
   );
