@@ -1,4 +1,4 @@
-import { ISubscriptionPartial } from "types";
+import { ISubscription } from "types";
 
 export type IFindSubscriptions = {
   server?: string;
@@ -9,8 +9,8 @@ export type IFindSubscriptions = {
 export type IGetSubscription = {
   id: string;
 };
-export type ICreateSubscription = Omit<ISubscriptionPartial, "id">;
-export type IUpdateSubscription = Omit<ISubscriptionPartial, "id">;
+export type ICreateSubscription = Omit<ISubscription, "id">;
+export type IUpdateSubscription = Omit<ISubscription, "id">;
 export type IDeleteSubscription = {
   id: string;
 };

@@ -2,19 +2,31 @@ import LeaveServer from "components/LeaveServer";
 import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
 import SubscriptionDelete from "components/SubscriptionDelete";
-import SubscriptionPriceCard from "components/SubscriptionPriceCard";
+import SubscriptionEdit from "components/SubscriptionEdit";
+import { getSubscriptionUrl } from "helpers/stripe";
 import { Button, Card, Stack } from "react-bootstrap";
 import { Link, Navigate, useParams } from "react-router-dom";
+import { useFetchServerQuery } from "store/api";
 import { useGetAdminSubscriptionQuery } from "store/api/admin";
 
 const AdminSubscriptionPage = () => {
   const { subscriptionId = "" } = useParams();
   const subscription = useGetAdminSubscriptionQuery({ id: subscriptionId });
+  const server = useFetchServerQuery(subscription.data?.server || "", {
+    skip: !subscription.data?.server,
+  });
 
   if (subscription.isFetching) return <Loader />;
   if (!subscription.data) return <Navigate to=".." replace={true} />;
 
-  const { id, owner, server, expires, limits, stripe } = subscription.data;
+  const {
+    id,
+    owner,
+    server: subscriptionServer,
+    expires,
+    limits,
+    stripe,
+  } = subscription.data;
 
   return (
     <Stack gap={3}>
@@ -26,6 +38,34 @@ const AdminSubscriptionPage = () => {
               <span>Id: </span>
               <span className="text-primary">{id}</span>
             </Stack>
+
+            {owner && (
+              <Stack direction="horizontal" gap={1}>
+                <span>Owner: </span>
+                <span className="text-primary">{owner}</span>
+              </Stack>
+            )}
+
+            {subscriptionServer && (
+              <Stack direction="horizontal" gap={1}>
+                <span>Server: </span>
+                <span className="text-primary">{subscriptionServer}</span>
+              </Stack>
+            )}
+
+            {stripe && (
+              <Stack direction="horizontal" gap={1}>
+                <span>Stripe: </span>
+                <a
+                  href={getSubscriptionUrl(stripe)}
+                  target="_blank"
+                  className="text-primary"
+                  rel="noreferrer"
+                >
+                  {stripe}
+                </a>
+              </Stack>
+            )}
 
             <Stack direction="horizontal" gap={1}>
               <span>Status: </span>
@@ -42,13 +82,6 @@ const AdminSubscriptionPage = () => {
               </span>
               {stripe && <span>(Auto-managed by Stripe)</span>}
             </Stack>
-
-            {owner && (
-              <Stack direction="horizontal" gap={1}>
-                <span>Owner: </span>
-                <span className="text-primary">{owner}</span>
-              </Stack>
-            )}
 
             <Stack direction="horizontal" gap={2}>
               <div>Track Limits:</div>
@@ -68,31 +101,25 @@ const AdminSubscriptionPage = () => {
         </Card.Body>
         <Card.Footer>
           <Stack direction="horizontal" gap={2} className="justify-content-end">
-            {/* <SubscriptionEdit subscription={subscription.data} /> */}
+            <SubscriptionEdit subscription={subscription.data} />
             <SubscriptionDelete subscription={subscription.data} />
           </Stack>
         </Card.Footer>
       </Card>
-
-      {server && (
+      {server.data && (
         <ServerCard
           list
-          server={server}
+          loading={server.isLoading}
+          server={server.data}
           header={<Card.Header>Assigned to:</Card.Header>}
         >
           <Stack direction="horizontal" gap={2} className="justify-content-end">
-            <Link to={`/dashboard/${subscriptionId}`}>
+            <Link to={`/dashboard/${server.data.id}`}>
               <Button variant="primary">Dashboard</Button>
             </Link>
-            <LeaveServer server={server} />
+            <LeaveServer server={server.data} />
           </Stack>
         </ServerCard>
-      )}
-
-      {stripe?.price && (
-        <div className="d-flex justify-content-center justify-content-md-center">
-          <SubscriptionPriceCard price={stripe.price} />
-        </div>
       )}
     </Stack>
   );

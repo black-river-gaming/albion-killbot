@@ -1,4 +1,4 @@
-import { ISubscription, ISubscriptionPartial, ServerPartial } from "types";
+import { ISubscription, ISubscriptionExtended, ServerPartial } from "types";
 import api from "./index";
 import {
   ICreateSubscription,
@@ -22,10 +22,7 @@ const admin = api.injectEndpoints({
       invalidatesTags: ["Admin"],
     }),
 
-    findAdminSubscriptions: builder.query<
-      ISubscriptionPartial[],
-      IFindSubscriptions
-    >({
+    findAdminSubscriptions: builder.query<ISubscription[], IFindSubscriptions>({
       query: (params) => ({
         url: `/admin/subscriptions`,
         params,
@@ -39,7 +36,7 @@ const admin = api.injectEndpoints({
       providesTags: ["Subscription"],
     }),
     createAdminSubscription: builder.mutation<
-      ISubscription,
+      ISubscriptionExtended,
       { subscription: ICreateSubscription }
     >({
       query: ({ subscription }) => ({
@@ -49,7 +46,7 @@ const admin = api.injectEndpoints({
       }),
     }),
     updateAdminSubscription: builder.mutation<
-      ISubscription,
+      ISubscriptionExtended,
       { serverId: string; subscription: IUpdateSubscription }
     >({
       query: ({ serverId, subscription }) => ({

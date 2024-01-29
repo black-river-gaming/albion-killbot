@@ -110,13 +110,6 @@ async function getSubscription(req, res) {
     const subscription = await subscriptionsService.getSubscriptionById(subscriptionId);
     if (!subscription) return res.sendStatus(404);
 
-    if (subscription.server) {
-      const server = await serversService.getServer(subscription.server);
-      if (server) subscription.server = server;
-    }
-    if (subscription.stripe)
-      subscription.stripe = await subscriptionsService.getStripeSubscription(subscription.stripe);
-
     return res.send(subscription);
   } catch (error) {
     logger.error(`Unable to fetch subscription ${subscriptionId}: ${error.message}`, { error, subscriptionId });

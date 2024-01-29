@@ -1,11 +1,13 @@
 import { getServerPictureUrl } from "helpers/discord";
 import { Card, Col, Row } from "react-bootstrap";
 import { ServerBase } from "types";
+import Loader from "./Loader";
 import StyledServerCard from "./styles/ServerCard";
 
 interface ServerCardProps {
   server: ServerBase;
   list?: boolean;
+  loading?: boolean;
   header?: JSX.Element | string | number;
   children?: JSX.Element | string | number;
 }
@@ -13,6 +15,7 @@ interface ServerCardProps {
 const ServerCard = ({
   server,
   list = false,
+  loading = false,
   header,
   children,
 }: ServerCardProps) => {
@@ -24,6 +27,14 @@ const ServerCard = ({
   }
 
   if (list) {
+    if (loading) {
+      return (
+        <Loader width={500} height={70}>
+          <rect x="0" y="0" rx="5" ry="5" width="500" height="70" />
+        </Loader>
+      );
+    }
+
     return (
       <Card>
         {header}

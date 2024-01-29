@@ -42,7 +42,7 @@ export interface IServer extends ServerBase {
   channels: IChannel[];
   settings: ISettings;
   limits: Limits;
-  subscription: ISubscription;
+  subscription: ISubscriptionExtended;
   track: ITrackList;
 }
 
@@ -123,12 +123,12 @@ export interface ISubscriptionBase {
   limits?: Limits;
 }
 
-export interface ISubscriptionPartial extends ISubscriptionBase {
+export interface ISubscription extends ISubscriptionBase {
   server?: string;
   stripe?: string;
 }
 
-export interface ISubscription extends ISubscriptionBase {
+export interface ISubscriptionExtended extends ISubscriptionBase {
   server?: ServerBase;
   stripe?: {
     id: string;

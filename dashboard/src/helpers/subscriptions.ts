@@ -5,7 +5,7 @@ import banner4 from "assets/subscriptions/subscription_banner_4.png";
 import {
   ISubscription,
   ISubscriptionBase,
-  ISubscriptionPartial,
+  ISubscriptionExtended,
   SubscriptionPrice,
 } from "types";
 
@@ -34,7 +34,7 @@ export const isSubscriptionActive = (subscription: ISubscriptionBase) => {
 };
 
 export const isSubscriptionActiveAndUnassiged = (
-  subscription: ISubscription | ISubscriptionPartial
+  subscription: ISubscriptionExtended | ISubscription
 ) => {
   return isSubscriptionActive(subscription) && !subscription.server;
 };
