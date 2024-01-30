@@ -13,11 +13,11 @@ import {
   setSubscriptionStripe,
 } from "store/admin";
 import { useFetchConstantsQuery } from "store/api";
-import { useLazyFindAdminSubscriptionsQuery } from "store/api/admin";
+import { useLazyFetchAdminSubscriptionsQuery } from "store/api/admin";
 
 const AdminSubscriptionsPage = () => {
   const constants = useFetchConstantsQuery();
-  const [search, { isFetching, data }] = useLazyFindAdminSubscriptionsQuery();
+  const [search, { isFetching, data }] = useLazyFetchAdminSubscriptionsQuery();
   const dispatch = useAppDispatch();
   const { server, owner, status, stripe } = useAppSelector(
     (state) => state.admin.subscription

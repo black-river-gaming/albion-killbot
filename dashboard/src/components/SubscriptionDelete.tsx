@@ -1,3 +1,5 @@
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useDeleteAdminSubscriptionMutation } from "store/api/admin";
@@ -5,17 +7,24 @@ import { ISubscriptionBase } from "types";
 
 interface SubscriptionDeleteProps {
   subscription: ISubscriptionBase;
+  onDelete?: () => void;
 }
 
-const SubscriptionDelete = ({ subscription }: SubscriptionDeleteProps) => {
+const SubscriptionDelete = ({
+  subscription,
+  onDelete,
+}: SubscriptionDeleteProps) => {
   const [showDelete, setShowDelete] = useState(false);
 
   const [dispatchDeleteSubscription, deleteSubscription] =
     useDeleteAdminSubscriptionMutation();
 
   useEffect(() => {
-    if (deleteSubscription.isSuccess) setShowDelete(false);
-  }, [deleteSubscription.isSuccess]);
+    if (deleteSubscription.isSuccess) {
+      setShowDelete(false);
+      if (onDelete) onDelete();
+    }
+  }, [deleteSubscription.isSuccess, onDelete]);
 
   const id = subscription.id;
   if (!id) return null;
@@ -23,7 +32,8 @@ const SubscriptionDelete = ({ subscription }: SubscriptionDeleteProps) => {
   return (
     <>
       <Button variant="danger" onClick={() => setShowDelete(true)}>
-        Delete
+        <FontAwesomeIcon icon={faTrash} />
+        <div>Delete</div>
       </Button>
 
       <Modal show={showDelete} onHide={() => setShowDelete(false)}>

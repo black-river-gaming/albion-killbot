@@ -5,12 +5,13 @@ import SubscriptionDelete from "components/SubscriptionDelete";
 import SubscriptionEdit from "components/subscriptions/SubscriptionEdit";
 import { getSubscriptionUrl } from "helpers/stripe";
 import { Button, Card, Stack } from "react-bootstrap";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useFetchServerQuery } from "store/api";
 import { useGetAdminSubscriptionQuery } from "store/api/admin";
 
 const AdminSubscriptionPage = () => {
   const { subscriptionId = "" } = useParams();
+  const navigate = useNavigate();
   const subscription = useGetAdminSubscriptionQuery({ id: subscriptionId });
   const server = useFetchServerQuery(subscription.data?.server || "", {
     skip: !subscription.data?.server,
@@ -102,7 +103,12 @@ const AdminSubscriptionPage = () => {
         <Card.Footer>
           <Stack direction="horizontal" gap={2} className="justify-content-end">
             <SubscriptionEdit subscription={subscription.data} />
-            <SubscriptionDelete subscription={subscription.data} />
+            <SubscriptionDelete
+              subscription={subscription.data}
+              onDelete={() =>
+                navigate("/admin/subscriptions", { replace: true })
+              }
+            />
           </Stack>
         </Card.Footer>
       </Card>

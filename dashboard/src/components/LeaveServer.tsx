@@ -4,7 +4,7 @@ import { useDoLeaveServerMutation } from "store/api/admin";
 import { ServerBase } from "types";
 
 interface LeaveServerProps {
-  server: ServerBase;
+  server?: ServerBase;
   onLeave?: () => void;
 }
 
@@ -17,6 +17,8 @@ const LeaveServer = ({ server, onLeave }: LeaveServerProps) => {
       onLeave();
     }
   }, [leaveServer.isSuccess, onLeave]);
+
+  if (!server) return <></>;
 
   return (
     <>

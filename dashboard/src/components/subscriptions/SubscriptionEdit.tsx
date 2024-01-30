@@ -1,3 +1,5 @@
+import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useUpdateAdminSubscriptionMutation } from "store/api/admin";
@@ -27,7 +29,8 @@ const SubscriptionEdit = ({ subscription }: SubscriptionEditProps) => {
   return (
     <>
       <Button variant="primary" onClick={() => setShow(true)}>
-        Edit
+        <FontAwesomeIcon icon={faPen} />
+        <div>Edit</div>
       </Button>
 
       <Modal show={show} onHide={() => setShow(false)}>

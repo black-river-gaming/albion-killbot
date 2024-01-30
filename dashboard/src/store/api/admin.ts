@@ -12,28 +12,32 @@ const admin = api.injectEndpoints({
   endpoints: (builder) => ({
     fetchAdminServers: builder.query<ServerPartial[], void>({
       query: () => `/admin/servers`,
-      providesTags: ["Admin"],
+      providesTags: ["Admin", "Server"],
     }),
     doLeaveServer: builder.mutation<void, { serverId: string }>({
       query: ({ serverId }) => ({
         url: `/admin/servers/${serverId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Admin"],
+      invalidatesTags: ["Admin", "Server"],
     }),
 
-    findAdminSubscriptions: builder.query<ISubscription[], IFindSubscriptions>({
-      query: (params) => ({
-        url: `/admin/subscriptions`,
-        params,
-      }),
-      providesTags: ["Subscription"],
-    }),
+    fetchAdminSubscriptions: builder.query<ISubscription[], IFindSubscriptions>(
+      {
+        query: (params) => ({
+          url: `/admin/subscriptions`,
+          params,
+        }),
+        providesTags: [{ type: "Subscription", id: "LIST" }],
+      }
+    ),
     getAdminSubscription: builder.query<ISubscription, IGetSubscription>({
       query: ({ id }) => ({
         url: `/admin/subscriptions/${id}`,
       }),
-      providesTags: ["Subscription"],
+      providesTags: (subscription) => [
+        { type: "Subscription", id: subscription?.id },
+      ],
     }),
     createAdminSubscription: builder.mutation<
       ISubscriptionExtended,
@@ -44,7 +48,7 @@ const admin = api.injectEndpoints({
         method: "POST",
         body: subscription,
       }),
-      invalidatesTags: ["Admin", "Server", "Subscription"],
+      invalidatesTags: [{ type: "Subscription", id: "LIST" }],
     }),
     updateAdminSubscription: builder.mutation<
       ISubscriptionExtended,
@@ -55,14 +59,17 @@ const admin = api.injectEndpoints({
         method: "PUT",
         body: subscription,
       }),
-      invalidatesTags: ["Admin", "Server", "Subscription"],
+      invalidatesTags: (subscription) => [
+        { type: "Subscription", id: "LIST" },
+        { type: "Subscription", id: subscription?.id },
+      ],
     }),
     deleteAdminSubscription: builder.mutation<void, IDeleteSubscription>({
       query: ({ id }) => ({
         url: `/admin/subscriptions/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Admin", "Server", "Subscription"],
+      invalidatesTags: [{ type: "Subscription", id: "LIST" }],
     }),
   }),
 });
@@ -71,7 +78,7 @@ export const {
   useFetchAdminServersQuery,
   useDoLeaveServerMutation,
 
-  useLazyFindAdminSubscriptionsQuery,
+  useLazyFetchAdminSubscriptionsQuery,
   useGetAdminSubscriptionQuery,
   useCreateAdminSubscriptionMutation,
   useUpdateAdminSubscriptionMutation,

@@ -176,6 +176,16 @@ export const toastSlice = createSlice({
       }
     );
     builder.addMatcher(
+      admin.endpoints.deleteAdminSubscription.matchFulfilled,
+      (state) => {
+        state.push({
+          id: uid(),
+          theme: "info",
+          message: "Subscription deleted successfully.",
+        });
+      }
+    );
+    builder.addMatcher(
       admin.endpoints.deleteAdminSubscription.matchRejected,
       (state, action) => {
         if (!isRejectedWithValue(action)) return;
