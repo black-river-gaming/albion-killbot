@@ -83,8 +83,13 @@ const transformEvent = (event) => ({
   participants: event.Participants.map(transformEventPlayer),
 });
 
+const hasAwakening = (event) => {
+  return event.Killer.Equipment.MainHand.LegendarySoul || event.Victim.Equipment.MainHand.LegendarySoul;
+};
+
 module.exports = {
   getVictimItems,
+  hasAwakening,
   isAlbionId,
   isTrackEntity,
   toTrackEntity,

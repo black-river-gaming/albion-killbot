@@ -3,9 +3,11 @@ const path = require("node:path");
 const { createCanvas, registerFont, loadImage } = require("canvas");
 const { getItemFile } = require("../ports/albion");
 
+const { hasAwakening } = require("../helpers/albion");
 const { optimizeImage } = require("../helpers/images");
 const { digitsFormatter, fileSizeFormatter } = require("../helpers/utils");
 const logger = require("../helpers/logger");
+const { create } = require("connect-mongo");
 
 const assetsPath = path.join(__dirname, "..", "assets");
 
@@ -46,12 +48,12 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
 };
 
 async function generateEventImage(event, { lootValue, splitLootValue = false } = {}) {
-  let canvas = createCanvas(1600, 1250);
+  let canvas = createCanvas(1600, hasAwakening(event) ? 1550 : 1250);
   let tw, th;
   const w = canvas.width;
   const ctx = canvas.getContext("2d");
 
-  await drawImage(ctx, path.join(assetsPath, "background.png"), 0, 0);
+  await drawImage(ctx, path.join(assetsPath, "background.png"), -1, -1, 1602, 1554);
 
   const drawPlayer = async (player, x, y) => {
     const BLOCK_SIZE = 217;
@@ -178,12 +180,12 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
   }
 
   // assists bar
-  const drawAssistBar = (participants, x, y, width, height, radius) => {
+  const drawAssistBar = async (participants, x, y, width, height, radius) => {
     let px = x;
     let py = y;
 
     ctx.font = "40px Roboto";
-    ctx.fillStyle = "#AAAAAA";
+    ctx.fillStyle = "#EEEEEE";
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 3;
     const text = "Damage";
@@ -208,7 +210,7 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
     ctx.quadraticCurveTo(px, py, px + radius, py);
     ctx.closePath();
 
-    ctx.fillStyle = "white";
+    ctx.fillStyle = ctx.createPattern(await loadImage(path.join(assetsPath, "assistBarBg.png")), "repeat");
     ctx.fill();
 
     ctx.strokeStyle = "#111111";
@@ -248,8 +250,23 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
         ctx.fillText(text, textX, textY);
       }
 
+      ctx.closePath();
       px += barWidth;
     });
+
+    // Draw gradient over the bar
+    const barGradient = ctx.createLinearGradient(x + width / 2, py, x + width / 2, py + height);
+    barGradient.addColorStop(0, "rgba(200, 200, 200, 0.5)");
+    barGradient.addColorStop(0.15, "rgba(200, 200, 200, 0.25)");
+    barGradient.addColorStop(0.5, "rgba(100, 100, 100, 0.15)");
+    barGradient.addColorStop(0.85, "rgba(100, 100, 100, 0.1)");
+    barGradient.addColorStop(1, "rgba(0, 0, 0, 0.25)");
+
+    ctx.beginPath();
+    ctx.rect(x, py, width, height);
+    ctx.fillStyle = barGradient;
+    ctx.fill();
+    ctx.closePath();
 
     ctx.restore();
 
@@ -292,7 +309,7 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
     return height + py;
   };
 
-  drawAssistBar(event.Participants, 35, 1050, 1530, 80, 40);
+  await drawAssistBar(event.Participants, 35, hasAwakening(event) ? 1350 : 1050, 1530, 80, 40);
 
   const buffer = await optimizeImage(canvas.toBuffer(), 580);
   canvas = null;
