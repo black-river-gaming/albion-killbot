@@ -50,6 +50,9 @@ const init = async (port) => {
   app.use(session());
   app.use(discordSession);
 
+  // Disable cache
+  if (!config.get("api.cache.enabled")) app.use(disableCache);
+
   // Routes
   app.get("/openapi.json", disableCache, (req, res) => res.send(swaggerSpecs));
   app.use("/docs", disableCache, swaggerUI.serve, swaggerUI.setup(swaggerSpecs));

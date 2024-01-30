@@ -78,6 +78,9 @@ module.exports = {
 
   api: {
     port: getNumber(process.env.PORT, 80),
+    cache: {
+      enabled: true,
+    },
     session: {
       cookieName: process.env.SESSION_COOKIE_NAME || "albion-killbot",
       domain: process.env.SESSION_DOMAIN || null,
