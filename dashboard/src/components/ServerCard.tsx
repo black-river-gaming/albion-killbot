@@ -5,7 +5,7 @@ import Loader from "./Loader";
 import StyledServerCard from "./styles/ServerCard";
 
 interface ServerCardProps {
-  server: ServerBase;
+  server?: ServerBase;
   list?: boolean;
   loading?: boolean;
   header?: JSX.Element | string | number;
@@ -34,6 +34,7 @@ const ServerCard = ({
         </Loader>
       );
     }
+    if (!server) return null;
 
     return (
       <Card>
@@ -81,6 +82,7 @@ const ServerCard = ({
     );
   }
 
+  if (!server) return null;
   return (
     <StyledServerCard>
       {header}

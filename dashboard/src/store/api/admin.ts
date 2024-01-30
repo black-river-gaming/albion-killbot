@@ -37,24 +37,23 @@ const admin = api.injectEndpoints({
     }),
     createAdminSubscription: builder.mutation<
       ISubscriptionExtended,
-      { subscription: ICreateSubscription }
+      ICreateSubscription
     >({
       query: ({ subscription }) => ({
         url: `/admin/subscriptions`,
         method: "POST",
         body: subscription,
       }),
+      invalidatesTags: ["Admin", "Server", "Subscription"],
     }),
     updateAdminSubscription: builder.mutation<
       ISubscriptionExtended,
-      { serverId: string; subscription: IUpdateSubscription }
+      IUpdateSubscription
     >({
-      query: ({ serverId, subscription }) => ({
-        url: `/admin/servers/${serverId}/subscription`,
+      query: ({ subscription }) => ({
+        url: `/admin/subscriptions/${subscription.id}`,
         method: "PUT",
-        body: {
-          ...subscription,
-        },
+        body: subscription,
       }),
       invalidatesTags: ["Admin", "Server", "Subscription"],
     }),

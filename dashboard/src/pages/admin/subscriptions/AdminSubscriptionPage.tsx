@@ -2,7 +2,7 @@ import LeaveServer from "components/LeaveServer";
 import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
 import SubscriptionDelete from "components/SubscriptionDelete";
-import SubscriptionEdit from "components/SubscriptionEdit";
+import SubscriptionEdit from "components/subscriptions/SubscriptionEdit";
 import { getSubscriptionUrl } from "helpers/stripe";
 import { Button, Card, Stack } from "react-bootstrap";
 import { Link, Navigate, useParams } from "react-router-dom";
@@ -106,19 +106,25 @@ const AdminSubscriptionPage = () => {
           </Stack>
         </Card.Footer>
       </Card>
-      {server.data && (
+      {subscription.data.server && (
         <ServerCard
           list
           loading={server.isLoading}
           server={server.data}
           header={<Card.Header>Assigned to:</Card.Header>}
         >
-          <Stack direction="horizontal" gap={2} className="justify-content-end">
-            <Link to={`/dashboard/${server.data.id}`}>
-              <Button variant="primary">Dashboard</Button>
-            </Link>
-            <LeaveServer server={server.data} />
-          </Stack>
+          {server.data && (
+            <Stack
+              direction="horizontal"
+              gap={2}
+              className="justify-content-end"
+            >
+              <Link to={`/dashboard/${server.data.id}`}>
+                <Button variant="primary">Dashboard</Button>
+              </Link>
+              <LeaveServer server={server.data} />
+            </Stack>
+          )}
         </ServerCard>
       )}
     </Stack>

@@ -9,8 +9,12 @@ export type IFindSubscriptions = {
 export type IGetSubscription = {
   id: string;
 };
-export type ICreateSubscription = Omit<ISubscription, "id">;
-export type IUpdateSubscription = Omit<ISubscription, "id">;
+export type ICreateSubscription = {
+  subscription: Omit<ISubscription, "id">;
+};
+export type IUpdateSubscription = {
+  subscription: ISubscription;
+};
 export type IDeleteSubscription = {
   id: string;
 };

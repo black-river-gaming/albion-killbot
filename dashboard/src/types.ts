@@ -117,7 +117,7 @@ export interface ITrackList {
 export type ISearchResults = ITrackList;
 
 export interface ISubscriptionBase {
-  id: string;
+  readonly id: string;
   owner: string;
   expires: string | "never";
   limits?: Limits;
