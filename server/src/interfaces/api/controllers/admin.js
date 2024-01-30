@@ -13,42 +13,6 @@ async function getServers(req, res) {
   }
 }
 
-async function setServerSubscription(req, res) {
-  const { serverId } = req.params;
-  const { owner, limits } = req.body;
-  let { expires } = req.body;
-
-  try {
-    // TODO: Validate owner, limits
-
-    if (expires !== "never") {
-      expires = moment(expires, moment.ISO_8601, true);
-      if (!expires.isValid()) return res.sendStatus(422);
-      expires = expires.toDate();
-    }
-
-    const subscription = await subscriptionsService.updateSubscriptionByServerId(serverId, { expires, owner, limits });
-
-    return res.send(subscription);
-  } catch (error) {
-    logger.error(`Unable to update subscription for server #${serverId}: ${error.message}`, { error });
-    return res.sendStatus(500);
-  }
-}
-
-async function removeServerSubscription(req, res) {
-  const { serverId } = req.params;
-
-  try {
-    await subscriptionsService.removeSubscriptionByServerId(serverId);
-
-    return res.sendStatus(200);
-  } catch (error) {
-    logger.error(`Unable to delete subscription for server #${serverId}: ${error.message}`, { error });
-    return res.sendStatus(500);
-  }
-}
-
 async function leaveServer(req, res) {
   const { serverId } = req.params;
 
@@ -144,14 +108,32 @@ async function updateSubscription(req, res) {
   }
 }
 
+async function deleteSubscription(req, res) {
+  const { subscriptionId } = req.params;
+
+  try {
+    const subscription = await subscriptionsService.getSubscriptionById(subscriptionId);
+    if (!subscription) return res.sendStatus(404);
+
+    await subscriptionsService.removeSubscription(subscription.id);
+
+    res.send({});
+  } catch (error) {
+    logger.error(`Unable to delete subscription: ${error.message}`, {
+      error,
+      subscriptionId,
+    });
+    return res.sendStatus(500);
+  }
+}
+
 module.exports = {
   getServers,
   leaveServer,
-  removeServerSubscription,
-  setServerSubscription,
 
   getSubscriptions,
   createSubscription,
   getSubscription,
   updateSubscription,
+  deleteSubscription,
 };

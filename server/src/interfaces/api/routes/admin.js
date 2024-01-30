@@ -55,65 +55,6 @@ router.delete(`/servers/:serverId`, adminController.leaveServer);
 
 /**
  * @openapi
- * /admin/servers/{serverId}/subscription:
- *   put:
- *     tags: [Admin]
- *     summary: Edit a server subscription
- *     operationId: updateServerSubscription
- *     parameters:
- *     - in: path
- *       name: serverId
- *       schema:
- *         type: integer
- *       description: Server Id to leave
- *       required: true
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Subscription'
- *     responses:
- *       200:
- *         description: Updated server subscription
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Subscription'
- *       403:
- *         description: Unable to authenticate
- *       500:
- *         description: Internal error
- */
-router.put(`/servers/:serverId/subscription`, adminController.setServerSubscription);
-
-/**
- * @openapi
- * /admin/servers/{serverId}/subscription:
- *   delete:
- *     tags: [Admin]
- *     summary: Delete a server subscription
- *     operationId: removeServerSubscription
- *     parameters:
- *     - in: path
- *       name: serverId
- *       schema:
- *         type: integer
- *       description: Server Id to leave
- *       required: true
- *     responses:
- *       200:
- *         description: Subscription deleted
- *       403:
- *         description: Unable to authenticate
- *       500:
- *         description: Internal error
- */
-router.delete(`/servers/:serverId/subscription`, adminController.removeServerSubscription);
-
-/**
- * @openapi
  * /admin/subscriptions:
  *   get:
  *     tags: [Admin]
@@ -246,6 +187,32 @@ router.get(`/subscriptions/:subscriptionId`, adminController.getSubscription);
  *         $ref: "#/components/responses/ServerError"
  */
 router.put(`/subscriptions/:subscriptionId`, adminController.updateSubscription);
+
+/**
+ * @openapi
+ * /admin/subscriptions/{subscriptionId}:
+ *   delete:
+ *     tags: [Admin]
+ *     summary: Delete subscription
+ *     operationId: deleteSubscription
+ *     parameters:
+ *     - name: subscriptionId
+ *       in: path
+ *       description: Subscription id.
+ *       schema:
+ *         type: string
+ *       required: true
+ *     responses:
+ *       200:
+ *         description: Delete success
+ *       403:
+ *         $ref: "#/components/responses/Unauthorized"
+ *       404:
+ *         description: Subscription not found
+ *       500:
+ *         $ref: "#/components/responses/ServerError"
+ */
+router.delete(`/subscriptions/:subscriptionId`, adminController.deleteSubscription);
 
 module.exports = {
   path: "/admin",
