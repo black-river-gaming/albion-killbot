@@ -57,9 +57,9 @@ const SubscriptionPage = () => {
               </div>
             )}
           </Card.Body>
-          {user.data?.admin && (
+          {subscription && user.data?.admin && (
             <Card.Footer className="d-flex justify-content-end">
-              <Link to={`/admin/subscriptions/${server.data?.subscription.id}`}>
+              <Link to={`/admin/subscriptions/${subscription.id}`}>
                 <Button variant="primary">Admin</Button>
               </Link>
             </Card.Footer>
