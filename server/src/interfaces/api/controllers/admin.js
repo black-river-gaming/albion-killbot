@@ -93,7 +93,7 @@ async function createSubscription(req, res) {
 
     const createdSubscription = await subscriptionsService.addSubscription(subscription);
 
-    return res.send(createdSubscription);
+    return res.status(201).json(createdSubscription);
   } catch (error) {
     logger.error(`Unable to create subscription: ${error.message}`, {
       error,
@@ -117,6 +117,33 @@ async function getSubscription(req, res) {
   }
 }
 
+async function updateSubscription(req, res) {
+  const { subscriptionId } = req.params;
+  const subscription = {
+    ...req.body,
+  };
+  const { expires } = req.body;
+
+  try {
+    if (expires && expires !== "never") {
+      const date = moment(expires, moment.ISO_8601, true);
+      if (!date.isValid()) return res.sendStatus(422);
+      subscription.expires = date.toDate();
+    }
+
+    const createdSubscription = await subscriptionsService.updateSubscription(subscriptionId, subscription);
+    if (!createdSubscription) return res.sendStatus(404);
+
+    return res.send(createdSubscription);
+  } catch (error) {
+    logger.error(`Unable to update subscription: ${error.message}`, {
+      error,
+      subscription,
+    });
+    return res.sendStatus(500);
+  }
+}
+
 module.exports = {
   getServers,
   leaveServer,
@@ -126,4 +153,5 @@ module.exports = {
   getSubscriptions,
   createSubscription,
   getSubscription,
+  updateSubscription,
 };

@@ -21,7 +21,6 @@ router.use(authenticated);
  *         owner:
  *           type: string
  *           description: Discord user id that owns the subscription
- *           readOnly: true
  *           example: "155377266568855552"
  *         expires:
  *           description: Expiration date for a given subscription

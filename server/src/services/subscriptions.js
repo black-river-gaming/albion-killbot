@@ -121,7 +121,7 @@ async function addSubscription(data) {
   const subscription = await getSubscriptionById(id);
   subscriptionEvents.emit("add", subscription);
 
-  remove(`limits-${subscription.server}`);
+  if (subscription.server) remove(`limits-${subscription.server}`);
 
   return subscription;
 }
@@ -130,7 +130,7 @@ async function assignSubscription(_id, server) {
   const subscription = await getSubscriptionById(_id);
   subscriptionEvents.emit("assign", subscription);
 
-  remove(`limits-${subscription.server}`);
+  if (subscription.server) remove(`limits-${subscription.server}`);
 
   return await updateOne(SUBSCRIPTIONS_COLLECTION, { _id }, { $set: { server } });
 }
@@ -139,7 +139,7 @@ async function removeSubscription(_id) {
   const subscription = await getSubscriptionById(_id);
   subscriptionEvents.emit("remove", subscription);
 
-  remove(`limits-${subscription.server}`);
+  if (subscription.server) remove(`limits-${subscription.server}`);
 
   return await deleteOne(SUBSCRIPTIONS_COLLECTION, { _id });
 }
@@ -148,7 +148,7 @@ async function removeSubscriptionByServerId(serverId) {
   const subscription = await getSubscriptionByServerId(serverId);
   subscriptionEvents.emit("remove", subscription);
 
-  remove(`limits-${subscription.server}`);
+  if (subscription.server) remove(`limits-${subscription.server}`);
 
   return await deleteOne(SUBSCRIPTIONS_COLLECTION, { server: serverId });
 }
@@ -157,9 +157,20 @@ async function removeSubscriptionByStripeId(stripeId) {
   const subscription = await getSubscriptionByStripeId(stripeId);
   subscriptionEvents.emit("remove", subscription);
 
-  remove(`limits-${subscription.server}`);
+  if (subscription.server) remove(`limits-${subscription.server}`);
 
   return await deleteOne(SUBSCRIPTIONS_COLLECTION, { stripe: stripeId });
+}
+
+async function updateSubscription(subscriptionId, data) {
+  await updateOne(SUBSCRIPTIONS_COLLECTION, { _id: subscriptionId }, { $set: data });
+
+  const subscription = await getSubscriptionById(subscriptionId);
+  subscriptionEvents.emit("update", subscription);
+
+  if (subscription.server) remove(`limits-${subscription.server}`);
+
+  return subscription;
 }
 
 async function updateSubscriptionByServerId(serverId, data) {
@@ -168,7 +179,7 @@ async function updateSubscriptionByServerId(serverId, data) {
   const subscription = await getSubscriptionByServerId(serverId);
   subscriptionEvents.emit("update", subscription);
 
-  remove(`limits-${subscription.server}`);
+  if (subscription.server) remove(`limits-${subscription.server}`);
 
   return subscription;
 }
@@ -179,7 +190,7 @@ async function updateSubscriptionByStripeId(stripeId, data) {
   const subscription = await getSubscriptionByStripeId(stripeId);
   subscriptionEvents.emit("update", subscription);
 
-  remove(`limits-${subscription.server}`);
+  if (subscription.server) remove(`limits-${subscription.server}`);
 
   return subscription;
 }
@@ -188,7 +199,7 @@ async function unassignSubscription(_id) {
   const subscription = await getSubscriptionById(_id);
   subscriptionEvents.emit("unassign", subscription);
 
-  remove(`limits-${subscription.server}`);
+  if (subscription.server) remove(`limits-${subscription.server}`);
 
   return await updateOne(SUBSCRIPTIONS_COLLECTION, { _id }, { $unset: { server: "" } });
 }
@@ -227,6 +238,7 @@ module.exports = {
   removeSubscriptionByStripeId,
   unassignSubscription,
   unassignSubscriptionsByServerId,
+  updateSubscription,
   updateSubscriptionByServerId,
   updateSubscriptionByStripeId,
 };

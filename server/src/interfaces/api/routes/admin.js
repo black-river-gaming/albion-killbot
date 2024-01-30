@@ -212,6 +212,41 @@ router.post(`/subscriptions`, adminController.createSubscription);
  */
 router.get(`/subscriptions/:subscriptionId`, adminController.getSubscription);
 
+/**
+ * @openapi
+ * /admin/subscriptions/{subscriptionId}:
+ *   put:
+ *     tags: [Admin]
+ *     summary: Update subscription
+ *     operationId: updateSubscription
+ *     parameters:
+ *     - name: subscriptionId
+ *       in: path
+ *       description: Subscription id.
+ *       schema:
+ *         type: string
+ *       required: true
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SubscriptionPartial'
+ *     responses:
+ *       200:
+ *         description: Updated subscription
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/SubscriptionPartial"
+ *       403:
+ *         $ref: "#/components/responses/Unauthorized"
+ *       404:
+ *         description: Subscription not found
+ *       500:
+ *         $ref: "#/components/responses/ServerError"
+ */
+router.put(`/subscriptions/:subscriptionId`, adminController.updateSubscription);
+
 module.exports = {
   path: "/admin",
   router,
