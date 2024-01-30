@@ -1,3 +1,4 @@
+import { getSubscriptionUrl } from "helpers/stripe";
 import { Button, Card, Col, Row, Stack, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { ISubscription } from "types";
@@ -42,7 +43,16 @@ const SubscriptionListItem = ({ subscription }: SubscriptionListItemProps) => (
             {subscription.stripe && (
               <tr>
                 <td>Stripe</td>
-                <td className="text-primary">{subscription.stripe}</td>
+                <td className="text-primary">
+                  <a
+                    href={getSubscriptionUrl(subscription.stripe)}
+                    target="_blank"
+                    className="text-primary"
+                    rel="noreferrer"
+                  >
+                    {subscription.stripe}
+                  </a>
+                </td>
               </tr>
             )}
           </tbody>
