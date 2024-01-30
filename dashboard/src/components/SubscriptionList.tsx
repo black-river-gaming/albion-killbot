@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Pagination, Stack } from "react-bootstrap";
-import { SubscriptionPartial } from "types";
+import { ISubscription } from "types";
 import SubscriptionListItem from "./SubscriptionListItem";
 
 interface SubscriptionListProps {
   className?: string;
   pageSize?: number;
-  subscriptions?: SubscriptionPartial[];
+  subscriptions?: ISubscription[];
 }
 
 const SubscriptionList = ({

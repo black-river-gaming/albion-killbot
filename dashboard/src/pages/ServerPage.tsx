@@ -22,10 +22,9 @@ import {
   Stack,
 } from "react-bootstrap";
 import { Link, NavLink, Navigate, Outlet, useParams } from "react-router-dom";
-import { useFetchServerQuery, useFetchUserQuery } from "store/api";
+import { useFetchServerQuery } from "store/api";
 
 const ServerPage = () => {
-  const { data: user } = useFetchUserQuery();
   const { serverId = "" } = useParams();
   const server = useFetchServerQuery(serverId);
 
@@ -84,11 +83,6 @@ const ServerPage = () => {
               direction="horizontal"
               className="justify-content-end"
             >
-              {user?.admin && (
-                <Link to={`/admin/servers/${server.data.id}`}>
-                  <Button variant="primary">Admin</Button>
-                </Link>
-              )}
               <Link to="/dashboard">
                 <Button variant="secondary">Change Server</Button>
               </Link>

@@ -1,9 +1,9 @@
 import App from "App";
-import AdminGuard from "pages/AdminGuard";
-import AdminPage from "pages/AdminPage";
-import AdminServerPage from "pages/AdminServerPage";
-import AdminServersPage from "pages/AdminServersPage";
-import AdminSubscriptionsPage from "pages/AdminSubscriptionsPage";
+import AdminGuard from "pages/admin/AdminGuard";
+import AdminPage from "pages/admin/AdminPage";
+import AdminServersPage from "pages/admin/servers/AdminServersPage";
+import AdminSubscriptionPage from "pages/admin/subscriptions/AdminSubscriptionPage";
+import AdminSubscriptionsPage from "pages/admin/subscriptions/AdminSubscriptionsPage";
 import Auth from "pages/Auth";
 import AuthGuard from "pages/AuthGuard";
 import BattlesPage from "pages/BattlesPage";
@@ -15,7 +15,7 @@ import PremiumPage from "pages/PremiumPage";
 import RankingsPage from "pages/RankingsPage";
 import ServerPage from "pages/ServerPage";
 import SettingsPage from "pages/SettingsPage";
-import SubscriptionPage from "pages/Subscription";
+import SubscriptionPage from "pages/SubscriptionPage";
 import TrackPage from "pages/TrackPage";
 import { createRoutesFromElements, Navigate, Route } from "react-router-dom";
 
@@ -41,10 +41,16 @@ const routes = createRoutesFromElements(
       </Route>
       <Route element={<AdminGuard redirectTo="/" />}>
         <Route path="admin" element={<AdminPage />}>
-          <Route index element={<Navigate to="servers" replace={true} />} />
+          <Route
+            index
+            element={<Navigate to="subscriptions" replace={true} />}
+          />
           <Route path="servers" element={<AdminServersPage />} />
-          <Route path="servers/:serverId" element={<AdminServerPage />} />
           <Route path="subscriptions" element={<AdminSubscriptionsPage />} />
+          <Route
+            path="subscriptions/:subscriptionId"
+            element={<AdminSubscriptionPage />}
+          />
         </Route>
       </Route>
       <Route

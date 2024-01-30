@@ -633,30 +633,54 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
     }
   }
 
-  /* Bootstrap Tabs overrides */
-  .nav-tabs {
-    border-bottom: 1px solid;
-    border-color: ${({ theme }) => theme.background}77;
+  /* Bootstrap Nav overrides */
+  .nav {
+    &.nav-tabs {
+      border-bottom: 1px solid;
+      border-color: ${({ theme }) => theme.background}77;
 
-    .nav-item {
-      .nav-link {
-        border: none;
-        border-top-left-radius: 0.5rem;
-        border-top-right-radius: 0.5rem;
-        color:  ${({ theme }) => theme.text};
-        margin-bottom: 0;
-
-        &.active {
-          background: none;
-          background-image: linear-gradient(
-            rgba(255, 255, 255, 0.05),
-            rgba(255, 255, 255, 0.05)
-          );
-        }
-
-        &:hover {
+      .nav-item {
+        .nav-link {
           border: none;
-          color: ${({ theme }) => theme.primary};
+          border-top-left-radius: 0.5rem;
+          border-top-right-radius: 0.5rem;
+          color:  ${({ theme }) => theme.text};
+          margin-bottom: 0;
+
+          &.active {
+            background: none;
+            background-image: linear-gradient(
+              rgba(255, 255, 255, 0.05),
+              rgba(255, 255, 255, 0.05)
+            );
+          }
+
+          &:hover {
+            border: none;
+            color: ${({ theme }) => theme.primary};
+          }
+        }
+      }
+    }
+
+    &.nav-pills {
+      .nav-item {
+        .nav-link {
+          border-radius: 0.5rem;
+          color:  ${({ theme }) => theme.text};
+
+          &.active {
+            background: none;
+            background-image: linear-gradient(
+              rgba(255, 255, 255, 0.05),
+              rgba(255, 255, 255, 0.05)
+            );
+          }
+
+          &:hover {
+            border: none;
+            color: ${({ theme }) => theme.primary};
+          }
         }
       }
     }

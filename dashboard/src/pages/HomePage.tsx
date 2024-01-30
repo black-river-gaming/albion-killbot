@@ -14,10 +14,10 @@ import screenshot3 from "assets/screenshots/725747034-event.png";
 import screenshot4 from "assets/screenshots/725752704-event.png";
 import screenshot5 from "assets/screenshots/725753477-event.png";
 import screenshot6 from "assets/screenshots/725754202-event.png";
+import wallpapper from "assets/wallpappers/call_to_arms.jpeg";
 import Paper from "components/Paper";
 import { getServerInviteUrl } from "helpers/discord";
 import { Badge, Button, Card, Col, Container, Row } from "react-bootstrap";
-import StyledHome from "./styles/Home";
 
 const screenshots = [
   screenshot1,
@@ -72,14 +72,20 @@ const HomePage = () => {
     screenshots[Math.floor(Math.random() * screenshots.length)];
 
   return (
-    <StyledHome>
+    <div className="pb-3">
       <Paper
         elevation={6}
-        className="d-flex justify-content-around align-items-center p-4 home-card"
+        className="d-flex justify-content-around align-items-center p-4"
+        style={{
+          backgroundImage: `url(${wallpapper})`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundBlendMode: "multiply",
+        }}
       >
         <img src={screenshot} alt="Screenshot" className="d-none d-md-block" />
         <div className="d-flex flex-column align-items-center">
-          <h5 className="p-2 d-flex home-text">
+          <h5 className="p-2 d-flex">
             A Discord bot for displaying kills in Albion Online.
           </h5>
           <div className="p-2">
@@ -101,7 +107,7 @@ const HomePage = () => {
         <Row className="px-2">
           {features.map((feature) => (
             <Col key={feature.name} sm={6} lg={4} className="g-4">
-              <Card className="p-2 feature-card">
+              <Card className="p-2 d-flex flex-column justify-content-center">
                 <div className="p-4 d-flex justify-content-center">
                   <FontAwesomeIcon icon={feature.icon} size="3x" />
                 </div>
@@ -109,7 +115,7 @@ const HomePage = () => {
                   <div className="px-2">{feature.name}</div>
                   {feature.new && <Badge bg="primary">NEW</Badge>}
                 </Card.Title>
-                <Card.Body className="feature-description">
+                <Card.Body className="text-muted">
                   {feature.description}
                 </Card.Body>
               </Card>
@@ -117,7 +123,7 @@ const HomePage = () => {
           ))}
         </Row>
       </Container>
-    </StyledHome>
+    </div>
   );
 };
 

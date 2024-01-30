@@ -3,7 +3,7 @@ import { Toast, ToastContainer } from "react-bootstrap";
 import { removeToast } from "store/toast";
 
 const Toasts = () => {
-  const toasts = useAppSelector((state) => state.toasts);
+  const toasts = useAppSelector((state) => state.toast);
   const dispatch = useAppDispatch();
 
   const handleClose = (toast: typeof toasts[number]) => {

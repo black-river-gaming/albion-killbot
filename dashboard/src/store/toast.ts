@@ -3,7 +3,8 @@ import {
   isRejectedWithValue,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import { api } from "./api";
+import admin from "./api/admin";
+import api from "./api/index";
 
 interface ToastMsg {
   id: string;
@@ -20,7 +21,7 @@ const uid = () =>
   );
 
 export const toastSlice = createSlice({
-  name: "toasts",
+  name: "toast",
   initialState,
   reducers: {
     addToast: (
@@ -59,11 +60,14 @@ export const toastSlice = createSlice({
       }
     );
 
-    builder.addMatcher(api.endpoints.doLeaveServer.matchFulfilled, (state) => {
-      state.push({ id: uid(), theme: "success", message: "Left server." });
-    });
     builder.addMatcher(
-      api.endpoints.doLeaveServer.matchRejected,
+      admin.endpoints.doLeaveServer.matchFulfilled,
+      (state) => {
+        state.push({ id: uid(), theme: "success", message: "Left server." });
+      }
+    );
+    builder.addMatcher(
+      admin.endpoints.doLeaveServer.matchRejected,
       (state, action) => {
         if (!isRejectedWithValue(action)) return;
         state.push({
@@ -128,19 +132,61 @@ export const toastSlice = createSlice({
     );
 
     builder.addMatcher(
-      api.endpoints.updateSubscription.matchRejected,
+      admin.endpoints.createAdminSubscription.matchFulfilled,
+      (state) => {
+        state.push({
+          id: uid(),
+          theme: "success",
+          message: "Subscription created.",
+        });
+      }
+    );
+    builder.addMatcher(
+      admin.endpoints.createAdminSubscription.matchRejected,
+      (state, action) => {
+        if (!isRejectedWithValue(action)) return;
+        state.push({
+          id: uid(),
+          theme: "danger",
+          message: "Failed to create subscription. Please try again later.",
+        });
+      }
+    );
+    builder.addMatcher(
+      admin.endpoints.getAdminSubscription.matchRejected,
       (state, action) => {
         if (!isRejectedWithValue(action)) return;
         state.push({
           id: uid(),
           theme: "danger",
           message:
-            "Failed to update server subscription. Please try again later.",
+            "Failed to retrieve subscription details. Please try again later.",
         });
       }
     );
     builder.addMatcher(
-      api.endpoints.deleteSubscription.matchRejected,
+      admin.endpoints.updateAdminSubscription.matchRejected,
+      (state, action) => {
+        if (!isRejectedWithValue(action)) return;
+        state.push({
+          id: uid(),
+          theme: "danger",
+          message: "Failed to update subscription. Please try again later.",
+        });
+      }
+    );
+    builder.addMatcher(
+      admin.endpoints.deleteAdminSubscription.matchFulfilled,
+      (state) => {
+        state.push({
+          id: uid(),
+          theme: "info",
+          message: "Subscription deleted successfully.",
+        });
+      }
+    );
+    builder.addMatcher(
+      admin.endpoints.deleteAdminSubscription.matchRejected,
       (state, action) => {
         if (!isRejectedWithValue(action)) return;
         state.push({
@@ -156,4 +202,4 @@ export const toastSlice = createSlice({
 
 export const { addToast, removeToast } = toastSlice.actions;
 
-export default toastSlice;
+export default toastSlice.reducer;

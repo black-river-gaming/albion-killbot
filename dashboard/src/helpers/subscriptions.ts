@@ -2,7 +2,12 @@ import banner1 from "assets/subscriptions/subscription_banner_1.png";
 import banner2 from "assets/subscriptions/subscription_banner_2.png";
 import banner3 from "assets/subscriptions/subscription_banner_3.png";
 import banner4 from "assets/subscriptions/subscription_banner_4.png";
-import { Subscription, SubscriptionPrice } from "types";
+import {
+  ISubscription,
+  ISubscriptionBase,
+  ISubscriptionExtended,
+  SubscriptionPrice,
+} from "types";
 
 const banners = [
   {
@@ -23,13 +28,13 @@ const banners = [
   },
 ];
 
-export const isSubscriptionActive = (subscription: Subscription) => {
+export const isSubscriptionActive = (subscription: ISubscriptionBase) => {
   if (subscription.expires === "never") return true;
   return new Date(subscription.expires).getTime() > new Date().getTime();
 };
 
 export const isSubscriptionActiveAndUnassiged = (
-  subscription: Subscription
+  subscription: ISubscriptionExtended | ISubscription
 ) => {
   return isSubscriptionActive(subscription) && !subscription.server;
 };

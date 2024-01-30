@@ -29,7 +29,7 @@ export interface Limits {
 export interface ServerBase {
   id: string;
   name: string;
-  icon: string;
+  icon?: string;
 }
 
 export interface ServerPartial extends ServerBase {
@@ -42,7 +42,7 @@ export interface IServer extends ServerBase {
   channels: IChannel[];
   settings: ISettings;
   limits: Limits;
-  subscription: Subscription;
+  subscription: ISubscriptionExtended;
   track: ITrackList;
 }
 
@@ -116,20 +116,20 @@ export interface ITrackList {
 
 export type ISearchResults = ITrackList;
 
-export interface SubscriptionBase {
-  id: string;
+export interface ISubscriptionBase {
+  readonly id: string;
   owner: string;
   expires: string | "never";
   limits?: Limits;
 }
 
-export interface SubscriptionPartial extends SubscriptionBase {
+export interface ISubscription extends ISubscriptionBase {
   server?: string;
   stripe?: string;
 }
 
-export interface Subscription extends SubscriptionBase {
-  server?: string | ServerBase;
+export interface ISubscriptionExtended extends ISubscriptionBase {
+  server?: ServerBase;
   stripe?: {
     id: string;
     cancel_at_period_end: boolean;
@@ -137,12 +137,6 @@ export interface Subscription extends SubscriptionBase {
     customer: string;
     price: SubscriptionPrice;
   };
-}
-export type UpdateSubscription = Omit<Subscription, "id">;
-
-export interface SubscriptionPricesResponse {
-  currencies: string[];
-  prices: SubscriptionPrice[];
 }
 
 export interface SubscriptionPrice {
@@ -156,6 +150,11 @@ export interface SubscriptionPrice {
   metadata: {
     banner?: string;
   };
+}
+
+export interface SubscriptionPricesResponse {
+  currencies: string[];
+  prices: SubscriptionPrice[];
 }
 
 export interface Session {
