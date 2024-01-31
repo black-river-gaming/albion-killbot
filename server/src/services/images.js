@@ -127,6 +127,202 @@ const drawAwakening = async (ctx, weapon, x, y, { size = 145, attunedPlayerName 
   }
 };
 
+const drawPlayer = async (ctx, player, x, y, { showAttunement } = {}) => {
+  const BLOCK_SIZE = 217;
+
+  ctx.beginPath();
+  ctx.fillStyle = "#FFF";
+  ctx.strokeStyle = "#000";
+
+  let guild = "";
+  if (player.GuildName) guild = player.GuildName;
+  if (player.AllianceName) guild = `[${player.AllianceName}] ${guild}`;
+  ctx.font = "35px Roboto";
+  ctx.lineWidth = 3;
+  ctx.fillStyle = "#FFF";
+  let tw = ctx.measureText(guild).width;
+  let th = ctx.measureText("M").width;
+  y += th * 2;
+  ctx.strokeText(guild, x + BLOCK_SIZE * 1.5 - tw / 2, y);
+  ctx.fillText(guild, x + BLOCK_SIZE * 1.5 - tw / 2, y);
+  y += th * 2;
+
+  const name = `${player.Name}`;
+  ctx.font = "60px Roboto";
+  ctx.lineWidth = 6;
+  tw = ctx.measureText(name).width;
+  th = ctx.measureText("M").width;
+  ctx.strokeText(name, x + BLOCK_SIZE * 1.5 - tw / 2, y);
+  ctx.fillText(name, x + BLOCK_SIZE * 1.5 - tw / 2, y);
+  y += th - 5;
+
+  const ip = `IP: ${Math.round(player.AverageItemPower)}`;
+  ctx.font = "33px Roboto";
+  ctx.fillStyle = "#AAAAAA";
+  ctx.strokeStyle = "#000000";
+  ctx.lineWidth = 2;
+  tw = ctx.measureText(ip).width;
+  th = ctx.measureText("M").width;
+  ctx.strokeText(ip, x + BLOCK_SIZE * 1.5 - tw / 2, y);
+  ctx.fillText(ip, x + BLOCK_SIZE * 1.5 - tw / 2, y);
+  y += th;
+
+  const equipment = player.Equipment;
+  await drawItem(ctx, equipment.Head, x + BLOCK_SIZE, y);
+  await drawItem(ctx, equipment.Armor, x + BLOCK_SIZE, y + BLOCK_SIZE);
+  await drawItem(ctx, equipment.MainHand, x, y + BLOCK_SIZE, { attunedPlayerName: player.Name });
+  // Two-handed equipment
+  if (equipment.MainHand && equipment.MainHand.Type.split("_")[1] == "2H") {
+    ctx.globalAlpha = 0.2;
+    await drawItem(ctx, equipment.MainHand, x + BLOCK_SIZE * 2, y + BLOCK_SIZE);
+    ctx.globalAlpha = 1;
+  } else {
+    await drawItem(ctx, equipment.OffHand, x + BLOCK_SIZE * 2, y + BLOCK_SIZE);
+  }
+  await drawItem(ctx, equipment.Shoes, x + BLOCK_SIZE, y + BLOCK_SIZE * 2);
+  await drawItem(ctx, equipment.Bag, x, y);
+  await drawItem(ctx, equipment.Cape, x + BLOCK_SIZE * 2, y);
+  await drawItem(ctx, equipment.Mount, x + BLOCK_SIZE, y + BLOCK_SIZE * 3);
+  await drawItem(ctx, equipment.Potion, x, y + BLOCK_SIZE * 2);
+  await drawItem(ctx, equipment.Food, x + BLOCK_SIZE * 2, y + BLOCK_SIZE * 2);
+
+  y += BLOCK_SIZE * 4;
+
+  // Awakened weapon
+  if (showAttunement && equipment.MainHand?.LegendarySoul) {
+    await drawAwakening(ctx, equipment.MainHand, x, y, { attunedPlayerName: player.Name });
+  }
+};
+
+const drawAssistBar = async (ctx, participants, x, y, width, height, radius) => {
+  let px = x;
+  let py = y;
+
+  ctx.font = "40px Roboto";
+  ctx.fillStyle = "#EEEEEE";
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 3;
+  const text = "Damage";
+  const pw = ctx.measureText(text).width;
+  const textX = px + width / 2 - pw / 2;
+  ctx.strokeText(text, textX, py);
+  ctx.fillText(text, textX, py);
+
+  px = x;
+  py += 25;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(px + radius, py);
+  ctx.lineTo(px + width - radius, py);
+  ctx.quadraticCurveTo(px + width, py, px + width, py + radius);
+  ctx.lineTo(px + width, py + height - radius);
+  ctx.quadraticCurveTo(px + width, py + height, px + width - radius, py + height);
+  ctx.lineTo(px + radius, py + height);
+  ctx.quadraticCurveTo(px, py + height, px, py + height - radius);
+  ctx.lineTo(px, py + radius);
+  ctx.quadraticCurveTo(px, py, px + radius, py);
+  ctx.closePath();
+
+  ctx.fillStyle = ctx.createPattern(await loadImage(path.join(assetsPath, "assistBarBg.png")), "repeat");
+  ctx.fill();
+
+  ctx.strokeStyle = "#111111";
+  ctx.lineWidth = 15;
+  ctx.stroke();
+  ctx.clip();
+
+  const COLORS = ["#730b0b", "#7e3400", "#835400", "#817306", "#79902c", "#6aad56", "#4fc987", "#00e3bf"];
+
+  const totalDamage = participants.reduce((sum, participant) => {
+    return sum + Math.max(1, participant.DamageDone);
+  }, 0);
+  participants.forEach((participant) => {
+    const damagePercent = (Math.max(1, participant.DamageDone) / totalDamage) * 100;
+    participant.damagePercent = damagePercent;
+  });
+
+  // Draw bars
+  participants.forEach((participant, i) => {
+    const color = COLORS[i % COLORS.length];
+    const barWidth = Math.round((participant.damagePercent / 100) * width);
+    ctx.beginPath();
+    ctx.rect(px, py, barWidth, height);
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    if (barWidth > 60) {
+      ctx.fillStyle = "white";
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 2;
+      ctx.font = "32px Roboto";
+      const text = participant.DamageDone === 0 ? "0%" : Math.round(participant.damagePercent) + "%";
+      const pw = ctx.measureText(text).width;
+      const textX = px + barWidth / 2 - pw / 2;
+      const textY = py + height / 2 + 10;
+      ctx.strokeText(text, textX, textY);
+      ctx.fillText(text, textX, textY);
+    }
+
+    ctx.closePath();
+    px += barWidth;
+  });
+
+  // Draw gradient over the bar
+  const barGradient = ctx.createLinearGradient(x + width / 2, py, x + width / 2, py + height);
+  barGradient.addColorStop(0, "rgba(200, 200, 200, 0.5)");
+  barGradient.addColorStop(0.15, "rgba(200, 200, 200, 0.25)");
+  barGradient.addColorStop(0.5, "rgba(100, 100, 100, 0.15)");
+  barGradient.addColorStop(0.85, "rgba(100, 100, 100, 0.1)");
+  barGradient.addColorStop(1, "rgba(0, 0, 0, 0.25)");
+
+  ctx.beginPath();
+  ctx.rect(x, py, width, height);
+  ctx.fillStyle = barGradient;
+  ctx.fill();
+  ctx.closePath();
+
+  ctx.restore();
+
+  // Draw caption
+  px = x;
+  py += height + 20;
+  participants.forEach((participant, i) => {
+    const color = COLORS[i % COLORS.length];
+    const text = `${participant.Name} [${Math.round(participant.AverageItemPower)}]`;
+
+    ctx.beginPath();
+    ctx.font = "30px Roboto";
+    const pw = ctx.measureText(text).width;
+
+    if (px + 50 + 15 + pw + 25 > width) {
+      px = x;
+      py += 50;
+    }
+    ctx.rect(px, py, 50, 50);
+
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    ctx.strokeStyle = "#111111";
+    ctx.lineWidth = 5;
+    ctx.stroke();
+
+    px += 50 + 15;
+
+    ctx.fillStyle = "#FFF";
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 5;
+    ctx.strokeText(text, px, py + 34);
+    ctx.fillText(text, px, py + 34);
+    px += pw;
+
+    px += 25;
+  });
+
+  return height + py;
+};
+
 async function generateEventImage(event, { lootValue, showAttunement = true, splitLootValue = false } = {}) {
   showAttunement = showAttunement && hasAwakening(event);
 
@@ -137,74 +333,8 @@ async function generateEventImage(event, { lootValue, showAttunement = true, spl
 
   await drawImage(ctx, path.join(assetsPath, "background.png"), -1, -1, 1602, 1554);
 
-  const drawPlayer = async (player, x, y) => {
-    const BLOCK_SIZE = 217;
-
-    ctx.beginPath();
-    ctx.fillStyle = "#FFF";
-    ctx.strokeStyle = "#000";
-
-    let guild = "";
-    if (player.GuildName) guild = player.GuildName;
-    if (player.AllianceName) guild = `[${player.AllianceName}] ${guild}`;
-    ctx.font = "35px Roboto";
-    ctx.lineWidth = 3;
-    ctx.fillStyle = "#FFF";
-    let tw = ctx.measureText(guild).width;
-    let th = ctx.measureText("M").width;
-    y += th * 2;
-    ctx.strokeText(guild, x + BLOCK_SIZE * 1.5 - tw / 2, y);
-    ctx.fillText(guild, x + BLOCK_SIZE * 1.5 - tw / 2, y);
-    y += th * 2;
-
-    const name = `${player.Name}`;
-    ctx.font = "60px Roboto";
-    ctx.lineWidth = 6;
-    tw = ctx.measureText(name).width;
-    th = ctx.measureText("M").width;
-    ctx.strokeText(name, x + BLOCK_SIZE * 1.5 - tw / 2, y);
-    ctx.fillText(name, x + BLOCK_SIZE * 1.5 - tw / 2, y);
-    y += th - 5;
-
-    const ip = `IP: ${Math.round(player.AverageItemPower)}`;
-    ctx.font = "33px Roboto";
-    ctx.fillStyle = "#AAAAAA";
-    ctx.strokeStyle = "#000000";
-    ctx.lineWidth = 2;
-    tw = ctx.measureText(ip).width;
-    th = ctx.measureText("M").width;
-    ctx.strokeText(ip, x + BLOCK_SIZE * 1.5 - tw / 2, y);
-    ctx.fillText(ip, x + BLOCK_SIZE * 1.5 - tw / 2, y);
-    y += th;
-
-    const equipment = player.Equipment;
-    await drawItem(ctx, equipment.Head, x + BLOCK_SIZE, y);
-    await drawItem(ctx, equipment.Armor, x + BLOCK_SIZE, y + BLOCK_SIZE);
-    await drawItem(ctx, equipment.MainHand, x, y + BLOCK_SIZE, { attunedPlayerName: player.Name });
-    // Two-handed equipment
-    if (equipment.MainHand && equipment.MainHand.Type.split("_")[1] == "2H") {
-      ctx.globalAlpha = 0.2;
-      await drawItem(ctx, equipment.MainHand, x + BLOCK_SIZE * 2, y + BLOCK_SIZE);
-      ctx.globalAlpha = 1;
-    } else {
-      await drawItem(ctx, equipment.OffHand, x + BLOCK_SIZE * 2, y + BLOCK_SIZE);
-    }
-    await drawItem(ctx, equipment.Shoes, x + BLOCK_SIZE, y + BLOCK_SIZE * 2);
-    await drawItem(ctx, equipment.Bag, x, y);
-    await drawItem(ctx, equipment.Cape, x + BLOCK_SIZE * 2, y);
-    await drawItem(ctx, equipment.Mount, x + BLOCK_SIZE, y + BLOCK_SIZE * 3);
-    await drawItem(ctx, equipment.Potion, x, y + BLOCK_SIZE * 2);
-    await drawItem(ctx, equipment.Food, x + BLOCK_SIZE * 2, y + BLOCK_SIZE * 2);
-
-    y += BLOCK_SIZE * 4;
-
-    // Awakened weapon
-    if (showAttunement && equipment.MainHand?.LegendarySoul) {
-      await drawAwakening(ctx, equipment.MainHand, x, y, { attunedPlayerName: player.Name });
-    }
-  };
-  await drawPlayer(event.Killer, 15, 0);
-  await drawPlayer(event.Victim, 935, 0);
+  await drawPlayer(ctx, event.Killer, 15, 0, { showAttunement });
+  await drawPlayer(ctx, event.Victim, 935, 0, { showAttunement });
 
   // timestamp
   const timestampY = 50;
@@ -269,136 +399,7 @@ async function generateEventImage(event, { lootValue, showAttunement = true, spl
   }
 
   // assists bar
-  const drawAssistBar = async (participants, x, y, width, height, radius) => {
-    let px = x;
-    let py = y;
-
-    ctx.font = "40px Roboto";
-    ctx.fillStyle = "#EEEEEE";
-    ctx.strokeStyle = "#000";
-    ctx.lineWidth = 3;
-    const text = "Damage";
-    const pw = ctx.measureText(text).width;
-    const textX = px + width / 2 - pw / 2;
-    ctx.strokeText(text, textX, py);
-    ctx.fillText(text, textX, py);
-
-    px = x;
-    py += 25;
-
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(px + radius, py);
-    ctx.lineTo(px + width - radius, py);
-    ctx.quadraticCurveTo(px + width, py, px + width, py + radius);
-    ctx.lineTo(px + width, py + height - radius);
-    ctx.quadraticCurveTo(px + width, py + height, px + width - radius, py + height);
-    ctx.lineTo(px + radius, py + height);
-    ctx.quadraticCurveTo(px, py + height, px, py + height - radius);
-    ctx.lineTo(px, py + radius);
-    ctx.quadraticCurveTo(px, py, px + radius, py);
-    ctx.closePath();
-
-    ctx.fillStyle = ctx.createPattern(await loadImage(path.join(assetsPath, "assistBarBg.png")), "repeat");
-    ctx.fill();
-
-    ctx.strokeStyle = "#111111";
-    ctx.lineWidth = 15;
-    ctx.stroke();
-    ctx.clip();
-
-    const COLORS = ["#730b0b", "#7e3400", "#835400", "#817306", "#79902c", "#6aad56", "#4fc987", "#00e3bf"];
-
-    const totalDamage = participants.reduce((sum, participant) => {
-      return sum + Math.max(1, participant.DamageDone);
-    }, 0);
-    participants.forEach((participant) => {
-      const damagePercent = (Math.max(1, participant.DamageDone) / totalDamage) * 100;
-      participant.damagePercent = damagePercent;
-    });
-
-    // Draw bars
-    participants.forEach((participant, i) => {
-      const color = COLORS[i % COLORS.length];
-      const barWidth = Math.round((participant.damagePercent / 100) * width);
-      ctx.beginPath();
-      ctx.rect(px, py, barWidth, height);
-      ctx.fillStyle = color;
-      ctx.fill();
-
-      if (barWidth > 60) {
-        ctx.fillStyle = "white";
-        ctx.strokeStyle = "black";
-        ctx.lineWidth = 2;
-        ctx.font = "32px Roboto";
-        const text = participant.DamageDone === 0 ? "0%" : Math.round(participant.damagePercent) + "%";
-        const pw = ctx.measureText(text).width;
-        const textX = px + barWidth / 2 - pw / 2;
-        const textY = py + height / 2 + 10;
-        ctx.strokeText(text, textX, textY);
-        ctx.fillText(text, textX, textY);
-      }
-
-      ctx.closePath();
-      px += barWidth;
-    });
-
-    // Draw gradient over the bar
-    const barGradient = ctx.createLinearGradient(x + width / 2, py, x + width / 2, py + height);
-    barGradient.addColorStop(0, "rgba(200, 200, 200, 0.5)");
-    barGradient.addColorStop(0.15, "rgba(200, 200, 200, 0.25)");
-    barGradient.addColorStop(0.5, "rgba(100, 100, 100, 0.15)");
-    barGradient.addColorStop(0.85, "rgba(100, 100, 100, 0.1)");
-    barGradient.addColorStop(1, "rgba(0, 0, 0, 0.25)");
-
-    ctx.beginPath();
-    ctx.rect(x, py, width, height);
-    ctx.fillStyle = barGradient;
-    ctx.fill();
-    ctx.closePath();
-
-    ctx.restore();
-
-    // Draw caption
-    px = x;
-    py += height + 20;
-    participants.forEach((participant, i) => {
-      const color = COLORS[i % COLORS.length];
-      const text = `${participant.Name} [${Math.round(participant.AverageItemPower)}]`;
-
-      ctx.beginPath();
-      ctx.font = "30px Roboto";
-      const pw = ctx.measureText(text).width;
-
-      if (px + 50 + 15 + pw + 25 > width) {
-        px = x;
-        py += 50;
-      }
-      ctx.rect(px, py, 50, 50);
-
-      ctx.fillStyle = color;
-      ctx.fill();
-
-      ctx.strokeStyle = "#111111";
-      ctx.lineWidth = 5;
-      ctx.stroke();
-
-      px += 50 + 15;
-
-      ctx.fillStyle = "#FFF";
-      ctx.strokeStyle = "#000";
-      ctx.lineWidth = 5;
-      ctx.strokeText(text, px, py + 34);
-      ctx.fillText(text, px, py + 34);
-      px += pw;
-
-      px += 25;
-    });
-
-    return height + py;
-  };
-
-  await drawAssistBar(event.Participants, 35, showAttunement ? 1350 : 1050, 1530, 80, 40);
+  await drawAssistBar(ctx, event.Participants, 35, showAttunement ? 1350 : 1050, 1530, 80, 40);
 
   const buffer = await optimizeImage(canvas.toBuffer(), 580);
   canvas = null;
