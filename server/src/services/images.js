@@ -172,7 +172,7 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
     y += BLOCK_SIZE * 4;
 
     // Awakened weapon
-    if (equipment.MainHand.LegendarySoul) await drawAwakening(ctx, equipment.MainHand, x, y);
+    if (equipment.MainHand?.LegendarySoul) await drawAwakening(ctx, equipment.MainHand, x, y);
   };
   await drawPlayer(event.Killer, 15, 0);
   await drawPlayer(event.Victim, 935, 0);

@@ -84,7 +84,7 @@ const transformEvent = (event) => ({
 });
 
 const hasAwakening = (event) => {
-  return event.Killer.Equipment.MainHand.LegendarySoul || event.Victim.Equipment.MainHand.LegendarySoul;
+  return event.Killer?.Equipment?.MainHand?.LegendarySoul || event.Victim?.Equipment?.MainHand?.LegendarySoul;
 };
 
 const transformTrait = (trait) => {
