@@ -79,6 +79,7 @@
       "PROVIDER": "Set provider for links in notifications.",
       "PVP_RANKING": "PvP Ranking",
       "RANKINGS": "Change settings for ranking notifications.",
+      "SHOW_ATTUNEMENT": "Display awakened weapon stats",
       "SPLIT_LOOT_VALUE": "Split the loot value between gear and inventory."
     },
     "FREQUENCIES": {
@@ -100,6 +101,9 @@
     },
     "PROVIDER": {
       "SET": "Links will be provided by {{ provider }}."
+    },
+    "SHOW_ATTUNEMENT": {
+      "SET": "Display awakened weapon stats: {{ enabled }}"
     },
     "SPLIT_LOOT_VALUE": {
       "SET": "Split loot value: {{ enabled }}"

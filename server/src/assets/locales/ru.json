@@ -79,6 +79,7 @@
       "PROVIDER": "Установите поставщика для ссылок в уведомлениях.",
       "PVP_RANKING": "PvP Ranking",
       "RANKINGS": "Change settings for ranking notifications.",
+      "SHOW_ATTUNEMENT": "Показать статистику пробужденного оружия.",
       "SPLIT_LOOT_VALUE": "Разделите стоимость добычи между снаряжением и инвентарем."
     },
     "FREQUENCIES": {
@@ -100,6 +101,9 @@
     },
     "PROVIDER": {
       "SET": "Ссылки будут предоставлены {{ provider }}."
+    },
+    "SHOW_ATTUNEMENT": {
+      "SET": "Показать статистику пробужденного оружия: {{ enabled }}"
     },
     "SPLIT_LOOT_VALUE": {
       "SET": "Разделить стоимость добычи: {{ enabled }}"

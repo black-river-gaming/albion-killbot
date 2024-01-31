@@ -79,6 +79,7 @@
       "PROVIDER": "Définir le fournisseur pour les liens dans les notifications.",
       "PVP_RANKING": "PvP Ranking",
       "RANKINGS": "Change settings for ranking notifications.",
+      "SHOW_ATTUNEMENT": "Afficher les statistiques de l'arme éveillée.",
       "SPLIT_LOOT_VALUE": "Divisez la valeur du butin entre l'équipement et l'inventaire."
     },
     "FREQUENCIES": {
@@ -100,6 +101,9 @@
     },
     "PROVIDER": {
       "SET": "Les liens seront fournis par {{ provider }}."
+    },
+    "SHOW_ATTUNEMENT": {
+      "SET": "Afficher les statistiques de l'arme éveillée : {{ enabled }}"
     },
     "SPLIT_LOOT_VALUE": {
       "SET": "Valeur du butin partagé : {{ enabled }}"
