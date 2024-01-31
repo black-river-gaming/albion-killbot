@@ -5,6 +5,7 @@ const initialState: ISettings = {
   server: "",
   general: {
     locale: "en",
+    showAttunement: false,
     guildTags: false,
     splitLootValue: false,
   },
@@ -49,6 +50,9 @@ export const settingsSlice = createSlice({
     },
     setGeneralLocale: (state, action: PayloadAction<string>) => {
       state.general.locale = action.payload;
+    },
+    setGeneralShowAttunement: (state, action: PayloadAction<boolean>) => {
+      state.general.showAttunement = action.payload;
     },
     setGeneralGuildTags: (state, action: PayloadAction<boolean>) => {
       state.general.guildTags = action.payload;
@@ -125,6 +129,7 @@ export const settingsSlice = createSlice({
 export const {
   loadSettings,
   setGeneralLocale,
+  setGeneralShowAttunement,
   setGeneralGuildTags,
   setGeneralSplitLootValue,
   setKillsEnabled,

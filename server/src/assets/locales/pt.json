@@ -79,6 +79,7 @@
       "PROVIDER": "Definir provedor de links para notificações.",
       "PVP_RANKING": "Ranking PvP",
       "RANKINGS": "Mudar configurações de rankings.",
+      "SHOW_ATTUNEMENT": "Exibir estatísticas da arma despertada.",
       "SPLIT_LOOT_VALUE": "Divida o valor do loot entre equipamento e inventário."
     },
     "FREQUENCIES": {
@@ -100,6 +101,9 @@
     },
     "PROVIDER": {
       "SET": "Links serão providos por {{ provider }}."
+    },
+    "SHOW_ATTUNEMENT": {
+      "SET": "Exibir estatísticas da arma despertada: {{ enabled }}"
     },
     "SPLIT_LOOT_VALUE": {
       "SET": "Valor do loot dividido: {{ enabled }}"

@@ -9,6 +9,7 @@ const SETTINGS_COLLECTION = "settings";
 const DEFAULT_SETTINGS = Object.freeze({
   general: {
     locale: "en",
+    showAttunement: true,
     guildTags: false,
     splitLootValue: false,
   },

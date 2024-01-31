@@ -57,6 +57,7 @@ export interface ISettings {
   server: string;
   general: {
     locale: string;
+    showAttunement?: boolean;
     guildTags: boolean;
     splitLootValue: boolean;
   };

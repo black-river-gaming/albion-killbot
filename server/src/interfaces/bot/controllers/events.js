@@ -39,7 +39,7 @@ async function subscribe(client) {
 
         const { good, tracked } = guildEvent;
         const { enabled, mode, provider: providerId } = good ? settings.kills : settings.deaths;
-        const { locale, guildTags, splitLootValue } = settings.general;
+        const { locale, showAttunement, guildTags, splitLootValue } = settings.general;
 
         let channel = null;
         if (good) channel = (tracked.kills && tracked.kills.channel) || settings.kills.channel;
@@ -60,7 +60,7 @@ async function subscribe(client) {
         if (mode === REPORT_MODES.IMAGE) {
           const inventory = guildEvent.Victim.Inventory.filter((i) => i != null);
           const hasInventory = inventory.length > 0;
-          const eventImage = await generateEventImage(guildEvent, { lootValue, splitLootValue });
+          const eventImage = await generateEventImage(guildEvent, { lootValue, showAttunement, splitLootValue });
           await sendNotification(
             client,
             channel,

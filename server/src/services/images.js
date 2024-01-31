@@ -71,30 +71,38 @@ const drawTrait = async (ctx, trait, x, y) => {
   y += 20;
 
   // Draw bar
-  const maxWidth = config.get("features.events.displayTraitIcons") ? 360 : 420;
+  const maxBarWidth = config.get("features.events.displayTraitIcons") ? 350 : 420;
   const barHeight = 10;
   ctx.fillStyle = ctx.createPattern(await loadImage(path.join(assetsPath, "assistBarBg.png")), "repeat");
-  ctx.fillRect(x, y, maxWidth, barHeight);
+  ctx.fillRect(x, y, maxBarWidth, barHeight);
   ctx.fillStyle = "#0dd621";
-  ctx.fillRect(x, y, relativeValue * maxWidth, barHeight);
+  ctx.fillRect(x, y, relativeValue * maxBarWidth, barHeight);
 
   // Draw gradient over the bar
-  const barGradient = ctx.createLinearGradient(x + maxWidth / 2, y, x + maxWidth / 2, y + barHeight);
+  const barGradient = ctx.createLinearGradient(x + maxBarWidth / 2, y, x + maxBarWidth / 2, y + barHeight);
   barGradient.addColorStop(0, "rgba(255, 255, 255, 0.85)");
   barGradient.addColorStop(0.5, "rgba(0, 0, 0, 0)");
   barGradient.addColorStop(1, "rgba(0, 0, 0, 0.5)");
   ctx.fillStyle = barGradient;
-  ctx.fillRect(x, y, relativeValue * maxWidth, barHeight);
+  ctx.fillRect(x, y, relativeValue * maxBarWidth, barHeight);
 
   ctx.restore();
 };
 
 const drawAwakening = async (ctx, weapon, x, y, { ICON_SIZE = 145 } = {}) => {
   x += 30;
-  await drawItem(ctx, weapon, x, y + 10, ICON_SIZE);
+  await drawItem(ctx, weapon, x, y + 60, ICON_SIZE);
 
   x += ICON_SIZE + 15;
   y += 40;
+
+  if (weapon.LegendarySoul.traits.length === 0) {
+    ctx.fillStyle = "white";
+    ctx.strokeStyle = "black";
+    ctx.font = "38px Roboto";
+    ctx.strokeText("<No traits>", x + 100, y + 100);
+    ctx.fillText("<No traits>", x + 100, y + 100);
+  }
 
   for (const trait of weapon.LegendarySoul.traits) {
     drawTrait(ctx, trait, x, y);
@@ -102,8 +110,10 @@ const drawAwakening = async (ctx, weapon, x, y, { ICON_SIZE = 145 } = {}) => {
   }
 };
 
-async function generateEventImage(event, { lootValue, splitLootValue = false } = {}) {
-  let canvas = createCanvas(1600, hasAwakening(event) ? 1550 : 1250);
+async function generateEventImage(event, { lootValue, showAttunement = true, splitLootValue = false } = {}) {
+  showAttunement = showAttunement && hasAwakening(event);
+
+  let canvas = createCanvas(1600, showAttunement ? 1550 : 1250);
   let tw, th;
   const w = canvas.width;
   const ctx = canvas.getContext("2d");
@@ -172,7 +182,9 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
     y += BLOCK_SIZE * 4;
 
     // Awakened weapon
-    if (equipment.MainHand?.LegendarySoul) await drawAwakening(ctx, equipment.MainHand, x, y);
+    if (showAttunement && equipment.MainHand?.LegendarySoul) {
+      await drawAwakening(ctx, equipment.MainHand, x, y, { attunedPlayerName: player.Name });
+    }
   };
   await drawPlayer(event.Killer, 15, 0);
   await drawPlayer(event.Victim, 935, 0);
@@ -369,7 +381,7 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
     return height + py;
   };
 
-  await drawAssistBar(event.Participants, 35, hasAwakening(event) ? 1350 : 1050, 1530, 80, 40);
+  await drawAssistBar(event.Participants, 35, showAttunement ? 1350 : 1050, 1530, 80, 40);
 
   const buffer = await optimizeImage(canvas.toBuffer(), 580);
   canvas = null;

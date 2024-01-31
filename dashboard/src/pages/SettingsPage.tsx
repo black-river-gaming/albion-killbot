@@ -1,6 +1,7 @@
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import guildTags from "assets/settings/guildTags.png";
+import showAttunement from "assets/settings/showAttunement.png";
 import splitLootValue from "assets/settings/splitLootValue.png";
 import LoadError from "components/LoadError";
 import Loader from "components/Loader";
@@ -12,6 +13,7 @@ import { useFetchConstantsQuery } from "store/api";
 import {
   setGeneralGuildTags,
   setGeneralLocale,
+  setGeneralShowAttunement,
   setGeneralSplitLootValue,
 } from "store/settings";
 
@@ -41,6 +43,48 @@ const SettingsPage = () => {
               </option>
             ))}
           </Form.Select>
+        </Form.Group>
+
+        <Form.Group controlId="showAttunement">
+          <Form.Switch>
+            <Form.Switch.Input
+              checked={general.showAttunement}
+              type="checkbox"
+              onChange={(e) =>
+                dispatch(setGeneralShowAttunement(e.target.checked))
+              }
+            />
+            <Form.Switch.Label>
+              <Stack
+                direction="horizontal"
+                gap={1}
+                className="align-items-center"
+              >
+                <div>Show Attunement</div>
+                <OverlayTrigger
+                  placement="auto-end"
+                  overlay={
+                    <Tooltip>
+                      <Stack gap={2} className="align-items-start">
+                        <div>
+                          Display awakened weapon attributes on kill reports
+                        </div>
+                        <img
+                          src={showAttunement}
+                          alt="Example of Show Attunement"
+                          style={{ borderRadius: "0.2rem" }}
+                        />
+                      </Stack>
+                    </Tooltip>
+                  }
+                >
+                  <Button className="btn-icon" variant="secondary" size="sm">
+                    <FontAwesomeIcon icon={faQuestionCircle} />
+                  </Button>
+                </OverlayTrigger>
+              </Stack>
+            </Form.Switch.Label>
+          </Form.Switch>
         </Form.Group>
 
         <Form.Group controlId="guildTags">

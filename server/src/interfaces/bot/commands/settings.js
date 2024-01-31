@@ -130,6 +130,9 @@ const general = (subcommand) =>
           })),
         ),
     )
+    .addBooleanOption((option) =>
+      option.setName("show_attunement").setDescription(t("SETTINGS.DESCRIPTION.SHOW_ATTUNEMENT")),
+    )
     .addBooleanOption((option) => option.setName("guild_tags").setDescription(t("SETTINGS.DESCRIPTION.GUILD_TAGS")))
     .addBooleanOption((option) =>
       option.setName("split_loot_value").setDescription(t("SETTINGS.DESCRIPTION.SPLIT_LOOT_VALUE")),
@@ -179,6 +182,11 @@ const command = {
           t = getLocale(settings.general.locale).t;
         }
 
+        const showAttunement = interaction.options.getBoolean("show_attunement");
+        if (typeof showAttunement === "boolean") {
+          settings.general.showAttunement = showAttunement;
+        }
+
         const guildTags = interaction.options.getBoolean("guild_tags");
         if (typeof guildTags === "boolean") {
           settings.general.guildTags = guildTags;
@@ -194,6 +202,10 @@ const command = {
 
         let reply = "";
         reply += t("SETTINGS.LANG.SET", { lang: settings.general.locale }) + "\n";
+        reply +=
+          t("SETTINGS.SHOW_ATTUNEMENT.SET", {
+            enabled: settings.general.showAttunement ? t("SETTINGS.CATEGORY.ENABLED") : t("SETTINGS.CATEGORY.DISABLED"),
+          }) + "\n";
         reply +=
           t("SETTINGS.GUILD_TAGS.SET", {
             enabled: settings.general.guildTags ? t("SETTINGS.CATEGORY.ENABLED") : t("SETTINGS.CATEGORY.DISABLED"),
