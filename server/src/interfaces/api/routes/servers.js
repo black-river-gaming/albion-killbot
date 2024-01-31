@@ -117,6 +117,9 @@ router.use(`/:serverId`, serverAdmin);
  *              type: string
  *              description: Bot language
  *              default: "en"
+ *            showAttunement:
+ *              type: boolean
+ *              description: Display awakened weapon stats
  *            guildTags:
  *              type: boolean
  *              description: Display guild tags in player's names
