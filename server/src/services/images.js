@@ -96,6 +96,14 @@ const drawAwakening = async (ctx, weapon, x, y, { ICON_SIZE = 145 } = {}) => {
   x += ICON_SIZE + 15;
   y += 40;
 
+  if (weapon.LegendarySoul.traits.length === 0) {
+    ctx.fillStyle = "white";
+    ctx.strokeStyle = "black";
+    ctx.font = "38px Roboto";
+    ctx.strokeText("<No traits>", x + 100, y + 100);
+    ctx.fillText("<No traits>", x + 100, y + 100);
+  }
+
   for (const trait of weapon.LegendarySoul.traits) {
     drawTrait(ctx, trait, x, y);
     y += 80;
