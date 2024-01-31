@@ -1,8 +1,9 @@
 require("dotenv").config();
-process.env.NODE_CONFIG_DIR = path.join(__dirname, "..", "src", "config");
-
 const path = require("node:path");
 const fs = require("node:fs/promises");
+
+process.env.NODE_CONFIG_DIR = path.join(__dirname, "..", "src", "config");
+
 const database = require("../src/ports/database");
 const logger = require("../src/helpers/logger");
 
