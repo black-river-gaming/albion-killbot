@@ -1,13 +1,14 @@
+const config = require("config");
 const moment = require("moment");
 const path = require("node:path");
+const { existsSync } = require("node:fs");
 const { createCanvas, registerFont, loadImage } = require("canvas");
 const { getItemFile } = require("../ports/albion");
 
-const { hasAwakening } = require("../helpers/albion");
+const { hasAwakening, transformTrait } = require("../helpers/albion");
 const { optimizeImage } = require("../helpers/images");
 const { digitsFormatter, fileSizeFormatter } = require("../helpers/utils");
 const logger = require("../helpers/logger");
-const { create } = require("connect-mongo");
 
 const assetsPath = path.join(__dirname, "..", "assets");
 
@@ -45,6 +46,60 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
   ctx.strokeText(item.Count, x + block_size * 0.76, y + block_size * 0.73);
   ctx.fillText(item.Count, x + block_size * 0.76, y + block_size * 0.73);
   ctx.restore();
+};
+
+const drawTrait = async (ctx, trait, x, y) => {
+  const { name, type, value, unit, relativeValue } = transformTrait(trait);
+  ctx.save();
+
+  // Draw icon
+  if (config.get("features.events.displayTraitIcons")) {
+    const iconSrc = path.join(assetsPath, "traits", `${type}.png`);
+    if (existsSync(iconSrc)) {
+      const icon = await loadImage(iconSrc);
+      ctx.drawImage(icon, x, y - 20, 40, 40);
+    }
+    x += 60;
+  }
+
+  // Draw text
+  ctx.fillStyle = "white";
+  ctx.strokeStyle = "black";
+  ctx.font = "32px Roboto";
+  ctx.strokeText(`+${value}${unit} ${name}`, x, y);
+  ctx.fillText(`+${value}${unit} ${name}`, x, y);
+  y += 20;
+
+  // Draw bar
+  const maxWidth = config.get("features.events.displayTraitIcons") ? 370 : 420;
+  const barHeight = 10;
+  ctx.fillStyle = ctx.createPattern(await loadImage(path.join(assetsPath, "assistBarBg.png")), "repeat");
+  ctx.fillRect(x, y, maxWidth, barHeight);
+  ctx.fillStyle = "#0dd621";
+  ctx.fillRect(x, y, relativeValue * maxWidth, barHeight);
+
+  // Draw gradient over the bar
+  const barGradient = ctx.createLinearGradient(x + maxWidth / 2, y, x + maxWidth / 2, y + barHeight);
+  barGradient.addColorStop(0, "rgba(255, 255, 255, 0.85)");
+  barGradient.addColorStop(0.5, "rgba(0, 0, 0, 0)");
+  barGradient.addColorStop(1, "rgba(0, 0, 0, 0.5)");
+  ctx.fillStyle = barGradient;
+  ctx.fillRect(x, y, relativeValue * maxWidth, barHeight);
+
+  ctx.restore();
+};
+
+const drawAwakening = async (ctx, weapon, x, y, { ICON_SIZE = 145 } = {}) => {
+  x += 30;
+  await drawItem(ctx, weapon, x, y + 10, ICON_SIZE);
+
+  x += ICON_SIZE + 20;
+  y += 40;
+
+  for (const trait of weapon.LegendarySoul.traits) {
+    drawTrait(ctx, trait, x, y);
+    y += 80;
+  }
 };
 
 async function generateEventImage(event, { lootValue, splitLootValue = false } = {}) {
@@ -113,6 +168,11 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
     await drawItem(ctx, equipment.Mount, x + BLOCK_SIZE, y + BLOCK_SIZE * 3);
     await drawItem(ctx, equipment.Potion, x, y + BLOCK_SIZE * 2);
     await drawItem(ctx, equipment.Food, x + BLOCK_SIZE * 2, y + BLOCK_SIZE * 2);
+
+    y += BLOCK_SIZE * 4;
+
+    // Awakened weapon
+    if (equipment.MainHand.LegendarySoul) await drawAwakening(ctx, equipment.MainHand, x, y);
   };
   await drawPlayer(event.Killer, 15, 0);
   await drawPlayer(event.Victim, 935, 0);

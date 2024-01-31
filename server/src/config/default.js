@@ -40,6 +40,7 @@ module.exports = {
   features: {
     events: {
       useHistoryPrices: getBool(process.env.FEATURE_USE_HISTORY_PRICES, false),
+      displayTraitIcons: getBool(process.env.DISPLAY_TRAIT_ICONS, false),
     },
     guildRankings: getBool(process.env.GUILD_RANKINGS, false),
     limits: {
