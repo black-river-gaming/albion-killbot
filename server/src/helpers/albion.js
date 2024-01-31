@@ -98,7 +98,7 @@ const transformTrait = (trait) => {
     TRAIT_COOLDOWN_REDUCTION: "%",
     TRAIT_DEFENSE_BONUS: "%",
     TRAIT_ENERGY_COST_REDUCTION: "%",
-    TRAIT_HEALING_DEALT: "?",
+    TRAIT_HEALING_DEALT: "%",
     TRAIT_HEALING_RECEIVED: "%",
     TRAIT_LIFESTEAL: "%",
     TRAIT_MOB_FAME: "%",

@@ -57,21 +57,21 @@ const drawTrait = async (ctx, trait, x, y) => {
     const iconSrc = path.join(assetsPath, "traits", `${type}.png`);
     if (existsSync(iconSrc)) {
       const icon = await loadImage(iconSrc);
-      ctx.drawImage(icon, x, y - 20, 40, 40);
+      ctx.drawImage(icon, x, y - 25, 50, 50);
     }
-    x += 60;
+    x += 70;
   }
 
   // Draw text
   ctx.fillStyle = "white";
   ctx.strokeStyle = "black";
-  ctx.font = "32px Roboto";
+  ctx.font = config.get("features.events.displayTraitIcons") ? "26px Roboto" : "30px Roboto";
   ctx.strokeText(`+${value}${unit} ${name}`, x, y);
   ctx.fillText(`+${value}${unit} ${name}`, x, y);
   y += 20;
 
   // Draw bar
-  const maxWidth = config.get("features.events.displayTraitIcons") ? 370 : 420;
+  const maxWidth = config.get("features.events.displayTraitIcons") ? 360 : 420;
   const barHeight = 10;
   ctx.fillStyle = ctx.createPattern(await loadImage(path.join(assetsPath, "assistBarBg.png")), "repeat");
   ctx.fillRect(x, y, maxWidth, barHeight);
@@ -93,7 +93,7 @@ const drawAwakening = async (ctx, weapon, x, y, { ICON_SIZE = 145 } = {}) => {
   x += 30;
   await drawItem(ctx, weapon, x, y + 10, ICON_SIZE);
 
-  x += ICON_SIZE + 20;
+  x += ICON_SIZE + 15;
   y += 40;
 
   for (const trait of weapon.LegendarySoul.traits) {
@@ -335,7 +335,7 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
     py += height + 20;
     participants.forEach((participant, i) => {
       const color = COLORS[i % COLORS.length];
-      const text = `${participant.Name} [IP: ${Math.round(participant.AverageItemPower)}]`;
+      const text = `${participant.Name} [${Math.round(participant.AverageItemPower)}]`;
 
       ctx.beginPath();
       ctx.font = "30px Roboto";
