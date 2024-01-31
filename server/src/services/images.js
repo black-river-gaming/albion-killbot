@@ -1,8 +1,11 @@
+const config = require("config");
 const moment = require("moment");
 const path = require("node:path");
+const { existsSync } = require("node:fs");
 const { createCanvas, registerFont, loadImage } = require("canvas");
 const { getItemFile } = require("../ports/albion");
 
+const { hasAwakening, transformTrait } = require("../helpers/albion");
 const { optimizeImage } = require("../helpers/images");
 const { digitsFormatter, fileSizeFormatter } = require("../helpers/utils");
 const logger = require("../helpers/logger");
@@ -45,13 +48,67 @@ const drawItem = async (ctx, item, x, y, block_size = 217) => {
   ctx.restore();
 };
 
+const drawTrait = async (ctx, trait, x, y) => {
+  const { name, type, value, unit, relativeValue } = transformTrait(trait);
+  ctx.save();
+
+  // Draw icon
+  if (config.get("features.events.displayTraitIcons")) {
+    const iconSrc = path.join(assetsPath, "traits", `${type}.png`);
+    if (existsSync(iconSrc)) {
+      const icon = await loadImage(iconSrc);
+      ctx.drawImage(icon, x, y - 20, 40, 40);
+    }
+    x += 60;
+  }
+
+  // Draw text
+  ctx.fillStyle = "white";
+  ctx.strokeStyle = "black";
+  ctx.font = "32px Roboto";
+  ctx.strokeText(`+${value}${unit} ${name}`, x, y);
+  ctx.fillText(`+${value}${unit} ${name}`, x, y);
+  y += 20;
+
+  // Draw bar
+  const maxWidth = config.get("features.events.displayTraitIcons") ? 370 : 420;
+  const barHeight = 10;
+  ctx.fillStyle = ctx.createPattern(await loadImage(path.join(assetsPath, "assistBarBg.png")), "repeat");
+  ctx.fillRect(x, y, maxWidth, barHeight);
+  ctx.fillStyle = "#0dd621";
+  ctx.fillRect(x, y, relativeValue * maxWidth, barHeight);
+
+  // Draw gradient over the bar
+  const barGradient = ctx.createLinearGradient(x + maxWidth / 2, y, x + maxWidth / 2, y + barHeight);
+  barGradient.addColorStop(0, "rgba(255, 255, 255, 0.85)");
+  barGradient.addColorStop(0.5, "rgba(0, 0, 0, 0)");
+  barGradient.addColorStop(1, "rgba(0, 0, 0, 0.5)");
+  ctx.fillStyle = barGradient;
+  ctx.fillRect(x, y, relativeValue * maxWidth, barHeight);
+
+  ctx.restore();
+};
+
+const drawAwakening = async (ctx, weapon, x, y, { ICON_SIZE = 145 } = {}) => {
+  x += 30;
+  await drawItem(ctx, weapon, x, y + 10, ICON_SIZE);
+
+  x += ICON_SIZE + 20;
+  y += 40;
+
+  for (const trait of weapon.LegendarySoul.traits) {
+    drawTrait(ctx, trait, x, y);
+    y += 80;
+  }
+};
+
 async function generateEventImage(event, { lootValue, splitLootValue = false } = {}) {
-  let canvas = createCanvas(1600, 1250);
+  let canvas = createCanvas(1600, hasAwakening(event) ? 1550 : 1250);
   let tw, th;
   const w = canvas.width;
   const ctx = canvas.getContext("2d");
 
-  await drawImage(ctx, path.join(assetsPath, "background.png"), 0, 0);
+  await drawImage(ctx, path.join(assetsPath, "background.png"), -1, -1, 1602, 1554);
 
   const drawPlayer = async (player, x, y) => {
     const BLOCK_SIZE = 217;
@@ -111,6 +168,11 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
     await drawItem(ctx, equipment.Mount, x + BLOCK_SIZE, y + BLOCK_SIZE * 3);
     await drawItem(ctx, equipment.Potion, x, y + BLOCK_SIZE * 2);
     await drawItem(ctx, equipment.Food, x + BLOCK_SIZE * 2, y + BLOCK_SIZE * 2);
+
+    y += BLOCK_SIZE * 4;
+
+    // Awakened weapon
+    if (equipment.MainHand.LegendarySoul) await drawAwakening(ctx, equipment.MainHand, x, y);
   };
   await drawPlayer(event.Killer, 15, 0);
   await drawPlayer(event.Victim, 935, 0);
@@ -178,12 +240,12 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
   }
 
   // assists bar
-  const drawAssistBar = (participants, x, y, width, height, radius) => {
+  const drawAssistBar = async (participants, x, y, width, height, radius) => {
     let px = x;
     let py = y;
 
     ctx.font = "40px Roboto";
-    ctx.fillStyle = "#AAAAAA";
+    ctx.fillStyle = "#EEEEEE";
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 3;
     const text = "Damage";
@@ -208,7 +270,7 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
     ctx.quadraticCurveTo(px, py, px + radius, py);
     ctx.closePath();
 
-    ctx.fillStyle = "white";
+    ctx.fillStyle = ctx.createPattern(await loadImage(path.join(assetsPath, "assistBarBg.png")), "repeat");
     ctx.fill();
 
     ctx.strokeStyle = "#111111";
@@ -248,8 +310,23 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
         ctx.fillText(text, textX, textY);
       }
 
+      ctx.closePath();
       px += barWidth;
     });
+
+    // Draw gradient over the bar
+    const barGradient = ctx.createLinearGradient(x + width / 2, py, x + width / 2, py + height);
+    barGradient.addColorStop(0, "rgba(200, 200, 200, 0.5)");
+    barGradient.addColorStop(0.15, "rgba(200, 200, 200, 0.25)");
+    barGradient.addColorStop(0.5, "rgba(100, 100, 100, 0.15)");
+    barGradient.addColorStop(0.85, "rgba(100, 100, 100, 0.1)");
+    barGradient.addColorStop(1, "rgba(0, 0, 0, 0.25)");
+
+    ctx.beginPath();
+    ctx.rect(x, py, width, height);
+    ctx.fillStyle = barGradient;
+    ctx.fill();
+    ctx.closePath();
 
     ctx.restore();
 
@@ -292,7 +369,7 @@ async function generateEventImage(event, { lootValue, splitLootValue = false } =
     return height + py;
   };
 
-  drawAssistBar(event.Participants, 35, 1050, 1530, 80, 40);
+  await drawAssistBar(event.Participants, 35, hasAwakening(event) ? 1350 : 1050, 1530, 80, 40);
 
   const buffer = await optimizeImage(canvas.toBuffer(), 580);
   canvas = null;
