@@ -71,27 +71,27 @@ const drawTrait = async (ctx, trait, x, y) => {
   y += 20;
 
   // Draw bar
-  const maxWidth = config.get("features.events.displayTraitIcons") ? 360 : 420;
+  const maxBarWidth = config.get("features.events.displayTraitIcons") ? 350 : 420;
   const barHeight = 10;
   ctx.fillStyle = ctx.createPattern(await loadImage(path.join(assetsPath, "assistBarBg.png")), "repeat");
-  ctx.fillRect(x, y, maxWidth, barHeight);
+  ctx.fillRect(x, y, maxBarWidth, barHeight);
   ctx.fillStyle = "#0dd621";
-  ctx.fillRect(x, y, relativeValue * maxWidth, barHeight);
+  ctx.fillRect(x, y, relativeValue * maxBarWidth, barHeight);
 
   // Draw gradient over the bar
-  const barGradient = ctx.createLinearGradient(x + maxWidth / 2, y, x + maxWidth / 2, y + barHeight);
+  const barGradient = ctx.createLinearGradient(x + maxBarWidth / 2, y, x + maxBarWidth / 2, y + barHeight);
   barGradient.addColorStop(0, "rgba(255, 255, 255, 0.85)");
   barGradient.addColorStop(0.5, "rgba(0, 0, 0, 0)");
   barGradient.addColorStop(1, "rgba(0, 0, 0, 0.5)");
   ctx.fillStyle = barGradient;
-  ctx.fillRect(x, y, relativeValue * maxWidth, barHeight);
+  ctx.fillRect(x, y, relativeValue * maxBarWidth, barHeight);
 
   ctx.restore();
 };
 
 const drawAwakening = async (ctx, weapon, x, y, { ICON_SIZE = 145 } = {}) => {
   x += 30;
-  await drawItem(ctx, weapon, x, y + 10, ICON_SIZE);
+  await drawItem(ctx, weapon, x, y + 60, ICON_SIZE);
 
   x += ICON_SIZE + 15;
   y += 40;
