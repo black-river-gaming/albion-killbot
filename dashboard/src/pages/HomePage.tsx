@@ -6,31 +6,28 @@ import {
   faLandmarkFlag,
   faRankingStar,
   faSkull,
+  faWandMagicSparkles,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import screenshot1 from "assets/screenshots/725719324-event.png";
-import screenshot2 from "assets/screenshots/725719720-event.png";
-import screenshot3 from "assets/screenshots/725747034-event.png";
-import screenshot4 from "assets/screenshots/725752704-event.png";
-import screenshot5 from "assets/screenshots/725753477-event.png";
-import screenshot6 from "assets/screenshots/725754202-event.png";
+import screenshot1 from "assets/screenshots/970551093-event.png";
+import screenshot2 from "assets/screenshots/971842546-event.png";
+import screenshot3 from "assets/screenshots/971900762-event.png";
+import screenshot4 from "assets/screenshots/971905670-event.png";
 import wallpapper from "assets/wallpappers/call_to_arms.jpeg";
 import Paper from "components/Paper";
 import { getServerInviteUrl } from "helpers/discord";
 import { Badge, Button, Card, Col, Container, Row } from "react-bootstrap";
 
-const screenshots = [
-  screenshot1,
-  screenshot2,
-  screenshot3,
-  screenshot4,
-  screenshot5,
-  screenshot6,
-];
+const screenshots = [screenshot1, screenshot2, screenshot3, screenshot4];
 
 const features = [
   {
     new: true,
+    name: "Awakened Weapons",
+    icon: faWandMagicSparkles,
+    description: "Our reports now display information about awakened weapons",
+  },
+  {
     name: "East Server Support",
     icon: faEarthAsia,
     description: "You can track entities from the new Albion East server.",
