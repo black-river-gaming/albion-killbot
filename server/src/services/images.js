@@ -31,20 +31,37 @@ const drawImage = async (ctx, src, x, y, sw, sh) => {
   else ctx.drawImage(img, x, y);
 };
 
-const drawItem = async (ctx, item, x, y, block_size = 217) => {
-  if (!item) return await drawImage(ctx, path.join(assetsPath, "slot.png"), x, y, block_size, block_size);
+const drawItem = async (ctx, item, x, y, { size = 217, attunedPlayerName } = {}) => {
+  if (!item) return await drawImage(ctx, path.join(assetsPath, "slot.png"), x, y, size, size);
   const itemImage = await getItemFile(item);
-  await drawImage(ctx, itemImage, x, y, block_size, block_size);
+  await drawImage(ctx, itemImage, x, y, size, size);
+
+  // draw not attuned icon
+  if (
+    attunedPlayerName &&
+    item.LegendarySoul?.attunedPlayerName &&
+    item.LegendarySoul?.attunedPlayerName !== attunedPlayerName
+  ) {
+    const notAttunedSize = size / 3.5;
+    await drawImage(
+      ctx,
+      path.join(assetsPath, "notAttuned.png"),
+      x + size - notAttunedSize - size * 0.15,
+      y + size * 0.15,
+      notAttunedSize,
+      notAttunedSize,
+    );
+  }
 
   ctx.save();
   ctx.fillStyle = "white";
   ctx.strokeStyle = "black";
-  ctx.lineWidth = Math.round(block_size / 40);
-  ctx.font = `${Math.round(block_size / 7.5)}px Roboto`;
+  ctx.lineWidth = Math.round(size / 40);
+  ctx.font = `${Math.round(size / 7.5)}px Roboto`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.strokeText(item.Count, x + block_size * 0.76, y + block_size * 0.73);
-  ctx.fillText(item.Count, x + block_size * 0.76, y + block_size * 0.73);
+  ctx.strokeText(item.Count, x + size * 0.76, y + size * 0.73);
+  ctx.fillText(item.Count, x + size * 0.76, y + size * 0.73);
   ctx.restore();
 };
 
@@ -89,11 +106,11 @@ const drawTrait = async (ctx, trait, x, y) => {
   ctx.restore();
 };
 
-const drawAwakening = async (ctx, weapon, x, y, { ICON_SIZE = 145 } = {}) => {
+const drawAwakening = async (ctx, weapon, x, y, { size = 145, attunedPlayerName } = {}) => {
   x += 30;
-  await drawItem(ctx, weapon, x, y + 60, ICON_SIZE);
+  await drawItem(ctx, weapon, x, y + 60, { size, attunedPlayerName });
 
-  x += ICON_SIZE + 15;
+  x += size + 15;
   y += 40;
 
   if (weapon.LegendarySoul.traits.length === 0) {
@@ -163,7 +180,7 @@ async function generateEventImage(event, { lootValue, showAttunement = true, spl
     const equipment = player.Equipment;
     await drawItem(ctx, equipment.Head, x + BLOCK_SIZE, y);
     await drawItem(ctx, equipment.Armor, x + BLOCK_SIZE, y + BLOCK_SIZE);
-    await drawItem(ctx, equipment.MainHand, x, y + BLOCK_SIZE);
+    await drawItem(ctx, equipment.MainHand, x, y + BLOCK_SIZE, { attunedPlayerName: player.Name });
     // Two-handed equipment
     if (equipment.MainHand && equipment.MainHand.Type.split("_")[1] == "2H") {
       ctx.globalAlpha = 0.2;
@@ -417,7 +434,7 @@ async function generateInventoryImage(inventory, { lootValue, splitLootValue = f
       x = PADDING;
       y += BLOCK_SIZE;
     }
-    await drawItem(ctx, item, x, y, BLOCK_SIZE);
+    await drawItem(ctx, item, x, y, { size: BLOCK_SIZE });
     x += BLOCK_SIZE;
   }
 
