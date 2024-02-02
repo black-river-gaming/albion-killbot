@@ -184,13 +184,11 @@ async function updateSubscriptionByServerId(serverId, data) {
   return subscription;
 }
 
-async function updateSubscriptionByStripeId(stripeId, data) {
-  await updateOne(SUBSCRIPTIONS_COLLECTION, { stripe: stripeId }, { $set: data }, { upsert: true });
+async function updateSubscriptionByStripeId(stripeId, data, { upsert = false } = {}) {
+  await updateOne(SUBSCRIPTIONS_COLLECTION, { stripe: stripeId }, { $set: data }, { upsert });
 
   const subscription = await getSubscriptionByStripeId(stripeId);
   subscriptionEvents.emit("update", subscription);
-
-  if (subscription.server) remove(`limits-${subscription.server}`);
 
   return subscription;
 }

@@ -29,6 +29,7 @@ const checkPremiumRole = async (subscription) => {
   if (!role) throw new Error("Cannot find Premium Role.");
 
   try {
+    if (!subscription.owner) return;
     const member = await guild.members.fetch(subscription.owner);
     if (!member) return;
 

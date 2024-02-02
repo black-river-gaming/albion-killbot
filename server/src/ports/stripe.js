@@ -48,6 +48,11 @@ async function createCheckoutSession(priceId, owner) {
           quantity: 1,
         },
       ],
+      subscription_data: {
+        metadata: {
+          discord_id: owner,
+        },
+      },
     });
 
     return {
