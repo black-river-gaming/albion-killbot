@@ -6,7 +6,7 @@ const isEnabled = config.has("stripe.accessToken") && config.has("stripe.product
 let stripe = null;
 if (isEnabled) {
   stripe = Stripe(config.get("stripe.accessToken"), {
-    apiVersion: "2020-08-27",
+    apiVersion: config.get("stripe.apiVersion"),
   });
 }
 
@@ -48,6 +48,11 @@ async function createCheckoutSession(priceId, owner) {
           quantity: 1,
         },
       ],
+      subscription_data: {
+        metadata: {
+          discord_id: owner,
+        },
+      },
     });
 
     return {

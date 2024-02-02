@@ -72,6 +72,7 @@ module.exports = {
   },
 
   stripe: {
+    apiVersion: "2023-10-16",
     accessToken: process.env.STRIPE_ACCESS_TOKEN,
     product: process.env.STRIPE_PRODUCT,
     webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
