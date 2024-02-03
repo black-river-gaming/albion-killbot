@@ -372,98 +372,6 @@ const embedBattle = (battle, { locale, providerId, test }) => {
   };
 };
 
-const embedGuildRanking = (guild, { locale }) => {
-  const GUILD_RANKING_URL = "https://albiononline.com/pt/killboard/guild/{guild}";
-
-  const { t } = getLocale(locale);
-
-  const generateRankFieldValue = (ranking, pvp = false) => {
-    let value = "```c";
-    if (!ranking || ranking.length === 0) {
-      const nodata = t("RANKING.NO_DATA_SHORT");
-      const count = RANKING_LINE_LENGTH - nodata.length;
-      value += `\n${nodata}${printSpace(count)}`;
-      value += "```";
-      return value;
-    }
-    ranking.forEach((item) => {
-      if (pvp) {
-        const fameValue = humanFormatter(item.KillFame, 2);
-        const count = RANKING_LINE_LENGTH - fameValue.length - item.Name.length;
-        value += `\n${item.Name}${printSpace(count)}${fameValue}`;
-      } else {
-        const fameValue = humanFormatter(item.Fame, 2);
-        const count = RANKING_LINE_LENGTH - fameValue.length - item.Player.Name.length;
-        value += `\n${item.Player.Name}${printSpace(count)}${fameValue}`;
-      }
-    });
-    value += "```";
-    return value;
-  };
-
-  const ranking = {
-    title: t("RANKING.MONTHLY", { guild: guild.Name }),
-    description: t("RANKING.GUILD_RANKING_DESCRIPTION", {
-      killFame: digitsFormatter(guild.killFame) || "-",
-      deathFame: digitsFormatter(guild.DeathFame) || "-",
-    }),
-    color: GOLD,
-    thumbnail: {
-      url: "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
-    },
-    fields: [],
-    timestamp: moment(guild.updatedAt).toISOString(),
-    footer,
-    url: GUILD_RANKING_URL.replace("{guild}", guild.Id),
-  };
-
-  if (guild.rankings) {
-    if (guild.rankings.pve) {
-      ranking.fields.push({
-        name: t("RANKING.PVE"),
-        value: generateRankFieldValue(guild.rankings.pve),
-        inline: true,
-      });
-    }
-
-    if (guild.rankings.pvp) {
-      ranking.fields.push({
-        name: t("RANKING.PVP"),
-        value: generateRankFieldValue(guild.rankings.pvp, true),
-        inline: true,
-      });
-    }
-
-    if (ranking.fields.length === 2) {
-      ranking.fields.push({
-        name: "\u200B",
-        value: "\u200B",
-        inline: false,
-      });
-    }
-
-    if (guild.rankings.gathering) {
-      ranking.fields.push({
-        name: t("RANKING.GATHERING"),
-        value: generateRankFieldValue(guild.rankings.gathering),
-        inline: true,
-      });
-    }
-
-    if (guild.rankings.crafting) {
-      ranking.fields.push({
-        name: t("RANKING.CRAFTING"),
-        value: generateRankFieldValue(guild.rankings.crafting),
-        inline: true,
-      });
-    }
-  }
-
-  return {
-    embeds: [ranking],
-  };
-};
-
 const embedTrackList = (track, limits, { locale }) => {
   const { t } = getLocale(locale);
 
@@ -582,7 +490,6 @@ module.exports = {
   embedEvent,
   embedEventImage,
   embedEventInventoryImage,
-  embedGuildRanking,
   embedPvpRanking,
   embedTrackList,
 };

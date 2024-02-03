@@ -42,7 +42,6 @@ module.exports = {
       useHistoryPrices: getBool(process.env.FEATURE_USE_HISTORY_PRICES, false),
       displayTraitIcons: getBool(process.env.DISPLAY_TRAIT_ICONS, true),
     },
-    guildRankings: getBool(process.env.GUILD_RANKINGS, false),
     limits: {
       players: getNumber(process.env.MAX_PLAYERS, 10),
       guilds: getNumber(process.env.MAX_GUILDS, 10),

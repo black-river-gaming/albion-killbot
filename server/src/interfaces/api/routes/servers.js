@@ -178,10 +178,6 @@ router.use(`/:serverId`, serverAdmin);
  *                type: string
  *                description: Setting for PvP Rankings
  *                default: "daily"
- *              guildRanking:
- *                type: string
- *                description: Setting for Guild Rankings
- *                default: "daily"
  *
  *    Category:
  *      type: object

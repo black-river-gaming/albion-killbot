@@ -107,12 +107,6 @@ const rankings = (subcommand) =>
         .setName("pvp-ranking")
         .setDescription(t("SETTINGS.DESCRIPTION.PVP_RANKING"))
         .setChoices(...rankingFrequencies),
-    )
-    .addStringOption((option) =>
-      option
-        .setName("guild-ranking")
-        .setDescription(t("SETTINGS.DESCRIPTION.GUILD_RANKING"))
-        .setChoices(...rankingFrequencies),
     );
 
 const general = (subcommand) =>
@@ -281,16 +275,13 @@ const command = {
         settings = getCommonOptions(settings, category, interaction);
 
         const pvpRanking = interaction.options.getString("pvp-ranking");
-        const guildRanking = interaction.options.getString("guild-ranking");
         if (pvpRanking != null) settings[category].pvpRanking = pvpRanking;
-        if (guildRanking != null) settings[category].guildRanking = guildRanking;
 
         await interaction.deferReply({ ephemeral: true });
         await setSettings(interaction.guild.id, settings);
 
         let reply = printCommonOptions(settings, category, interaction, t);
         reply += t("RANKING.PVP_RANKING_SET", { pvpRanking: settings[category].pvpRanking }) + "\n";
-        reply += t("RANKING.GUILD_RANKING_SET", { guildRanking: settings[category].guildRanking }) + "\n";
         return await editReply(reply);
       },
     };
