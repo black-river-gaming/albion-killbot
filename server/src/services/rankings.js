@@ -1,61 +1,40 @@
-const { isPlayerTracked } = require("../helpers/tracking");
-const { find, updateOne, deleteMany } = require("../ports/database");
-const { getTrack } = require("../services/track");
+const config = require("config");
+const moment = require("moment");
+
+const { find, updateOne, deleteMany, findOne } = require("../ports/database");
 
 const RANKINGS_COLLECTION = "rankings";
 
-async function addRankingKill(serverId, event) {
+async function addRankingEvent(event) {
+  if (!config.get("features.rankings.enabled")) return;
   const { server } = event;
-  const track = await getTrack(serverId);
 
-  if (event.good) {
-    // Player kill
-    for (const player of event.GroupMembers) {
-      if (!isPlayerTracked(player, track, { server })) continue;
-      const killFame = Math.max(0, player.KillFame);
-      await updateOne(
-        RANKINGS_COLLECTION,
-        {
-          server: serverId,
-          player: player.Id,
-        },
-        {
-          $setOnInsert: {
-            server: serverId,
-            player: player.Id,
-            name: player.Name,
-          },
-          $inc: { killFame },
-        },
-        {
-          upsert: true,
-        },
-      );
+  const today = moment().startOf("day").unix();
+  const minDate = moment().subtract(31, "days").unix();
+
+  for (const player of [event.Victim, ...event.GroupMembers]) {
+    const killFame = Math.max(0, player.KillFame);
+    const deathFame = Math.max(0, player.DeathFame);
+
+    const entry = (await findOne(RANKINGS_COLLECTION, { player: player.Id })) || { player: player.Id, scores: [] };
+    entry.server = server;
+    entry.name = player.Name;
+    entry.guild = player.GuildId;
+    entry.alliance = player.AllianceId;
+
+    // Add scores for today
+    const i = entry.scores.findIndex((score) => score.date === today);
+    if (i === -1) entry.scores.push({ date: today, killFame, deathFame });
+    else {
+      entry.scores[i].killFame += killFame;
+      entry.scores[i].deathFame += deathFame;
     }
-  } else {
-    // Player death
-    const player = event.Victim;
-    if (!isPlayerTracked(player, track, { server })) throw new Error("Bad event but victim is not tracked."); // Should never happen
 
-    const deathFame = Math.max(0, event.TotalVictimKillFame);
-    await updateOne(
-      RANKINGS_COLLECTION,
-      {
-        server: serverId,
-        player: player.Id,
-      },
-      {
-        $setOnInsert: {
-          server: serverId,
-          player: player.Id,
-          name: player.Name,
-        },
-        $inc: { deathFame },
-      },
-      {
-        upsert: true,
-      },
-    );
+    // Remove old scores
+    entry.scores = entry.scores.filter((score) => score.date >= minDate);
+
+    // Update player information
+    await updateOne(RANKINGS_COLLECTION, { player: player.Id }, { $set: entry }, { upsert: true });
   }
 }
 
@@ -103,7 +82,7 @@ async function deleteRankings(serverId) {
 }
 
 module.exports = {
-  addRankingKill,
+  addRankingEvent,
   getRanking,
   deleteRankings,
 };
