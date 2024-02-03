@@ -14,7 +14,6 @@ import {
 import {
   setRankingsChannel,
   setRankingsEnabled,
-  setRankingsGuildRanking,
   setRankingsPvpRanking,
 } from "store/settings";
 
@@ -89,26 +88,6 @@ const RankingsPage = () => {
                 value={rankings.pvpRanking}
                 onChange={(e) =>
                   dispatch(setRankingsPvpRanking(e.target.value))
-                }
-              >
-                {rankingModes.map((rankingMode) => (
-                  <option key={rankingMode} value={rankingMode}>
-                    {capitalize(rankingMode)}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-          </Col>
-
-          <Col sm={6}>
-            <Form.Group controlId="rankings-guild-mode">
-              <Form.Label>Guild Ranking Mode</Form.Label>
-              <Form.Select
-                aria-label="Guild ranking mode select"
-                disabled={!rankings.enabled}
-                value={rankings.guildRanking}
-                onChange={(e) =>
-                  dispatch(setRankingsGuildRanking(e.target.value))
                 }
               >
                 {rankingModes.map((rankingMode) => (

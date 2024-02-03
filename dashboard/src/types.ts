@@ -87,7 +87,6 @@ export interface ISettings {
     enabled: boolean;
     channel: string;
     pvpRanking: string;
-    guildRanking: string;
   };
 }
 

@@ -32,7 +32,6 @@ const initialState: ISettings = {
     enabled: true,
     channel: "",
     pvpRanking: "daily",
-    guildRanking: "daily",
   },
 };
 
@@ -120,9 +119,6 @@ export const settingsSlice = createSlice({
     setRankingsPvpRanking: (state, action: PayloadAction<string>) => {
       state.rankings.pvpRanking = action.payload;
     },
-    setRankingsGuildRanking: (state, action: PayloadAction<string>) => {
-      state.rankings.guildRanking = action.payload;
-    },
   },
 });
 
@@ -149,7 +145,6 @@ export const {
   setRankingsEnabled,
   setRankingsChannel,
   setRankingsPvpRanking,
-  setRankingsGuildRanking,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;
