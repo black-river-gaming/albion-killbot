@@ -1,19 +1,17 @@
 const logger = require("../../../helpers/logger");
 const { embedPvpRanking } = require("../../../helpers/embeds");
 
-const { getRanking, deleteRankingsEmpty } = require("../../../services/rankings");
+const { getRanking } = require("../../../services/rankings");
 const { getSettings } = require("../../../services/settings");
 
 const { sendNotification } = require("./notifications");
-const { runCronjob, runInterval } = require("../../../helpers/scheduler");
-const { HOUR } = require("../../../helpers/constants");
+const { runCronjob } = require("../../../helpers/scheduler");
 
-async function init(client) {
+async function init({ client }) {
   try {
-    runInterval("Clear rankings", clearRankings, { interval: HOUR });
-
     runCronjob("Display 1hour rankings", "@hourly", displayRankings, {
       fnOpts: [client, "1hour"],
+      runOnStart: true,
     });
     runCronjob("Display 6hour rankings", "0 */6 * * *", displayRankings, {
       fnOpts: [client, "6hour"],
@@ -34,7 +32,7 @@ async function init(client) {
       fnOpts: [client, "1month"],
     });
   } catch (error) {
-    logger.error(`Error in init pvp rankings: ${error.message}`, { error });
+    logger.error(`Error in init rankings: ${error.message}`, { error });
   }
 }
 
@@ -63,11 +61,6 @@ async function displayRankings(client, rankingType) {
   }
 
   logger.info(`Display Rankings on '${rankingType}' setting completed.`);
-}
-
-async function clearRankings() {
-  logger.verbose(`Clearing rankings with empty scores.`);
-  await deleteRankingsEmpty();
 }
 
 module.exports = {

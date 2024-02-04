@@ -84,7 +84,7 @@ async function subscribe(client) {
   return subscribeBattles(cb, { queue_suffix });
 }
 
-async function init(client) {
+async function init({ client }) {
   try {
     await subscribe(client);
     logger.info(`Subscribed to battles queue.`);

@@ -20,7 +20,7 @@ async function refreshServerCache(client) {
   }
 }
 
-async function preinit(client) {
+async function preinit({ client }) {
   await runInterval("Refresh cache for server settings", refreshServerCache, {
     fnOpts: [client],
     interval: config.get("bot.servers.cacheInterval"),

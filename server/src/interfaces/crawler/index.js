@@ -1,14 +1,14 @@
+const path = require("node:path");
+const modules = require("../../helpers/modules");
 const logger = require("../../helpers/logger");
 const database = require("../../ports/database");
 const queue = require("../../ports/queue");
-
-const controllers = require("./controllers");
 
 async function run() {
   logger.info("Starting Crawler...");
   await queue.init();
   await database.init();
-  await controllers.init();
+  await modules.loadControllers(path.join(__dirname, "controllers"), {});
 }
 
 async function cleanup(reason) {
