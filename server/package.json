@@ -30,6 +30,7 @@
     "config": "^3.3.10",
     "connect-mongo": "^4.6.0",
     "cors": "^2.8.5",
+    "cron": "^3.1.6",
     "datadog-winston": "^1.5.1",
     "discord.js": "^14.10.2",
     "dotenv": "^16.0.1",
