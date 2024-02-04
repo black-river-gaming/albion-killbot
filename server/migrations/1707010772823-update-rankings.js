@@ -21,7 +21,7 @@ async function run() {
     const convertRanking = (old) =>
       ({
         off: "off",
-        houly: "1hour",
+        hourly: "1hour",
         daily: "1day",
       }[old] || old);
     if (setting.rankings.pvpRanking) {
