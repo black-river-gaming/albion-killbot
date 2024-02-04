@@ -1,10 +1,9 @@
 const { Client, GatewayIntentBits, Partials, Events } = require("discord.js");
-
+const path = require("node:path");
+const modules = require("../../helpers/modules");
 const logger = require("../../helpers/logger");
 const database = require("../../ports/database");
 const queue = require("../../ports/queue");
-
-const controllers = require("./controllers");
 const commands = require("./commands");
 
 const client = new Client({
@@ -22,7 +21,7 @@ client.on(Events.ShardReady, async (id) => {
   if (!init) {
     await database.init();
     await queue.init();
-    await controllers.init(client);
+    await modules.loadControllers(path.join(__dirname, "controllers"), { client });
     await commands.init(client);
     init = true;
   }

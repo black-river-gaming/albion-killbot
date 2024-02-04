@@ -104,14 +104,20 @@ const rankings = (subcommand) =>
     .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.DESCRIPTION.CHANNEL")))
     .addStringOption((option) =>
       option
-        .setName("pvp-ranking")
-        .setDescription(t("SETTINGS.DESCRIPTION.PVP_RANKING"))
+        .setName("daily")
+        .setDescription(t("SETTINGS.DESCRIPTION.RANKING_DAILY"))
         .setChoices(...rankingFrequencies),
     )
     .addStringOption((option) =>
       option
-        .setName("guild-ranking")
-        .setDescription(t("SETTINGS.DESCRIPTION.GUILD_RANKING"))
+        .setName("weekly")
+        .setDescription(t("SETTINGS.DESCRIPTION.RANKING_WEEKLY"))
+        .setChoices(...rankingFrequencies),
+    )
+    .addStringOption((option) =>
+      option
+        .setName("monthly")
+        .setDescription(t("SETTINGS.DESCRIPTION.RANKING_MONTHLY"))
         .setChoices(...rankingFrequencies),
     );
 
@@ -280,17 +286,22 @@ const command = {
         const category = "rankings";
         settings = getCommonOptions(settings, category, interaction);
 
-        const pvpRanking = interaction.options.getString("pvp-ranking");
-        const guildRanking = interaction.options.getString("guild-ranking");
-        if (pvpRanking != null) settings[category].pvpRanking = pvpRanking;
-        if (guildRanking != null) settings[category].guildRanking = guildRanking;
+        ["daily", "weekly", "monthly"].forEach((type) => {
+          const setting = interaction.options.getString(type);
+          if (setting != null) settings[category][type] = setting;
+        });
 
         await interaction.deferReply({ ephemeral: true });
         await setSettings(interaction.guild.id, settings);
 
         let reply = printCommonOptions(settings, category, interaction, t);
-        reply += t("RANKING.PVP_RANKING_SET", { pvpRanking: settings[category].pvpRanking }) + "\n";
-        reply += t("RANKING.GUILD_RANKING_SET", { guildRanking: settings[category].guildRanking }) + "\n";
+        ["daily", "weekly", "monthly"].forEach((type) => {
+          if (!settings[category][type]) return;
+          reply +=
+            t(`SETTINGS.RANKING.SET.${type.toUpperCase()}`, {
+              frequency: t(`SETTINGS.FREQUENCIES.${settings[category][type].toUpperCase()}`),
+            }) + "\n";
+        });
         return await editReply(reply);
       },
     };

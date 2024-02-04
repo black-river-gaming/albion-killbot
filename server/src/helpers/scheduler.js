@@ -1,9 +1,12 @@
+const { CronJob } = require("cron");
+const crypto = require("crypto");
+
 const logger = require("./logger");
-const moment = require("moment");
 
 // Flag to keep infinite loops until program is closed
 let running = true;
 const timeoutIds = new Set();
+const cronjobs = new Set();
 
 const clean = () => {
   running = false;
@@ -12,6 +15,12 @@ const clean = () => {
     logger.debug(`Cleaning timeout: ${timeoutId}`);
     clearTimeout(timeoutId);
     timeoutIds.delete(timeoutId);
+  }
+
+  for (const cronjob of cronjobs) {
+    logger.debug(`Halting cronjob: ${cronjob.id}`);
+    cronjob.stop();
+    cronjobs.delete(cronjob.id);
   }
 };
 
@@ -51,29 +60,6 @@ async function execFn(name, fn, ...fnOpts) {
   }
 }
 
-// Functions that fires daily (Default: 12:00 pm) until process stops
-async function runDaily(name, fn, { fnOpts = [], hour = 12, minute = 0, runOnStart = false }) {
-  if (!fn) return;
-  if (runOnStart) {
-    runInterval(name, fn, { fnOpts, hour, minute, runOnStart: false });
-    return await execFn(name, fn, ...fnOpts);
-  }
-
-  logger.debug(`Scheduling daily function: ${name}`, {
-    name,
-    hour,
-    minute,
-    runOnStart,
-  });
-  while (running) {
-    await sleep(60000); // Wait 1 minute to eval time
-    const now = moment();
-    if (now.hour() === hour && now.minute() === minute) {
-      execFn(name, fn, ...fnOpts);
-    }
-  }
-}
-
 // Functions that run on an interval after execFn completes,
 // then waits (Default: 30 seconds) and repeat until process stops
 async function runInterval(name, fn, { fnOpts = [], interval = 30000, runOnStart = false }) {
@@ -94,14 +80,32 @@ async function runInterval(name, fn, { fnOpts = [], interval = 30000, runOnStart
   }
 }
 
+// Wrapper around cron which saves the jobs for halting
+function runCronjob(name, cronTime, fn, { fnOpts = [], runOnStart = false }) {
+  if (!fn) return;
+
+  logger.debug(`Scheduling cronjob function: ${name}`, {
+    name,
+    cronTime,
+    runOnStart,
+  });
+  const onTick = async () => {
+    await execFn(name, fn, ...fnOpts);
+  };
+  const cronjob = new CronJob(cronTime, onTick, null, true, "utc", null, runOnStart);
+  cronjob.id = crypto.randomUUID();
+
+  cronjobs.add(cronjob.id, cronjob);
+}
+
 function clearAllIntervals() {
   running = false;
 }
 
 module.exports = {
   clearAllIntervals,
-  runDaily,
   runInterval,
+  runCronjob,
   sleep,
   timeout,
 };

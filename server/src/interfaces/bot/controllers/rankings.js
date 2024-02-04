@@ -1,71 +1,77 @@
-const { HOUR } = require("../../../helpers/constants");
 const logger = require("../../../helpers/logger");
-const { embedPvpRanking } = require("../../../helpers/embeds");
-const { runDaily, runInterval } = require("../../../helpers/scheduler");
+const { embedRanking } = require("../../../helpers/embeds");
+const { runCronjob } = require("../../../helpers/scheduler");
+const { transformGuild } = require("../../../helpers/discord");
 
-const { getRanking, deleteRankings } = require("../../../services/rankings");
+const { getRanking } = require("../../../services/rankings");
 const { getSettings } = require("../../../services/settings");
 
 const { sendNotification } = require("./notifications");
 
-async function init(client) {
+async function init({ client }) {
   try {
-    runDaily(`Display pvp ranking for daily setting and clear after`, displayRankings, {
-      fnOpts: [client, "daily", { clearAfterDisplay: true }],
-      hour: 0,
-      minute: 0,
+    runCronjob("Display 1hour rankings", "@hourly", displayRankings, {
+      fnOpts: [client, "1hour"],
     });
-    runInterval(`Display pvp ranking for hourly setting`, displayRankings, {
-      fnOpts: [client, "hourly", {}],
-      interval: HOUR,
+    runCronjob("Display 6hour rankings", "0 */6 * * *", displayRankings, {
+      fnOpts: [client, "6hour"],
+    });
+    runCronjob("Display 12hour rankings", "0 */12 * * *", displayRankings, {
+      fnOpts: [client, "12hour"],
+    });
+    runCronjob("Display 1day rankings", "@daily", displayRankings, {
+      fnOpts: [client, "1day"],
+    });
+    runCronjob("Display 7day rankings", "@weekly", displayRankings, {
+      fnOpts: [client, "7day"],
+    });
+    runCronjob("Display 15day rankings", "0 0 */15 * *", displayRankings, {
+      fnOpts: [client, "15day"],
+    });
+    runCronjob("Display 1month rankings", "@monthly", displayRankings, {
+      fnOpts: [client, "1month"],
     });
   } catch (error) {
-    logger.error(`Error in init pvp rankings: ${error.message}`, { error });
+    logger.error(`Error in init rankings: ${error.message}`, { error });
   }
 }
 
-async function displayRankings(client, rankingType, { clearAfterDisplay = false }) {
-  logger.info(`PvP Ranking on '${rankingType}' setting: start.`);
+async function displayRankings(client, rankingType) {
+  logger.info(`Display Rankings on '${rankingType}' setting.`);
 
   for (const guild of client.guilds.cache.values()) {
     const settings = await getSettings(guild.id);
     if (!settings) continue;
 
-    const { enabled, channel, pvpRanking } = settings.rankings;
+    const { enabled, channel } = settings.rankings;
     if (!enabled || !channel) continue;
-    if (pvpRanking != rankingType) continue;
 
-    const ranking = await getRanking(guild.id);
-    if (ranking.killRanking.length === 0 && ranking.deathRanking.length === 0) continue;
+    for (const type of ["daily", "weekly", "monthly"]) {
+      if (settings.rankings[type] !== rankingType) continue;
 
-    await sendNotification(
-      client,
-      channel,
-      embedPvpRanking(ranking, {
-        locale: settings.general.locale,
-      }),
-    );
+      const rankings = await getRanking(guild.id, type);
+      if (!rankings) continue;
+      if (rankings.killFameRanking.length === 0 && rankings.deathFameRanking.length === 0) continue;
+
+      logger.verbose(`Sending ${type} ranking to ${guild.name}`, {
+        guild: transformGuild(guild),
+        type,
+        rankings,
+      });
+      await sendNotification(
+        client,
+        channel,
+        embedRanking(rankings, {
+          locale: settings.general.locale,
+        }),
+      );
+    }
   }
 
-  if (clearAfterDisplay) await clearRankings(client);
-
-  logger.verbose(`PvP Ranking on '${rankingType}' setting: complete.`);
-}
-
-async function clearRankings(client) {
-  for (const guild of client.guilds.cache.values()) {
-    logger.verbose(`Clearing rankings for ${guild.name}.`, {
-      metadata: {
-        servers: client.guilds.cache.size,
-        guild,
-      },
-    });
-    await deleteRankings(guild.id);
-  }
+  logger.info(`Display Rankings on '${rankingType}' setting completed.`);
 }
 
 module.exports = {
-  clearRankings,
-  displayRankings,
+  name: "rankings",
   init,
 };

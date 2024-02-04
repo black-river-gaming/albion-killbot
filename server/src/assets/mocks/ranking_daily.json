@@ -1,0 +1,45 @@
+{
+  "type": "daily",
+  "killFameRanking": [
+    {
+      "server": "Albion West",
+      "player": "hK0T1yR9SIea9Sg_3-D2rw",
+      "name": "Anjek",
+      "totalScore": {
+        "killFame": 60500,
+        "deathFame": 36987
+      }
+    },
+    {
+      "server": "Albion West",
+      "player": "kZWIcVV1TTuFGK6CEvc9xw",
+      "name": "Greyth",
+      "totalScore": {
+        "killFame": 59500,
+        "deathFame": 30000
+      }
+    }
+  ],
+  "killFameTotal": 120000,
+  "deathFameRanking": [
+    {
+      "server": "Albion West",
+      "player": "hK0T1yR9SIea9Sg_3-D2rw",
+      "name": "Anjek",
+      "totalScore": {
+        "killFame": 60500,
+        "deathFame": 36987
+      }
+    },
+    {
+      "server": "Albion West",
+      "player": "kZWIcVV1TTuFGK6CEvc9xw",
+      "name": "Greyth",
+      "totalScore": {
+        "killFame": 59500,
+        "deathFame": 30000
+      }
+    }
+  ],
+  "deathFameTotal": 66987
+}

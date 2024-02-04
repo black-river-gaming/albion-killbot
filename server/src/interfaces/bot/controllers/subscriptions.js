@@ -141,7 +141,7 @@ const initExpirationNotice = (client) => {
 
 module.exports = {
   name: "subscriptions",
-  init: (client) => {
+  init: ({ client }) => {
     if (!isSubscriptionsEnabled()) return;
     initPremiumRoles(client);
     initExpirationNotice(client);

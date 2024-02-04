@@ -21,3 +21,15 @@ export const getCurrencySymbol = ({ locale = "en-US", currency = "USD" }) =>
     })
     .replace(/\d/g, "")
     .trim();
+
+export const getFrequency = (frequency: string) =>
+  ({
+    off: "Do not display",
+    "1hour": "Display every 1 hour",
+    "6hour": "Display every 6 hours",
+    "12hour": "Display every 12 hours",
+    "1day": "Display every day",
+    "7day": "Display every week",
+    "15day": "Display every 15 days",
+    "1month": "Display every month",
+  }[frequency] || frequency);

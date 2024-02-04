@@ -39,21 +39,20 @@
   },
   "RANKING": {
     "CRAFTING": "Ranking de Creacion",
-    "DAILY": "Ranking Diário de PvP",
+    "DAILY": "Clasificación diaria",
     "DEATH_FAME": "Top Death Fama",
     "GATHERING": "Ranking de Recoleción",
     "GUILD_RANKING_DESCRIPTION": "Total Kill Fame: {{ killFame }}\nTotal Death Fame: {{ deathFame }}",
-    "GUILD_RANKING_SET": "Guild Ranking display mode is set to '{{ guildRanking }}'",
     "KILL_FAME": "Top Kill Fama",
-    "MONTHLY": "Ranking Mensual - {{ guild }}",
+    "MONTHLY": "Clasificación Mensual",
     "NO_DATA": "No data available for guild '{{{ guild }}}'. Give the bot a day to fetch data and try again.",
     "NO_DATA_SHORT": "No data available",
     "PVE": "Ranking de PVE",
     "PVP": "Ranking de PVP",
-    "PVP_RANKING_SET": "PvP Ranking display mode is set to '{{ pvpRanking }}'",
     "TEST": "## Esta es una prueba de clasificación y debe ignorarse.",
     "TOTAL_DEATH_FAME": "Fama Total Deaths",
-    "TOTAL_KILL_FAME": "Fama Total Kills"
+    "TOTAL_KILL_FAME": "Fama Total Kills",
+    "WEEKLY": "Clasificación Semanal"
   },
   "SETTINGS": {
     "CATEGORY": {
@@ -71,21 +70,27 @@
       "CHANNEL": "Canal para enviar notificaciones",
       "DEATHS": "Change settings for death notifications.",
       "GENERAL": "Cambiar la configuración general",
-      "GUILD_RANKING": "Guild Ranking",
       "GUILD_TAGS": "Mostrar etiquetas de gremio en los nombres de los jugadores.",
       "KILLS": "Change settings for kill notifications.",
       "LANG": "Change language.",
       "MODE": "Establecer formato de notificación.",
       "PROVIDER": "Establecer proveedor para enlaces en notificaciones.",
-      "PVP_RANKING": "PvP Ranking",
       "RANKINGS": "Change settings for ranking notifications.",
+      "RANKING_DAILY": "Clasificación PvP Diaria",
+      "RANKING_MONTHLY": "Clasificación PvP Mensual",
+      "RANKING_WEEKLY": "Clasificación PvP Semanal",
       "SHOW_ATTUNEMENT": "Mostrar estadísticas del arma despertada.",
       "SPLIT_LOOT_VALUE": "Divide el valor del loot entre equipo e inventario."
     },
     "FREQUENCIES": {
-      "DAILY": "Daily",
-      "HOURLY": "Every hour",
-      "OFF": "Off"
+      "12HOUR": "Mostrar cada 12 horas",
+      "15DAY": "Mostrar cada 15 días",
+      "1DAY": "Mostrar todos los días",
+      "1HOUR": "Mostrar cada 1 hora",
+      "1MONTH": "Mostrar cada mes",
+      "6HOUR": "Mostrar cada 6 horas",
+      "7DAY": "Mostrar cada semana",
+      "OFF": "No mostrar"
     },
     "GUILD_TAGS": {
       "SET": "Mostrar etiquetas de gremio: {{ enabled }}"
@@ -101,6 +106,13 @@
     },
     "PROVIDER": {
       "SET": "Los enlaces serán proporcionados por {{ provider }}."
+    },
+    "RANKING": {
+      "SET": {
+        "DAILY": "El modo de visualización del ranking PvP diario está configurado en '{{ frequency }}'",
+        "MONTHLY": "El modo de visualización del ranking PvP mensual está configurado en '{{ frequency }}'",
+        "WEEKLY": "El modo de visualización del ranking PvP semanal está configurado en '{{ frequency }}'"
+      }
     },
     "SHOW_ATTUNEMENT": {
       "SET": "Mostrar estadísticas del arma despertada: {{ enabled }}"

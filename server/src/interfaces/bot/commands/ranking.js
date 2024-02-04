@@ -1,8 +1,7 @@
 const { SlashCommandBuilder } = require("discord.js");
 const { getLocale } = require("../../../helpers/locale");
 const { getRanking } = require("../../../services/rankings");
-const { getGuildByTrackGuild } = require("../../../services/guilds");
-const { embedPvpRanking, embedGuildRanking } = require("../../../helpers/embeds");
+const { embedRanking } = require("../../../helpers/embeds");
 
 const { t } = getLocale();
 
@@ -16,35 +15,19 @@ const command = {
         .setName("ranking")
         .setDescription(t("HELP.RANKING"))
         .setRequired(true)
-        .addChoices(
-          {
-            name: t("SETTINGS.DESCRIPTION.PVP_RANKING"),
-            value: "pvpRanking",
-          },
-          {
-            name: t("SETTINGS.DESCRIPTION.GUILD_RANKING"),
-            value: "guildRanking",
-          },
-        ),
+        .addChoices({
+          name: t("SETTINGS.DESCRIPTION.PVP_RANKING"),
+          value: "pvpRanking",
+        }),
     ),
-  handle: async (interaction, { settings, track, t }) => {
+  handle: async (interaction, { settings }) => {
     const rankingType = interaction.options.getString("ranking");
 
     const rankings = {
       pvpRanking: async () => {
         await interaction.deferReply({ ephemeral: false });
-        const pvpRanking = await getRanking(interaction.guild.id);
-        return await interaction.editReply(embedPvpRanking(pvpRanking, { locale: settings.general.locale }));
-      },
-      guildRanking: async () => {
-        await interaction.deferReply({ ephemeral: false });
-        if (!track.guilds || track.guilds.length === 0)
-          return await interaction.editReply({ content: "No tracked guilds to display rankings.", ephemeral: true });
-        for (const trackGuild of track.guilds) {
-          const albionGuild = await getGuildByTrackGuild(trackGuild);
-          if (!albionGuild) await interaction.followUp(t("RANKING.NO_DATA", { guild: trackGuild.name }));
-          else await interaction.followUp(embedGuildRanking(albionGuild, { locale: settings.general.locale }));
-        }
+        const ranking = await getRanking(interaction.guild.id);
+        return await interaction.editReply(embedRanking(ranking, { locale: settings.general.locale }));
       },
     };
 

@@ -35,8 +35,9 @@ const DEFAULT_SETTINGS = Object.freeze({
   rankings: {
     enabled: true,
     channel: null,
-    pvpRanking: "daily",
-    guildRanking: "daily",
+    daily: "off",
+    weekly: "off",
+    monthly: "off",
   },
 });
 

@@ -53,7 +53,7 @@ const REPORT_PROVIDERS = [
   },
 ];
 
-const RANKING_MODES = ["off", "hourly", "daily"];
+const RANKING_MODES = ["off", "1hour", "6hour", "12hour", "1day", "7day", "15day", "1month"];
 
 module.exports = {
   DAY,

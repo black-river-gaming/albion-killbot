@@ -174,14 +174,12 @@ router.use(`/:serverId`, serverAdmin);
  *          - $ref: '#/components/schemas/Category'
  *          - type: object
  *            properties:
- *              pvpRanking:
- *                type: string
- *                description: Setting for PvP Rankings
- *                default: "daily"
- *              guildRanking:
- *                type: string
- *                description: Setting for Guild Rankings
- *                default: "daily"
+ *              daily:
+ *                $ref: '#/components/schemas/RankingFrequency'
+ *              weekly:
+ *                $ref: '#/components/schemas/RankingFrequency'
+ *              monthly:
+ *                $ref: '#/components/schemas/RankingFrequency'
  *
  *    Category:
  *      type: object
@@ -194,6 +192,11 @@ router.use(`/:serverId`, serverAdmin);
  *          type: string
  *          description: Discord channel id
  *          example: "685197580094931020"
+ *
+ *    RankingFrequency:
+ *      type: string
+ *      description: Ranking frequency
+ *      enum: ["off", "1hour", "6hour", "12hour", "1day", "7day", "15day", "1month"]
  *
  *    Track:
  *      type: object

@@ -10,7 +10,6 @@ const { transformEvent } = require("../../../helpers/albion");
 const { subscribeEvents, getEventVictimLootValue } = require("../../../services/events");
 const { generateEventImage, generateInventoryImage } = require("../../../services/images");
 const { getSettings } = require("../../../services/settings");
-const { addRankingKill } = require("../../../services/rankings");
 const { getTrack } = require("../../../services/track");
 const { getLimits } = require("../../../services/limits");
 
@@ -45,8 +44,6 @@ async function subscribe(client) {
         if (good) channel = (tracked.kills && tracked.kills.channel) || settings.kills.channel;
         else channel = (tracked.deaths && tracked.deaths.channel) || settings.deaths.channel;
         if (!enabled || !channel) continue;
-
-        addRankingKill(guild.id, guildEvent);
 
         logger.info(`[${server}] Sending ${good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
           guild: transformGuild(guild),
@@ -119,7 +116,7 @@ async function subscribe(client) {
   return await subscribeEvents(cb, { queue_suffix });
 }
 
-async function init(client) {
+async function init({ client }) {
   try {
     await subscribe(client);
     logger.info(`Subscribed to events queue.`);

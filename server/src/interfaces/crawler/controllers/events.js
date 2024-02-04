@@ -5,6 +5,7 @@ const logger = require("../../../helpers/logger");
 const { runInterval } = require("../../../helpers/scheduler");
 
 const { fetchEventsTo, publishEvent } = require("../../../services/events");
+const { addRankingEvent } = require("../../../services/rankings");
 
 const latestEvent = {
   [SERVERS.WEST]: null,
@@ -44,6 +45,7 @@ async function fetchEvents(server) {
       eventsToPublish.push(evt);
     }
 
+    addRankingEvent(evt);
     latestEvent[server] = evt;
   }
 
