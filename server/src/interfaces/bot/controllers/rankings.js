@@ -12,7 +12,6 @@ async function init({ client }) {
   try {
     runCronjob("Display 1hour rankings", "@hourly", displayRankings, {
       fnOpts: [client, "1hour"],
-      runOnStart: true,
     });
     runCronjob("Display 6hour rankings", "0 */6 * * *", displayRankings, {
       fnOpts: [client, "6hour"],
