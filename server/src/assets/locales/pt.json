@@ -43,14 +43,12 @@
     "DEATH_FAME": "Top Fama de Mortes",
     "GATHERING": "Ranking de Coleta",
     "GUILD_RANKING_DESCRIPTION": "Fama Total de Abates: {{ killFame }}\nFama Total de Mortes: {{ deathFame }}",
-    "GUILD_RANKING_SET": "Ranking de Guildas está definido no modo '{{ guildRanking }}'",
     "KILL_FAME": "Top Fama de Abates",
     "MONTHLY": "Ranking Mensal - {{ guild }}",
     "NO_DATA": "Sem dados disponíveis para a guilda '{{{ guild }}}'. Aguarde um dia e tente novamente.",
     "NO_DATA_SHORT": "Sem dados",
     "PVE": "Ranking PvE",
     "PVP": "Ranking PvP",
-    "PVP_RANKING_SET": "Ranking PvP está definido no modo '{{ pvpRanking }}'",
     "TEST": "## Este é um teste de classificação e deve ser ignorado.",
     "TOTAL_DEATH_FAME": "Fama Total de Mortes",
     "TOTAL_KILL_FAME": "Fama Total de Abates"
@@ -71,21 +69,27 @@
       "CHANNEL": "Canal para enviar notificações",
       "DEATHS": "Mudar configurações de mortes.",
       "GENERAL": "Mudar configurações gerais",
-      "GUILD_RANKING": "Ranking de Guilda",
       "GUILD_TAGS": "Mostra as tags da guilda nos nomes dos jogadores.",
       "KILLS": "Mudar configurações de abates.",
       "LANG": "Alterar idioma.",
       "MODE": "Definir o formato das notificações.",
       "PROVIDER": "Definir provedor de links para notificações.",
-      "PVP_RANKING": "Ranking PvP",
       "RANKINGS": "Mudar configurações de rankings.",
+      "RANKING_DAILY": "Ranking de PvP Diário",
+      "RANKING_MONTHLY": "Ranking de PvP Mensal",
+      "RANKING_WEEKLY": "Ranking de PvP Semanal",
       "SHOW_ATTUNEMENT": "Exibir estatísticas da arma despertada.",
       "SPLIT_LOOT_VALUE": "Divida o valor do loot entre equipamento e inventário."
     },
     "FREQUENCIES": {
-      "DAILY": "Diariamente",
-      "HOURLY": "A cada hora",
-      "OFF": "Desligado"
+      "12HOUR": "Exibir a cada 12 horas",
+      "15DAY": "Exibir a cada 15 dias",
+      "1DAY": "Exibir todo dia",
+      "1HOUR": "Exibir a cada hora",
+      "1MONTH": "Exibir a cada mês",
+      "6HOUR": "Exibir a cada 6 horas",
+      "7DAY": "Exibir a cada semana",
+      "OFF": "Não exibir"
     },
     "GUILD_TAGS": {
       "SET": "Mostra as tags da guilda: {{ enabled }}"
@@ -101,6 +105,13 @@
     },
     "PROVIDER": {
       "SET": "Links serão providos por {{ provider }}."
+    },
+    "RANKING": {
+      "SET": {
+        "DAILY": "O modo de exibição dos rankings de PvP diários está definido para '{{ frequency }}'",
+        "MONTHLY": "O modo de exibição dos rankings de PvP mensais está definido para '{{ frequency }}'",
+        "WEEKLY": "O modo de exibição dos rankings de PvP semanais está definido para '{{ frequency }}'"
+      }
     },
     "SHOW_ATTUNEMENT": {
       "SET": "Exibir estatísticas da arma despertada: {{ enabled }}"

@@ -43,14 +43,12 @@
     "DEATH_FAME": "Top Death Fame",
     "GATHERING": "Рейтинг сборки",
     "GUILD_RANKING_DESCRIPTION": "Total Kill Fame: {{ killFame }}\nTotal Death Fame: {{ deathFame }}",
-    "GUILD_RANKING_SET": "Guild Ranking display mode is set to '{{ guildRanking }}'",
     "KILL_FAME": "Top Kill Fame",
     "MONTHLY": "Ежемесечный рейтинг - {{ guild }}",
     "NO_DATA": "No data available for guild '{{{ guild }}}'. Give the bot a day to fetch data and try again.",
     "NO_DATA_SHORT": "No data available",
     "PVE": "Рейтинг PvE",
     "PVP": "Рейтинг PvP",
-    "PVP_RANKING_SET": "PvP Ranking display mode is set to '{{ pvpRanking }}'",
     "TEST": "## Это проверка рейтинга, и ее следует игнорировать.",
     "TOTAL_DEATH_FAME": "Total Death Fame",
     "TOTAL_KILL_FAME": "Total Kill Fame"
@@ -71,21 +69,27 @@
       "CHANNEL": "Канал для отправки уведомлений",
       "DEATHS": "Change settings for death notifications.",
       "GENERAL": "Изменить общие настройки",
-      "GUILD_RANKING": "Guild Ranking",
       "GUILD_TAGS": "Показывать теги гильдии в именах игроков.",
       "KILLS": "Change settings for kill notifications.",
       "LANG": "Change language.",
       "MODE": "Установите формат уведомления.",
       "PROVIDER": "Установите поставщика для ссылок в уведомлениях.",
-      "PVP_RANKING": "PvP Ranking",
       "RANKINGS": "Change settings for ranking notifications.",
+      "RANKING_DAILY": "Ежедневный рейтинг PvP",
+      "RANKING_MONTHLY": "Месячный рейтинг PvP",
+      "RANKING_WEEKLY": "Недельный рейтинг PvP",
       "SHOW_ATTUNEMENT": "Показать статистику пробужденного оружия.",
       "SPLIT_LOOT_VALUE": "Разделите стоимость добычи между снаряжением и инвентарем."
     },
     "FREQUENCIES": {
-      "DAILY": "Daily",
-      "HOURLY": "Every hour",
-      "OFF": "Off"
+      "12HOUR": "Показывать каждые 12 часов",
+      "15DAY": "Показ каждые 15 дней",
+      "1DAY": "Показ каждый день",
+      "1HOUR": "Показ каждые 1 час",
+      "1MONTH": "Показ каждый месяц",
+      "6HOUR": "Показывать каждые 6 часов",
+      "7DAY": "Показ каждую неделю",
+      "OFF": "Не отображать"
     },
     "GUILD_TAGS": {
       "SET": "Показать теги гильдии: {{ enabled }}"
@@ -101,6 +105,13 @@
     },
     "PROVIDER": {
       "SET": "Ссылки будут предоставлены {{ provider }}."
+    },
+    "RANKING": {
+      "SET": {
+        "DAILY": "Режим отображения ежедневного PvP-рейтинга установлен на '{{ frequency }}'",
+        "MONTHLY": "Режим отображения ежемесячного PvP-рейтинга установлен на '{{ frequency }}'",
+        "WEEKLY": "Режим отображения еженедельного PvP-рейтинга установлен на '{{ frquency }}'"
+      }
     },
     "SHOW_ATTUNEMENT": {
       "SET": "Показать статистику пробужденного оружия: {{ enabled }}"
