@@ -3,7 +3,7 @@ import LoadError from "components/LoadError";
 import Loader from "components/Loader";
 import Settings from "components/Settings";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
-import { capitalize } from "helpers/utils";
+import { getFrequency } from "helpers/utils";
 import { Button, Col, Form, Row, Stack } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import {
@@ -13,8 +13,10 @@ import {
 } from "store/api";
 import {
   setRankingsChannel,
+  setRankingsDaily,
   setRankingsEnabled,
-  setRankingsPvpRanking,
+  setRankingsMonthly,
+  setRankingsWeekly,
 } from "store/settings";
 
 const RankingsPage = () => {
@@ -79,20 +81,54 @@ const RankingsPage = () => {
         </Row>
 
         <Row className="gy-2">
-          <Col sm={6}>
-            <Form.Group controlId="rankings-pvp-mode">
-              <Form.Label>PvP Ranking Mode</Form.Label>
+          <Col xs={12}>
+            <Form.Group controlId="rankings-daily">
+              <Form.Label>Daily PvP Ranking</Form.Label>
               <Form.Select
-                aria-label="PvP ranking mode select"
+                aria-label="Daily PvP ranking mode select"
                 disabled={!rankings.enabled}
-                value={rankings.pvpRanking}
-                onChange={(e) =>
-                  dispatch(setRankingsPvpRanking(e.target.value))
-                }
+                value={rankings.daily}
+                onChange={(e) => dispatch(setRankingsDaily(e.target.value))}
               >
                 {rankingModes.map((rankingMode) => (
                   <option key={rankingMode} value={rankingMode}>
-                    {capitalize(rankingMode)}
+                    {getFrequency(rankingMode)}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Col>
+
+          <Col xs={12}>
+            <Form.Group controlId="rankings-weekly">
+              <Form.Label>Weekly PvP Ranking</Form.Label>
+              <Form.Select
+                aria-label="Weekly PvP ranking mode select"
+                disabled={!rankings.enabled}
+                value={rankings.weekly}
+                onChange={(e) => dispatch(setRankingsWeekly(e.target.value))}
+              >
+                {rankingModes.map((rankingMode) => (
+                  <option key={rankingMode} value={rankingMode}>
+                    {getFrequency(rankingMode)}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Col>
+
+          <Col xs={12}>
+            <Form.Group controlId="rankings-monthly">
+              <Form.Label>Monthly PvP Ranking</Form.Label>
+              <Form.Select
+                aria-label="Monthly PvP ranking mode select"
+                disabled={!rankings.enabled}
+                value={rankings.monthly}
+                onChange={(e) => dispatch(setRankingsMonthly(e.target.value))}
+              >
+                {rankingModes.map((rankingMode) => (
+                  <option key={rankingMode} value={rankingMode}>
+                    {getFrequency(rankingMode)}
                   </option>
                 ))}
               </Form.Select>

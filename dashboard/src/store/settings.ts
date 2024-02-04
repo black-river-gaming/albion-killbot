@@ -31,7 +31,9 @@ const initialState: ISettings = {
   rankings: {
     enabled: true,
     channel: "",
-    pvpRanking: "daily",
+    daily: "off",
+    weekly: "off",
+    monthly: "off",
   },
 };
 
@@ -116,8 +118,14 @@ export const settingsSlice = createSlice({
     setRankingsChannel: (state, action: PayloadAction<string>) => {
       state.rankings.channel = action.payload;
     },
-    setRankingsPvpRanking: (state, action: PayloadAction<string>) => {
-      state.rankings.pvpRanking = action.payload;
+    setRankingsDaily: (state, action: PayloadAction<string>) => {
+      state.rankings.daily = action.payload;
+    },
+    setRankingsWeekly: (state, action: PayloadAction<string>) => {
+      state.rankings.weekly = action.payload;
+    },
+    setRankingsMonthly: (state, action: PayloadAction<string>) => {
+      state.rankings.monthly = action.payload;
     },
   },
 });
@@ -144,7 +152,9 @@ export const {
   setBattlesProvider,
   setRankingsEnabled,
   setRankingsChannel,
-  setRankingsPvpRanking,
+  setRankingsDaily,
+  setRankingsWeekly,
+  setRankingsMonthly,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

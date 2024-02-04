@@ -86,7 +86,9 @@ export interface ISettings {
   rankings: {
     enabled: boolean;
     channel: string;
-    pvpRanking: string;
+    daily: string;
+    weekly: string;
+    monthly: string;
   };
 }
 
