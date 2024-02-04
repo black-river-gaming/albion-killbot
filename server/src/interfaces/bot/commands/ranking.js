@@ -16,24 +16,24 @@ const command = {
         .setDescription(t("HELP.RANKING"))
         .setRequired(true)
         .addChoices({
-          name: t("SETTINGS.DESCRIPTION.PVP_RANKING"),
-          value: "pvpRanking",
+          name: t("SETTINGS.DESCRIPTION.RANKING_DAILY"),
+          value: "daily",
+        })
+        .addChoices({
+          name: t("SETTINGS.DESCRIPTION.RANKING_WEEKLY"),
+          value: "weekly",
+        })
+        .addChoices({
+          name: t("SETTINGS.DESCRIPTION.RANKING_MONTHLY"),
+          value: "monthly",
         }),
     ),
   handle: async (interaction, { settings }) => {
-    const rankingType = interaction.options.getString("ranking");
+    const type = interaction.options.getString("ranking");
+    await interaction.deferReply({ ephemeral: false });
 
-    const rankings = {
-      pvpRanking: async () => {
-        await interaction.deferReply({ ephemeral: false });
-        const ranking = await getRanking(interaction.guild.id);
-        return await interaction.editReply(embedRanking(ranking, { locale: settings.general.locale }));
-      },
-    };
-
-    const showRanking = rankings[rankingType];
-    if (showRanking) return await showRanking();
-    return await interaction.reply({ content: "Please specify a valid option for the ranking.", ephemeral: true });
+    const ranking = await getRanking(interaction.guild.id, type);
+    return await interaction.editReply(embedRanking(ranking, { locale: settings.general.locale }));
   },
 };
 
