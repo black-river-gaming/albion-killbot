@@ -1,11 +1,12 @@
 const logger = require("../../../helpers/logger");
-const { embedPvpRanking } = require("../../../helpers/embeds");
+const { embedRanking } = require("../../../helpers/embeds");
+const { runCronjob } = require("../../../helpers/scheduler");
+const { transformGuild } = require("../../../helpers/discord");
 
 const { getRanking } = require("../../../services/rankings");
 const { getSettings } = require("../../../services/settings");
 
 const { sendNotification } = require("./notifications");
-const { runCronjob } = require("../../../helpers/scheduler");
 
 async function init({ client }) {
   try {
@@ -38,26 +39,34 @@ async function init({ client }) {
 
 async function displayRankings(client, rankingType) {
   logger.info(`Display Rankings on '${rankingType}' setting.`);
-  if (rankingType) return;
 
   for (const guild of client.guilds.cache.values()) {
     const settings = await getSettings(guild.id);
     if (!settings) continue;
 
-    const { enabled, channel, pvpRanking } = settings.rankings;
+    const { enabled, channel } = settings.rankings;
     if (!enabled || !channel) continue;
-    if (pvpRanking != rankingType) continue;
 
-    const ranking = await getRanking(guild.id);
-    if (ranking.killRanking.length === 0 && ranking.deathRanking.length === 0) continue;
+    for (const type of ["daily", "weekly", "monthly"]) {
+      if (settings.rankings[type] !== rankingType) continue;
 
-    await sendNotification(
-      client,
-      channel,
-      embedPvpRanking(ranking, {
-        locale: settings.general.locale,
-      }),
-    );
+      const rankings = await getRanking(guild.id, type);
+      if (!rankings) continue;
+      if (rankings.killFameRanking.length === 0 && rankings.deathFameRanking.length === 0) continue;
+
+      logger.verbose(`Sending ${type} ranking to ${guild.name}`, {
+        guild: transformGuild(guild),
+        type,
+        rankings,
+      });
+      await sendNotification(
+        client,
+        channel,
+        embedRanking(rankings, {
+          locale: settings.general.locale,
+        }),
+      );
+    }
   }
 
   logger.info(`Display Rankings on '${rankingType}' setting completed.`);

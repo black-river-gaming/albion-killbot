@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("discord.js");
 const { getLocale } = require("../../../helpers/locale");
 const { getRanking } = require("../../../services/rankings");
-const { embedPvpRanking } = require("../../../helpers/embeds");
+const { embedRanking } = require("../../../helpers/embeds");
 
 const { t } = getLocale();
 
@@ -26,8 +26,8 @@ const command = {
     const rankings = {
       pvpRanking: async () => {
         await interaction.deferReply({ ephemeral: false });
-        const pvpRanking = await getRanking(interaction.guild.id);
-        return await interaction.editReply(embedPvpRanking(pvpRanking, { locale: settings.general.locale }));
+        const ranking = await getRanking(interaction.guild.id);
+        return await interaction.editReply(embedRanking(ranking, { locale: settings.general.locale }));
       },
     };
 

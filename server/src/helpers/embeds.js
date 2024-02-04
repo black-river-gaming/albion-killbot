@@ -424,7 +424,7 @@ const embedTrackList = (track, limits, { locale }) => {
   };
 };
 
-const embedPvpRanking = (rankings, { locale, test }) => {
+const embedRanking = (type, rankings, { locale, test }) => {
   const { t } = getLocale(locale);
 
   const generateRankFieldValue = (ranking, name = "name", number = "fame") => {
@@ -490,6 +490,6 @@ module.exports = {
   embedEvent,
   embedEventImage,
   embedEventInventoryImage,
-  embedPvpRanking,
+  embedRanking,
   embedTrackList,
 };
