@@ -39,19 +39,20 @@
   },
   "RANKING": {
     "CRAFTING": "Classement de craft",
-    "DAILY": "Classement PvP quotidien",
+    "DAILY": "Classement quotidien",
     "DEATH_FAME": "Top Death Fame",
     "GATHERING": "Classement de collecte",
     "GUILD_RANKING_DESCRIPTION": "Total Kill Fame: {{ killFame }}\nTotal Death Fame: {{ deathFame }}",
     "KILL_FAME": "Top Kill Fame",
-    "MONTHLY": "Classement mensuel - {{ guild }}",
+    "MONTHLY": "Classement mensuel",
     "NO_DATA": "Aucune donnée disponible pour la guilde '{{{ guild }}}'. Laissez au bot quelques instants pour récuperer les données et rééssayez plus tard.",
     "NO_DATA_SHORT": "Aucune donnée disponible",
     "PVE": "Classement PvE",
     "PVP": "Classement PvP",
     "TEST": "## Ceci est un test de classement et doit être ignoré.",
     "TOTAL_DEATH_FAME": "Total Death Fame",
-    "TOTAL_KILL_FAME": "Total Kill Fame"
+    "TOTAL_KILL_FAME": "Total Kill Fame",
+    "WEEKLY": "Classement hebdomadaire"
   },
   "SETTINGS": {
     "CATEGORY": {

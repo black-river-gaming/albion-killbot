@@ -39,19 +39,20 @@
   },
   "RANKING": {
     "CRAFTING": "Рейтинг крафта",
-    "DAILY": "Daily PvP Ranking",
+    "DAILY": "Ежедневный рейтинг",
     "DEATH_FAME": "Top Death Fame",
     "GATHERING": "Рейтинг сборки",
     "GUILD_RANKING_DESCRIPTION": "Total Kill Fame: {{ killFame }}\nTotal Death Fame: {{ deathFame }}",
     "KILL_FAME": "Top Kill Fame",
-    "MONTHLY": "Ежемесечный рейтинг - {{ guild }}",
+    "MONTHLY": "Ежемесячный рейтинг",
     "NO_DATA": "No data available for guild '{{{ guild }}}'. Give the bot a day to fetch data and try again.",
     "NO_DATA_SHORT": "No data available",
     "PVE": "Рейтинг PvE",
     "PVP": "Рейтинг PvP",
     "TEST": "## Это проверка рейтинга, и ее следует игнорировать.",
     "TOTAL_DEATH_FAME": "Total Death Fame",
-    "TOTAL_KILL_FAME": "Total Kill Fame"
+    "TOTAL_KILL_FAME": "Total Kill Fame",
+    "WEEKLY": "Еженедельный рейтинг"
   },
   "SETTINGS": {
     "CATEGORY": {

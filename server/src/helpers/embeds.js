@@ -5,7 +5,6 @@ const { digitsFormatter, humanFormatter, printSpace } = require("./utils");
 
 const GREEN = 52224;
 const RED = 13369344;
-const GOLD = 0x89710f;
 const BATTLE = 16752981;
 const RANKING_LINE_LENGTH = 23;
 
@@ -13,6 +12,11 @@ const COLORS = {
   GREY: 0xdcdfdf,
   LIGHT_GREEN: 0x57ad65,
   LIGHT_RED: 0xed4f4f,
+
+  GREEN: 5763719,
+  BLUE: 3447003,
+  PURPLE: 10181046,
+  YELLOW: 15844367,
 };
 
 const MAXLEN = {
@@ -424,19 +428,19 @@ const embedTrackList = (track, limits, { locale }) => {
   };
 };
 
-const embedRanking = (type, rankings, { locale, test }) => {
+const embedRanking = (rankings, { locale, test } = {}) => {
   const { t } = getLocale(locale);
 
-  const generateRankFieldValue = (ranking, name = "name", number = "fame") => {
+  const generateRankFieldValue = (ranking, scoreProperty) => {
     let value = "```c";
     if (ranking.length === 0) {
       const nodata = t("RANKING.NO_DATA_SHORT");
       const count = RANKING_LINE_LENGTH - nodata.length;
       value += `\n${nodata}${printSpace(count)}`;
     }
-    ranking.forEach((item) => {
-      const nameValue = item[name];
-      const numberValue = humanFormatter(item[number], 2);
+    ranking.forEach((player) => {
+      const nameValue = player.name;
+      const numberValue = humanFormatter(player.totalScore[scoreProperty], 2);
       const count = RANKING_LINE_LENGTH - numberValue.length - nameValue.length;
       value += `\n${nameValue}${printSpace(count)}${numberValue}`;
     });
@@ -444,23 +448,42 @@ const embedRanking = (type, rankings, { locale, test }) => {
     return value;
   };
 
+  const icons = {
+    daily:
+      "https://private-user-images.githubusercontent.com/13356774/302125437-30844138-f2f8-4c51-82d4-e420fdab0728.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDcwNzE3NjcsIm5iZiI6MTcwNzA3MTQ2NywicGF0aCI6Ii8xMzM1Njc3NC8zMDIxMjU0MzctMzA4NDQxMzgtZjJmOC00YzUxLTgyZDQtZTQyMGZkYWIwNzI4LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDAyMDQlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwMjA0VDE4MzEwN1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTI2OTk4NDRmM2MxNDc4YjY5YTIzODc3YTc0MmJhZjIxNTkwOWM4OWY1MTJkNmJkMTc1NWM2OGVmZDY5M2Q4OWEmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.tXCCQfIQhs5Z20qz1dBIjiyEHadtSzqOwJUT0uexeYg",
+    weekly:
+      "https://private-user-images.githubusercontent.com/13356774/302125442-a78fbf9f-3d21-410c-a210-faab2133bde5.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDcwNzE5MTgsIm5iZiI6MTcwNzA3MTYxOCwicGF0aCI6Ii8xMzM1Njc3NC8zMDIxMjU0NDItYTc4ZmJmOWYtM2QyMS00MTBjLWEyMTAtZmFhYjIxMzNiZGU1LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDAyMDQlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwMjA0VDE4MzMzOFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTc3ZDI1YzZhZDA0ZjU4OGU1MTVhMzVkNDI4N2MxNmQ2YTU0MzQ1ZTE5MzIxYmZlNDM2MzE5NjRkZGQ3NzA3M2EmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.AgEUFJxFvLkkIs4RxRIeNTu1NM8MoKkdvEX8UI0TA_c",
+    monthly:
+      "https://private-user-images.githubusercontent.com/13356774/302125443-c8d832aa-ca19-45a0-9d62-6347147e5980.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDcwNzE5MTgsIm5iZiI6MTcwNzA3MTYxOCwicGF0aCI6Ii8xMzM1Njc3NC8zMDIxMjU0NDMtYzhkODMyYWEtY2ExOS00NWEwLTlkNjItNjM0NzE0N2U1OTgwLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDAyMDQlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwMjA0VDE4MzMzOFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTI4MmNmZDcyMWI3YTc5MzY0MzUzNmRiYTAxNmY1YzhiYzcwNGRmZGQ1YTM3MTQ5MmRlZDBhNDM1ZDUyZWQyYTgmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.mG1XZcozgYnuZZzxSP-TIchSJy3mldm8GzrOTZkRGSQ",
+    alltime:
+      "https://private-user-images.githubusercontent.com/13356774/302125444-fa4ff6b6-7f6d-4d33-bbb7-a000708e5649.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDcwNzE5MTgsIm5iZiI6MTcwNzA3MTYxOCwicGF0aCI6Ii8xMzM1Njc3NC8zMDIxMjU0NDQtZmE0ZmY2YjYtN2Y2ZC00ZDMzLWJiYjctYTAwMDcwOGU1NjQ5LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDAyMDQlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwMjA0VDE4MzMzOFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTgwNWJiOTViZDM4MGU2Mjg3YmRiMDQyNDE1OWEzMGI5MGU0MmJkN2QyY2ZkODMzN2RhZTg2YTIzYjc0ZTFmYzkmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.kDWMM5zgyL5dxYGxpS_Z64D4JjqWgyN2a_ALv6iwUSQ",
+  };
+
+  const colors = {
+    daily: COLORS.GREEN,
+    weekly: COLORS.BLUE,
+    monthly: COLORS.PURPLE,
+    alltime: COLORS.YELLOW,
+  };
+
   return {
     content: test ? t("RANKING.TEST") : undefined,
     embeds: [
       {
-        title: t("RANKING.DAILY"),
+        title: t(`RANKING.${rankings.type.toUpperCase()}`),
+        color: colors[rankings.type],
         thumbnail: {
-          url: "https://user-images.githubusercontent.com/13356774/76129834-f53cc380-5fde-11ea-8c88-daa9872c2d72.png",
+          url: icons[rankings.type],
         },
         fields: [
           {
             name: t("RANKING.TOTAL_KILL_FAME"),
-            value: digitsFormatter(rankings.totalKillFame),
+            value: digitsFormatter(rankings.killFameTotal),
             inline: true,
           },
           {
             name: t("RANKING.TOTAL_DEATH_FAME"),
-            value: digitsFormatter(rankings.totalDeathFame),
+            value: digitsFormatter(rankings.deathFameTotal),
             inline: true,
           },
           {
@@ -470,12 +493,12 @@ const embedRanking = (type, rankings, { locale, test }) => {
           },
           {
             name: t("RANKING.KILL_FAME"),
-            value: generateRankFieldValue(rankings.killRanking, "name", "killFame"),
+            value: generateRankFieldValue(rankings.killFameRanking, "killFame"),
             inline: true,
           },
           {
             name: t("RANKING.DEATH_FAME"),
-            value: generateRankFieldValue(rankings.deathRanking, "name", "deathFame"),
+            value: generateRankFieldValue(rankings.deathFameRanking, "deathFame"),
             inline: true,
           },
         ],

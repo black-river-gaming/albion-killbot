@@ -39,19 +39,20 @@
   },
   "RANKING": {
     "CRAFTING": "Ranking de Criação",
-    "DAILY": "Ranking diário de PvP",
+    "DAILY": "Ranking Diário",
     "DEATH_FAME": "Top Fama de Mortes",
     "GATHERING": "Ranking de Coleta",
     "GUILD_RANKING_DESCRIPTION": "Fama Total de Abates: {{ killFame }}\nFama Total de Mortes: {{ deathFame }}",
     "KILL_FAME": "Top Fama de Abates",
-    "MONTHLY": "Ranking Mensal - {{ guild }}",
+    "MONTHLY": "Ranking Mensal",
     "NO_DATA": "Sem dados disponíveis para a guilda '{{{ guild }}}'. Aguarde um dia e tente novamente.",
     "NO_DATA_SHORT": "Sem dados",
     "PVE": "Ranking PvE",
     "PVP": "Ranking PvP",
     "TEST": "## Este é um teste de classificação e deve ser ignorado.",
     "TOTAL_DEATH_FAME": "Fama Total de Mortes",
-    "TOTAL_KILL_FAME": "Fama Total de Abates"
+    "TOTAL_KILL_FAME": "Fama Total de Abates",
+    "WEEKLY": "Ranking Semanal"
   },
   "SETTINGS": {
     "CATEGORY": {
