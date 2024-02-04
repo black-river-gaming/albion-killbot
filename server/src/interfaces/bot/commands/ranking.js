@@ -33,6 +33,10 @@ const command = {
     await interaction.deferReply({ ephemeral: false });
 
     const ranking = await getRanking(interaction.guild.id, type);
+    if (!ranking) {
+      return await interaction.editReply(t("RANKING.NO_DATA"));
+    }
+
     return await interaction.editReply(embedRanking(ranking, { locale: settings.general.locale }));
   },
 };

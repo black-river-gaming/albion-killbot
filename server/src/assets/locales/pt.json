@@ -45,7 +45,7 @@
     "GUILD_RANKING_DESCRIPTION": "Fama Total de Abates: {{ killFame }}\nFama Total de Mortes: {{ deathFame }}",
     "KILL_FAME": "Top Fama de Abates",
     "MONTHLY": "Ranking Mensal",
-    "NO_DATA": "Sem dados disponíveis para a guilda '{{{ guild }}}'. Aguarde um dia e tente novamente.",
+    "NO_DATA": "Ainda não há dados disponíveis. Aguarde um tempo e tente novamente mais tarde.",
     "NO_DATA_SHORT": "Sem dados",
     "PVE": "Ranking PvE",
     "PVP": "Ranking PvP",

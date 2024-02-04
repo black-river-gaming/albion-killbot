@@ -45,7 +45,7 @@
     "GUILD_RANKING_DESCRIPTION": "Total Kill Fame: {{ killFame }}\nTotal Death Fame: {{ deathFame }}",
     "KILL_FAME": "Top Kill Fame",
     "MONTHLY": "Classement mensuel",
-    "NO_DATA": "Aucune donnée disponible pour la guilde '{{{ guild }}}'. Laissez au bot quelques instants pour récuperer les données et rééssayez plus tard.",
+    "NO_DATA": "Aucune donnée disponible pour l'instant. Donnez un peu de temps et réessayez plus tard.",
     "NO_DATA_SHORT": "Aucune donnée disponible",
     "PVE": "Classement PvE",
     "PVP": "Classement PvP",
