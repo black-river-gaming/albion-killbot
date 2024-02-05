@@ -46,18 +46,19 @@ async function getRanking(serverId, type = "daily", { limit = 5 } = {}) {
   if (track.players.length === 0 && track.guilds.length === 0 && track.alliances.length === 0) return null;
 
   // Filter for each type
+  // We subtract one hour as a safety measure because these usually run at midnight
   const date = {
     daily: {
-      start: moment().startOf("day").unix(),
-      end: moment().endOf("day").unix(),
+      start: moment().subtract(1, "hour").startOf("day").unix(),
+      end: moment().subtract(1, "hour").endOf("day").unix(),
     },
     weekly: {
-      start: moment().startOf("week").unix(),
-      end: moment().endOf("week").unix(),
+      start: moment().subtract(1, "hour").startOf("week").unix(),
+      end: moment().subtract(1, "hour").endOf("week").unix(),
     },
     monthly: {
-      start: moment().startOf("month").unix(),
-      end: moment().endOf("month").unix(),
+      start: moment().subtract(1, "hour").startOf("month").unix(),
+      end: moment().subtract(1, "hour").endOf("month").unix(),
     },
   }[type];
 
