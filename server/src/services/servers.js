@@ -7,6 +7,7 @@ const { generateEventImage } = require("./images");
 const FAKE_EVENT = require("../assets/mocks/event_934270718.json");
 const FAKE_BATTLE = require("../assets/mocks/battle_934264285.json");
 const FAKE_PVP_RANKING = require("../assets/mocks/ranking_daily.json");
+const axios = require("axios");
 
 async function getBotServers() {
   try {
@@ -105,23 +106,30 @@ async function testNotification(serverId, { channelId, type = "kills", mode = "i
         const event = { ...FAKE_EVENT, good: type === "kills" };
         const actions = new Map();
         actions.set("text", async () => {
-          return await discord.sendMessage(channelId, embedEvent(event, { test: true }));
+          await discord.sendMessage(channelId, embedEvent(event, { test: true }));
+          return true;
         });
         actions.set("image", async () => {
           const image = await generateEventImage(event);
-          return await discord.sendMessage(channelId, embedEventImage(event, image, { test: true }));
+          await discord.sendMessage(channelId, embedEventImage(event, image, { test: true }));
+          return true;
         });
 
         if (!actions.has(mode) || typeof actions.get(mode) !== "function") throw new Error(`Unknown mode ${mode}`);
         return await actions.get(mode)();
       case "battles":
-        return await discord.sendMessage(channelId, embedBattle(FAKE_BATTLE, { test: true }));
+        await discord.sendMessage(channelId, embedBattle(FAKE_BATTLE, { test: true }));
+        return true;
       case "rankings":
-        return await discord.sendMessage(channelId, embedRanking(FAKE_PVP_RANKING, { test: true }));
+        await discord.sendMessage(channelId, embedRanking(FAKE_PVP_RANKING, { test: true }));
+        return true;
       default:
         throw new Error(`Unkown type ${type}`);
     }
   } catch (error) {
+    if (axios.isAxiosError(error) && error.response.status === 403) {
+      return false;
+    }
     logger.error(`Error while sending test to server: ${error.message}`, {
       error,
       serverId,
