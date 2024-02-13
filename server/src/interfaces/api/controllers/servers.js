@@ -61,7 +61,9 @@ async function setServerTrack(req, res) {
 async function testServerSettings(req, res) {
   const { serverId } = req.params;
   try {
-    await serversService.testNotification(serverId, req.body);
+    const result = await serversService.testNotification(serverId, req.body);
+    if (!result) return res.sendStatus(403);
+
     return res.send({});
   } catch {
     return res.sendStatus(500);
