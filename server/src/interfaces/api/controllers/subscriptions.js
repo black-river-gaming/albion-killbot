@@ -40,30 +40,6 @@ async function getSubscriptionsPrices(req, res) {
   }
 }
 
-async function assignSubscription(req, res) {
-  try {
-    const { server, checkoutId, subscriptionId } = req.body;
-    if (!server || (!checkoutId && !subscriptionId)) return res.sendStatus(422);
-
-    const subscription = subscriptionId
-      ? await subscriptionsService.getSubscriptionById(subscriptionId)
-      : await subscriptionsService.getSubscriptionByCheckoutId(checkoutId);
-    if (!subscription) return res.sendStatus(404);
-
-    const { user } = req.session.discord;
-    if (subscription.owner !== user.id) return res.sendStatus(403);
-
-    await subscriptionsService.unassignSubscriptionsByServerId(server);
-    await subscriptionsService.assignSubscription(subscription.id, server);
-    subscription.server = server;
-
-    return res.send(subscription);
-  } catch (error) {
-    logger.error(`Error while assigning subscription: `, error);
-    return res.sendStatus(500);
-  }
-}
-
 async function buySubscription(req, res) {
   try {
     const { priceId } = req.body;
@@ -78,19 +54,47 @@ async function buySubscription(req, res) {
   }
 }
 
-async function getBuySubscription(req, res) {
+async function assignSubscription(req, res) {
+  const { subscriptionId } = req.params;
+  const { server } = req.body;
+
+  if (!subscriptionId) return res.sendStatus(422);
+
   try {
-    const { checkoutId } = req.params;
-    const checkout = await subscriptionsService.getBuySubscription(checkoutId);
-    return res.send(checkout);
+    const subscription = await subscriptionsService.getSubscriptionById(subscriptionId);
+    if (!subscription) return res.sendStatus(404);
+
+    const { user } = req.session.discord;
+    if (subscription.owner !== user.id) return res.sendStatus(403);
+
+    await subscriptionsService.unassignSubscriptionsByServerId(server);
+    if (server) {
+      await subscriptionsService.assignSubscription(subscription.id, server);
+      subscription.server = server;
+    }
+
+    return res.send(subscription);
   } catch (error) {
+    logger.error(`Error while assigning subscription: `, error);
     return res.sendStatus(500);
   }
 }
 
 async function manageSubscription(req, res) {
+  const { subscriptionId } = req.params;
+
+  if (!subscriptionId) return res.sendStatus(422);
+
   try {
-    const { customerId } = req.body;
+    const subscription = await subscriptionsService.getSubscriptionById(subscriptionId);
+    if (!subscription || !subscription.stripe) return res.sendStatus(404);
+
+    let customerId = req.body.customerId;
+    if (!customerId) {
+      const stripeSubscription = await subscriptionsService.getStripeSubscription(subscription.stripe);
+      if (!stripeSubscription) return res.sendStatus(404);
+      customerId = stripeSubscription.customer;
+    }
 
     const session = await subscriptionsService.manageSubscription(customerId);
     if (!session) return res.sendStatus(404);
@@ -126,7 +130,6 @@ subscriptionsService.subscriptionEvents.on("remove", (subscription) => {
 module.exports = {
   assignSubscription,
   buySubscription,
-  getBuySubscription,
   getSubscriptions,
   getSubscriptionsPrices,
   manageSubscription,
