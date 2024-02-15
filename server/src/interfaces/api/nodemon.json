@@ -2,5 +2,9 @@
   "exec": "npm run start:api",
   "watch": ["./src/config", "./src/helpers", "./src/ports", "./src/services", "./src/interfaces/api"],
   "ignore": ["node_modules", "__tests__"],
-  "delay": 500
+  "events": {
+    "restart": "kill-port 80",
+    "crash": "kill-port 80"
+  },
+  "delay": 1500
 }
