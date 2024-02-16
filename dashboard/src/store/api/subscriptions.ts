@@ -8,13 +8,15 @@ import {
   IDoSubscriptionManageResponse,
   IFetchSubscriptionPricesRequest,
   IFetchSubscriptionPricesResponse,
+  IFetchSubscriptionsRequest,
+  IFetchSubscriptionsResponse,
 } from "./types";
 
 const subscription = api.injectEndpoints({
   endpoints: (builder) => ({
     fetchSubscriptions: builder.query<
-      IFetchSubscriptionPricesRequest,
-      IFetchSubscriptionPricesRequest
+      IFetchSubscriptionsResponse,
+      IFetchSubscriptionsRequest
     >({
       query: () => `/subscriptions`,
       providesTags: [{ type: "Subscription", id: "LIST" }],

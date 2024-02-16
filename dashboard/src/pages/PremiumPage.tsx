@@ -26,13 +26,13 @@ import {
   Stack,
 } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
+import { useFetchUserQuery } from "store/api";
 import {
-  useBuySubscriptionMutation,
-  useFetchPricesQuery,
+  useCreateSubscriptionCheckoutMutation,
+  useDoSubscriptionManageMutation,
+  useFetchSubscriptionPricesQuery,
   useFetchSubscriptionsQuery,
-  useFetchUserQuery,
-  useManageSubscriptionMutation,
-} from "store/api";
+} from "store/api/subscriptions";
 import { ServerBase, SubscriptionPrice } from "types";
 import UserSubscriptionsCard from "./styles/Premium";
 
@@ -42,11 +42,11 @@ const PremiumPage = () => {
     LocaleCurrency.getCurrency(user.data?.locale || "en-US")
   );
   const subscriptions = useFetchSubscriptionsQuery();
-  const pricesResponse = useFetchPricesQuery({ currency });
+  const pricesResponse = useFetchSubscriptionPricesQuery({ currency });
   const [dispatchBuySubscription, buySubscription] =
-    useBuySubscriptionMutation();
+    useCreateSubscriptionCheckoutMutation();
   const [dispatchManageSubscription, manageSubscription] =
-    useManageSubscriptionMutation();
+    useDoSubscriptionManageMutation();
   const [queryParams] = useSearchParams();
   const status = queryParams.get("status");
   const checkoutId = queryParams.get("checkout_id");
@@ -130,7 +130,9 @@ const PremiumPage = () => {
                       variant="primary"
                       style={{ width: "100%" }}
                       className="d-flex align-items-center"
-                      onClick={() => dispatchBuySubscription(price.id)}
+                      onClick={() =>
+                        dispatchBuySubscription({ priceId: price.id })
+                      }
                     >
                       <FontAwesomeIcon icon={faStripe} className="s-2" />
                       <div>Checkout</div>

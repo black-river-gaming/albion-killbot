@@ -3,7 +3,8 @@ import ServerCard from "components/ServerCard";
 import { useState } from "react";
 import { Alert, Button, Col, Modal, Row } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
-import { useAssignSubscriptionMutation, useFetchServersQuery } from "store/api";
+import { useFetchServersQuery } from "store/api";
+import { useDoSubscriptionAssignMutation } from "store/api/subscriptions";
 
 interface SubscriptionAssignModalProps {
   checkoutId?: string;
@@ -21,7 +22,7 @@ const SubscriptionAssignModal = ({
   const [show, setShow] = useState(true);
   const servers = useFetchServersQuery();
   const [dispatchAssignSubscription, assignSubscription] =
-    useAssignSubscriptionMutation();
+    useDoSubscriptionAssignMutation();
 
   if (assignSubscription.isSuccess && assignSubscription.data) {
     return (

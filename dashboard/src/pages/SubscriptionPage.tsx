@@ -6,11 +6,8 @@ import SubscriptionPriceCard from "components/SubscriptionPriceCard";
 import { useState } from "react";
 import { Button, Card, Col, Row, Stack } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import {
-  useFetchServerQuery,
-  useFetchUserQuery,
-  useManageSubscriptionMutation,
-} from "store/api";
+import { useFetchServerQuery, useFetchUserQuery } from "store/api";
+import { useDoSubscriptionManageMutation } from "store/api/subscriptions";
 import { ISubscriptionExtended } from "types";
 
 const SubscriptionPage = () => {
@@ -19,7 +16,7 @@ const SubscriptionPage = () => {
   const server = useFetchServerQuery(serverId);
   const [subscriptionAssignId, setSubscriptionAssignId] = useState("");
   const [dispatchManageSubscription, manageSubscription] =
-    useManageSubscriptionMutation();
+    useDoSubscriptionManageMutation();
 
   if (server.isFetching) return <Loader />;
   if (manageSubscription.isLoading) return <Loader />;
