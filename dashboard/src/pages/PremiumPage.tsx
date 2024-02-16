@@ -250,9 +250,10 @@ const PremiumPage = () => {
                         variant="danger"
                         onClick={() =>
                           subscription.stripe?.customer &&
-                          dispatchManageSubscription(
-                            subscription.stripe.customer
-                          )
+                          dispatchManageSubscription({
+                            subscriptionId: subscription.id,
+                            customerId: subscription.stripe.customer,
+                          })
                         }
                       >
                         <FontAwesomeIcon icon={faStripe} className="s-2" />

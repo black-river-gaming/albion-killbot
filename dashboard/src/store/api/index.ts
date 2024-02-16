@@ -43,10 +43,12 @@ const api = createApi({
       ISubscriptionExtended,
       { server: string; checkoutId?: string; subscriptionId?: string }
     >({
-      query: (body) => ({
-        url: `/subscriptions/assign`,
+      query: ({ subscriptionId, server }) => ({
+        url: `/subscriptions/${subscriptionId}/assign`,
         method: "POST",
-        body,
+        body: {
+          server,
+        },
       }),
       invalidatesTags: ["Server", "Subscription"],
     }),
@@ -59,13 +61,19 @@ const api = createApi({
         },
       }),
     }),
-    manageSubscription: builder.mutation<Session, string>({
-      query: (customerId) => ({
-        url: `/subscriptions/manage`,
+    manageSubscription: builder.mutation<
+      Session,
+      {
+        subscriptionId: string;
+        customerId?: string;
+      }
+    >({
+      query: ({ subscriptionId, customerId }) => ({
+        url: `/subscriptions/${subscriptionId}/manage`,
         method: "POST",
-        body: {
-          customerId,
-        },
+        // body: {
+        //   customerId,
+        // },
       }),
     }),
     fetchPrices: builder.query<
