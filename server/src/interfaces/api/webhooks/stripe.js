@@ -97,10 +97,12 @@ router.post(`/webhook`, async (req, res) => {
       }
       await subscriptionsService.updateSubscriptionByStripeId(stripeId, {
         owner,
+        server: checkout.metadata.server_id,
       });
       logger.info(`[${stripeId}] Subscription provisioned to owner: ${owner}.`, {
         stripeId,
         owner,
+        server: checkout.metadata.server_id,
       });
     },
   }[type];

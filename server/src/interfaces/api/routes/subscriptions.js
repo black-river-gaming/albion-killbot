@@ -201,7 +201,7 @@ router.get(`/prices`, subscriptionsController.getSubscriptionsPrices);
  *   post:
  *     tags: [Subscriptions]
  *     summary: Initiate a checkout session to buy a subcription
- *     operationId: buySubscription
+ *     operationId: createSubscriptionCheckout
  *     requestBody:
  *       content:
  *         application/json:
@@ -210,17 +210,29 @@ router.get(`/prices`, subscriptionsController.getSubscriptionsPrices);
  *             properties:
  *               priceId:
  *                 type: string
+ *                 required: true
  *                 description: Price id to buy
  *                 example: "price_1LAjDiJDAy6upd5x99iDefpi"
+ *               server:
+ *                 type: string
+ *                 required: false
+ *                 description: Discord server id to auto-assign after checkout
+ *                 example: "738365346855256107"
  *     responses:
- *       200:
+ *       201:
  *         description: Checkout session created successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Checkout'
+ *       403:
+ *         $ref: "#/components/responses/Unauthorized"
+ *       422:
+ *         description: Missing required parameters
+ *       500:
+ *         $ref: "#/components/responses/ServerError"
  */
-router.post(`/checkout`, subscriptionsController.buySubscription);
+router.post(`/checkout`, subscriptionsController.createSubscriptionCheckout);
 
 /**
  * @openapi

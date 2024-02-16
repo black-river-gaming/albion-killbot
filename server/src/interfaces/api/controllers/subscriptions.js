@@ -40,15 +40,18 @@ async function getSubscriptionsPrices(req, res) {
   }
 }
 
-async function buySubscription(req, res) {
+async function createSubscriptionCheckout(req, res) {
+  const { priceId, server } = req.body;
+
+  if (!priceId) return res.sendStatus(422);
+
   try {
-    const { priceId } = req.body;
     const { user } = req.session.discord;
 
-    const checkout = await subscriptionsService.buySubscription(priceId, user.id);
+    const checkout = await subscriptionsService.createSubscriptionCheckout(priceId, user.id, { server });
     if (!checkout) return res.sendStatus(404);
 
-    return res.send(checkout);
+    return res.status(201).json(checkout);
   } catch (error) {
     return res.sendStatus(500);
   }
@@ -129,7 +132,7 @@ subscriptionsService.subscriptionEvents.on("remove", (subscription) => {
 
 module.exports = {
   assignSubscription,
-  buySubscription,
+  createSubscriptionCheckout,
   getSubscriptions,
   getSubscriptionsPrices,
   manageSubscription,

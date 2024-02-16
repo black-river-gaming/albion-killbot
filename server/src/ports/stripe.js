@@ -35,7 +35,7 @@ async function getPrices({ currency = "usd", product = config.get("stripe.produc
   }
 }
 
-async function createCheckoutSession(priceId, owner) {
+async function createCheckoutSession(priceId, owner, { server } = {}) {
   try {
     const checkout = await stripe.checkout.sessions.create({
       success_url: `${config.get("dashboard.url")}/premium?status=success&checkout_id={CHECKOUT_SESSION_ID}`,
@@ -48,6 +48,9 @@ async function createCheckoutSession(priceId, owner) {
           quantity: 1,
         },
       ],
+      metadata: {
+        server_id: server,
+      },
       subscription_data: {
         metadata: {
           discord_id: owner,
