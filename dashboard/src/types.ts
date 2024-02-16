@@ -154,11 +154,6 @@ export interface SubscriptionPrice {
   };
 }
 
-export interface SubscriptionPricesResponse {
-  currencies: string[];
-  prices: SubscriptionPrice[];
-}
-
 export interface Session {
   id: string;
   url: string;

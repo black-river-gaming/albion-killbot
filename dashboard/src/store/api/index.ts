@@ -4,11 +4,8 @@ import {
   ISearchResults,
   IServer,
   ISettings,
-  ISubscriptionExtended,
   ITrackList,
   ServerPartial,
-  Session,
-  SubscriptionPricesResponse,
   User,
 } from "types";
 
@@ -39,54 +36,6 @@ const api = createApi({
       }),
       invalidatesTags: ["User"],
     }),
-    assignSubscription: builder.mutation<
-      ISubscriptionExtended,
-      { server: string; checkoutId?: string; subscriptionId?: string }
-    >({
-      query: ({ subscriptionId, server }) => ({
-        url: `/subscriptions/${subscriptionId}/assign`,
-        method: "POST",
-        body: {
-          server,
-        },
-      }),
-      invalidatesTags: ["Server", "Subscription"],
-    }),
-    buySubscription: builder.mutation<Session, string>({
-      query: (priceId) => ({
-        url: `/subscriptions/checkout`,
-        method: "POST",
-        body: {
-          priceId,
-        },
-      }),
-    }),
-    manageSubscription: builder.mutation<
-      Session,
-      {
-        subscriptionId: string;
-        customerId?: string;
-      }
-    >({
-      query: ({ subscriptionId, customerId }) => ({
-        url: `/subscriptions/${subscriptionId}/manage`,
-        method: "POST",
-        // body: {
-        //   customerId,
-        // },
-      }),
-    }),
-    fetchPrices: builder.query<
-      SubscriptionPricesResponse,
-      { currency: string }
-    >({
-      query: ({ currency }) => ({
-        url: `/subscriptions/prices`,
-        params: {
-          currency,
-        },
-      }),
-    }),
     fetchUser: builder.query<User, void>({
       query: () => `/users/me`,
       providesTags: ["User"],
@@ -98,10 +47,6 @@ const api = createApi({
     fetchServer: builder.query<IServer, string>({
       query: (serverId) => `/servers/${serverId}`,
       providesTags: ["Server"],
-    }),
-    fetchSubscriptions: builder.query<ISubscriptionExtended[], void>({
-      query: () => `/subscriptions`,
-      providesTags: ["Subscription"],
     }),
     search: builder.query<ISearchResults, { server: string; query: string }>({
       query: ({ server, query }) => ({
@@ -152,20 +97,15 @@ const api = createApi({
 });
 
 export const {
-  useAssignSubscriptionMutation,
   useAuthMutation,
-  useBuySubscriptionMutation,
   useFetchConstantsQuery,
-  useFetchPricesQuery,
   useFetchServerQuery,
   useFetchServersQuery,
-  useFetchSubscriptionsQuery,
   useFetchUserQuery,
   useLazyFetchServerQuery,
   useLazyFetchUserQuery,
   useLazySearchQuery,
   useLogoutMutation,
-  useManageSubscriptionMutation,
   useSearchQuery,
   useTestNotificationSettingsMutation,
   useUpdateSettingsMutation,

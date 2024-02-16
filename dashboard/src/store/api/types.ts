@@ -1,5 +1,11 @@
-import { ISubscription } from "types";
+import {
+  ISubscription,
+  ISubscriptionExtended,
+  Session,
+  SubscriptionPrice,
+} from "types";
 
+// Admin
 export type IFindSubscriptions = {
   server?: string;
   owner?: string;
@@ -18,3 +24,33 @@ export type IUpdateSubscription = {
 export type IDeleteSubscription = {
   id: string;
 };
+
+// Subscriptions
+export type IFetchSubscriptionsRequest = void;
+export type IFetchSubscriptionsResponse = ISubscriptionExtended[];
+
+export type IFetchSubscriptionPricesRequest = {
+  currency: string;
+};
+export type IFetchSubscriptionPricesResponse = {
+  currencies: string[];
+  prices: SubscriptionPrice[];
+};
+
+export type ICreateSubscriptionCheckoutRequest = {
+  priceId: string;
+};
+export type ICreateSubscriptionCheckoutResponse = Session;
+
+export type IDoSubscriptionAssignRequest = {
+  server: string;
+  checkoutId?: string;
+  subscriptionId?: string;
+};
+export type IDoSubscriptionAssignResponse = ISubscriptionExtended;
+
+export type IDoSubscriptionManageRequest = {
+  subscriptionId: string;
+  customerId?: string;
+};
+export type IDoSubscriptionManageResponse = Session;
