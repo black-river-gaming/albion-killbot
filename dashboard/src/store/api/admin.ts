@@ -1,5 +1,5 @@
 import { ISubscription, ISubscriptionExtended, ServerPartial } from "types";
-import api from ".";
+import api from "./index";
 import {
   ICreateSubscription,
   IDeleteSubscription,
