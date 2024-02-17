@@ -1,7 +1,7 @@
 import { getSubscriptionPriceBanner } from "helpers/subscriptions";
 import { getCurrency } from "helpers/utils";
 import { Card } from "react-bootstrap";
-import { SubscriptionPrice } from "types";
+import { SubscriptionPrice } from "types/subscription";
 
 interface SubscriptionPriceCardProps {
   price: SubscriptionPrice;

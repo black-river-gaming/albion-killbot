@@ -8,7 +8,7 @@ import { Button, Card, Col, Row, Stack } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { useFetchServerQuery, useFetchUserQuery } from "store/api";
 import { useDoSubscriptionManageMutation } from "store/api/subscriptions";
-import { ISubscriptionExtended } from "types";
+import { ISubscriptionExtended } from "types/subscription";
 
 const SubscriptionPage = () => {
   const { serverId = "" } = useParams();

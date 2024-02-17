@@ -28,7 +28,7 @@ import {
   useCreateSubscriptionCheckoutMutation,
   useFetchSubscriptionPricesQuery,
 } from "store/api/subscriptions";
-import { SubscriptionPrice } from "types";
+import { SubscriptionPrice } from "types/subscription";
 
 const PremiumPage = () => {
   const user = useFetchUserQuery();

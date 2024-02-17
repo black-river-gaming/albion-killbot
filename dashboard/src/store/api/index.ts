@@ -1,13 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import {
-  IConstants,
-  ISearchResults,
-  IServer,
-  ISettings,
-  ITrackList,
-  ServerPartial,
-  User,
-} from "types";
+import { IConstants } from "types/constants";
+import { IServer, ServerPartial } from "types/server";
+import { ISettings } from "types/settings";
+import { ISearchResults, ITrackList } from "types/track";
+import { User } from "types/user";
 
 const { REACT_APP_API_URL = "/api" } = process.env;
 

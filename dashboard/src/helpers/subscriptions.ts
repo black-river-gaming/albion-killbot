@@ -7,7 +7,7 @@ import {
   ISubscriptionBase,
   ISubscriptionExtended,
   SubscriptionPrice,
-} from "types";
+} from "types/subscription";
 
 const banners = [
   {

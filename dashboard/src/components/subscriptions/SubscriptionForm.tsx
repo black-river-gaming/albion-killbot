@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Form, Modal, Stack } from "react-bootstrap";
-import { ISubscription } from "types";
+import { ISubscription } from "types/subscription";
 
 interface Props {
   title: string;

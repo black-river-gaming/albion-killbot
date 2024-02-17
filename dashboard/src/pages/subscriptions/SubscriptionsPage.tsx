@@ -1,32 +1,39 @@
-import { faStripe } from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
 import Page from "components/Page";
+import SubscriptionStripeCard from "components/subscriptions/SubscriptionStripeCard";
 import { getServerPictureUrl } from "helpers/discord";
 import { isSubscriptionActiveAndUnassiged } from "helpers/subscriptions";
-import { getCurrency } from "helpers/utils";
 import { Button, Card, Col, Row, Stack } from "react-bootstrap";
-import {
-  useDoSubscriptionManageMutation,
-  useFetchSubscriptionsQuery,
-} from "store/api/subscriptions";
-import { ServerBase } from "types";
+import { Link } from "react-router-dom";
+import { useFetchSubscriptionsQuery } from "store/api/subscriptions";
+import { ServerBase } from "types/server";
 
 const SubscriptionsPage = () => {
   const subscriptions = useFetchSubscriptionsQuery();
 
-  const [dispatchManageSubscription, manageSubscription] =
-    useDoSubscriptionManageMutation();
-
   if (subscriptions.isLoading) return <Loader />;
 
-  if (manageSubscription.isLoading) return <Loader />;
-  if (manageSubscription.isSuccess && manageSubscription.data) {
-    window.location.href = manageSubscription.data.url;
-  }
-
   const renderUserSubscriptions = () => {
-    const renderSubscriptionServer = (server: string | ServerBase) => {
+    if (!subscriptions.data) {
+      return (
+        <h5 className="d-flex justify-content-center py-5">
+          No data available. Please refresh the page and try again.
+        </h5>
+      );
+    }
+
+    if (subscriptions.data.length === 0) {
+      return (
+        <h5 className="d-flex justify-content-center py-5">
+          <span>
+            No subscriptions. Please visit the{" "}
+            <Link to="/premium">Premium Page</Link> to purchase one.
+          </span>
+        </h5>
+      );
+    }
+
+    const renderSubscriptionServer = (server: ServerBase) => {
       if (typeof server === "string") return;
 
       return (
@@ -45,25 +52,16 @@ const SubscriptionsPage = () => {
       );
     };
 
-    if (subscriptions.isFetching) return <Loader />;
-    if (!subscriptions.data) return;
-    const activeSubscriptions = subscriptions.data.filter(
-      (subscription) =>
-        subscription.expires === "never" ||
-        new Date(subscription.expires).getTime() > new Date().getTime()
-    );
-    if (activeSubscriptions.length === 0) return;
-
     return (
-      <Card>
-        <Card.Header>Your Active Subscriptions:</Card.Header>
+      <Stack direction="vertical" gap={2}>
+        {subscriptions.data.map((subscription) => {
+          if (subscription.stripe) {
+            return <SubscriptionStripeCard subscription={subscription} />;
+          }
 
-        <Card.Body>
-          <Stack direction="vertical" gap={4}>
-            {activeSubscriptions.map((subscription) => {
-              const price = subscription.stripe?.price;
-
-              return (
+          return (
+            <Card>
+              <Card.Body>
                 <Row key={subscription.id} className="gy-2">
                   <Col
                     xs={12}
@@ -72,9 +70,6 @@ const SubscriptionsPage = () => {
                   >
                     <div className="id-text">
                       <span>#{subscription.id}</span>
-                      {subscription.stripe?.cancel_at_period_end && (
-                        <span className="cancelled-text">cancelled</span>
-                      )}
                     </div>
                     <div className="active">
                       <div className="expires">
@@ -89,14 +84,6 @@ const SubscriptionsPage = () => {
                               subscription.expires
                             ).toLocaleString()}`}
                       </div>
-                      {price && (
-                        <div className="price">
-                          {getCurrency(price.price / 100, {
-                            currency: price.currency,
-                          })}
-                          /{price.recurrence.count} {price.recurrence.interval}
-                        </div>
-                      )}
                     </div>
                   </Col>
 
@@ -122,28 +109,13 @@ const SubscriptionsPage = () => {
                     >
                       {subscription.server ? "Transfer" : "Assign"}
                     </Button>
-                    {subscription.stripe?.customer && (
-                      <Button
-                        variant="danger"
-                        onClick={() =>
-                          subscription.stripe?.customer &&
-                          dispatchManageSubscription({
-                            subscriptionId: subscription.id,
-                            customerId: subscription.stripe.customer,
-                          })
-                        }
-                      >
-                        <FontAwesomeIcon icon={faStripe} className="s-2" />
-                        <div>Manage</div>
-                      </Button>
-                    )}
                   </Col>
                 </Row>
-              );
-            })}
-          </Stack>
-        </Card.Body>
-      </Card>
+              </Card.Body>
+            </Card>
+          );
+        })}
+      </Stack>
     );
   };
 

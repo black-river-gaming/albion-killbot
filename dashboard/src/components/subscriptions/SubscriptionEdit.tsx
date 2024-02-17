@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useUpdateAdminSubscriptionMutation } from "store/api/admin";
-import { ISubscription } from "types";
+import { ISubscription } from "types/subscription";
 import SubscriptionForm from "./SubscriptionForm";
 
 interface SubscriptionEditProps {

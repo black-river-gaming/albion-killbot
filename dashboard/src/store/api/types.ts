@@ -3,7 +3,7 @@ import {
   ISubscriptionExtended,
   Session,
   SubscriptionPrice,
-} from "types";
+} from "types/subscription";
 
 // Admin
 export type IFindSubscriptions = {

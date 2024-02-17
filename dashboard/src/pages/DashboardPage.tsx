@@ -5,7 +5,7 @@ import { getServerInviteUrl } from "helpers/discord";
 import { Button, Col, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useFetchServersQuery } from "store/api";
-import { ServerPartial } from "types";
+import { ServerPartial } from "types/server";
 
 const DashboardPage = () => {
   const servers = useFetchServersQuery();

@@ -5,7 +5,7 @@ import ServerList from "components/ServerList";
 import { useEffect, useState } from "react";
 import { Button, Card, Form, InputGroup, Stack } from "react-bootstrap";
 import { useFetchAdminServersQuery } from "store/api/admin";
-import { ServerPartial } from "types";
+import { ServerPartial } from "types/server";
 
 const AdminServersPage = () => {
   const serversQuery = useFetchAdminServersQuery();
