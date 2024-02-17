@@ -109,9 +109,10 @@ async function getSubscription(id) {
 
     return {
       id: subscription.id,
+      customer: subscription.customer,
+      status: subscription.status,
       cancel_at_period_end: subscription.cancel_at_period_end,
       current_period_end: subscription.current_period_end,
-      customer: subscription.customer,
       price: {
         id: price.id,
         currency: price.currency,
