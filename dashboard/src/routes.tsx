@@ -16,6 +16,7 @@ import RankingsPage from "pages/RankingsPage";
 import ServerPage from "pages/ServerPage";
 import SettingsPage from "pages/SettingsPage";
 import SubscriptionPage from "pages/SubscriptionPage";
+import SubscriptionsPage from "pages/subscriptions/SubscriptionsPage";
 import TrackPage from "pages/TrackPage";
 import { createRoutesFromElements, Navigate, Route } from "react-router-dom";
 
@@ -37,6 +38,9 @@ const routes = createRoutesFromElements(
             <Route path="track" element={<TrackPage />} />
             <Route path="subscription" element={<SubscriptionPage />} />
           </Route>
+        </Route>
+        <Route path="subscriptions">
+          <Route index element={<SubscriptionsPage />} />
         </Route>
       </Route>
       <Route element={<AdminGuard redirectTo="/" />}>

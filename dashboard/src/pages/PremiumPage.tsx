@@ -9,9 +9,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
 import SubscriptionAssign from "components/SubscriptionAssign";
 import SubscriptionPriceCard from "components/SubscriptionPriceCard";
-import { getServerPictureUrl } from "helpers/discord";
-import { isSubscriptionActiveAndUnassiged } from "helpers/subscriptions";
-import { getCurrency } from "helpers/utils";
 import LocaleCurrency from "locale-currency";
 import { useState } from "react";
 import {
@@ -29,24 +26,18 @@ import { useSearchParams } from "react-router-dom";
 import { useFetchUserQuery } from "store/api";
 import {
   useCreateSubscriptionCheckoutMutation,
-  useDoSubscriptionManageMutation,
   useFetchSubscriptionPricesQuery,
-  useFetchSubscriptionsQuery,
 } from "store/api/subscriptions";
-import { ServerBase, SubscriptionPrice } from "types";
-import UserSubscriptionsCard from "./styles/Premium";
+import { SubscriptionPrice } from "types";
 
 const PremiumPage = () => {
   const user = useFetchUserQuery();
   const [currency, setCurrency] = useState(
     LocaleCurrency.getCurrency(user.data?.locale || "en-US")
   );
-  const subscriptions = useFetchSubscriptionsQuery();
   const pricesResponse = useFetchSubscriptionPricesQuery({ currency });
   const [dispatchBuySubscription, buySubscription] =
     useCreateSubscriptionCheckoutMutation();
-  const [dispatchManageSubscription, manageSubscription] =
-    useDoSubscriptionManageMutation();
   const [queryParams] = useSearchParams();
   const status = queryParams.get("status");
   const checkoutId = queryParams.get("checkout_id");
@@ -55,11 +46,6 @@ const PremiumPage = () => {
   if (buySubscription.isLoading) return <Loader />;
   if (buySubscription.isSuccess && buySubscription.data) {
     window.location.href = buySubscription.data.url;
-  }
-
-  if (manageSubscription.isLoading) return <Loader />;
-  if (manageSubscription.isSuccess && manageSubscription.data) {
-    window.location.href = manageSubscription.data.url;
   }
 
   const renderCurrenciesDropdown = () => {
@@ -147,131 +133,6 @@ const PremiumPage = () => {
     );
   };
 
-  const renderUserSubscriptions = () => {
-    const renderSubscriptionServer = (server: string | ServerBase) => {
-      if (typeof server === "string") return;
-
-      return (
-        <Stack
-          className="d-flex align-items-center"
-          direction="horizontal"
-          gap={2}
-        >
-          <img
-            src={getServerPictureUrl(server, true)}
-            style={{ width: 30, height: 30 }}
-            alt={server.name}
-          />
-          <div>{server.name}</div>
-        </Stack>
-      );
-    };
-
-    if (subscriptions.isFetching) return <Loader />;
-    if (!subscriptions.data) return;
-    const activeSubscriptions = subscriptions.data.filter(
-      (subscription) =>
-        subscription.expires === "never" ||
-        new Date(subscription.expires).getTime() > new Date().getTime()
-    );
-    if (activeSubscriptions.length === 0) return;
-
-    return (
-      <UserSubscriptionsCard>
-        <Card.Header>Your Active Subscriptions:</Card.Header>
-
-        <Card.Body>
-          <Stack direction="vertical" gap={4}>
-            {activeSubscriptions.map((subscription) => {
-              const price = subscription.stripe?.price;
-
-              return (
-                <Row
-                  key={subscription.id}
-                  className="user-subscription-list-item gy-2"
-                >
-                  <Col
-                    xs={12}
-                    xl={4}
-                    className="info d-flex flex-column justify-content-center"
-                  >
-                    <div className="id-text">
-                      <span>#{subscription.id}</span>
-                      {subscription.stripe?.cancel_at_period_end && (
-                        <span className="cancelled-text">cancelled</span>
-                      )}
-                    </div>
-                    <div className="active">
-                      <div className="expires">
-                        {subscription.expires === "never"
-                          ? `Activated`
-                          : `${
-                              new Date(subscription.expires).getTime() >
-                              new Date().getTime()
-                                ? `Active until `
-                                : `Expired at `
-                            } ${new Date(
-                              subscription.expires
-                            ).toLocaleString()}`}
-                      </div>
-                      {price && (
-                        <div className="price">
-                          {getCurrency(price.price / 100, {
-                            currency: price.currency,
-                          })}
-                          /{price.recurrence.count} {price.recurrence.interval}
-                        </div>
-                      )}
-                    </div>
-                  </Col>
-
-                  <Col
-                    xs={12}
-                    md={6}
-                    xl={4}
-                    className="d-flex align-items-center pt-xl-2"
-                  >
-                    {subscription.server &&
-                      renderSubscriptionServer(subscription.server)}
-                  </Col>
-
-                  <Col
-                    xs={12}
-                    md={6}
-                    xl={4}
-                    className="actions d-flex align-items-center justify-content-end"
-                  >
-                    <Button
-                      variant="primary"
-                      onClick={() => setSubscriptionAssignId(subscription.id)}
-                    >
-                      {subscription.server ? "Transfer" : "Assign"}
-                    </Button>
-                    {subscription.stripe?.customer && (
-                      <Button
-                        variant="danger"
-                        onClick={() =>
-                          subscription.stripe?.customer &&
-                          dispatchManageSubscription({
-                            subscriptionId: subscription.id,
-                            customerId: subscription.stripe.customer,
-                          })
-                        }
-                      >
-                        <FontAwesomeIcon icon={faStripe} className="s-2" />
-                        <div>Manage</div>
-                      </Button>
-                    )}
-                  </Col>
-                </Row>
-              );
-            })}
-          </Stack>
-        </Card.Body>
-      </UserSubscriptionsCard>
-    );
-  };
-
   return (
     <Container fluid className="py-3">
       <Stack gap={2}>
@@ -283,13 +144,6 @@ const PremiumPage = () => {
             Purchase cancelled.
           </Alert>
         )}
-        {!status && subscriptions.data?.some(isSubscriptionActiveAndUnassiged) && (
-          <Alert className="mb-4" variant="success">
-            You currently have an active subscription that is not assigned to a
-            server. Make sure to assign it before being able to benefit from the
-            subscription.
-          </Alert>
-        )}
         <div className="d-flex justify-content-center">
           <h1>Premium</h1>
         </div>
@@ -297,7 +151,6 @@ const PremiumPage = () => {
           {renderCurrenciesDropdown()}
         </div>
         {renderPrices()}
-        {renderUserSubscriptions()}
         {subscriptionAssignId && (
           <SubscriptionAssign
             subscriptionId={subscriptionAssignId}

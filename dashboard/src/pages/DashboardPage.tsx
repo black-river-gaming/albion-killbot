@@ -1,7 +1,8 @@
 import Loader from "components/Loader";
+import Page from "components/Page";
 import ServerCard from "components/ServerCard";
 import { getServerInviteUrl } from "helpers/discord";
-import { Alert, Button, Col, Container, Row, Stack } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useFetchServersQuery } from "store/api";
 import { ServerPartial } from "types";
@@ -66,25 +67,29 @@ const DashboardPage = () => {
   };
 
   return (
-    <Container fluid className="py-3">
-      <Stack gap={2}>
-        <Alert variant="info" className="m-0 mb-2">
-          <b>Can't find your server?</b> Please check if you are a server owner
-          or have the Administrator permissions.
-        </Alert>
-        <div className="d-flex justify-content-center">
-          <h1>Discord Servers</h1>
-        </div>
-        <Row className="g-4">
-          {servers.data && servers.data.map(renderServer)}
-          {servers.data?.length === 0 && (
-            <h5 className="d-flex justify-content-center py-5">
-              No servers available.
-            </h5>
-          )}
-        </Row>
-      </Stack>
-    </Container>
+    <Page
+      title="My Servers"
+      alerts={[
+        {
+          variant: "info",
+          message: (
+            <div>
+              <b>Can't find your server?</b> Please check if you are a server
+              owner or have the Administrator permissions.
+            </div>
+          ),
+        },
+      ]}
+    >
+      <Row className="g-4 align-self-center">
+        {servers.data && servers.data.map(renderServer)}
+      </Row>
+      {servers.data?.length === 0 && (
+        <h5 className="d-flex justify-content-center py-5">
+          No servers available.
+        </h5>
+      )}
+    </Page>
   );
 };
 
