@@ -1,6 +1,6 @@
 import Loader from "components/Loader";
 import Page from "components/Page";
-import SubscriptionStripeCard from "components/subscriptions/SubscriptionStripeCard";
+import SubscriptionCardStripe from "components/subscriptions/SubscriptionCardStripe";
 import { getServerPictureUrl } from "helpers/discord";
 import { isSubscriptionActiveAndUnassiged } from "helpers/subscriptions";
 import { Button, Card, Col, Row, Stack } from "react-bootstrap";
@@ -56,7 +56,7 @@ const SubscriptionsPage = () => {
       <Stack direction="vertical" gap={2}>
         {subscriptions.data.map((subscription) => {
           if (subscription.stripe) {
-            return <SubscriptionStripeCard subscription={subscription} />;
+            return <SubscriptionCardStripe subscription={subscription} />;
           }
 
           return (

@@ -13,7 +13,7 @@ interface Props {
   subscription: ISubscriptionExtended;
 }
 
-const SubscriptionStripeCard = ({ subscription }: Props) => {
+const SubscriptionCardStripe = ({ subscription }: Props) => {
   const [dispatchManageSubscription, manageSubscription] =
     useDoSubscriptionManageMutation();
 
@@ -134,4 +134,4 @@ const SubscriptionStripeCard = ({ subscription }: Props) => {
   );
 };
 
-export default SubscriptionStripeCard;
+export default SubscriptionCardStripe;
