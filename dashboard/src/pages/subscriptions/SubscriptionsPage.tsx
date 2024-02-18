@@ -1,5 +1,6 @@
 import Loader from "components/Loader";
 import Page from "components/Page";
+import NoData from "components/common/NoData";
 import SubscriptionCard from "components/subscriptions/SubscriptionCard";
 import SubscriptionCardStripe from "components/subscriptions/SubscriptionCardStripe";
 import { isSubscriptionActiveAndUnassiged } from "helpers/subscriptions";
@@ -28,13 +29,7 @@ const SubscriptionsPage = () => {
   };
 
   const renderUserSubscriptions = () => {
-    if (!subscriptions.data) {
-      return (
-        <h5 className="d-flex justify-content-center py-5">
-          No data available. Please refresh the page and try again.
-        </h5>
-      );
-    }
+    if (!subscriptions.data) return <NoData />;
 
     if (subscriptions.data.length === 0) {
       return (
