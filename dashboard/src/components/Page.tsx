@@ -14,9 +14,13 @@ interface PageProps {
 }
 
 const Page = ({ alerts, title, children }: PageProps) => {
-  const renderAlert = (alert: IAlert) => {
+  const renderAlert = (alert: IAlert, index: number) => {
     if (alert.show !== undefined && !alert.show) return;
-    return <Alert variant={alert.variant}>{alert.message}</Alert>;
+    return (
+      <Alert key={index} variant={alert.variant}>
+        {alert.message}
+      </Alert>
+    );
   };
 
   return (

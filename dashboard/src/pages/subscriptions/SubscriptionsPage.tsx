@@ -36,8 +36,18 @@ const SubscriptionsPage = () => {
       <Stack direction="vertical" gap={2}>
         {subscriptions.data.map((subscription) => {
           if (subscription.stripe)
-            return <SubscriptionCardStripe subscription={subscription} />;
-          return <SubscriptionCard subscription={subscription} />;
+            return (
+              <SubscriptionCardStripe
+                key={subscription.id}
+                subscription={subscription}
+              />
+            );
+          return (
+            <SubscriptionCard
+              key={subscription.id}
+              subscription={subscription}
+            />
+          );
         })}
       </Stack>
     );

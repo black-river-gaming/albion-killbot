@@ -7,22 +7,20 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
-import SubscriptionAssign from "components/subscriptions/SubscriptionAssign";
+import Page from "components/Page";
 import SubscriptionStripePriceCard from "components/subscriptions/SubscriptionStripePriceCard";
 import LocaleCurrency from "locale-currency";
 import { useState } from "react";
 import {
-  Alert,
   Button,
   Card,
   Col,
-  Container,
   Dropdown,
   ListGroup,
   Row,
   Stack,
 } from "react-bootstrap";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useFetchUserQuery } from "store/api";
 import {
   useCreateSubscriptionCheckoutMutation,
@@ -40,8 +38,7 @@ const PremiumPage = () => {
     useCreateSubscriptionCheckoutMutation();
   const [queryParams] = useSearchParams();
   const status = queryParams.get("status");
-  const checkoutId = queryParams.get("checkout_id");
-  const [subscriptionAssignId, setSubscriptionAssignId] = useState("");
+  const [priceId, setPriceId] = useState("");
 
   if (buySubscription.isLoading) return <Loader />;
   if (buySubscription.isSuccess && buySubscription.data) {
@@ -116,9 +113,7 @@ const PremiumPage = () => {
                       variant="primary"
                       style={{ width: "100%" }}
                       className="d-flex align-items-center"
-                      onClick={() =>
-                        dispatchBuySubscription({ priceId: price.id })
-                      }
+                      onClick={() => setPriceId(price.id)}
                     >
                       <FontAwesomeIcon icon={faStripe} className="s-2" />
                       <div>Checkout</div>
@@ -134,31 +129,40 @@ const PremiumPage = () => {
   };
 
   return (
-    <Container fluid className="py-3">
-      <Stack gap={2}>
-        {status === "success" && checkoutId && (
-          <SubscriptionAssign checkoutId={checkoutId} />
-        )}
-        {status === "cancel" && (
-          <Alert className="mb-4" variant="danger">
-            Purchase cancelled.
-          </Alert>
-        )}
-        <div className="d-flex justify-content-center">
-          <h1>Premium</h1>
-        </div>
-        <div className="d-flex justify-content-end">
-          {renderCurrenciesDropdown()}
-        </div>
-        {renderPrices()}
-        {subscriptionAssignId && (
-          <SubscriptionAssign
-            subscriptionId={subscriptionAssignId}
-            onClose={() => setSubscriptionAssignId("")}
-          />
-        )}
-      </Stack>
-    </Container>
+    <Page
+      alerts={[
+        {
+          show: status === "success",
+          variant: "success",
+          message: (
+            <>
+              <span>
+                Thank you for your purchase! Go to{" "}
+                <Link to="/subscriptions">My Subscriptions</Link> to see your
+                new subscription.
+              </span>
+            </>
+          ),
+        },
+        {
+          show: status === "cancel",
+          variant: "danger",
+          message: "Purchase cancelled.",
+        },
+      ]}
+      title="Premium"
+    >
+      {priceId === "" ? (
+        <Stack gap={2}>
+          <div className="d-flex justify-content-end">
+            {renderCurrenciesDropdown()}
+          </div>
+          {renderPrices()}
+        </Stack>
+      ) : (
+        <Stack gap={2}>Select your server</Stack>
+      )}
+    </Page>
   );
 };
 
