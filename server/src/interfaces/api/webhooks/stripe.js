@@ -88,6 +88,7 @@ router.post(`/webhook`, async (req, res) => {
       const checkout = data.object;
       const stripeId = checkout.subscription;
       const owner = checkout.client_reference_id;
+      const serverId = checkout.metadata.server_id;
 
       if (!owner) {
         return logger.error(`[${stripeId}] Cannot provision subscription: missing client_reference_id.`, {
@@ -95,14 +96,15 @@ router.post(`/webhook`, async (req, res) => {
           checkout,
         });
       }
+      if (serverId) await subscriptionsService.unassignSubscriptionsByServerId(serverId);
       await subscriptionsService.updateSubscriptionByStripeId(stripeId, {
         owner,
-        server: checkout.metadata.server_id,
+        server: serverId,
       });
       logger.info(`[${stripeId}] Subscription provisioned to owner: ${owner}.`, {
-        stripeId,
         owner,
-        server: checkout.metadata.server_id,
+        serverId,
+        stripeId,
       });
     },
   }[type];
