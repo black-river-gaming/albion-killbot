@@ -39,11 +39,12 @@ const subscription = api.injectEndpoints({
       ICreateSubscriptionCheckoutResponse,
       ICreateSubscriptionCheckoutRequest
     >({
-      query: ({ priceId }) => ({
+      query: ({ priceId, serverId }) => ({
         url: `/subscriptions/checkout`,
         method: "POST",
         body: {
           priceId,
+          server: serverId,
         },
       }),
     }),

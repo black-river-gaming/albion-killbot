@@ -6,11 +6,26 @@ import { isSubscriptionActiveAndUnassiged } from "helpers/subscriptions";
 import { Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useFetchSubscriptionsQuery } from "store/api/subscriptions";
+import { ISubscriptionBase } from "types/subscription";
 
 const SubscriptionsPage = () => {
   const subscriptions = useFetchSubscriptionsQuery();
 
   if (subscriptions.isLoading) return <Loader />;
+
+  const sortByExpireDate = (
+    subscriptionA: ISubscriptionBase,
+    subscriptionB: ISubscriptionBase
+  ) => {
+    if (subscriptionB.expires === "never" && subscriptionA.expires === "never")
+      return 0;
+    if (subscriptionA.expires === "never") return -1;
+    if (subscriptionB.expires === "never") return 1;
+    return (
+      new Date(subscriptionB.expires).getTime() -
+      new Date(subscriptionA.expires).getTime()
+    );
+  };
 
   const renderUserSubscriptions = () => {
     if (!subscriptions.data) {
@@ -32,9 +47,11 @@ const SubscriptionsPage = () => {
       );
     }
 
+    const sortedSubscriptions = [...subscriptions.data].sort(sortByExpireDate);
+
     return (
       <Stack direction="vertical" gap={2}>
-        {subscriptions.data.map((subscription) => {
+        {sortedSubscriptions.map((subscription) => {
           if (subscription.stripe)
             return (
               <SubscriptionCardStripe

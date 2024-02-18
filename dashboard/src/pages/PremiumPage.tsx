@@ -8,6 +8,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
 import Page from "components/Page";
+import ServerSelect from "components/ServerSelect";
 import SubscriptionStripePriceCard from "components/subscriptions/SubscriptionStripePriceCard";
 import LocaleCurrency from "locale-currency";
 import { useState } from "react";
@@ -17,6 +18,7 @@ import {
   Col,
   Dropdown,
   ListGroup,
+  Modal,
   Row,
   Stack,
 } from "react-bootstrap";
@@ -34,15 +36,15 @@ const PremiumPage = () => {
     LocaleCurrency.getCurrency(user.data?.locale || "en-US")
   );
   const pricesResponse = useFetchSubscriptionPricesQuery({ currency });
-  const [dispatchBuySubscription, buySubscription] =
+  const [dispatchCreateSubscriptionCheckout, createSubscriptionCheckout] =
     useCreateSubscriptionCheckoutMutation();
   const [queryParams] = useSearchParams();
   const status = queryParams.get("status");
   const [priceId, setPriceId] = useState("");
 
-  if (buySubscription.isLoading) return <Loader />;
-  if (buySubscription.isSuccess && buySubscription.data) {
-    window.location.href = buySubscription.data.url;
+  if (createSubscriptionCheckout.isLoading) return <Loader />;
+  if (createSubscriptionCheckout.isSuccess && createSubscriptionCheckout.data) {
+    window.location.href = createSubscriptionCheckout.data.url;
   }
 
   const renderCurrenciesDropdown = () => {
@@ -152,16 +154,42 @@ const PremiumPage = () => {
       ]}
       title="Premium"
     >
-      {priceId === "" ? (
-        <Stack gap={2}>
+      <Stack gap={2}>
+        <div className="d-flex justify-content-end">
+          {renderCurrenciesDropdown()}
+        </div>
+        {renderPrices()}
+      </Stack>
+
+      <Modal
+        centered={true}
+        size="lg"
+        show={priceId !== ""}
+        onExit={() => setPriceId("")}
+      >
+        <Modal.Header>
+          <Modal.Title>Please select a Server</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <ServerSelect
+            onSelect={(serverId) =>
+              dispatchCreateSubscriptionCheckout({
+                priceId,
+                serverId,
+              })
+            }
+          />
+        </Modal.Body>
+
+        <Modal.Footer>
           <div className="d-flex justify-content-end">
-            {renderCurrenciesDropdown()}
+            <Button variant="secondary" onClick={() => setPriceId("")}>
+              Cancel
+            </Button>
           </div>
-          {renderPrices()}
-        </Stack>
-      ) : (
-        <Stack gap={2}>Select your server</Stack>
-      )}
+        </Modal.Footer>
+      </Modal>
     </Page>
   );
 };

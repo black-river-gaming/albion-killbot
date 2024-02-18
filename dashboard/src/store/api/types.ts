@@ -39,6 +39,7 @@ export type IFetchSubscriptionPricesResponse = {
 
 export type ICreateSubscriptionCheckoutRequest = {
   priceId: string;
+  serverId?: string;
 };
 export type ICreateSubscriptionCheckoutResponse = Session;
 
