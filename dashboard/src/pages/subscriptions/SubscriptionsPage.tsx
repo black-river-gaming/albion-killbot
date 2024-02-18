@@ -1,12 +1,11 @@
 import Loader from "components/Loader";
 import Page from "components/Page";
+import SubscriptionCard from "components/subscriptions/SubscriptionCard";
 import SubscriptionCardStripe from "components/subscriptions/SubscriptionCardStripe";
-import { getServerPictureUrl } from "helpers/discord";
 import { isSubscriptionActiveAndUnassiged } from "helpers/subscriptions";
-import { Button, Card, Col, Row, Stack } from "react-bootstrap";
+import { Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useFetchSubscriptionsQuery } from "store/api/subscriptions";
-import { ServerBase } from "types/server";
 
 const SubscriptionsPage = () => {
   const subscriptions = useFetchSubscriptionsQuery();
@@ -33,95 +32,12 @@ const SubscriptionsPage = () => {
       );
     }
 
-    const renderSubscriptionServer = (server: ServerBase) => {
-      if (typeof server === "string") return;
-
-      return (
-        <Stack
-          className="d-flex align-items-center"
-          direction="horizontal"
-          gap={2}
-        >
-          <img
-            src={getServerPictureUrl(server, true)}
-            style={{ width: 30, height: 30 }}
-            alt={server.name}
-          />
-          <div>{server.name}</div>
-        </Stack>
-      );
-    };
-
     return (
       <Stack direction="vertical" gap={2}>
         {subscriptions.data.map((subscription) => {
-          if (subscription.stripe) {
+          if (subscription.stripe)
             return <SubscriptionCardStripe subscription={subscription} />;
-          }
-
-          return (
-            <Card>
-              <Card.Header>
-                <h6 className="m-0">
-                  <Stack direction="horizontal" gap={2}>
-                    <div>#{subscription.id}</div>
-                  </Stack>
-                </h6>
-              </Card.Header>
-
-              <Card.Body>
-                <Row key={subscription.id} className="gy-2">
-                  <Col
-                    xs={12}
-                    xl={4}
-                    className="d-flex flex-column justify-content-center"
-                  >
-                    <div className="id-text">
-                      <span>#{subscription.id}</span>
-                    </div>
-                    <div className="active">
-                      <div className="expires">
-                        {subscription.expires === "never"
-                          ? `Activated`
-                          : `${
-                              new Date(subscription.expires).getTime() >
-                              new Date().getTime()
-                                ? `Active until `
-                                : `Expired at `
-                            } ${new Date(
-                              subscription.expires
-                            ).toLocaleString()}`}
-                      </div>
-                    </div>
-                  </Col>
-
-                  <Col
-                    xs={12}
-                    md={6}
-                    xl={4}
-                    className="d-flex align-items-center pt-xl-2"
-                  >
-                    {subscription.server &&
-                      renderSubscriptionServer(subscription.server)}
-                  </Col>
-
-                  <Col
-                    xs={12}
-                    md={6}
-                    xl={4}
-                    className="actions d-flex align-items-center justify-content-end"
-                  >
-                    <Button
-                      variant="primary"
-                      // onClick={() => setSubscriptionAssignId(subscription.id)}
-                    >
-                      {subscription.server ? "Transfer" : "Assign"}
-                    </Button>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          );
+          return <SubscriptionCard subscription={subscription} />;
         })}
       </Stack>
     );

@@ -39,6 +39,13 @@ export const isSubscriptionActiveAndUnassiged = (
   return isSubscriptionActive(subscription) && !subscription.server;
 };
 
+export const getSubscriptionStatus = (subscription: ISubscriptionBase) => {
+  if (subscription.expires === "never") return "free";
+  if (new Date(subscription.expires).getTime() > new Date().getTime())
+    return "active";
+  return "expired";
+};
+
 export const getSubscriptionPriceBanner = (price: SubscriptionPrice) => {
   if (price.metadata.banner) {
     const banner = banners.find((b) => b.name === price.metadata.banner);

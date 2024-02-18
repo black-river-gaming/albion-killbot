@@ -8,7 +8,11 @@ interface Props {
 const SubscriptionStatusBadge = ({ status }: Props) => {
   const bg =
     {
+      free: "success",
       active: "success",
+      expired: "danger",
+
+      // Stripe
       canceled: "danger",
       incomplete: "danger",
       incomplete_expired: "secondary",

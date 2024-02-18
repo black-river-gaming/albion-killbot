@@ -49,7 +49,7 @@ const SubscriptionCardStripe = ({ subscription }: Props) => {
             display: "grid",
             columnGap: "2rem",
             rowGap: "0.25rem",
-            gridTemplateColumns: "max-content auto",
+            gridTemplateColumns: "minmax(100px, max-content) auto",
             gridAutoRows: "1.75rem",
           }}
         >
