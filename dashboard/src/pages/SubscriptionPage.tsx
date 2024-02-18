@@ -2,7 +2,7 @@ import { faStripe } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
 import SubscriptionAssign from "components/subscriptions/SubscriptionAssign";
-import SubscriptionPriceCard from "components/subscriptions/SubscriptionPriceCard";
+import SubscriptionStripePriceCard from "components/subscriptions/SubscriptionStripePriceCard";
 import { useState } from "react";
 import { Button, Card, Col, Row, Stack } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
@@ -65,7 +65,7 @@ const SubscriptionPage = () => {
         {subscription?.stripe && subscription.stripe?.price && (
           <Row className="justify-content-center my-3">
             <Col lg={6}>
-              <SubscriptionPriceCard price={subscription.stripe?.price}>
+              <SubscriptionStripePriceCard price={subscription.stripe?.price}>
                 <Stack gap={2} className="p-2">
                   <div className="id-text">
                     <span>#{subscription.id}</span>
@@ -100,7 +100,7 @@ const SubscriptionPage = () => {
                     </Stack>
                   )}
                 </Stack>
-              </SubscriptionPriceCard>
+              </SubscriptionStripePriceCard>
             </Col>
           </Row>
         )}

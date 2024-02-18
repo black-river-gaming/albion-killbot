@@ -8,7 +8,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
 import SubscriptionAssign from "components/subscriptions/SubscriptionAssign";
-import SubscriptionPriceCard from "components/subscriptions/SubscriptionPriceCard";
+import SubscriptionStripePriceCard from "components/subscriptions/SubscriptionStripePriceCard";
 import LocaleCurrency from "locale-currency";
 import { useState } from "react";
 import {
@@ -85,7 +85,7 @@ const PremiumPage = () => {
       <Row className="gy-2">
         {pricesResponse.data?.prices.map((price: SubscriptionPrice, i) => (
           <Col key={price.id} sm={6} lg={4} xxl={3} className="gx-4">
-            <SubscriptionPriceCard price={price}>
+            <SubscriptionStripePriceCard price={price}>
               <>
                 <Card.Body className="pt-0">
                   <ListGroup>
@@ -126,7 +126,7 @@ const PremiumPage = () => {
                   </div>
                 </Card.Footer>
               </>
-            </SubscriptionPriceCard>
+            </SubscriptionStripePriceCard>
           </Col>
         ))}
       </Row>

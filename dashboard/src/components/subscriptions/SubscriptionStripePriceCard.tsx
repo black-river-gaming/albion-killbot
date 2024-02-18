@@ -8,12 +8,12 @@ interface SubscriptionPriceCardProps {
   children?: JSX.Element | string | number | false;
 }
 
-const SubscriptionPriceCard = ({
+const SubscriptionStripePriceCard = ({
   price,
   children,
 }: SubscriptionPriceCardProps) => {
   return (
-    <div>
+    <Card>
       <Card.Img variant="top" src={getSubscriptionPriceBanner(price)} />
       <Card.Body className="pb-0">
         <div className="d-flex justify-content-end align-items-baseline">
@@ -30,8 +30,8 @@ const SubscriptionPriceCard = ({
       </Card.Body>
       {children && <hr className="mx-2" />}
       {children}
-    </div>
+    </Card>
   );
 };
 
-export default SubscriptionPriceCard;
+export default SubscriptionStripePriceCard;
