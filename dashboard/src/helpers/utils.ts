@@ -1,7 +1,13 @@
 export const getLocalStorageItem = localStorage.getItem("token");
 
-export const capitalize = (text = "") =>
-  text.replace(/^\w/, (c) => c.toLocaleUpperCase());
+export const capitalize = (text = "", { splitWords = false } = {}) => {
+  if (!splitWords) return text.replace(/^\w/, (c) => c.toLocaleUpperCase());
+
+  const words = text.replace(/[-|_|.]/g, " ").split(" ");
+  return words
+    .map((word) => word.replace(/^\w/, (c) => c.toLocaleUpperCase()))
+    .join(" ");
+};
 
 export const getLocaleName = (lang: string) =>
   capitalize(new Intl.DisplayNames(lang, { type: "language" }).of(lang));

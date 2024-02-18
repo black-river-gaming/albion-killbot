@@ -1,8 +1,8 @@
 import { faStripe } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
-import SubscriptionAssign from "components/SubscriptionAssign";
-import SubscriptionPriceCard from "components/SubscriptionPriceCard";
+import SubscriptionAssign from "components/subscriptions/SubscriptionAssign";
+import SubscriptionPriceCard from "components/subscriptions/SubscriptionPriceCard";
 import { useState } from "react";
 import { Button, Card, Col, Row, Stack } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";

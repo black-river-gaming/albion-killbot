@@ -1,10 +1,12 @@
 import { faStripe } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
+import { getServerPictureUrl } from "helpers/discord";
 import { getCurrency } from "helpers/utils";
 import { Button, Card, Stack } from "react-bootstrap";
 import { useDoSubscriptionManageMutation } from "store/api/subscriptions";
 import { ISubscriptionExtended } from "types/subscription";
+import SubscriptionAssign from "./SubscriptionAssign";
 import SubscriptionStatusBadge from "./SubscriptionStatusBadge";
 
 interface Props {
@@ -15,35 +17,100 @@ const SubscriptionStripeCard = ({ subscription }: Props) => {
   const [dispatchManageSubscription, manageSubscription] =
     useDoSubscriptionManageMutation();
 
-  if (manageSubscription.isLoading) return <Loader />;
+  if (manageSubscription.isLoading) {
+    return (
+      <Loader width={500} height={115}>
+        <rect cx="0" cy="0" width="500" height="115" rx={3} ry={3} />
+      </Loader>
+    );
+  }
   if (manageSubscription.isSuccess && manageSubscription.data) {
     window.location.href = manageSubscription.data.url;
   }
 
   if (!subscription.stripe) return <div>Invalid subscription data</div>;
 
-  const { stripe } = subscription;
+  const { server, stripe } = subscription;
   const { price } = stripe;
 
   return (
     <Card>
       <Card.Header>
-        <Stack direction="horizontal" gap={2}>
-          <div>#{subscription.id}</div>
-          {stripe.status && <SubscriptionStatusBadge status={stripe.status} />}
-        </Stack>
+        <h6 className="m-0">
+          <Stack direction="horizontal" gap={2}>
+            <div>#{subscription.id}</div>
+          </Stack>
+        </h6>
       </Card.Header>
-      <Card.Body>
-        {price && (
-          <div className="price">
-            {getCurrency(price.price / 100, {
-              currency: price.currency,
-            })}
-            /{price.recurrence.count} {price.recurrence.interval}
-          </div>
-        )}
 
-        {stripe.customer && (
+      <Card.Body>
+        <div
+          style={{
+            display: "grid",
+            columnGap: "2rem",
+            rowGap: "0.25rem",
+            gridTemplateColumns: "max-content auto",
+            gridAutoRows: "1.75rem",
+          }}
+        >
+          <div className="text-muted">Status:</div>
+          <div>
+            <SubscriptionStatusBadge status={stripe.status} />
+          </div>
+
+          <div className="text-muted">Period End:</div>
+          <div>
+            {new Date(stripe.current_period_end * 1000).toLocaleDateString(
+              undefined,
+              {
+                day: "2-digit",
+                weekday: "long",
+                month: "short",
+                year: "numeric",
+              }
+            )}
+          </div>
+
+          <div className="text-muted">Amount:</div>
+          <Stack direction="horizontal" gap={1}>
+            <div>
+              {getCurrency(price.price / 100, {
+                currency: price.currency,
+              })}
+            </div>
+            <div>/</div>
+            <div>
+              {price.recurrence.count} {price.recurrence.interval}
+            </div>
+          </Stack>
+
+          {server && (
+            <>
+              <div className="text-muted">Server:</div>
+              <Stack
+                className="d-flex align-items-center"
+                direction="horizontal"
+                gap={2}
+              >
+                <img
+                  src={getServerPictureUrl(server, true)}
+                  style={{ width: 30, height: 30 }}
+                  alt={server.name}
+                />
+                <div>{server.name}</div>
+              </Stack>
+            </>
+          )}
+        </div>
+      </Card.Body>
+
+      <Card.Footer>
+        <Stack
+          aria-label="subscription-actions"
+          direction="horizontal"
+          gap={2}
+          className="justify-content-end"
+        >
           <Button
             variant="danger"
             onClick={() =>
@@ -56,8 +123,13 @@ const SubscriptionStripeCard = ({ subscription }: Props) => {
             <FontAwesomeIcon icon={faStripe} className="s-2" />
             <div>Manage</div>
           </Button>
-        )}
-      </Card.Body>
+
+          <SubscriptionAssign
+            currentServerId={server?.id}
+            subscriptionId={subscription.id}
+          />
+        </Stack>
+      </Card.Footer>
     </Card>
   );
 };

@@ -61,6 +61,14 @@ const SubscriptionsPage = () => {
 
           return (
             <Card>
+              <Card.Header>
+                <h6 className="m-0">
+                  <Stack direction="horizontal" gap={2}>
+                    <div>#{subscription.id}</div>
+                  </Stack>
+                </h6>
+              </Card.Header>
+
               <Card.Body>
                 <Row key={subscription.id} className="gy-2">
                   <Col

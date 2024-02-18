@@ -7,8 +7,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
-import SubscriptionAssign from "components/SubscriptionAssign";
-import SubscriptionPriceCard from "components/SubscriptionPriceCard";
+import SubscriptionAssign from "components/subscriptions/SubscriptionAssign";
+import SubscriptionPriceCard from "components/subscriptions/SubscriptionPriceCard";
 import LocaleCurrency from "locale-currency";
 import { useState } from "react";
 import {

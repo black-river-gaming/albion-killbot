@@ -13,7 +13,7 @@ const SubscriptionPriceCard = ({
   children,
 }: SubscriptionPriceCardProps) => {
   return (
-    <Card>
+    <div>
       <Card.Img variant="top" src={getSubscriptionPriceBanner(price)} />
       <Card.Body className="pb-0">
         <div className="d-flex justify-content-end align-items-baseline">
@@ -30,7 +30,7 @@ const SubscriptionPriceCard = ({
       </Card.Body>
       {children && <hr className="mx-2" />}
       {children}
-    </Card>
+    </div>
   );
 };
 
