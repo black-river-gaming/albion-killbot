@@ -35,6 +35,7 @@ export interface SubscriptionPrice {
   };
   metadata: {
     banner?: string;
+    tag?: string;
   };
 }
 

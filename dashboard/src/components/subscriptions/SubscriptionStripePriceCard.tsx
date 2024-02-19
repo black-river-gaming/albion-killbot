@@ -7,8 +7,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getSubscriptionPriceBanner } from "helpers/subscriptions";
-import { getCurrency } from "helpers/utils";
-import { Button, Card, ListGroup } from "react-bootstrap";
+import { capitalize, getCurrency } from "helpers/utils";
+import { Badge, Button, Card, ListGroup } from "react-bootstrap";
 import { SubscriptionPrice } from "types/subscription";
 
 interface SubscriptionPriceCardProps {
@@ -20,9 +20,38 @@ const SubscriptionStripePriceCard = ({
   price,
   onSelect,
 }: SubscriptionPriceCardProps) => {
+  const { metadata } = price;
+  const big = metadata.tag === "popular";
+
+  const tag: {
+    [key: string]: string;
+  } = {
+    "best-deal": "success",
+  };
+
   return (
-    <Card>
+    <Card
+      style={{
+        minWidth: 250,
+        transform: `scale(${big ? 1 : 0.97})`,
+      }}
+    >
       <Card.Img variant="top" src={getSubscriptionPriceBanner(price)} />
+      {metadata.tag && (
+        <Badge
+          bg={tag[metadata.tag] || "primary"}
+          style={{
+            position: "absolute",
+            top: "0.5rem",
+            right: -5,
+            borderTopRightRadius: 0,
+            borderBottomRightRadius: 0,
+            boxShadow: "1px 5px 10px #000000CC",
+          }}
+        >
+          {capitalize(metadata.tag, { splitWords: true })}
+        </Badge>
+      )}
       <Card.Body className="pb-0">
         <div className="d-flex justify-content-end align-items-baseline">
           <h4>
