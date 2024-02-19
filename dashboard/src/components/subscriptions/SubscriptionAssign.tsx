@@ -1,18 +1,20 @@
 import ServerSelect from "components/ServerSelect";
+import { isSubscriptionActive } from "helpers/subscriptions";
 import { useState } from "react";
 import { Alert, Button, Modal } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
 import { useDoSubscriptionAssignMutation } from "store/api/subscriptions";
+import { ISubscriptionBase } from "types/subscription";
 
 interface Props {
   currentServerId?: string;
-  subscriptionId?: string;
+  subscription: ISubscriptionBase;
   onClose?: () => void;
 }
 
 const SubscriptionAssign = ({
   currentServerId,
-  subscriptionId,
+  subscription,
   onClose,
 }: Props) => {
   const [show, setShow] = useState(false);
@@ -29,7 +31,11 @@ const SubscriptionAssign = ({
 
   return (
     <div>
-      <Button variant="primary" onClick={() => setShow(true)}>
+      <Button
+        variant="primary"
+        onClick={() => setShow(true)}
+        disabled={!isSubscriptionActive(subscription)}
+      >
         {currentServerId ? "Transfer" : "Assign"}
       </Button>
 
@@ -60,7 +66,7 @@ const SubscriptionAssign = ({
             onSelect={(serverId) => {
               dispatchAssignSubscription({
                 server: serverId,
-                subscriptionId: subscriptionId,
+                subscriptionId: subscription.id,
               });
             }}
             hiddenServerIds={currentServerId ? [currentServerId] : []}

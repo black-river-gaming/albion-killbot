@@ -53,5 +53,6 @@ export type IDoSubscriptionAssignResponse = ISubscriptionExtended;
 export type IDoSubscriptionManageRequest = {
   subscriptionId: string;
   customerId?: string;
+  serverId?: string;
 };
 export type IDoSubscriptionManageResponse = Session;

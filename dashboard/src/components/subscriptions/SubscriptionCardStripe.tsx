@@ -4,6 +4,7 @@ import Loader from "components/Loader";
 import { getServerPictureUrl } from "helpers/discord";
 import { getCurrency } from "helpers/utils";
 import { Button, Card, Stack } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { useDoSubscriptionManageMutation } from "store/api/subscriptions";
 import { ISubscriptionExtended } from "types/subscription";
 import SubscriptionAssign from "./SubscriptionAssign";
@@ -87,18 +88,20 @@ const SubscriptionCardStripe = ({ subscription }: Props) => {
           {server && (
             <>
               <div className="text-muted">Server:</div>
-              <Stack
-                className="d-flex align-items-center"
-                direction="horizontal"
-                gap={2}
-              >
-                <img
-                  src={getServerPictureUrl(server, true)}
-                  style={{ width: 30, height: 30 }}
-                  alt={server.name}
-                />
-                <div>{server.name}</div>
-              </Stack>
+              <Link to={`/dashboard/${server.id}/subscription`}>
+                <Stack
+                  className="d-flex align-items-center"
+                  direction="horizontal"
+                  gap={2}
+                >
+                  <img
+                    src={getServerPictureUrl(server, true)}
+                    style={{ width: 30, height: 30 }}
+                    alt={server.name}
+                  />
+                  <div>{server.name}</div>
+                </Stack>
+              </Link>
             </>
           )}
         </div>
@@ -117,6 +120,7 @@ const SubscriptionCardStripe = ({ subscription }: Props) => {
               dispatchManageSubscription({
                 subscriptionId: subscription.id,
                 customerId: stripe.customer,
+                serverId: subscription.server?.id,
               })
             }
           >
@@ -126,7 +130,7 @@ const SubscriptionCardStripe = ({ subscription }: Props) => {
 
           <SubscriptionAssign
             currentServerId={server?.id}
-            subscriptionId={subscription.id}
+            subscription={subscription}
           />
         </Stack>
       </Card.Footer>

@@ -71,11 +71,12 @@ const subscription = api.injectEndpoints({
       IDoSubscriptionManageResponse,
       IDoSubscriptionManageRequest
     >({
-      query: ({ subscriptionId, customerId }) => ({
+      query: ({ subscriptionId, customerId, serverId }) => ({
         url: `/subscriptions/${subscriptionId}/manage`,
         method: "POST",
         body: {
           customerId,
+          serverId,
         },
       }),
     }),

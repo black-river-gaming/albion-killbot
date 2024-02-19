@@ -5,11 +5,13 @@ import SubscriptionCard from "components/subscriptions/SubscriptionCard";
 import SubscriptionCardStripe from "components/subscriptions/SubscriptionCardStripe";
 import { isSubscriptionActiveAndUnassiged } from "helpers/subscriptions";
 import { Stack } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useFetchSubscriptionsQuery } from "store/api/subscriptions";
 import { ISubscriptionBase } from "types/subscription";
 
 const SubscriptionsPage = () => {
+  const [queryParams] = useSearchParams();
+
   const subscriptions = useFetchSubscriptionsQuery();
 
   if (subscriptions.isLoading) return <Loader />;
@@ -69,6 +71,12 @@ const SubscriptionsPage = () => {
     <Page
       title="My Subscriptions"
       alerts={[
+        {
+          show: queryParams.get("status") === "success",
+          variant: "success",
+          message:
+            "Thank for your purchase. Please confirm the subscription details and assign it to a server if needed.",
+        },
         {
           show: subscriptions.data?.some(isSubscriptionActiveAndUnassiged),
           variant: "success",

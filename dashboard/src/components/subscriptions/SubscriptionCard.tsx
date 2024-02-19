@@ -82,7 +82,7 @@ const SubscriptionCard = ({ subscription }: Props) => {
         >
           <SubscriptionAssign
             currentServerId={server?.id}
-            subscriptionId={subscription.id}
+            subscription={subscription}
           />
         </Stack>
       </Card.Footer>
