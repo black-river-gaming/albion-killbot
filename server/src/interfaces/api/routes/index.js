@@ -29,8 +29,10 @@ module.exports = {
  * @openapi
  * components:
  *   responses:
- *     Unauthorized:
- *       description: Unable to authenticate
+ *     MissingParameters:
+ *       description: Missing required parameters.
  *     ServerError:
- *       description: Internal server error
+ *       description: Internal server error.
+ *     Unauthorized:
+ *       description: Unable to authenticate.
  */

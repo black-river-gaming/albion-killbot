@@ -3,7 +3,7 @@ const logger = require("../../../helpers/logger");
 const limitsService = require("../../../services/limits");
 const serversService = require("../../../services/servers");
 const settingsService = require("../../../services/settings");
-const subscriptionService = require("../../../services/subscriptions");
+const subscriptionsService = require("../../../services/subscriptions");
 const trackService = require("../../../services/track");
 
 async function getServers(req, res) {
@@ -32,16 +32,34 @@ async function getServer(req, res) {
 
     server.channels = await serversService.getServerChannels(serverId);
     server.settings = await settingsService.getSettings(serverId);
-    server.subscription = await subscriptionService.getSubscriptionByServerId(serverId);
-    if (server.subscription && server.subscription.stripe) {
-      server.subscription.stripe = await subscriptionService.getStripeSubscription(server.subscription.stripe);
-    }
     server.limits = await limitsService.getLimits(serverId);
     server.track = await trackService.getTrack(serverId);
 
     return res.send(server);
   } catch (error) {
     logger.error(`Error while retrieving server data: ${error.message}`, { error });
+    return res.sendStatus(500);
+  }
+}
+
+async function getServerSubscription(req, res) {
+  const { serverId } = req.params;
+  if (!serverId) return res.sendStatus(422);
+
+  try {
+    const { accessToken } = req.session.discord;
+    if (!accessToken) return res.sendStatus(403);
+
+    const subscription = await subscriptionsService.getSubscriptionByServerId(serverId);
+    if (!subscription) return res.sendStatus(404);
+
+    if (subscription.stripe)
+      subscription.stripe = await subscriptionsService.getStripeSubscription(subscription.stripe);
+    if (subscription.server) subscription.server = await serversService.getServer(subscription.server);
+
+    return res.send(subscription);
+  } catch (error) {
+    logger.error(`Error while retrieving server subscription: ${error.message}`, { error });
     return res.sendStatus(500);
   }
 }
@@ -71,8 +89,9 @@ async function testServerSettings(req, res) {
 }
 
 module.exports = {
-  getServer,
   getServers,
+  getServer,
+  getServerSubscription,
   setServerSettings,
   setServerTrack,
   testServerSettings,
