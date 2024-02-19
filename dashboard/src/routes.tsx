@@ -12,8 +12,8 @@ import DeathsPage from "pages/dashboard/server/DeathsPage";
 import KillsPage from "pages/dashboard/server/KillsPage";
 import RankingsPage from "pages/dashboard/server/RankingsPage";
 import ServerPage from "pages/dashboard/server/ServerPage";
+import ServerSubscriptionPage from "pages/dashboard/server/ServerSubscriptionPage";
 import SettingsPage from "pages/dashboard/server/SettingsPage";
-import SubscriptionPage from "pages/dashboard/server/SubscriptionPage";
 import TrackPage from "pages/dashboard/server/TrackPage";
 import HomePage from "pages/home/HomePage";
 import PremiumPage from "pages/premium/PremiumPage";
@@ -36,7 +36,7 @@ const routes = createRoutesFromElements(
             <Route path="battles" element={<BattlesPage />} />
             <Route path="rankings" element={<RankingsPage />} />
             <Route path="track" element={<TrackPage />} />
-            <Route path="subscription" element={<SubscriptionPage />} />
+            <Route path="subscription" element={<ServerSubscriptionPage />} />
           </Route>
         </Route>
         <Route path="subscriptions">

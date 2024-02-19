@@ -1,27 +1,10 @@
-import { faStripe } from "@fortawesome/free-brands-svg-icons";
-import {
-  faCircleCheck,
-  faCircleQuestion,
-  faPeopleGroup,
-  faPerson,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
 import Page from "components/Page";
 import ServerSelect from "components/ServerSelect";
 import SubscriptionStripePriceCard from "components/subscriptions/SubscriptionStripePriceCard";
 import LocaleCurrency from "locale-currency";
 import { useState } from "react";
-import {
-  Button,
-  Card,
-  Col,
-  Dropdown,
-  ListGroup,
-  Modal,
-  Row,
-  Stack,
-} from "react-bootstrap";
+import { Button, Col, Dropdown, Modal, Row, Stack } from "react-bootstrap";
 import { Link, useSearchParams } from "react-router-dom";
 import { useFetchUserQuery } from "store/api";
 import {
@@ -84,46 +67,10 @@ const PremiumPage = () => {
       <Row className="gy-2">
         {pricesResponse.data?.prices.map((price: SubscriptionPrice, i) => (
           <Col key={price.id} sm={6} lg={4} xxl={3} className="gx-4">
-            <SubscriptionStripePriceCard price={price}>
-              <>
-                <Card.Body className="pt-0">
-                  <ListGroup>
-                    <ListGroup.Item className="d-flex align-items-center">
-                      <FontAwesomeIcon icon={faCircleCheck} className="s-1" />
-                      <span className="ps-2">No ads</span>
-                    </ListGroup.Item>
-                    <ListGroup.Item className="d-flex align-items-center">
-                      <FontAwesomeIcon icon={faPerson} className="s-1" />
-                      <span className="ps-2">10 Player slots</span>
-                    </ListGroup.Item>
-                    <ListGroup.Item className="d-flex align-items-center">
-                      <FontAwesomeIcon icon={faPeopleGroup} className="s-1" />
-                      <span className="ps-2">1 Guild slot</span>
-                    </ListGroup.Item>
-                    <ListGroup.Item className="d-flex align-items-center">
-                      <FontAwesomeIcon
-                        icon={faCircleQuestion}
-                        className="s-1"
-                      />
-                      <span className="ps-2">Premium support</span>
-                    </ListGroup.Item>
-                  </ListGroup>
-                </Card.Body>
-                <Card.Footer>
-                  <div className="d-flex justify-content-stretch">
-                    <Button
-                      variant="primary"
-                      style={{ width: "100%" }}
-                      className="d-flex align-items-center"
-                      onClick={() => setPriceId(price.id)}
-                    >
-                      <FontAwesomeIcon icon={faStripe} className="s-2" />
-                      <div>Checkout</div>
-                    </Button>
-                  </div>
-                </Card.Footer>
-              </>
-            </SubscriptionStripePriceCard>
+            <SubscriptionStripePriceCard
+              price={price}
+              onSelect={() => setPriceId(price.id)}
+            />
           </Col>
         ))}
       </Row>
