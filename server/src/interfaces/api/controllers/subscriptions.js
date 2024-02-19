@@ -85,6 +85,7 @@ async function assignSubscription(req, res) {
 
 async function manageSubscription(req, res) {
   const { subscriptionId } = req.params;
+  const { serverId } = req.body;
 
   if (!subscriptionId) return res.sendStatus(422);
 
@@ -99,7 +100,7 @@ async function manageSubscription(req, res) {
       customerId = stripeSubscription.customer;
     }
 
-    const session = await subscriptionsService.manageSubscription(customerId);
+    const session = await subscriptionsService.manageSubscription(customerId, { serverId });
     if (!session) return res.sendStatus(404);
 
     return res.send(session);

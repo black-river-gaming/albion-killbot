@@ -239,14 +239,14 @@ router.post(`/checkout`, subscriptionsController.createSubscriptionCheckout);
  * /subscriptions/{subscriptionId}/assign:
  *   post:
  *     tags: [Subscriptions]
- *     params:
+ *     parameters:
  *     - name: subscriptionId
  *       in: path
  *       required: true
  *       schema:
  *         type: string
- *         description: Stripe subscription id to fetch subscription.
- *         example: "sub_1LBsWDJDAy6upd5xtYnPln1B"
+ *         description: Subscription id.
+ *         example: "65d3d29d3cf1c9af00c2c3cb"
  *     summary: Assign a subscription to a server
  *     operationId: assignSubscription
  *     requestBody:
@@ -276,6 +276,14 @@ router.post(`/:subscriptionId/assign`, subscriptionsController.assignSubscriptio
  *     tags: [Subscriptions]
  *     summary: Get a link to manage your subscription in Stripe
  *     operationId: manageSubscription
+ *     parameters:
+ *     - name: subscriptionId
+ *       in: path
+ *       required: true
+ *       schema:
+ *         type: string
+ *         description: Subscription id.
+ *         example: "65d3d29d3cf1c9af00c2c3cb"
  *     requestBody:
  *       content:
  *         application/json:
@@ -287,6 +295,11 @@ router.post(`/:subscriptionId/assign`, subscriptionsController.assignSubscriptio
  *                 description: Stripe customer id to manage subscriptions
  *                 required: false
  *                 example: "cus_LtfrwncxjVCTTw"
+ *               serverId:
+ *                 type: string
+ *                 required: false
+ *                 description: Discord server id
+ *                 example: "738365346855256107"
  *     responses:
  *       200:
  *         description: Manage session created successfully

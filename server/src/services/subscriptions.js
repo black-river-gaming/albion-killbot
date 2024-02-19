@@ -36,8 +36,8 @@ async function getStripeSubscription(id) {
   return await stripe.getSubscription(id);
 }
 
-async function manageSubscription(customerId) {
-  return await stripe.createPortalSession(customerId);
+async function manageSubscription(customerId, { serverId } = {}) {
+  return await stripe.createPortalSession(customerId, { serverId });
 }
 
 /* Subscriptions */
