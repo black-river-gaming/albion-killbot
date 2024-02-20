@@ -1,19 +1,21 @@
 import { Limits } from "./limits";
 import { ServerBase } from "./server";
+import { User } from "./user";
 
 export interface ISubscriptionBase {
   readonly id: string;
-  owner: string;
   expires: string | "never";
   limits?: Limits;
 }
 
 export interface ISubscription extends ISubscriptionBase {
+  owner?: string;
   server?: string;
   stripe?: string;
 }
 
 export interface ISubscriptionExtended extends ISubscriptionBase {
+  owner?: User;
   server?: ServerBase;
   stripe?: {
     id: string;

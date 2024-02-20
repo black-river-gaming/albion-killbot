@@ -1,6 +1,6 @@
-import { getServerPictureUrl } from "helpers/discord";
+import { getServerPictureUrl, getUserPictureUrl } from "helpers/discord";
 import { getSubscriptionStatus } from "helpers/subscriptions";
-import { Card, Stack } from "react-bootstrap";
+import { Card, Image, Stack } from "react-bootstrap";
 import { ISubscriptionExtended } from "types/subscription";
 import SubscriptionAdmin from "./SubscriptionAdmin";
 import SubscriptionAssign from "./SubscriptionAssign";
@@ -11,7 +11,7 @@ interface Props {
 }
 
 const SubscriptionCard = ({ subscription }: Props) => {
-  const { server } = subscription;
+  const { owner, server } = subscription;
 
   return (
     <Card>
@@ -54,6 +54,25 @@ const SubscriptionCard = ({ subscription }: Props) => {
             </>
           )}
 
+          {owner && (
+            <>
+              <div className="text-muted">Owner:</div>
+              <Stack
+                className="d-flex align-items-center"
+                direction="horizontal"
+                gap={2}
+              >
+                <Image
+                  roundedCircle
+                  src={getUserPictureUrl(owner)}
+                  style={{ width: 30, height: 30 }}
+                  alt={owner.username}
+                />
+                <div>{owner.username || owner.id}</div>
+              </Stack>
+            </>
+          )}
+
           {server && (
             <>
               <div className="text-muted">Server:</div>
@@ -62,7 +81,8 @@ const SubscriptionCard = ({ subscription }: Props) => {
                 direction="horizontal"
                 gap={2}
               >
-                <img
+                <Image
+                  roundedCircle
                   src={getServerPictureUrl(server, true)}
                   style={{ width: 30, height: 30 }}
                   alt={server.name}

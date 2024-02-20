@@ -1,9 +1,9 @@
 import { faStripe } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/Loader";
-import { getServerPictureUrl } from "helpers/discord";
+import { getServerPictureUrl, getUserPictureUrl } from "helpers/discord";
 import { getCurrency } from "helpers/utils";
-import { Button, Card, Stack } from "react-bootstrap";
+import { Button, Card, Image, Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDoSubscriptionManageMutation } from "store/api/subscriptions";
 import { ISubscriptionExtended } from "types/subscription";
@@ -94,12 +94,13 @@ const SubscriptionCardStripe = ({ subscription }: Props) => {
                 direction="horizontal"
                 gap={2}
               >
-                {/* <img
-                  src={getUserPictureUrl({ id: owner })}
+                <Image
+                  roundedCircle
+                  src={getUserPictureUrl(owner)}
                   style={{ width: 30, height: 30 }}
-                  alt={owner}
-                /> */}
-                <div>{owner}</div>
+                  alt={owner.username}
+                />
+                <div>{owner.username || owner.id}</div>
               </Stack>
             </>
           )}
@@ -113,7 +114,8 @@ const SubscriptionCardStripe = ({ subscription }: Props) => {
                   direction="horizontal"
                   gap={2}
                 >
-                  <img
+                  <Image
+                    roundedCircle
                     src={getServerPictureUrl(server, true)}
                     style={{ width: 30, height: 30 }}
                     alt={server.name}
