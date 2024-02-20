@@ -1,8 +1,10 @@
 import Loader from "components/Loader";
 import Box from "components/common/Box";
 import NoData from "components/common/NoData";
+import SubscriptionCard from "components/subscriptions/SubscriptionCard";
+import SubscriptionCardStripe from "components/subscriptions/SubscriptionCardStripe";
 import SubscriptionStripePriceCard from "components/subscriptions/SubscriptionStripePriceCard";
-import { Card, Stack } from "react-bootstrap";
+import { Stack } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useFetchServerQuery } from "store/api";
 import {
@@ -63,7 +65,11 @@ const ServerSubscriptionPage = () => {
     );
   }
 
-  return <Card>{subscription.id}</Card>;
+  if (subscription.stripe) {
+    return <SubscriptionCardStripe subscription={subscription} />;
+  }
+
+  return <SubscriptionCard subscription={subscription} />;
 };
 
 export default ServerSubscriptionPage;

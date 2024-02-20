@@ -25,6 +25,12 @@ export type IDeleteSubscription = {
   id: string;
 };
 
+// Server
+export type IGetSubscriptionRequest = {
+  serverId: string;
+};
+export type IGetSubscriptionResponse = ISubscriptionExtended;
+
 // Subscriptions
 export type IFetchSubscriptionsRequest = void;
 export type IFetchSubscriptionsResponse = ISubscriptionExtended[];

@@ -5,10 +5,10 @@ interface Props {
   children?: ReactNode;
 }
 
-const Scrollable = ({ className = "p-2", children }: Props) => {
+const Box = ({ className = "p-2", children }: Props) => {
   return (
     <div
-      className={className}
+      className={"box " + className}
       style={{
         backgroundColor: "#FFFFFF11",
         borderRadius: "0.5rem",
@@ -19,4 +19,4 @@ const Scrollable = ({ className = "p-2", children }: Props) => {
   );
 };
 
-export default Scrollable;
+export default Box;
