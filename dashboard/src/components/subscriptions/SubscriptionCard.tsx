@@ -2,6 +2,7 @@ import { getServerPictureUrl } from "helpers/discord";
 import { getSubscriptionStatus } from "helpers/subscriptions";
 import { Card, Stack } from "react-bootstrap";
 import { ISubscriptionExtended } from "types/subscription";
+import SubscriptionAdmin from "./SubscriptionAdmin";
 import SubscriptionAssign from "./SubscriptionAssign";
 import SubscriptionStatusBadge from "./SubscriptionStatusBadge";
 
@@ -80,6 +81,8 @@ const SubscriptionCard = ({ subscription }: Props) => {
           gap={2}
           className="justify-content-end"
         >
+          <SubscriptionAdmin subscription={subscription} />
+
           <SubscriptionAssign
             currentServerId={server?.id}
             subscription={subscription}

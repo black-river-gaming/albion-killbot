@@ -7,6 +7,7 @@ import { Button, Card, Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDoSubscriptionManageMutation } from "store/api/subscriptions";
 import { ISubscriptionExtended } from "types/subscription";
+import SubscriptionAdmin from "./SubscriptionAdmin";
 import SubscriptionAssign from "./SubscriptionAssign";
 import SubscriptionStatusBadge from "./SubscriptionStatusBadge";
 
@@ -132,6 +133,8 @@ const SubscriptionCardStripe = ({ subscription }: Props) => {
           gap={2}
           className="justify-content-end"
         >
+          <SubscriptionAdmin subscription={subscription} />
+
           <Button
             variant="danger"
             onClick={() =>
