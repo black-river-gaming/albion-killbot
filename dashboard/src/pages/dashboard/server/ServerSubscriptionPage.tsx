@@ -26,9 +26,16 @@ const ServerSubscriptionPage = () => {
   }
 
   if (subscription.isLoading) return <Loader />;
-  if (!subscription.data) return <NoData />;
+  const isNotFoundError =
+    subscription.error &&
+    "status" in subscription.error &&
+    subscription.error.status === "PARSING_ERROR" &&
+    subscription.error.originalStatus === 404;
+  if (subscription.error && !isNotFoundError) {
+    return <NoData />;
+  }
 
-  if (!subscription) {
+  if (!subscription.data) {
     return (
       <div>
         {prices.isLoading && <Loader />}
