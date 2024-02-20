@@ -31,7 +31,7 @@ const SubscriptionCardStripe = ({ subscription }: Props) => {
 
   if (!subscription.stripe) return <div>Invalid subscription data</div>;
 
-  const { server, stripe } = subscription;
+  const { owner, server, stripe } = subscription;
   const { price } = stripe;
 
   return (
@@ -84,6 +84,24 @@ const SubscriptionCardStripe = ({ subscription }: Props) => {
               {price.recurrence.count} {price.recurrence.interval}
             </div>
           </Stack>
+
+          {owner && (
+            <>
+              <div className="text-muted">Owner:</div>
+              <Stack
+                className="d-flex align-items-center"
+                direction="horizontal"
+                gap={2}
+              >
+                {/* <img
+                  src={getUserPictureUrl({ id: owner })}
+                  style={{ width: 30, height: 30 }}
+                  alt={owner}
+                /> */}
+                <div>{owner}</div>
+              </Stack>
+            </>
+          )}
 
           {server && (
             <>

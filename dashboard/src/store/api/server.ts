@@ -8,7 +8,7 @@ const server = api.injectEndpoints({
       IGetSubscriptionRequest
     >({
       query: ({ serverId }) => ({
-        url: `/servers/${serverId}/prices`,
+        url: `/servers/${serverId}/subscription`,
       }),
       providesTags: (subscription) => [
         { type: "Subscription", id: subscription?.id },
@@ -17,6 +17,6 @@ const server = api.injectEndpoints({
   }),
 });
 
-export const {} = server;
+export const { useGetServerSubscriptionQuery } = server;
 
 export default server;

@@ -6,7 +6,7 @@ import SubscriptionCardStripe from "components/subscriptions/SubscriptionCardStr
 import SubscriptionStripePriceCard from "components/subscriptions/SubscriptionStripePriceCard";
 import { Stack } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { useFetchServerQuery } from "store/api";
+import { useGetServerSubscriptionQuery } from "store/api/server";
 import {
   useCreateSubscriptionCheckoutMutation,
   useFetchSubscriptionPricesQuery,
@@ -14,7 +14,7 @@ import {
 
 const ServerSubscriptionPage = () => {
   const { serverId = "" } = useParams();
-  const server = useFetchServerQuery(serverId);
+  const subscription = useGetServerSubscriptionQuery({ serverId });
   const prices = useFetchSubscriptionPricesQuery({ currency: "usd" });
 
   const [dispatchCreateSubscriptionCheckout, createSubscriptionCheckout] =
@@ -25,8 +25,8 @@ const ServerSubscriptionPage = () => {
     window.location.href = createSubscriptionCheckout.data.url;
   }
 
-  if (!server.data) return <NoData />;
-  const { subscription } = server.data;
+  if (subscription.isLoading) return <Loader />;
+  if (!subscription.data) return <NoData />;
 
   if (!subscription) {
     return (
@@ -65,11 +65,11 @@ const ServerSubscriptionPage = () => {
     );
   }
 
-  if (subscription.stripe) {
-    return <SubscriptionCardStripe subscription={subscription} />;
+  if (subscription.data.stripe) {
+    return <SubscriptionCardStripe subscription={subscription.data} />;
   }
 
-  return <SubscriptionCard subscription={subscription} />;
+  return <SubscriptionCard subscription={subscription.data} />;
 };
 
 export default ServerSubscriptionPage;
