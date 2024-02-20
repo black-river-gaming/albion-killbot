@@ -1,16 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import {
-  IConstants,
-  ISearchResults,
-  IServer,
-  ISettings,
-  ISubscriptionExtended,
-  ITrackList,
-  ServerPartial,
-  Session,
-  SubscriptionPricesResponse,
-  User,
-} from "types";
+import { IConstants } from "types/constants";
+import { IServer, ServerPartial } from "types/server";
+import { ISettings } from "types/settings";
+import { ISearchResults, ITrackList } from "types/track";
+import { User } from "types/user";
 
 const { REACT_APP_API_URL = "/api" } = process.env;
 
@@ -39,46 +32,6 @@ const api = createApi({
       }),
       invalidatesTags: ["User"],
     }),
-    assignSubscription: builder.mutation<
-      ISubscriptionExtended,
-      { server: string; checkoutId?: string; subscriptionId?: string }
-    >({
-      query: (body) => ({
-        url: `/subscriptions/assign`,
-        method: "POST",
-        body,
-      }),
-      invalidatesTags: ["Server", "Subscription"],
-    }),
-    buySubscription: builder.mutation<Session, string>({
-      query: (priceId) => ({
-        url: `/subscriptions/checkout`,
-        method: "POST",
-        body: {
-          priceId,
-        },
-      }),
-    }),
-    manageSubscription: builder.mutation<Session, string>({
-      query: (customerId) => ({
-        url: `/subscriptions/manage`,
-        method: "POST",
-        body: {
-          customerId,
-        },
-      }),
-    }),
-    fetchPrices: builder.query<
-      SubscriptionPricesResponse,
-      { currency: string }
-    >({
-      query: ({ currency }) => ({
-        url: `/subscriptions/prices`,
-        params: {
-          currency,
-        },
-      }),
-    }),
     fetchUser: builder.query<User, void>({
       query: () => `/users/me`,
       providesTags: ["User"],
@@ -90,10 +43,6 @@ const api = createApi({
     fetchServer: builder.query<IServer, string>({
       query: (serverId) => `/servers/${serverId}`,
       providesTags: ["Server"],
-    }),
-    fetchSubscriptions: builder.query<ISubscriptionExtended[], void>({
-      query: () => `/subscriptions`,
-      providesTags: ["Subscription"],
     }),
     search: builder.query<ISearchResults, { server: string; query: string }>({
       query: ({ server, query }) => ({
@@ -144,20 +93,15 @@ const api = createApi({
 });
 
 export const {
-  useAssignSubscriptionMutation,
   useAuthMutation,
-  useBuySubscriptionMutation,
   useFetchConstantsQuery,
-  useFetchPricesQuery,
   useFetchServerQuery,
   useFetchServersQuery,
-  useFetchSubscriptionsQuery,
   useFetchUserQuery,
   useLazyFetchServerQuery,
   useLazyFetchUserQuery,
   useLazySearchQuery,
   useLogoutMutation,
-  useManageSubscriptionMutation,
   useSearchQuery,
   useTestNotificationSettingsMutation,
   useUpdateSettingsMutation,

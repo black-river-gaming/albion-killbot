@@ -5,6 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import admin from "./api/admin";
 import api from "./api/index";
+import subscription from "./api/subscriptions";
 
 interface ToastMsg {
   id: string;
@@ -36,18 +37,6 @@ export const toastSlice = createSlice({
   },
 
   extraReducers: (builder) => {
-    builder.addMatcher(
-      api.endpoints.assignSubscription.matchRejected,
-      (state, action) => {
-        if (!isRejectedWithValue(action)) return;
-        state.push({
-          id: uid(),
-          theme: "danger",
-          message: "Failed to assign subscription. Please try again later.",
-        });
-      }
-    );
-
     builder.addMatcher(
       api.endpoints.fetchServers.matchRejected,
       (state, action) => {
@@ -194,6 +183,28 @@ export const toastSlice = createSlice({
           theme: "danger",
           message:
             "Failed to delete server subscription. Please try again later.",
+        });
+      }
+    );
+
+    builder.addMatcher(
+      subscription.endpoints.doSubscriptionAssign.matchFulfilled,
+      (state) => {
+        state.push({
+          id: uid(),
+          theme: "success",
+          message: "Subscription assigned succesfully.",
+        });
+      }
+    );
+    builder.addMatcher(
+      subscription.endpoints.doSubscriptionAssign.matchRejected,
+      (state, action) => {
+        if (!isRejectedWithValue(action)) return;
+        state.push({
+          id: uid(),
+          theme: "danger",
+          message: "Failed to assign subscription. Please try again later.",
         });
       }
     );

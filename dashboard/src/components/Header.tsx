@@ -3,6 +3,7 @@ import {
   faCrown,
   faRightFromBracket,
   faRightToBracket,
+  faStar,
   faTableColumns,
   faUserGear,
 } from "@fortawesome/free-solid-svg-icons";
@@ -42,63 +43,101 @@ const Header = () => {
     }
   };
 
-  const renderDesktopNav = ({ data, isFetching }: typeof user) => (
-    <Nav className="d-none d-lg-flex">
-      <Nav.Link href={DISCORD_SERVER_URL} target="_blank" rel="noreferrer">
-        <Stack direction="horizontal" gap={2} className="py-2">
-          <FontAwesomeIcon icon={faDiscord} />
-          <div>Join Server</div>
-        </Stack>
-      </Nav.Link>
-      <Nav.Link as={NavLink} eventKey="premium" to="/premium">
-        <Stack direction="horizontal" gap={2} className="py-2">
-          <FontAwesomeIcon icon={faCrown} />
-          <div>Premium</div>
-        </Stack>
-      </Nav.Link>
+  const renderDesktopNav = ({ data, isFetching }: typeof user) => {
+    const ICON_WIDTH = 25;
 
-      {isFetching ? (
-        <ContentLoader
-          className="loader"
-          viewBox="0 0 325 100"
-          height={50}
-          foregroundColor={theme.secondary}
-        >
-          <rect x="10" y="40" rx="3" ry="3" width="180" height="30" />
-          <circle cx="275" cy="50" r="50" />
-        </ContentLoader>
-      ) : data ? (
-        <Dropdown>
-          <Dropdown.Toggle as={BsNavLink} id="dropdown-header">
-            <Stack direction="horizontal" gap={2} className="py-2">
-              <div>{data.username}</div>
-              <Image
-                className="user-avatar"
-                roundedCircle
-                src={getUserPictureUrl(data)}
-              />
-            </Stack>
-          </Dropdown.Toggle>
+    return (
+      <Nav className="d-none d-lg-flex">
+        <Nav.Link href={DISCORD_SERVER_URL} target="_blank" rel="noreferrer">
+          <Stack direction="horizontal" gap={2} className="py-2">
+            <FontAwesomeIcon icon={faDiscord} />
+            <div>Join Server</div>
+          </Stack>
+        </Nav.Link>
+        <Nav.Link as={NavLink} eventKey="premium" to="/premium">
+          <Stack direction="horizontal" gap={2} className="py-2">
+            <FontAwesomeIcon icon={faCrown} />
+            <div>Premium</div>
+          </Stack>
+        </Nav.Link>
 
-          <Dropdown.Menu variant="dark" align="end">
-            {data?.admin && (
-              <Dropdown.Item as={NavLink} to="/admin">
-                Admin
+        {isFetching ? (
+          <ContentLoader
+            className="loader"
+            viewBox="0 0 325 100"
+            height={50}
+            foregroundColor={theme.secondary}
+          >
+            <rect x="10" y="40" rx="3" ry="3" width="180" height="30" />
+            <circle cx="275" cy="50" r="50" />
+          </ContentLoader>
+        ) : data ? (
+          <Dropdown>
+            <Dropdown.Toggle as={BsNavLink} id="dropdown-header">
+              <Stack direction="horizontal" gap={2} className="py-2">
+                <div>{data.username}</div>
+                <Image
+                  className="user-avatar"
+                  roundedCircle
+                  src={getUserPictureUrl(data)}
+                />
+              </Stack>
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu variant="dark" align="end">
+              {data?.admin && (
+                <Dropdown.Item as={NavLink} to="/admin">
+                  <Stack
+                    direction="horizontal"
+                    gap={2}
+                    className="align-items-center"
+                  >
+                    <FontAwesomeIcon icon={faUserGear} width={ICON_WIDTH} />
+                    <div>Admin</div>
+                  </Stack>
+                </Dropdown.Item>
+              )}
+              <Dropdown.Item as={NavLink} to="/dashboard">
+                <Stack
+                  direction="horizontal"
+                  gap={2}
+                  className="align-items-center"
+                >
+                  <FontAwesomeIcon icon={faTableColumns} width={ICON_WIDTH} />
+                  <div>My Servers</div>
+                </Stack>
               </Dropdown.Item>
-            )}
-            <Dropdown.Item as={NavLink} to="/dashboard">
-              Dashboard
-            </Dropdown.Item>
-            <Dropdown.Item as="a" onClick={doLogout} href="#">
-              Logout
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      ) : (
-        <Button href={DISCORD_OAUTH_URL}>Login</Button>
-      )}
-    </Nav>
-  );
+              <Dropdown.Item as={NavLink} to="/subscriptions">
+                <Stack
+                  direction="horizontal"
+                  gap={2}
+                  className="align-items-center"
+                >
+                  <FontAwesomeIcon icon={faStar} width={ICON_WIDTH} />
+                  <div>My Subscriptions</div>
+                </Stack>
+              </Dropdown.Item>
+              <Dropdown.Item as="a" onClick={doLogout} href="#">
+                <Stack
+                  direction="horizontal"
+                  gap={2}
+                  className="align-items-center text-danger"
+                >
+                  <FontAwesomeIcon
+                    icon={faRightFromBracket}
+                    width={ICON_WIDTH}
+                  />
+                  <div>Logout</div>
+                </Stack>
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        ) : (
+          <Button href={DISCORD_OAUTH_URL}>Login</Button>
+        )}
+      </Nav>
+    );
+  };
 
   const renderMobileNav = ({ data, isFetching }: typeof user) => (
     <Nav className="d-flex d-lg-none">

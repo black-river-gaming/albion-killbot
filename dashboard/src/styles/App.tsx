@@ -37,4 +37,10 @@ export default styled.div`
       }
     }
   }
+
+  .box {
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
 `;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Pagination, Stack } from "react-bootstrap";
-import { ISubscription } from "types";
+import { ISubscription } from "types/subscription";
 import SubscriptionListItem from "./SubscriptionListItem";
 
 interface SubscriptionListProps {

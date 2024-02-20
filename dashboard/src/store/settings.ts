@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ISettings } from "types";
+import { ISettings } from "types/settings";
 
 const initialState: ISettings = {
   server: "",

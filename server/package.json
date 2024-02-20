@@ -53,6 +53,7 @@
   "devDependencies": {
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^8.5.0",
+    "kill-port": "^2.0.1",
     "nodemon": "^2.0.19",
     "prettier": "^2.6.2"
   }

@@ -1,4 +1,5 @@
-import { ISubscription, ISubscriptionExtended, ServerPartial } from "types";
+import { ServerPartial } from "types/server";
+import { ISubscription, ISubscriptionExtended } from "types/subscription";
 import api from "./index";
 import {
   ICreateSubscription,

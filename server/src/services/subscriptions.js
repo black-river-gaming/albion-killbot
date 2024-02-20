@@ -24,8 +24,8 @@ async function fetchSubscriptionPrices(currency) {
   return await stripe.getPrices({ currency });
 }
 
-async function buySubscription(priceId, owner) {
-  return await stripe.createCheckoutSession(priceId, owner);
+async function createSubscriptionCheckout(priceId, owner, { server } = {}) {
+  return await stripe.createCheckoutSession(priceId, owner, { server });
 }
 
 async function getBuySubscription(checkoutId) {
@@ -36,8 +36,8 @@ async function getStripeSubscription(id) {
   return await stripe.getSubscription(id);
 }
 
-async function manageSubscription(customerId) {
-  return await stripe.createPortalSession(customerId);
+async function manageSubscription(customerId, { serverId } = {}) {
+  return await stripe.createPortalSession(customerId, { serverId });
 }
 
 /* Subscriptions */
@@ -213,7 +213,7 @@ module.exports = {
   subscriptionEvents,
   addSubscription,
   assignSubscription,
-  buySubscription,
+  createSubscriptionCheckout,
   fetchAllSubscriptions,
   fetchSubscriptionPrices,
   fetchSubscriptions,

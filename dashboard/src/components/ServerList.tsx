@@ -8,7 +8,7 @@ import {
   setSubscriptionStatus,
   setSubscriptionStripe,
 } from "store/admin";
-import { ServerPartial } from "types";
+import { ServerPartial } from "types/server";
 import LeaveServer from "./LeaveServer";
 import ServerCard from "./ServerCard";
 

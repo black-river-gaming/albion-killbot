@@ -2,6 +2,7 @@ const config = require("config");
 const logger = require("../../../helpers/logger");
 const subscriptionsService = require("../../../services/subscriptions");
 const serversService = require("../../../services/servers");
+const usersService = require("../../../services/users");
 
 // TODO: Get this list from stripe
 const SUPPORTED_CURRENCIES = ["usd", "brl"];
@@ -15,6 +16,7 @@ async function getSubscriptions(req, res) {
       if (subscription.stripe)
         subscription.stripe = await subscriptionsService.getStripeSubscription(subscription.stripe);
       if (subscription.server) subscription.server = await serversService.getServer(subscription.server);
+      if (subscription.owner) subscription.owner = await usersService.getUser(subscription.owner);
     }
 
     return res.send(subscriptions);
@@ -40,22 +42,44 @@ async function getSubscriptionsPrices(req, res) {
   }
 }
 
-async function assignSubscription(req, res) {
+async function createSubscriptionCheckout(req, res) {
+  const { priceId, server } = req.body;
+
+  if (!priceId) return res.sendStatus(422);
+
   try {
-    const { server, checkoutId, subscriptionId } = req.body;
-    if (!server || (!checkoutId && !subscriptionId)) return res.sendStatus(422);
-
-    const subscription = subscriptionId
-      ? await subscriptionsService.getSubscriptionById(subscriptionId)
-      : await subscriptionsService.getSubscriptionByCheckoutId(checkoutId);
-    if (!subscription) return res.sendStatus(404);
-
     const { user } = req.session.discord;
+
+    const checkout = await subscriptionsService.createSubscriptionCheckout(priceId, user.id, { server });
+    if (!checkout) return res.sendStatus(404);
+
+    return res.status(201).json(checkout);
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+}
+
+async function assignSubscription(req, res) {
+  const { subscriptionId } = req.params;
+  const { server } = req.body;
+  const { user } = req.session.discord;
+
+  if (!subscriptionId) return res.sendStatus(422);
+
+  try {
+    const subscription = await subscriptionsService.getSubscriptionById(subscriptionId);
+    if (!subscription) return res.sendStatus(404);
     if (subscription.owner !== user.id) return res.sendStatus(403);
 
     await subscriptionsService.unassignSubscriptionsByServerId(server);
-    await subscriptionsService.assignSubscription(subscription.id, server);
-    subscription.server = server;
+    if (server) {
+      await subscriptionsService.assignSubscription(subscription.id, server);
+      subscription.server = server;
+    }
+
+    if (subscription.stripe)
+      subscription.stripe = await subscriptionsService.getStripeSubscription(subscription.stripe);
+    if (subscription.owner) subscription.owner = await usersService.getUser(subscription.owner);
 
     return res.send(subscription);
   } catch (error) {
@@ -64,35 +88,26 @@ async function assignSubscription(req, res) {
   }
 }
 
-async function buySubscription(req, res) {
-  try {
-    const { priceId } = req.body;
-    const { user } = req.session.discord;
-
-    const checkout = await subscriptionsService.buySubscription(priceId, user.id);
-    if (!checkout) return res.sendStatus(404);
-
-    return res.send(checkout);
-  } catch (error) {
-    return res.sendStatus(500);
-  }
-}
-
-async function getBuySubscription(req, res) {
-  try {
-    const { checkoutId } = req.params;
-    const checkout = await subscriptionsService.getBuySubscription(checkoutId);
-    return res.send(checkout);
-  } catch (error) {
-    return res.sendStatus(500);
-  }
-}
-
 async function manageSubscription(req, res) {
-  try {
-    const { customerId } = req.body;
+  const { subscriptionId } = req.params;
+  const { serverId } = req.body;
+  const { user } = req.session.discord;
 
-    const session = await subscriptionsService.manageSubscription(customerId);
+  if (!subscriptionId) return res.sendStatus(422);
+
+  try {
+    const subscription = await subscriptionsService.getSubscriptionById(subscriptionId);
+    if (!subscription || !subscription.stripe) return res.sendStatus(404);
+    if (subscription.owner !== user.id) return res.sendStatus(403);
+
+    let customerId = req.body.customerId;
+    if (!customerId) {
+      const stripeSubscription = await subscriptionsService.getStripeSubscription(subscription.stripe);
+      if (!stripeSubscription) return res.sendStatus(404);
+      customerId = stripeSubscription.customer;
+    }
+
+    const session = await subscriptionsService.manageSubscription(customerId, { serverId });
     if (!session) return res.sendStatus(404);
 
     return res.send(session);
@@ -125,8 +140,7 @@ subscriptionsService.subscriptionEvents.on("remove", (subscription) => {
 
 module.exports = {
   assignSubscription,
-  buySubscription,
-  getBuySubscription,
+  createSubscriptionCheckout,
   getSubscriptions,
   getSubscriptionsPrices,
   manageSubscription,

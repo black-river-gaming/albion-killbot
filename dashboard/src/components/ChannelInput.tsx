@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CHANNEL_TYPES } from "helpers/discord";
 import { useEffect, useState } from "react";
 import { Form, FormControlProps } from "react-bootstrap";
-import { IChannel } from "types";
+import { IChannel } from "types/server";
 import Paper from "./Paper";
 import StyledChannelInput from "./styles/ChannelInput";
 

@@ -1,4 +1,5 @@
-import { ServerBase, User } from "types";
+import { ServerBase } from "types/server";
+import { User } from "types/user";
 
 const { REACT_APP_DISCORD_CLIENT_ID, REACT_APP_DISCORD_REDIRECT_URI = "" } =
   process.env;
