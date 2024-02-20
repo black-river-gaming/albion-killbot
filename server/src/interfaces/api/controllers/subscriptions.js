@@ -2,6 +2,7 @@ const config = require("config");
 const logger = require("../../../helpers/logger");
 const subscriptionsService = require("../../../services/subscriptions");
 const serversService = require("../../../services/servers");
+const usersService = require("../../../services/users");
 
 // TODO: Get this list from stripe
 const SUPPORTED_CURRENCIES = ["usd", "brl"];
@@ -15,6 +16,7 @@ async function getSubscriptions(req, res) {
       if (subscription.stripe)
         subscription.stripe = await subscriptionsService.getStripeSubscription(subscription.stripe);
       if (subscription.server) subscription.server = await serversService.getServer(subscription.server);
+      if (subscription.owner) subscription.owner = await usersService.getUser(subscription.owner);
     }
 
     return res.send(subscriptions);
@@ -75,6 +77,10 @@ async function assignSubscription(req, res) {
       await subscriptionsService.assignSubscription(subscription.id, server);
       subscription.server = server;
     }
+
+    if (subscription.stripe)
+      subscription.stripe = await subscriptionsService.getStripeSubscription(subscription.stripe);
+    if (subscription.owner) subscription.owner = await usersService.getUser(subscription.owner);
 
     return res.send(subscription);
   } catch (error) {

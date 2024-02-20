@@ -18,10 +18,6 @@ router.use(authenticated);
  *           description: Subscription id
  *           readOnly: true
  *           example: "62a9afaa11269b2bc73c54e4"
- *         owner:
- *           type: string
- *           description: Discord user id that owns the subscription
- *           example: "155377266568855552"
  *         expires:
  *           description: Expiration date for a given subscription
  *           oneOf:
@@ -38,6 +34,10 @@ router.use(authenticated);
  *         - $ref: '#components/schemas/SubscriptionBase'
  *         - type: object
  *           properties:
+ *             owner:
+ *               type: string
+ *               description: Discord user id that owns the subscription
+ *               example: "155377266568855552"
  *             server:
  *               type: string
  *               description: Discord server id
@@ -52,6 +52,8 @@ router.use(authenticated);
  *         - $ref: '#components/schemas/SubscriptionBase'
  *         - type: object
  *           properties:
+ *             owner:
+ *               $ref: '#/components/schemas/User'
  *             server:
  *               $ref: '#/components/schemas/ServerBase'
  *             stripe:

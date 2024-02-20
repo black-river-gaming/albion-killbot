@@ -15,11 +15,24 @@ async function refreshToken(refreshToken) {
   return await discordApiClient.refreshToken(refreshToken);
 }
 
-async function getUser(accessToken) {
+async function getCurrentUser(accessToken) {
   return memoize(
     `discord.users.${accessToken}`,
     async () => {
       const user = await discordApiClient.getCurrentUser(`Bearer ${accessToken}`);
+      return discordHelper.transformUser(user);
+    },
+    {
+      timeout: DAY,
+    },
+  );
+}
+
+async function getUser(userId) {
+  return memoize(
+    `discord.users.${userId}`,
+    async () => {
+      const user = await discordApiClient.getUser(`Bot ${DISCORD_TOKEN}`, userId);
       return discordHelper.transformUser(user);
     },
     {
@@ -147,6 +160,7 @@ module.exports = {
   getGuild,
   getGuildChannels,
   getToken,
+  getCurrentUser,
   getUser,
   getUserGuilds,
   leaveGuild,

@@ -5,6 +5,7 @@ const serversService = require("../../../services/servers");
 const settingsService = require("../../../services/settings");
 const subscriptionsService = require("../../../services/subscriptions");
 const trackService = require("../../../services/track");
+const usersService = require("../../../services/users");
 
 async function getServers(req, res) {
   try {
@@ -56,6 +57,8 @@ async function getServerSubscription(req, res) {
     if (subscription.stripe)
       subscription.stripe = await subscriptionsService.getStripeSubscription(subscription.stripe);
     if (subscription.server) subscription.server = await serversService.getServer(subscription.server);
+
+    if (subscription.owner) subscription.owner = await usersService.getUser(subscription.owner);
 
     return res.send(subscription);
   } catch (error) {
