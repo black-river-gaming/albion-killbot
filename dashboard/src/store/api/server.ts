@@ -10,7 +10,8 @@ const server = api.injectEndpoints({
       query: ({ serverId }) => ({
         url: `/servers/${serverId}/subscription`,
       }),
-      providesTags: (subscription) => [
+      providesTags: (subscription, error, { serverId }) => [
+        { type: "Server", id: serverId },
         { type: "Subscription", id: subscription?.id },
       ],
     }),

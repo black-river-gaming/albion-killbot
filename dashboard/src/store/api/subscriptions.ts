@@ -60,10 +60,10 @@ const subscription = api.injectEndpoints({
           server,
         },
       }),
-      invalidatesTags: (subscription) => [
-        { type: "Server", id: subscription?.server?.id },
+      invalidatesTags: (response, error, { subscriptionId, server }) => [
         { type: "Subscription", id: "LIST" },
-        { type: "Subscription", id: subscription?.id },
+        { type: "Subscription", id: subscriptionId },
+        { type: "Server", id: server },
       ],
     }),
 
