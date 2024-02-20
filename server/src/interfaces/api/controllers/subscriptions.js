@@ -62,14 +62,13 @@ async function createSubscriptionCheckout(req, res) {
 async function assignSubscription(req, res) {
   const { subscriptionId } = req.params;
   const { server } = req.body;
+  const { user } = req.session.discord;
 
   if (!subscriptionId) return res.sendStatus(422);
 
   try {
     const subscription = await subscriptionsService.getSubscriptionById(subscriptionId);
     if (!subscription) return res.sendStatus(404);
-
-    const { user } = req.session.discord;
     if (subscription.owner !== user.id) return res.sendStatus(403);
 
     await subscriptionsService.unassignSubscriptionsByServerId(server);
@@ -92,12 +91,14 @@ async function assignSubscription(req, res) {
 async function manageSubscription(req, res) {
   const { subscriptionId } = req.params;
   const { serverId } = req.body;
+  const { user } = req.session.discord;
 
   if (!subscriptionId) return res.sendStatus(422);
 
   try {
     const subscription = await subscriptionsService.getSubscriptionById(subscriptionId);
     if (!subscription || !subscription.stripe) return res.sendStatus(404);
+    if (subscription.owner !== user.id) return res.sendStatus(403);
 
     let customerId = req.body.customerId;
     if (!customerId) {
