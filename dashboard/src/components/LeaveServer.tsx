@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useDoLeaveServerMutation } from "store/api/admin";
-import { ServerBase } from "types";
+import { ServerBase } from "types/server";
 
 interface LeaveServerProps {
   server?: ServerBase;

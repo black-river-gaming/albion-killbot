@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useDeleteAdminSubscriptionMutation } from "store/api/admin";
-import { ISubscriptionBase } from "types";
+import { ISubscriptionBase } from "types/subscription";
 
 interface SubscriptionDeleteProps {
   subscription: ISubscriptionBase;

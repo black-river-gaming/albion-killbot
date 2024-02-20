@@ -18,10 +18,6 @@ router.use(authenticated);
  *           description: Subscription id
  *           readOnly: true
  *           example: "62a9afaa11269b2bc73c54e4"
- *         owner:
- *           type: string
- *           description: Discord user id that owns the subscription
- *           example: "155377266568855552"
  *         expires:
  *           description: Expiration date for a given subscription
  *           oneOf:
@@ -38,6 +34,10 @@ router.use(authenticated);
  *         - $ref: '#components/schemas/SubscriptionBase'
  *         - type: object
  *           properties:
+ *             owner:
+ *               type: string
+ *               description: Discord user id that owns the subscription
+ *               example: "155377266568855552"
  *             server:
  *               type: string
  *               description: Discord server id
@@ -52,6 +52,8 @@ router.use(authenticated);
  *         - $ref: '#components/schemas/SubscriptionBase'
  *         - type: object
  *           properties:
+ *             owner:
+ *               $ref: '#/components/schemas/User'
  *             server:
  *               $ref: '#/components/schemas/ServerBase'
  *             stripe:
@@ -162,126 +164,6 @@ router.get(`/`, subscriptionsController.getSubscriptions);
 
 /**
  * @openapi
- * /subscriptions/assign:
- *   post:
- *     tags: [Subscriptions]
- *     summary: Assign a subscription to a server
- *     operationId: assignSubscription
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               server:
- *                 type: string
- *                 description: Discord server id
- *                 example: "738365346855256107"
- *               checkoutId:
- *                 type: string
- *                 description: Stripe checkout id to fetch subscription if subscription id is absent.
- *                 example: "cs_a1LPTqnv9fkhFmRNWgBWV18YzbZbZH3IXRkBXTbuxh0jyFvYpMitttI97o"
- *               subscriptionId:
- *                 type: string
- *                 description: Stripe subscription id to fetch subscription.
- *                 example: "sub_1LBsWDJDAy6upd5xtYnPln1B"
- *     responses:
- *       200:
- *         description: Assigned subscription successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Subscription'
- */
-router.post(`/assign`, subscriptionsController.assignSubscription);
-
-/**
- * @openapi
- * /subscriptions/checkout:
- *   post:
- *     tags: [Subscriptions]
- *     summary: Initiate a checkout session to buy a subcription
- *     operationId: buySubscription
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               priceId:
- *                 type: string
- *                 description: Price id to buy
- *                 example: "price_1LAjDiJDAy6upd5x99iDefpi"
- *     responses:
- *       200:
- *         description: Checkout session created successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Checkout'
- */
-router.post(`/checkout`, subscriptionsController.buySubscription);
-
-/**
- * @openapi
- * /subscriptions/checkout/{checkoutId}:
- *   get:
- *     tags: [Subscriptions]
- *     summary: Retrieve a checkout session by id
- *     operationId: getBuySubscription
- *     parameters:
- *     - name: checkoutId
- *       in: path
- *       required: true
- *       schema:
- *         type: string
- *     responses:
- *       200:
- *         description: Checkout session
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Checkout'
- */
-router.get(`/checkout/:checkoutId`, subscriptionsController.getBuySubscription);
-
-/**
- * @openapi
- * /subscriptions/manage:
- *   post:
- *     tags: [Subscriptions]
- *     summary: Get a link to manage your subscription in Stripe
- *     operationId: manageSubscription
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               customerId:
- *                 type: string
- *                 description: Stripe customer id to manage subscriptions
- *                 example: "cus_LtfrwncxjVCTTw"
- *     responses:
- *       200:
- *         description: Manage session created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   description: Manage session id
- *                   example: "bps_1LE4UaJDAy6upd5xYxnTN3yw"
- *                 url:
- *                   type: string
- *                   description: Full url to perform the management
- */
-router.post(`/manage`, subscriptionsController.manageSubscription);
-
-/**
- * @openapi
  * /subscriptions/prices:
  *   get:
  *     tags: [Subscriptions]
@@ -314,6 +196,129 @@ router.post(`/manage`, subscriptionsController.manageSubscription);
  *                     $ref: '#/components/schemas/SubscriptionPrice'
  */
 router.get(`/prices`, subscriptionsController.getSubscriptionsPrices);
+
+/**
+ * @openapi
+ * /subscriptions/checkout:
+ *   post:
+ *     tags: [Subscriptions]
+ *     summary: Initiate a checkout session to buy a subcription
+ *     operationId: createSubscriptionCheckout
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               priceId:
+ *                 type: string
+ *                 required: true
+ *                 description: Price id to buy
+ *                 example: "price_1LAjDiJDAy6upd5x99iDefpi"
+ *               server:
+ *                 type: string
+ *                 required: false
+ *                 description: Discord server id to auto-assign after checkout
+ *                 example: "738365346855256107"
+ *     responses:
+ *       201:
+ *         description: Checkout session created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Checkout'
+ *       403:
+ *         $ref: "#/components/responses/Unauthorized"
+ *       422:
+ *         description: Missing required parameters
+ *       500:
+ *         $ref: "#/components/responses/ServerError"
+ */
+router.post(`/checkout`, subscriptionsController.createSubscriptionCheckout);
+
+/**
+ * @openapi
+ * /subscriptions/{subscriptionId}/assign:
+ *   post:
+ *     tags: [Subscriptions]
+ *     parameters:
+ *     - name: subscriptionId
+ *       in: path
+ *       required: true
+ *       schema:
+ *         type: string
+ *         description: Subscription id.
+ *         example: "65d3d29d3cf1c9af00c2c3cb"
+ *     summary: Assign a subscription to a server
+ *     operationId: assignSubscription
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               server:
+ *                 type: string
+ *                 description: Discord server id, send null to unsassign
+ *                 example: "738365346855256107"
+ *     responses:
+ *       200:
+ *         description: Assigned subscription successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Subscription'
+ */
+router.post(`/:subscriptionId/assign`, subscriptionsController.assignSubscription);
+
+/**
+ * @openapi
+ * /subscriptions/{subscriptionId}/manage:
+ *   post:
+ *     tags: [Subscriptions]
+ *     summary: Get a link to manage your subscription in Stripe
+ *     operationId: manageSubscription
+ *     parameters:
+ *     - name: subscriptionId
+ *       in: path
+ *       required: true
+ *       schema:
+ *         type: string
+ *         description: Subscription id.
+ *         example: "65d3d29d3cf1c9af00c2c3cb"
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customerId:
+ *                 type: string
+ *                 description: Stripe customer id to manage subscriptions
+ *                 required: false
+ *                 example: "cus_LtfrwncxjVCTTw"
+ *               serverId:
+ *                 type: string
+ *                 required: false
+ *                 description: Discord server id
+ *                 example: "738365346855256107"
+ *     responses:
+ *       200:
+ *         description: Manage session created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   description: Manage session id
+ *                   example: "bps_1LE4UaJDAy6upd5xYxnTN3yw"
+ *                 url:
+ *                   type: string
+ *                   description: Full url to perform the management
+ */
+router.post(`/:subscriptionId/manage`, subscriptionsController.manageSubscription);
 
 module.exports = {
   path: "/subscriptions",

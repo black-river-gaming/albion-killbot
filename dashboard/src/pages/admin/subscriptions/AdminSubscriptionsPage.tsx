@@ -101,7 +101,7 @@ const AdminSubscriptionsPage = () => {
                       >
                         All
                       </Dropdown.Item>
-                      {subscriptionStatuses.map((status) => (
+                      {subscriptionStatuses.map((status: string) => (
                         <Dropdown.Item
                           key={status}
                           onClick={() =>

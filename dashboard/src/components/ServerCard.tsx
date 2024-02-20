@@ -1,6 +1,6 @@
 import { getServerPictureUrl } from "helpers/discord";
 import { Card, Col, Row } from "react-bootstrap";
-import { ServerBase } from "types";
+import { ServerBase } from "types/server";
 import Loader from "./Loader";
 import StyledServerCard from "./styles/ServerCard";
 

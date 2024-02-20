@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Button, Card, Dropdown, Form, InputGroup } from "react-bootstrap";
 import { useFetchConstantsQuery, useLazySearchQuery } from "store/api";
-import { Limits } from "types";
+import { Limits } from "types/limits";
 import Loader from "./Loader";
 import SearchResults from "./SearchResults";
 
@@ -49,7 +49,7 @@ const Search = ({ limits }: ISearchProps) => {
                 <Dropdown.Toggle variant="primary">{server}</Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  {servers.map((server) => (
+                  {servers.map((server: string) => (
                     <Dropdown.Item
                       key={server}
                       onClick={() => setServer(server)}

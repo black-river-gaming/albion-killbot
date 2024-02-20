@@ -85,6 +85,16 @@ async function leaveGuild(Authorization, guildId) {
   return res.data;
 }
 
+// Users
+async function getUser(Authorization, userId) {
+  const res = await discordApiClient.get(`${USERS_ENDPOINT}/${userId}`, {
+    headers: {
+      Authorization,
+    },
+  });
+  return res.data;
+}
+
 // Guilds
 async function getGuild(Authorization, guildId) {
   const res = await discordApiClient.get(`${GUILDS_ENDPOINT}/${guildId}`, {
@@ -145,6 +155,7 @@ module.exports = {
   exchangeCode,
   getCurrentUser,
   getCurrentUserGuilds,
+  getUser,
   getGuild,
   getGuildChannels,
   leaveGuild,

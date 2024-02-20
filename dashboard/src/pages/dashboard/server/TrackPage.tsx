@@ -7,7 +7,7 @@ import { Alert, Button, Card, Stack } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { useFetchServerQuery, useUpdateTrackMutation } from "store/api";
 import { loadTrack } from "store/track";
-import { TRACK_TYPE } from "types";
+import { TRACK_TYPE } from "types/track";
 
 const TrackPage = () => {
   const { serverId = "" } = useParams();

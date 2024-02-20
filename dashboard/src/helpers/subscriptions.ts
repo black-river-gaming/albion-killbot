@@ -7,7 +7,7 @@ import {
   ISubscriptionBase,
   ISubscriptionExtended,
   SubscriptionPrice,
-} from "types";
+} from "types/subscription";
 
 const banners = [
   {
@@ -37,6 +37,13 @@ export const isSubscriptionActiveAndUnassiged = (
   subscription: ISubscriptionExtended | ISubscription
 ) => {
   return isSubscriptionActive(subscription) && !subscription.server;
+};
+
+export const getSubscriptionStatus = (subscription: ISubscriptionBase) => {
+  if (subscription.expires === "never") return "free";
+  if (new Date(subscription.expires).getTime() > new Date().getTime())
+    return "active";
+  return "expired";
 };
 
 export const getSubscriptionPriceBanner = (price: SubscriptionPrice) => {

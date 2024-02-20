@@ -35,10 +35,16 @@ async function getPrices({ currency = "usd", product = config.get("stripe.produc
   }
 }
 
-async function createCheckoutSession(priceId, owner) {
+async function createCheckoutSession(priceId, owner, { server } = {}) {
   try {
+    let successUrl = `${config.get("dashboard.url")}/subscriptions`;
+    if (server) {
+      successUrl = `${config.get("dashboard.url")}/dashboard/${server}/subscription`;
+    }
+    successUrl += "?status=success&checkout_id={CHECKOUT_SESSION_ID}";
+
     const checkout = await stripe.checkout.sessions.create({
-      success_url: `${config.get("dashboard.url")}/premium?status=success&checkout_id={CHECKOUT_SESSION_ID}`,
+      success_url: successUrl,
       cancel_url: `${config.get("dashboard.url")}/premium?status=cancel`,
       client_reference_id: owner,
       mode: "subscription",
@@ -48,6 +54,9 @@ async function createCheckoutSession(priceId, owner) {
           quantity: 1,
         },
       ],
+      metadata: {
+        server_id: server,
+      },
       subscription_data: {
         metadata: {
           discord_id: owner,
@@ -66,11 +75,16 @@ async function createCheckoutSession(priceId, owner) {
   }
 }
 
-async function createPortalSession(customerId) {
+async function createPortalSession(customerId, { serverId } = {}) {
   try {
+    let returnUrl = `${config.get("dashboard.url")}/subscriptions`;
+    if (serverId) {
+      returnUrl = `${config.get("dashboard.url")}/dashboard/${serverId}/subscription`;
+    }
+
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: `${config.get("dashboard.url")}/premium`,
+      return_url: returnUrl,
     });
 
     return {
@@ -106,9 +120,10 @@ async function getSubscription(id) {
 
     return {
       id: subscription.id,
+      customer: subscription.customer,
+      status: subscription.status,
       cancel_at_period_end: subscription.cancel_at_period_end,
       current_period_end: subscription.current_period_end,
-      customer: subscription.customer,
       price: {
         id: price.id,
         currency: price.currency,

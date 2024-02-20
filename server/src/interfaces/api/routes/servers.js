@@ -65,8 +65,6 @@ router.use(`/:serverId`, serverAdmin);
  *              $ref: "#/components/schemas/Limits"
  *            settings:
  *              $ref: '#/components/schemas/Settings'
- *            subscription:
- *              $ref: '#/components/schemas/Subscription'
  *            track:
  *              $ref: '#/components/schemas/Track'
  *
@@ -235,13 +233,17 @@ router.use(`/:serverId`, serverAdmin);
  *          description: Custom settings for kills
  *          required: false
  *          properties:
- *            channel: Channel to send notifications
+ *            channel:
+ *              type: string
+ *              description: Channel to send notifications
  *        deaths:
  *          type: object
  *          description: Custom settings for deaths
  *          required: false
  *          properties:
- *            channel: Channel to send notifications
+ *            channel:
+ *              type: string
+ *              description: Channel to send notifications
  */
 
 /**
@@ -287,6 +289,38 @@ router.get(`/`, serversController.getServers);
  *               $ref: '#/components/schemas/Server'
  */
 router.get(`/:serverId`, serversController.getServer);
+
+/**
+ * @openapi
+ * /servers/{serverId}/subscription:
+ *   get:
+ *     tags: [Servers, Subscription]
+ *     parameters:
+ *     - name: serverId
+ *       in: path
+ *       required: true
+ *       schema:
+ *         type: string
+ *     summary: Gets the first subscription assigned to a server.
+ *     operation: getServerSubscription
+ *     responses:
+ *       200:
+ *         description: Server data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Subscription'
+ *       403:
+ *         $ref: "#/components/responses/Unauthorized"
+ *       404:
+ *         description: Subscription not found.
+ *       422:
+ *         $ref: "#/components/responses/MissingParameters"
+ *       500:
+ *         $ref: "#/components/responses/ServerError"
+ *
+ */
+router.get(`/:serverId/subscription`, serversController.getServerSubscription);
 
 /**
  * @openapi

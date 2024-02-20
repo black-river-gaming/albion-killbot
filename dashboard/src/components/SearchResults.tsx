@@ -2,7 +2,8 @@ import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { Stack } from "react-bootstrap";
 import { addToast } from "store/toast";
 import { trackAlliance, trackGuild, trackPlayer } from "store/track";
-import { ISearchResults, Limits } from "types";
+import { Limits } from "types/limits";
+import { ISearchResults } from "types/track";
 import SearchResultsList from "./SearchResultsList";
 
 interface ISearchResultsProps {

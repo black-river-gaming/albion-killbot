@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ITrackItem, ITrackList, TRACK_TYPE } from "types";
+import { ITrackItem, ITrackList, TRACK_TYPE } from "types/track";
 
 interface ITrackState extends ITrackList {
   changed: boolean;

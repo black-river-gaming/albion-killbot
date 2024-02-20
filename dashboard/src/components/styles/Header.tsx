@@ -69,8 +69,7 @@ const StyledHeader = styled.div`
 
       .dropdown {
         .dropdown-menu {
-          margin-top: 0.5rem;
-          margin-right: 1.5rem;
+          margin-top: 0.65rem;
         }
 
         .dropdown-toggle::after {

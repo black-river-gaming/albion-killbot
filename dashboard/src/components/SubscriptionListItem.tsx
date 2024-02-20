@@ -1,7 +1,7 @@
 import { getSubscriptionUrl } from "helpers/stripe";
 import { Button, Card, Col, Row, Stack, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { ISubscription } from "types";
+import { ISubscription } from "types/subscription";
 
 interface SubscriptionListItemProps {
   subscription: ISubscription;
