@@ -5,6 +5,7 @@ import { getServerPictureUrl, getUserPictureUrl } from "helpers/discord";
 import { getCurrency } from "helpers/utils";
 import { Button, Card, Image, Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useFetchUserQuery } from "store/api";
 import { useDoSubscriptionManageMutation } from "store/api/subscriptions";
 import { ISubscriptionExtended } from "types/subscription";
 import SubscriptionAdmin from "./SubscriptionAdmin";
@@ -16,6 +17,7 @@ interface Props {
 }
 
 const SubscriptionCardStripe = ({ subscription }: Props) => {
+  const user = useFetchUserQuery();
   const [dispatchManageSubscription, manageSubscription] =
     useDoSubscriptionManageMutation();
 
@@ -138,6 +140,7 @@ const SubscriptionCardStripe = ({ subscription }: Props) => {
           <SubscriptionAdmin subscription={subscription} />
 
           <Button
+            disabled={subscription.owner?.id !== user.data?.id}
             variant="danger"
             onClick={() =>
               dispatchManageSubscription({
