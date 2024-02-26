@@ -299,6 +299,12 @@ const globalStyle = createGlobalStyle<{ theme: ThemeProps }>`
   }
 
   /* Bootstrap Dropdown overrides */
+  .dropdown {
+    .dropdown-toggle::after {
+      display: none;
+    }
+  }
+
   .dropdown-menu {
     display: block;
     padding: 0;
