@@ -16,7 +16,7 @@ async function subscribe(client) {
   const cb = async (battle) => {
     const { server } = battle;
 
-    logger.debug(`[${server}] Received battle: ${battle.id}`, {
+    logger.verbose(`[${server}] Received battle: ${battle.id}`, {
       server,
       guilds: client.guilds.cache.size,
       battleId: battle.id,
@@ -28,15 +28,32 @@ async function subscribe(client) {
         const track = await getTrack(guild.id);
         const limits = await getLimits(guild.id);
 
-        if (!settings || !track || !limits) continue;
+        // This should never happen
+        if (!settings || !track || !limits) {
+          logger.warn(`Skipping battle ${battle.id} to "${guild.name}" because settings/track/limits not found.`, {
+            guild: transformGuild(guild),
+            settings,
+            track,
+            limits,
+          });
+          continue;
+        }
+
         if (!getTrackedBattle(battle, track, limits)) continue;
 
         const { enabled, channel, threshold, provider: providerId } = settings.battles;
         const { locale } = settings.general;
 
-        if (!enabled || !channel) continue;
+        if (!enabled || !channel) {
+          logger.debug(`Skipping battle ${battle.id} to "${guild.name}" because disabled/channel not set.`, {
+            guild: transformGuild(guild),
+            battle,
+            settings,
+          });
+          continue;
+        }
         if (!hasMinimumTreshold(battle, threshold)) {
-          logger.verbose(`[${server}] Skipping battle ${battle.id} to ${guild.name} due to threshold.`, {
+          logger.debug(`[${server}] Skipping battle ${battle.id} to ${guild.name} because of threshold.`, {
             guild: transformGuild(guild),
             battle,
             settings,

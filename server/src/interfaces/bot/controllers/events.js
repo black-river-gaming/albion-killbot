@@ -19,7 +19,7 @@ async function subscribe(client) {
   const cb = async (event) => {
     const { server } = event;
 
-    logger.debug(`[${server}] Processing event: ${event.EventId}`, {
+    logger.verbose(`[${server}] Processing event: ${event.EventId}`, {
       server,
       guilds: client.guilds.cache.size,
       eventId: event.EventId,
@@ -30,7 +30,17 @@ async function subscribe(client) {
         const settings = await getSettings(guild.id);
         const track = await getTrack(guild.id);
         const limits = await getLimits(guild.id);
-        if (!settings || !track || !limits) continue;
+
+        // This should never happen
+        if (!settings || !track || !limits) {
+          logger.warn(`Skipping event ${event.EventId} to "${guild.name}" because settings/track/limits not found.`, {
+            guild: transformGuild(guild),
+            settings,
+            track,
+            limits,
+          });
+          continue;
+        }
 
         const guildEvent = getTrackedEvent(event, track, limits);
         if (!guildEvent) continue;
@@ -43,7 +53,15 @@ async function subscribe(client) {
         let channel = null;
         if (good) channel = (tracked.kills && tracked.kills.channel) || settings.kills.channel;
         else channel = (tracked.deaths && tracked.deaths.channel) || settings.deaths.channel;
-        if (!enabled || !channel) continue;
+
+        if (!enabled || !channel) {
+          logger.debug(`Skipping event ${event.EventId} to "${guild.name}" because disabled/channel not set.`, {
+            guild: transformGuild(guild),
+            event: transformEvent(guildEvent),
+            settings,
+          });
+          continue;
+        }
 
         logger.info(`[${server}] Sending ${good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
           guild: transformGuild(guild),
