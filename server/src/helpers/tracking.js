@@ -1,6 +1,6 @@
 const { equalsCaseInsensitive } = require("./utils");
 
-const applyLimits = (track, limits) => {
+const applyLimitsToTrack = (track, limits) => {
   let players = track.players || [];
   if (!isNaN(limits.players)) players = players.slice(0, Math.max(0, limits.players));
 
@@ -21,7 +21,7 @@ const applyLimits = (track, limits) => {
 // and flags it as a good event (killed is tracked) or bad event (victim is tracker)
 // and returns a copy of it or null if the event is not tracked at all
 function getTrackedEvent(event, track, limits) {
-  const { players, guilds, alliances } = applyLimits(track, limits);
+  const { players, guilds, alliances } = applyLimitsToTrack(track, limits);
 
   if (players.length === 0 && guilds.length === 0 && alliances.length === 0) {
     return null;
@@ -57,7 +57,7 @@ function getTrackedEvent(event, track, limits) {
 // This method checks if a battle is tracked by a discord server
 // and returns the battle or null if the event is not tracked at all
 function getTrackedBattle(battle, track, limits) {
-  const { players, guilds, alliances } = applyLimits(track, limits);
+  const { players, guilds, alliances } = applyLimitsToTrack(track, limits);
 
   if (players.length === 0 && guilds.length === 0 && alliances.length === 0) {
     return null;
