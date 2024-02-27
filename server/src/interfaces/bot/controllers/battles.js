@@ -30,12 +30,16 @@ async function subscribe(client) {
 
         // This should never happen
         if (!settings || !track || !limits) {
-          logger.warn(`Skipping battle ${battle.id} to "${guild.name}" because settings/track/limits not found.`, {
-            guild: transformGuild(guild),
-            settings,
-            track,
-            limits,
-          });
+          logger.warn(
+            `[${server}] Skipping battle ${battle.id} to "${guild.name}" because settings/track/limits not found.`,
+            {
+              server,
+              guild: transformGuild(guild),
+              settings,
+              track,
+              limits,
+            },
+          );
           continue;
         }
 
@@ -45,11 +49,15 @@ async function subscribe(client) {
         const { locale } = settings.general;
 
         if (!enabled || !channel) {
-          logger.debug(`Skipping battle ${battle.id} to "${guild.name}" because disabled/channel not set.`, {
-            guild: transformGuild(guild),
-            battle,
-            settings,
-          });
+          logger.debug(
+            `[${server}] Skipping battle ${battle.id} to "${guild.name}" because disabled/channel not set.`,
+            {
+              server,
+              guild: transformGuild(guild),
+              battle,
+              settings,
+            },
+          );
           continue;
         }
         if (!hasMinimumTreshold(battle, threshold)) {
