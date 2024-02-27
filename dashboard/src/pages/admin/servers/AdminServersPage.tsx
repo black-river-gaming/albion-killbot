@@ -1,6 +1,6 @@
 import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Loader from "components/Loader";
+import Loader from "components/common/Loader";
 import ServerList from "components/ServerList";
 import { useEffect, useState } from "react";
 import { Button, Card, Form, InputGroup, Stack } from "react-bootstrap";

@@ -1,5 +1,5 @@
-import Loader from "components/Loader";
 import Page from "components/Page";
+import Loader from "components/common/Loader";
 import NoData from "components/common/NoData";
 import SubscriptionCard from "components/subscriptions/SubscriptionCard";
 import SubscriptionCardStripe from "components/subscriptions/SubscriptionCardStripe";

@@ -1,4 +1,4 @@
-import Loader from "components/Loader";
+import Loader from "components/common/Loader";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import React, { ReactNode, useEffect } from "react";
 import { Button, Card, Form, Stack } from "react-bootstrap";

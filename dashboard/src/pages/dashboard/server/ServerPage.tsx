@@ -8,7 +8,7 @@ import {
   faTrophy,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Loader from "components/Loader";
+import Loader from "components/common/Loader";
 import ServerCard from "components/ServerCard";
 import { isSubscriptionActive } from "helpers/subscriptions";
 import {
@@ -21,7 +21,7 @@ import {
   Row,
   Stack,
 } from "react-bootstrap";
-import { Link, NavLink, Navigate, Outlet, useParams } from "react-router-dom";
+import { Link, Navigate, NavLink, Outlet, useParams } from "react-router-dom";
 import { useFetchServerQuery } from "store/api";
 
 const ServerPage = () => {

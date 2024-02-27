@@ -1,4 +1,4 @@
-import Loader from "components/Loader";
+import Loader from "components/common/Loader";
 import ServerCard from "components/ServerCard";
 import { Button, Col, Row } from "react-bootstrap";
 import { useFetchServersQuery } from "store/api";

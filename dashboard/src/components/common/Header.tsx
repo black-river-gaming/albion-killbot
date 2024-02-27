@@ -28,7 +28,7 @@ import {
 } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useFetchUserQuery, useLogoutMutation } from "store/api";
-import Loader from "../Loader";
+import Loader from "./Loader";
 
 const HeaderNavItem = ({
   to,

@@ -1,4 +1,4 @@
-import Loader from "components/Loader";
+import Loader from "components/common/Loader";
 import Page from "components/Page";
 import ServerSelect from "components/ServerSelect";
 import SubscriptionStripePriceCard from "components/subscriptions/SubscriptionStripePriceCard";

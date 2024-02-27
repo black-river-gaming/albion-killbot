@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { Button, Card, Dropdown, Form, InputGroup } from "react-bootstrap";
 import { useFetchConstantsQuery, useLazySearchQuery } from "store/api";
 import { Limits } from "types/limits";
-import Loader from "./Loader";
 import SearchResults from "./SearchResults";
+import Loader from "./common/Loader";
 
 interface ISearchProps {
   limits: Limits;

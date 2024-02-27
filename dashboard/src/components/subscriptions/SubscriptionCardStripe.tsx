@@ -1,6 +1,6 @@
 import { faStripe } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Loader from "components/Loader";
+import Loader from "components/common/Loader";
 import { getServerPictureUrl, getUserPictureUrl } from "helpers/discord";
 import { getCurrency } from "helpers/utils";
 import { Button, Card, Image, Stack } from "react-bootstrap";

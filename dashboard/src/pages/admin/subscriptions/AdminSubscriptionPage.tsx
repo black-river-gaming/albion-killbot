@@ -1,7 +1,7 @@
 import LeaveServer from "components/LeaveServer";
-import Loader from "components/Loader";
 import ServerCard from "components/ServerCard";
 import SubscriptionDelete from "components/SubscriptionDelete";
+import Loader from "components/common/Loader";
 import SubscriptionEdit from "components/subscriptions/SubscriptionEdit";
 import { getSubscriptionUrl } from "helpers/stripe";
 import { Button, Card, Stack } from "react-bootstrap";

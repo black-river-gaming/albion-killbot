@@ -1,4 +1,4 @@
-import Loader from "components/Loader";
+import Loader from "components/common/Loader";
 import Search from "components/Search";
 import TrackList from "components/TrackList";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";

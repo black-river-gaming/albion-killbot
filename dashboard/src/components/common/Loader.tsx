@@ -1,5 +1,4 @@
-import theme from "helpers/theme";
-import StyledLoader from "./style";
+import ContentLoader from "react-content-loader";
 
 interface LoaderProps {
   className?: string;
@@ -15,17 +14,21 @@ const Loader = ({
   className,
   height = 160,
   width = 400,
-  foregroundColor = theme.secondary,
+  foregroundColor,
   backgroundColor = "transparent",
 }: LoaderProps) => {
   return (
-    <StyledLoader
+    <ContentLoader
       viewBox={`0 0 ${width} ${height}`}
       width={width}
       height={height}
       backgroundColor={backgroundColor}
       foregroundColor={foregroundColor}
       className={className}
+      style={{
+        width: "100%",
+        height: "100%",
+      }}
     >
       {children ? (
         children
@@ -36,7 +39,7 @@ const Loader = ({
           <circle cx="238" cy="86" r="8" />
         </>
       )}
-    </StyledLoader>
+    </ContentLoader>
   );
 };
 

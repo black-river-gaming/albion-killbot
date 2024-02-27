@@ -1,7 +1,7 @@
 import { getServerPictureUrl } from "helpers/discord";
 import { Card, Col, Row } from "react-bootstrap";
 import { ServerBase } from "types/server";
-import Loader from "./Loader";
+import Loader from "./common/Loader";
 import StyledServerCard from "./styles/ServerCard";
 
 interface ServerCardProps {
