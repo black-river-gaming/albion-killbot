@@ -1,3 +1,4 @@
+import theme from "helpers/theme";
 import StyledLoader from "./style";
 
 interface LoaderProps {
@@ -14,7 +15,7 @@ const Loader = ({
   className,
   height = 160,
   width = 400,
-  foregroundColor,
+  foregroundColor = theme.secondary,
   backgroundColor = "transparent",
 }: LoaderProps) => {
   return (
