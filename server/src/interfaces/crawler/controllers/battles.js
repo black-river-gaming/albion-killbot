@@ -1,6 +1,6 @@
 const config = require("config");
 
-const { SECOND, SERVERS } = require("../../../helpers/constants");
+const { SERVERS, MINUTE } = require("../../../helpers/constants");
 const logger = require("../../../helpers/logger");
 const { runInterval } = require("../../../helpers/scheduler");
 
@@ -61,14 +61,14 @@ async function fetchBattles(server) {
 const init = async () => {
   if (config.get("crawler.battles.west")) {
     runInterval("Fetch battles for west server", fetchBattles, {
-      interval: 61 * SECOND,
+      interval: 2 * MINUTE,
       runOnStart: true,
       fnOpts: [SERVERS.WEST],
     });
   }
   if (config.get("crawler.battles.east")) {
     runInterval("Fetch battles for east server", fetchBattles, {
-      interval: 61 * SECOND,
+      interval: 2 * MINUTE,
       runOnStart: true,
       fnOpts: [SERVERS.EAST],
     });
