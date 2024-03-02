@@ -4,54 +4,58 @@ const { SECOND, SERVERS } = require("../../../helpers/constants");
 const logger = require("../../../helpers/logger");
 const { runInterval } = require("../../../helpers/scheduler");
 
-const { fetchBattlesTo, publishBattle } = require("../../../services/battles");
+const battlesService = require("../../../services/battles");
 
-const latestBattle = {
-  [SERVERS.WEST]: null,
-  [SERVERS.EAST]: null,
+const serverData = {
+  [SERVERS.WEST]: {
+    latestBattleId: null,
+  },
+  [SERVERS.EAST]: {
+    latestBattleId: null,
+  },
 };
 
 async function fetchBattles(server) {
-  if (!latestBattle[server]) {
-    logger.info(`[${server}] Retrieving first batch of battles.`);
+  const { latestBattleId } = serverData[server];
+
+  if (!latestBattleId) {
+    logger.info(`[${server}] Retrieving first batch of battles.`, { server });
   } else {
-    logger.info(`[${server}] Fetching Albion Online battles from API up to battle ${latestBattle[server].id}.`);
+    logger.info(`[${server}] Fetching Albion Online battles from API up to battle ${latestBattleId}.`, {
+      server,
+      latestBattleId,
+    });
   }
 
-  const battles = await fetchBattlesTo(latestBattle[server], { server });
-  if (battles.length === 0) return logger.verbose(`[${server}] No new battles.`);
+  const battles = await battlesService.fetchBattlesTo(latestBattleId, { server });
+  if (battles.length === 0) return logger.verbose(`[${server}] No new battles.`, { server });
 
-  // Publish new battles, from oldest to newest
   const battlesToPublish = [];
-  logger.verbose(`[${server}] Publishing ${battles.length} new battles to exchange...`, {
-    length: battles.length,
-    battleIds: battles.map((battle) => battle.id),
-  });
-  for (const batl of battles) {
-    if (latestBattle[server] && batl.id <= latestBattle[server].id) {
+  for (const batl of battles.sort((a, b) => a.id - b.id)) {
+    if (latestBattleId && batl.id <= latestBattleId) {
       logger.warn(`[${server}] The published id is lower than latestBattle! Skipping.`, {
-        latestBattleId: latestBattle[server].id,
         battleId: batl.id,
+        latestBattleId,
         server,
       });
       continue;
     }
 
-    if (!config.get("amqp.battles.batch")) {
-      logger.debug(`[${server}] Publishing battle ${batl.id}`);
-      await publishBattle(batl);
-    } else {
-      battlesToPublish.push(batl);
-    }
+    if (!config.get("amqp.battles.batch")) await battlesService.publishBattle(batl);
 
-    latestBattle[server] = batl;
+    battlesToPublish.push(batl);
+    serverData[server].latestBattleId = batl.id;
   }
 
-  if (config.get("amqp.battles.batch")) {
-    await publishBattle(battlesToPublish);
-  }
+  if (battlesToPublish.length > 0) {
+    if (config.get("amqp.battles.batch")) await battlesService.publishBattle(battlesToPublish);
 
-  logger.info(`[${server}] Publish battles complete.`);
+    logger.verbose(`[${server}] Published ${battlesToPublish.length} battles.`, {
+      server,
+      length: battlesToPublish.length,
+      battleIds: battlesToPublish.map((battle) => battle.id),
+    });
+  }
 }
 
 const init = async () => {

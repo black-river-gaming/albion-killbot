@@ -7,27 +7,36 @@ const { sleep } = require("../helpers/scheduler");
 const BATTLES_EXCHANGE = "battles";
 const BATTLES_QUEUE_PREFIX = "battles";
 
-async function fetchBattlesTo(latestBattle, { server, offset = 0 } = {}, battles = []) {
+async function fetchBattlesTo(latestBattleId, { server, offset = 0, silent = false } = {}, battles = []) {
   // Maximum offset reached, just return what we have
   if (offset >= 1000) return battles;
 
   try {
     // If not latestBattle, just fetch a single one to create a reference
-    if (!latestBattle) {
+    if (!latestBattleId) {
       return await albion.getBattles({
         server,
         limit: 1,
       });
     }
 
-    logger.verbose(`[${server}] Fetching battles with offset: ${offset}`);
+    if (!silent) {
+      logger.verbose(
+        `[${server}] Fetching battles [offset: ${String(offset).padStart(3, "0")}, latestBattleId: ${latestBattleId}]`,
+        {
+          server,
+          offset,
+          latestBattleId,
+        },
+      );
+    }
     const albionBattles = await albion.getBattles({
       server,
       offset,
     });
 
     const foundLatest = !albionBattles.every((batl) => {
-      if (batl.id <= latestBattle.id) return false;
+      if (batl.id <= latestBattleId) return false;
       // Ignore items already on the queue
       if (battles.findIndex((e) => e.id === batl.id) >= 0) return true;
       // Set battle server for later
@@ -37,12 +46,17 @@ async function fetchBattlesTo(latestBattle, { server, offset = 0 } = {}, battles
     });
 
     return foundLatest
-      ? battles.sort((a, b) => a.id - b.id)
-      : fetchBattlesTo(latestBattle, { server, offset: offset + albionBattles.length }, battles);
-  } catch (err) {
-    logger.warn(`[${server}] Unable to fetch battle data from API [${err}]. Retrying...`);
+      ? battles
+      : fetchBattlesTo(latestBattleId, { server, offset: offset + albionBattles.length, silent }, battles);
+  } catch (error) {
+    if (!silent) {
+      logger.warn(`[${server}] Unable to fetch battle data from API [${error.message}]. Retrying...`, {
+        server,
+        error,
+      });
+    }
     await sleep(5000);
-    return fetchBattlesTo(latestBattle, { server, offset }, battles);
+    return fetchBattlesTo(latestBattleId, { server, offset, silent }, battles);
   }
 }
 
