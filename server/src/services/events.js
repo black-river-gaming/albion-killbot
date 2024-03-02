@@ -7,27 +7,61 @@ const { sleep } = require("../helpers/scheduler");
 const EVENTS_EXCHANGE = "events";
 const EVENTS_QUEUE_PREFIX = "events";
 
-async function fetchEventsTo(latestEvent, { server, offset = 0 } = {}, events = []) {
+async function fetchEvents({ server, offset, limit = 51 }) {
+  try {
+    logger.verbose(`[${server}] Fetching events with offset: ${String(offset).padStart(3, "0")}`, {
+      server,
+      offset,
+      limit,
+    });
+    return albion.getEvents({
+      server,
+      offset,
+      limit,
+    });
+  } catch (error) {
+    logger.warn(`[${server}] Unable to fetch event data from API: ${error.message}. Retrying...`, {
+      server,
+      error,
+    });
+    await sleep(5000);
+    return fetchEvents({ server, offset, limit });
+  }
+}
+
+async function fetchEventsTo(latestEventId, { server, offset = 0, silent = false } = {}, events = []) {
   // Maximum offset reached, just return what we have
   if (offset >= 1000) return events;
 
   try {
     // If not latestEvent, just fetch a single one to create a reference
-    if (!latestEvent) {
+    if (!latestEventId) {
       return await albion.getEvents({
         server,
         limit: 1,
       });
     }
 
-    logger.verbose(`[${server}] Fetching events with offset: ${offset}`);
+    if (!silent) {
+      logger.verbose(
+        `[${server}] silent: ${silent} Fetching events [offset: ${String(offset).padStart(
+          3,
+          "0",
+        )}, latestEventId: ${latestEventId}]`,
+        {
+          server,
+          offset,
+          latestEventId,
+        },
+      );
+    }
     const albionEvents = await albion.getEvents({
       server,
       offset,
     });
 
     const foundLatest = !albionEvents.every((evt) => {
-      if (evt.EventId <= latestEvent.EventId) return false;
+      if (evt.EventId <= latestEventId) return false;
       // Ignore items already on the queue
       if (events.findIndex((e) => e.EventId === evt.EventId) >= 0) return true;
       // Set event server for later
@@ -38,11 +72,16 @@ async function fetchEventsTo(latestEvent, { server, offset = 0 } = {}, events = 
 
     return foundLatest
       ? events.sort((a, b) => a.EventId - b.EventId)
-      : fetchEventsTo(latestEvent, { server, offset: offset + albionEvents.length }, events);
+      : fetchEventsTo(latestEventId, { server, offset: offset + albionEvents.length, silent }, events);
   } catch (error) {
-    logger.warn(`[${server}] Unable to fetch event data from API: ${error.message}. Retrying...`, { error });
+    if (!silent) {
+      logger.warn(`[${server}] Unable to fetch event data from API: ${error.message}. Retrying...`, {
+        server,
+        error,
+      });
+    }
     await sleep(5000);
-    return fetchEventsTo(latestEvent, { server, offset }, events);
+    return fetchEventsTo(latestEventId, { server, offset, silent }, events);
   }
 }
 
@@ -64,6 +103,7 @@ async function getEventVictimLootValue(event, { server }) {
 }
 
 module.exports = {
+  fetchEvents,
   fetchEventsTo,
   getEvent,
   getEventVictimLootValue,
