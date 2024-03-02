@@ -44,10 +44,7 @@ async function fetchEventsTo(latestEventId, { server, offset = 0, silent = false
 
     if (!silent) {
       logger.verbose(
-        `[${server}] silent: ${silent} Fetching events [offset: ${String(offset).padStart(
-          3,
-          "0",
-        )}, latestEventId: ${latestEventId}]`,
+        `[${server}] Fetching events [offset: ${String(offset).padStart(3, "0")}, latestEventId: ${latestEventId}]`,
         {
           server,
           offset,
@@ -71,7 +68,7 @@ async function fetchEventsTo(latestEventId, { server, offset = 0, silent = false
     });
 
     return foundLatest
-      ? events.sort((a, b) => a.EventId - b.EventId)
+      ? events
       : fetchEventsTo(latestEventId, { server, offset: offset + albionEvents.length, silent }, events);
   } catch (error) {
     if (!silent) {

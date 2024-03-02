@@ -35,7 +35,7 @@ async function fetchEvents(server) {
   if (events.length === 0) return logger.verbose(`[${server}] No new events.`, { server });
 
   const eventsToPublish = [];
-  for (const evt of events) {
+  for (const evt of events.sort((a, b) => a.EventId - b.EventId)) {
     if (latestEventId && evt.EventId <= latestEventId) {
       logger.warn(`[${server}] The published id is lower than latestEvent! Skipping.`, {
         eventId: evt.EventId,
@@ -58,6 +58,7 @@ async function fetchEvents(server) {
 
     logger.verbose(`[${server}] Published ${eventsToPublish.length} events.`, {
       server,
+      length: eventsToPublish.length,
       eventIds: eventsToPublish.map((event) => event.EventId),
     });
   }
@@ -74,7 +75,7 @@ const fetchEventsDelayed = async (server) => {
   const eventsToPublish = [];
   const events = await eventsService.fetchEventsTo(1, { server, silent: true });
 
-  for (const evt of events) {
+  for (const evt of events.sort((a, b) => a.EventId - b.EventId)) {
     if (!publishedEventIds.includes(evt.EventId)) {
       logger.debug(`[${server}] Event ${evt.EventId} was not published in the normal crawl function!`, {
         server,
