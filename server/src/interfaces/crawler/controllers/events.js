@@ -73,7 +73,8 @@ const fetchEventsDelayed = async (server) => {
   if (publishedEventIds.length > 5000) publishedEventIds.splice(0, 1000);
 
   const eventsToPublish = [];
-  const events = await eventsService.fetchEventsTo(1, { server, silent: true });
+  // Start with offset to prevent this from overriding real-time crawling
+  const events = await eventsService.fetchEventsTo(1, { server, offset: 102, silent: true });
 
   for (const evt of events.sort((a, b) => a.EventId - b.EventId)) {
     if (!publishedEventIds.includes(evt.EventId)) {
