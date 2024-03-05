@@ -17,7 +17,6 @@ registerFont(path.join(assetsPath, "fonts", "Roboto-Regular.ttf"), {
   weight: "Normal",
 });
 
-/* eslint-disable prefer-const */
 const drawImage = async (ctx, src, x, y, sw, sh) => {
   if (!src) return;
   let img;
@@ -192,6 +191,71 @@ const drawPlayer = async (ctx, player, x, y, { showAttunement } = {}) => {
   if (showAttunement && equipment.MainHand?.LegendarySoul) {
     await drawAwakening(ctx, equipment.MainHand, x, y, { attunedPlayerName: player.Name });
   }
+
+  ctx.closePath();
+};
+
+const drawTimestamp = async (ctx, event, x, y, { iconSize = 75 } = {}) => {
+  ctx.beginPath();
+  ctx.font = "35px Roboto";
+  ctx.fillStyle = "#FFF";
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 4;
+  const timestamp = moment.utc(event.TimeStamp).format("YYYY.MM.DD HH:mm");
+  const textWidth = ctx.measureText(timestamp).width;
+  const textHeight = ctx.measureText("M").width;
+  await drawImage(ctx, path.join(assetsPath, "time.png"), x - iconSize / 2, y, iconSize, iconSize);
+  ctx.strokeText(timestamp, x - textWidth / 2, y + iconSize + textHeight + 15);
+  ctx.fillText(timestamp, x - textWidth / 2, y + iconSize + textHeight + 15);
+  ctx.closePath();
+};
+
+const drawFame = async (ctx, event, x, y, { iconSize = 100 } = {}) => {
+  ctx.beginPath();
+  ctx.font = "40px Roboto";
+  ctx.fillStyle = "#FFF";
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 4;
+  const fame = digitsFormatter(event.TotalVictimKillFame);
+  const textWidth = ctx.measureText(fame).width;
+  const textHeight = ctx.measureText("M").width;
+  await drawImage(ctx, path.join(assetsPath, "fame.png"), x - iconSize / 2, y, iconSize, iconSize);
+  ctx.strokeText(fame, x - textWidth / 2, y + iconSize + textHeight + 15);
+  ctx.fillText(fame, x - textWidth / 2, y + iconSize + textHeight + 15);
+  ctx.closePath();
+};
+
+const drawLootValue = async (ctx, lootValue, x, y, { iconSize = 100, splitLootValue } = {}) => {
+  const lootSum = splitLootValue ? lootValue.equipment : lootValue.equipment + lootValue.inventory;
+  if (!lootSum) return;
+
+  ctx.beginPath();
+  ctx.font = "40px Roboto";
+  ctx.fillStyle = "#FFF";
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 4;
+  const lootValueText = digitsFormatter(lootSum);
+  const textWidth = ctx.measureText(lootValueText).width;
+  const textHeight = ctx.measureText("M").width;
+  await drawImage(ctx, path.join(assetsPath, "lootValue.png"), x - iconSize / 2, y, iconSize, iconSize);
+  ctx.strokeText(lootValueText, x - textWidth / 2, y + iconSize + textHeight + 15);
+  ctx.fillText(lootValueText, x - textWidth / 2, y + iconSize + textHeight + 15);
+  ctx.closePath();
+};
+
+const drawAssistCount = async (ctx, assistCount, x, y, { iconSize = 100 } = {}) => {
+  ctx.beginPath();
+  ctx.font = "40px Roboto";
+  ctx.fillStyle = "#FFF";
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 4;
+  const assistCountText = digitsFormatter(assistCount);
+  const textWidth = ctx.measureText(assistCountText).width;
+  const textHeight = ctx.measureText("M").width;
+  await drawImage(ctx, path.join(assetsPath, "assists.png"), x - iconSize / 2, y, iconSize, iconSize);
+  ctx.strokeText(assistCountText, x - textWidth / 2, y + iconSize + textHeight + 15);
+  ctx.fillText(assistCountText, x - textWidth / 2, y + iconSize + textHeight + 15);
+  ctx.closePath();
 };
 
 const drawAssistBar = async (ctx, participants, x, y, width, height, radius) => {
@@ -327,78 +391,17 @@ async function generateEventImage(event, { lootValue, showAttunement = true, spl
   showAttunement = showAttunement && hasAwakening(event);
 
   let canvas = createCanvas(1600, showAttunement ? 1550 : 1250);
-  let tw, th;
   const w = canvas.width;
   const ctx = canvas.getContext("2d");
 
   await drawImage(ctx, path.join(assetsPath, "background.png"), -1, -1, 1602, 1554);
-
   await drawPlayer(ctx, event.Killer, 15, 0, { showAttunement });
   await drawPlayer(ctx, event.Victim, 935, 0, { showAttunement });
-
-  // timestamp
-  const timestampY = 50;
-  const timestampIconSize = 75;
-  ctx.beginPath();
-  ctx.font = "35px Roboto";
-  ctx.fillStyle = "#FFF";
-  ctx.strokeStyle = "#000";
-  ctx.lineWidth = 4;
-  const timestamp = moment.utc(event.TimeStamp).format("YYYY.MM.DD HH:mm");
-  tw = ctx.measureText(timestamp).width;
-  th = ctx.measureText("M").width;
-  await drawImage(
-    ctx,
-    path.join(assetsPath, "time.png"),
-    w / 2 - timestampIconSize / 2,
-    timestampY,
-    timestampIconSize,
-    timestampIconSize,
-  );
-  ctx.strokeText(timestamp, w / 2 - tw / 2, timestampY + timestampIconSize + th + 15);
-  ctx.fillText(timestamp, w / 2 - tw / 2, timestampY + timestampIconSize + th + 15);
-
-  // fame
-  const fameY = 475;
-  const fameIconSize = 100;
-  ctx.beginPath();
-  ctx.font = "40px Roboto";
-  ctx.fillStyle = "#FFF";
-  ctx.strokeStyle = "#000";
-  ctx.lineWidth = 4;
-  const fame = digitsFormatter(event.TotalVictimKillFame);
-  tw = ctx.measureText(fame).width;
-  await drawImage(ctx, path.join(assetsPath, "fame.png"), w / 2 - fameIconSize / 2, fameY, fameIconSize, fameIconSize);
-  ctx.strokeText(fame, w / 2 - tw / 2, fameY + fameIconSize + th + 15);
-  ctx.fillText(fame, w / 2 - tw / 2, fameY + fameIconSize + th + 15);
-
-  // loot value
-  if (lootValue) {
-    const lootSum = splitLootValue ? lootValue.equipment : lootValue.equipment + lootValue.inventory;
-    if (lootSum) {
-      const lootValueY = 675;
-      const lootValueIconSize = 100;
-      ctx.beginPath();
-      ctx.font = "40px Roboto";
-      ctx.fillStyle = "#FFF";
-      ctx.strokeStyle = "#000";
-      ctx.lineWidth = 4;
-      const lootValueText = digitsFormatter(lootSum);
-      tw = ctx.measureText(lootValueText).width;
-      await drawImage(
-        ctx,
-        path.join(assetsPath, "lootValue.png"),
-        w / 2 - lootValueIconSize / 2,
-        lootValueY,
-        lootValueIconSize,
-        lootValueIconSize,
-      );
-      ctx.strokeText(lootValueText, w / 2 - tw / 2, lootValueY + lootValueIconSize + th + 15);
-      ctx.fillText(lootValueText, w / 2 - tw / 2, lootValueY + lootValueIconSize + th + 15);
-    }
-  }
-
-  // assists bar
+  await drawTimestamp(ctx, event, w / 2, 50);
+  const assistCount = Math.max(event.GroupMembers.length, event.Participants.length);
+  if (assistCount > 1) await drawAssistCount(ctx, assistCount, w / 2, 290, { iconSize: 80 });
+  await drawFame(ctx, event, w / 2, 470);
+  if (lootValue) await drawLootValue(ctx, lootValue, w / 2, 675, { splitLootValue });
   await drawAssistBar(ctx, event.Participants, 35, showAttunement ? 1350 : 1050, 1530, 80, 40);
 
   const buffer = await optimizeImage(canvas.toBuffer(), 580);
@@ -473,7 +476,6 @@ async function generateInventoryImage(inventory, { lootValue, splitLootValue = f
   }
   return buffer;
 }
-/* eslint-enable prefer-const */
 
 module.exports = {
   generateEventImage,
