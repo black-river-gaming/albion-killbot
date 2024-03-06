@@ -19,6 +19,11 @@ const initialState: ISettings = {
     channel: "",
     mode: "image",
   },
+  juicy: {
+    enabled: true,
+    channel: "",
+    mode: "image",
+  },
   battles: {
     enabled: true,
     channel: "",
@@ -46,6 +51,7 @@ export const settingsSlice = createSlice({
       state.general = action.payload.general;
       state.kills = action.payload.kills;
       state.deaths = action.payload.deaths;
+      state.juicy = action.payload.juicy;
       state.battles = action.payload.battles;
       state.rankings = action.payload.rankings;
     },
@@ -84,6 +90,18 @@ export const settingsSlice = createSlice({
     },
     setDeathsProvider: (state, action: PayloadAction<string>) => {
       state.deaths.provider = action.payload;
+    },
+    setJuicyEnabled: (state, action: PayloadAction<boolean>) => {
+      state.juicy.enabled = action.payload;
+    },
+    setJuicyChannel: (state, action: PayloadAction<string>) => {
+      state.juicy.channel = action.payload;
+    },
+    setJuicyMode: (state, action: PayloadAction<string>) => {
+      state.juicy.mode = action.payload;
+    },
+    setJuicyProvider: (state, action: PayloadAction<string>) => {
+      state.juicy.provider = action.payload;
     },
     setBattlesEnabled: (state, action: PayloadAction<boolean>) => {
       state.battles.enabled = action.payload;
@@ -144,6 +162,10 @@ export const {
   setDeathsChannel,
   setDeathsMode,
   setDeathsProvider,
+  setJuicyEnabled,
+  setJuicyChannel,
+  setJuicyMode,
+  setJuicyProvider,
   setBattlesEnabled,
   setBattlesChannel,
   setBattlesThresholdPlayers,
