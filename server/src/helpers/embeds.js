@@ -3,20 +3,22 @@ const { SERVER_LIST, REPORT_PROVIDERS } = require("./constants");
 const { getLocale } = require("./locale");
 const { digitsFormatter, humanFormatter, printSpace } = require("./utils");
 
-const GREEN = 52224;
-const RED = 13369344;
 const BATTLE = 16752981;
 const RANKING_LINE_LENGTH = 23;
 
 const COLORS = {
-  GREY: 0xdcdfdf,
   LIGHT_GREEN: 0x57ad65,
   LIGHT_RED: 0xed4f4f,
 
-  GREEN: 5763719,
+  DARK_GREEN: 52224,
+
   BLUE: 3447003,
+  GREEN: 5763719,
+  GREY: 0xdcdfdf,
   PURPLE: 10181046,
-  YELLOW: 15844367,
+  RED: 13369344,
+  YELLOW: 16776960,
+  GOLD: 15844367,
 };
 
 const MAXLEN = {
@@ -39,8 +41,8 @@ const embedEvent = (event, { lootValue, locale, guildTags = true, providerId, te
   const l = getLocale(locale);
   const { t } = l;
 
+  const { good, juicy } = event;
   const lootSum = lootValue ? lootValue.equipment + lootValue.inventory : null;
-  const good = event.good;
 
   let killer = "";
   if (guildTags && event.Killer.GuildName) {
@@ -49,10 +51,12 @@ const embedEvent = (event, { lootValue, locale, guildTags = true, providerId, te
   killer += event.Killer.Name;
 
   let victim = "";
+  if (juicy) victim += ":moneybag: ";
   if (guildTags && event.Victim.GuildName) {
     victim += `[${event.Victim.GuildName}] `;
   }
   victim += event.Victim.Name;
+  if (juicy) victim += " :moneybag:";
 
   const title = t(good ? "KILL.GOOD_TITLE" : "KILL.BAD_TITLE", {
     killer,
@@ -107,7 +111,7 @@ const embedEvent = (event, { lootValue, locale, guildTags = true, providerId, te
     content: test ? t("KILL.TEST") : undefined,
     embeds: [
       {
-        color: good ? GREEN : RED,
+        color: juicy ? COLORS.GOLD : good ? COLORS.DARK_GREEN : COLORS.RED,
         title,
         url,
         description,
@@ -172,7 +176,7 @@ const embedEventImage = (event, image, { locale, guildTags = true, addFooter, pr
   const l = getLocale(locale);
   const { t } = l;
 
-  const good = event.good;
+  const { good, juicy } = event;
 
   let killer = "";
   if (guildTags && event.Killer.GuildName) {
@@ -181,10 +185,12 @@ const embedEventImage = (event, image, { locale, guildTags = true, addFooter, pr
   killer += event.Killer.Name;
 
   let victim = "";
+  if (juicy) victim += ":moneybag: ";
   if (guildTags && event.Victim.GuildName) {
     victim += `[${event.Victim.GuildName}] `;
   }
   victim += event.Victim.Name;
+  if (juicy) victim += " :moneybag:";
 
   const title = t(good ? "KILL.GOOD_TITLE" : "KILL.BAD_TITLE", {
     killer,
@@ -206,7 +212,7 @@ const embedEventImage = (event, image, { locale, guildTags = true, addFooter, pr
     content: test ? t("KILL.TEST") : undefined,
     embeds: [
       {
-        color: good ? GREEN : RED,
+        color: juicy ? COLORS.GOLD : good ? COLORS.DARK_GREEN : COLORS.RED,
         title,
         url,
         image: {
@@ -227,8 +233,8 @@ const embedEventImage = (event, image, { locale, guildTags = true, addFooter, pr
 
 const embedEventInventoryImage = (event, image, { locale, providerId }) => {
   const l = getLocale(locale);
+  const { good, juicy } = event;
 
-  const good = event.good;
   const filename = `${event.EventId}-inventory.png`;
 
   const provider = REPORT_PROVIDERS.find((provider) => provider.id === providerId) || REPORT_PROVIDERS[0];
@@ -244,7 +250,7 @@ const embedEventInventoryImage = (event, image, { locale, providerId }) => {
   return {
     embeds: [
       {
-        color: good ? GREEN : RED,
+        color: juicy ? COLORS.YELLOW : good ? COLORS.DARK_GREEN : COLORS.RED,
         url,
         image: {
           url: `attachment://${filename}`,

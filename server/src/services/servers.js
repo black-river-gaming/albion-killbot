@@ -103,7 +103,8 @@ async function testNotification(serverId, { channelId, type = "kills", mode = "i
     switch (type) {
       case "kills":
       case "deaths":
-        const event = { ...FAKE_EVENT, good: type === "kills" };
+      case "juicy":
+        const event = { ...FAKE_EVENT, good: type === "kills", juicy: type === "juicy" };
         const actions = new Map();
         actions.set("text", async () => {
           await discord.sendMessage(channelId, embedEvent(event, { test: true }));
