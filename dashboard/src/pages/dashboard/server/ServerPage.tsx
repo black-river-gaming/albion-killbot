@@ -3,6 +3,7 @@ import {
   faGear,
   faList,
   faPeopleGroup,
+  faSackDollar,
   faSkull,
   faSkullCrossbones,
   faTrophy,
@@ -55,6 +56,11 @@ const ServerPage = () => {
       path: "deaths",
       name: "Deaths",
       icon: faSkullCrossbones,
+    },
+    {
+      path: "juicy",
+      name: "Juicy Kills",
+      icon: faSackDollar,
     },
     {
       path: "battles",
