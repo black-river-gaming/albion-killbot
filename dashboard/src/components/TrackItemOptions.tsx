@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { useFetchServerQuery } from "store/api";
 import { setItemDeathsChannel, setItemKillsChannel } from "store/track";
 import { ITrackItem, TRACK_TYPE } from "types/track";
-import ChannelInput from "./ChannelInput";
+import ChannelInput from "./dashboard/ChannelInput";
 
 interface ITrackItemOptionsProps {
   type: TRACK_TYPE;

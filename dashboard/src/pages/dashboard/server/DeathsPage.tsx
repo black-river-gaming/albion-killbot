@@ -1,7 +1,7 @@
-import ChannelInput from "components/ChannelInput";
 import LoadError from "components/LoadError";
 import Settings from "components/Settings";
 import Loader from "components/common/Loader";
+import ChannelInput from "components/dashboard/ChannelInput";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { capitalize } from "helpers/utils";
 import { Button, Col, Form, Row, Stack } from "react-bootstrap";
