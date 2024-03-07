@@ -1,7 +1,10 @@
+const config = require("config");
 const { SlashCommandBuilder } = require("discord.js");
+
+const { REPORT_PROVIDERS, RANKING_MODES } = require("../../../helpers/constants");
 const { getLocale } = require("../../../helpers/locale");
 const { setSettings } = require("../../../services/settings");
-const { REPORT_PROVIDERS, RANKING_MODES } = require("../../../helpers/constants");
+const subscriptionsService = require("../../../services/subscriptions");
 
 const locale = getLocale();
 const localeList = locale.getLocales();
@@ -300,6 +303,16 @@ const command = {
         return await editReply(reply);
       },
       juicy: async () => {
+        await interaction.deferReply({ ephemeral: true });
+
+        if (!(await subscriptionsService.hasSubscriptionByServerId(interaction.guild.id))) {
+          return await editReply(
+            t("SUBSCRIPTION.REQUIRED", {
+              link: `${config.get("dashboard.url")}/premium`,
+            }),
+          );
+        }
+
         const category = "juicy";
         settings = getCommonOptions(settings, category, interaction);
 
@@ -309,7 +322,6 @@ const command = {
         let provider = interaction.options.getString("provider");
         if (provider != null) settings[category].provider = provider;
 
-        await interaction.deferReply({ ephemeral: true });
         await setSettings(interaction.guild.id, settings);
 
         let reply = printCommonOptions(settings, category, interaction, t);

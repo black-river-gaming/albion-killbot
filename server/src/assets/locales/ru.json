@@ -133,6 +133,7 @@
     },
     "FAILED": "Failed to validate subscription: {{ reason }}",
     "RENEW": "Посетите {{{link}}}, чтобы обновить его.",
+    "REQUIRED": "Для этой функции требуется активная Премиум-подписка. Посетите {{{link}}}, чтобы узнать больше.",
     "STATUS": {
       "ACTIVE": "Your subscription is active.",
       "DAYS_REMAINING": "Your subscription has {{{ days }}} day(s) remaining",

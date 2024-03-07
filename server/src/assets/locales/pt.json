@@ -133,6 +133,7 @@
     },
     "FAILED": "Não foi possível validar assinatura: {{ reason }}",
     "RENEW": "Por favor, acesse {{{link}}} para renová-la.",
+    "REQUIRED": "Este recurso requer uma assinatura Premium ativa. Visite {{{link}}} para saber mais.",
     "STATUS": {
       "ACTIVE": "Sua assinatura está ativada.",
       "DAYS_REMAINING": "Sua assinatura possui {{{ days }}} dia(s) restando",

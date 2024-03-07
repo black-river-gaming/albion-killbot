@@ -133,6 +133,7 @@
     },
     "FAILED": "Failed to validate subscription: {{{ reason }}}",
     "RENEW": "Please visit {{{link}}} to renew it.",
+    "REQUIRED": "This feature requires an active Premium Subscription. Please visit {{{link}}} to learn more.",
     "STATUS": {
       "ACTIVE": "Your subscription is active.",
       "DAYS_REMAINING": "Your subscription has {{{ days }}} day(s) remaining",
