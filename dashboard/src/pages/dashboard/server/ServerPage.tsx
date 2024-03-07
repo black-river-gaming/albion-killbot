@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "components/common/Loader";
 import ServerCard from "components/ServerCard";
 import { isSubscriptionActive } from "helpers/subscriptions";
+import theme from "helpers/theme";
 import {
   Alert,
   Button,
@@ -61,6 +62,7 @@ const ServerPage = () => {
       path: "juicy",
       name: "Juicy Kills",
       icon: faSackDollar,
+      premium: true,
     },
     {
       path: "battles",
@@ -108,7 +110,10 @@ const ServerPage = () => {
                       size="sm"
                       style={{ flexBasis: 20 }}
                     />
-                    <div>{item.name}</div>
+                    <div className="flex-grow-1">{item.name}</div>
+                    {item.premium && (
+                      <FontAwesomeIcon icon={faCrown} color={theme.primary} />
+                    )}
                   </Stack>
                 </NavLink>
               ))}

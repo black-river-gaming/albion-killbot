@@ -43,4 +43,12 @@ export default styled.div`
       background: transparent;
     }
   }
+
+  .card.hover {
+    transition: 0.25s ease-in-out;
+
+    &:hover {
+      background-color: #303030;
+    }
+  }
 `;

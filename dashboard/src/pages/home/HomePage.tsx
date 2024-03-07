@@ -5,6 +5,7 @@ import {
   faGear,
   faLandmarkFlag,
   faRankingStar,
+  faSackDollar,
   faSkull,
   faWandMagicSparkles,
 } from "@fortawesome/free-solid-svg-icons";
@@ -16,11 +17,27 @@ import screenshot4 from "assets/screenshots/971905670-event.png";
 import wallpapper from "assets/wallpappers/call_to_arms.jpeg";
 import Paper from "components/Paper";
 import { getServerInviteUrl } from "helpers/discord";
-import { Badge, Button, Card, Col, Container, Row } from "react-bootstrap";
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Container,
+  Row,
+  Stack,
+} from "react-bootstrap";
 
 const screenshots = [screenshot1, screenshot2, screenshot3, screenshot4];
 
 const features = [
+  {
+    new: true,
+    premium: true,
+    name: "Juicy Kills",
+    icon: faSackDollar,
+    description:
+      "Gucci kills allows you to get a feed of the most expensive kills in Albion Online.",
+  },
   {
     new: true,
     name: "Awakened Weapons",
@@ -99,18 +116,28 @@ const HomePage = () => {
           </div>
         </div>
       </Paper>
+
       <Container>
         <h4 className="d-flex justify-content-center p-3 pb-0">Features</h4>
         <Row className="px-2">
           {features.map((feature) => (
             <Col key={feature.name} sm={6} lg={4} className="g-4">
-              <Card className="p-2 d-flex flex-column justify-content-center">
+              <Card className="p-2 d-flex flex-column justify-content-center hover">
                 <div className="p-4 d-flex justify-content-center">
                   <FontAwesomeIcon icon={feature.icon} size="3x" />
                 </div>
-                <Card.Title className="d-flex justify-content-center align-items-center">
-                  <div className="px-2">{feature.name}</div>
-                  {feature.new && <Badge bg="primary">NEW</Badge>}
+                <Card.Title>
+                  <Stack gap={2} className="align-items-center">
+                    <Stack
+                      direction="horizontal"
+                      gap={2}
+                      className="align-self-center"
+                    >
+                      {feature.new && <Badge bg="primary">NEW</Badge>}
+                      {feature.premium && <Badge bg="primary">PREMIUM</Badge>}
+                    </Stack>
+                    <div>{feature.name}</div>
+                  </Stack>
                 </Card.Title>
                 <Card.Body className="text-muted">
                   {feature.description}
