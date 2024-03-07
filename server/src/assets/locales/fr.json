@@ -58,6 +58,7 @@
     "CATEGORY": {
       "DISABLED": "Désactivé",
       "ENABLED": "Activé",
+      "ENABLED_SERVER": "Activer sur le serveur {{ server }}.",
       "SET": "Les notifications pour la catégorie `{{ category }}` sont `{{ option }}`"
     },
     "CHANNEL": {
@@ -72,6 +73,8 @@
       "GENERAL": "Modifier les paramètres généraux",
       "GUILD_TAGS": "Afficher les tags de guilde dans les noms des joueurs.",
       "JUICY": "Modifier les paramètres pour des éliminations juteuses.",
+      "JUICY_GOOD_KILLS_CHANNEL": "Canal pour envoyer des éliminations juteuses de bonne qualité.",
+      "JUICY_INSANE_KILLS_CHANNEL": "Canal pour envoyer des éliminations juteuses d'une qualité insensée.",
       "KILLS": "Change settings for kill notifications.",
       "LANG": "Change language.",
       "MODE": "Définir le format de notification.",
@@ -95,6 +98,20 @@
     },
     "GUILD_TAGS": {
       "SET": "Afficher les tags de guilde: {{ enabled }}"
+    },
+    "JUICY": {
+      "GOOD": {
+        "CHANNEL": {
+          "NULL": "Canal pour envoyer des éliminations juteuses de bonne qualité défini sur le canal par défaut.",
+          "SET": "Canal pour envoyer des éliminations juteuses de bonne qualité défini sur {{{ channel }}}."
+        }
+      },
+      "INSANE": {
+        "CHANNEL": {
+          "NULL": "Canal pour envoyer des éliminations juteuses d'une qualité insensée défini sur le canal par défaut.",
+          "SET": "Canal pour envoyer des éliminations juteuses d'une qualité insensée défini sur {{{ channel }}}."
+        }
+      }
     },
     "LANG": {
       "NOT_SUPPORTED": "Cette langue n'est pas disponible.",

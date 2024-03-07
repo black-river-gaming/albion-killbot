@@ -35,14 +35,6 @@ async function fetchEventsTo(latestEventId, { server, offset = 0, silent = false
   if (offset >= 1000) return events;
 
   try {
-    // If not latestEvent, just fetch a single one to create a reference
-    if (!latestEventId) {
-      return await albion.getEvents({
-        server,
-        limit: 1,
-      });
-    }
-
     if (!silent) {
       logger.verbose(
         `[${server.name}] Fetching events [offset: ${String(offset).padStart(
@@ -62,6 +54,7 @@ async function fetchEventsTo(latestEventId, { server, offset = 0, silent = false
     });
 
     const foundLatest = !albionEvents.every((evt) => {
+      if (!latestEventId) latestEventId = evt.EventId - 1;
       if (evt.EventId <= latestEventId) return false;
       // Ignore items already on the queue
       if (events.findIndex((e) => e.EventId === evt.EventId) >= 0) return true;
@@ -75,11 +68,10 @@ async function fetchEventsTo(latestEventId, { server, offset = 0, silent = false
     for (const evt of events) {
       if (config.get("features.juicy.enabled") && evt.TotalVictimKillFame > config.get("features.juicy.minFame")) {
         evt.lootValue = await getEventVictimLootValue(evt, { server });
-        if (
-          evt.lootValue &&
-          evt.lootValue.equipment + evt.lootValue.inventory > config.get("features.juicy.gucciLootValue")
-        ) {
-          evt.juicy = true;
+        if (evt.lootValue) {
+          const lootSum = evt.lootValue.equipment + evt.lootValue.inventory;
+          if (lootSum >= config.get("features.juicy.goodLootValue")) evt.juicy = "good";
+          if (lootSum >= config.get("features.juicy.insaneLootValue")) evt.juicy = "insane";
         }
       }
     }

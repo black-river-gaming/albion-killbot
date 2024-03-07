@@ -34,6 +34,18 @@ const MAXLEN = {
   AUTHOR: 256,
 };
 
+const getEventColor = (event) => {
+  if (event.tracked) return event.good ? COLORS.DARK_GREEN : COLORS.RED;
+  if (event.juicy)
+    return (
+      {
+        good: COLORS.GOLD,
+        insane: COLORS.YELLOW,
+      }[event.juicy] || COLORS.GREY
+    );
+  return COLORS.GREY;
+};
+
 const footer = {
   text: "Powered by Albion Killbot",
 };
@@ -112,7 +124,7 @@ const embedEvent = (event, { lootValue, locale, guildTags = true, providerId, te
     content: test ? t("KILL.TEST") : undefined,
     embeds: [
       {
-        color: juicy ? COLORS.GOLD : good ? COLORS.DARK_GREEN : COLORS.RED,
+        color: getEventColor(event),
         title,
         url,
         description,
@@ -213,7 +225,7 @@ const embedEventImage = (event, image, { locale, guildTags = true, addFooter, pr
     content: test ? t("KILL.TEST") : undefined,
     embeds: [
       {
-        color: juicy ? COLORS.GOLD : good ? COLORS.DARK_GREEN : COLORS.RED,
+        color: getEventColor(event),
         title,
         url,
         image: {
@@ -234,7 +246,6 @@ const embedEventImage = (event, image, { locale, guildTags = true, addFooter, pr
 
 const embedEventInventoryImage = (event, image, { locale, providerId }) => {
   const l = getLocale(locale);
-  const { good, juicy } = event;
 
   const filename = `${event.EventId}-inventory.png`;
 
@@ -251,7 +262,7 @@ const embedEventInventoryImage = (event, image, { locale, providerId }) => {
   return {
     embeds: [
       {
-        color: juicy ? COLORS.GOLD : good ? COLORS.DARK_GREEN : COLORS.RED,
+        color: getEventColor(event),
         url,
         image: {
           url: `attachment://${filename}`,

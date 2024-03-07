@@ -5,6 +5,7 @@ const { REPORT_PROVIDERS, RANKING_MODES } = require("../../../helpers/constants"
 const { getLocale } = require("../../../helpers/locale");
 const { setSettings } = require("../../../services/settings");
 const subscriptionsService = require("../../../services/subscriptions");
+const { SERVERS, SERVER_LIST } = require("../../../helpers/albion");
 
 const locale = getLocale();
 const localeList = locale.getLocales();
@@ -76,12 +77,16 @@ const deaths = (subcommand) =>
         ),
     );
 
-const juicy = (subcommand) =>
-  subcommand
+const juicy = (subcommand) => {
+  for (const server of SERVER_LIST) {
+    subcommand.addBooleanOption((option) =>
+      option.setName(server.id).setDescription(t(`SETTINGS.CATEGORY.ENABLED_SERVER`, { server: server.name })),
+    );
+  }
+
+  return subcommand
     .setName("juicy")
     .setDescription(t("SETTINGS.DESCRIPTION.JUICY"))
-    .addBooleanOption((option) => option.setName("enabled").setDescription(t("SETTINGS.CATEGORY.ENABLED")))
-    .addChannelOption((option) => option.setName("channel").setDescription(t("SETTINGS.DESCRIPTION.CHANNEL")))
     .addStringOption((option) =>
       option
         .setName("mode")
@@ -107,7 +112,14 @@ const juicy = (subcommand) =>
             value: provider.id,
           })),
         ),
+    )
+    .addChannelOption((option) =>
+      option.setName("good-kills-channel").setDescription(t("SETTINGS.DESCRIPTION.JUICY_GOOD_KILLS_CHANNEL")),
+    )
+    .addChannelOption((option) =>
+      option.setName("insane-kills-channel").setDescription(t("SETTINGS.DESCRIPTION.JUICY_INSANE_KILLS_CHANNEL")),
     );
+};
 
 const battles = (subcommand) =>
   subcommand
@@ -195,7 +207,7 @@ function printCommonOptions(settings, category, interaction, t) {
 
   const option = settings[category].enabled ? t("SETTINGS.CATEGORY.ENABLED") : t("SETTINGS.CATEGORY.DISABLED");
   const channel = interaction.guild.channels.cache.get(settings[category].channel);
-  reply += t("SETTINGS.CATEGORY.SET", { category, option }) + "\n";
+  reply += t("SETTINGS.CATEGORY.SET", { category, option }) + "\n\n";
   if (channel) reply += t("SETTINGS.CHANNEL.SET", { category, channel: channel.toString() }) + "\n";
   else reply += t("SETTINGS.CHANNEL.NULL") + "\n";
 
@@ -313,22 +325,54 @@ const command = {
           );
         }
 
-        const category = "juicy";
-        settings = getCommonOptions(settings, category, interaction);
+        for (const serverId of Object.keys(SERVERS)) {
+          const enabled = interaction.options.getBoolean(serverId.toLowerCase());
+          if (enabled != null) {
+            settings.juicy.enabled = {
+              ...settings.juicy.enabled,
+              [serverId.toLowerCase()]: enabled,
+            };
+          }
+        }
 
         const mode = interaction.options.getString("mode");
-        if (mode != null) settings[category].mode = mode;
+        if (mode != null) settings.juicy.mode = mode;
 
         let provider = interaction.options.getString("provider");
-        if (provider != null) settings[category].provider = provider;
+        if (provider != null) settings.juicy.provider = provider;
+
+        let goodKillsChannel = interaction.options.getChannel("good-kills-channel");
+        if (goodKillsChannel) settings.juicy.good.channel = goodKillsChannel.id;
+
+        let insaneKillsChannel = interaction.options.getChannel("insane-kills-channel");
+        if (insaneKillsChannel) settings.juicy.insane.channel = insaneKillsChannel.id;
 
         await setSettings(interaction.guild.id, settings);
 
-        let reply = printCommonOptions(settings, category, interaction, t);
-        reply += t("SETTINGS.MODE.SET", { mode: settings[category].mode }) + "\n";
+        let reply = "";
 
-        provider = REPORT_PROVIDERS.find((p) => p.id === settings[category].provider);
+        for (const server of SERVER_LIST) {
+          const option = settings.juicy.enabled[server.id]
+            ? t("SETTINGS.CATEGORY.ENABLED")
+            : t("SETTINGS.CATEGORY.DISABLED");
+          reply += t("SETTINGS.CATEGORY.SET", { category: server.name, option }) + "\n";
+        }
+        reply += "\n";
+
+        reply += t("SETTINGS.MODE.SET", { mode: settings.juicy.mode }) + "\n";
+
+        provider = REPORT_PROVIDERS.find((p) => p.id === settings.juicy.provider);
         if (provider) reply += t("SETTINGS.PROVIDER.SET", { provider: provider.name }) + "\n";
+
+        goodKillsChannel = goodKillsChannel || interaction.guild.channels.cache.get(settings.juicy.good.channel);
+        if (goodKillsChannel) {
+          reply += t("SETTINGS.JUICY.GOOD.CHANNEL.SET", { channel: goodKillsChannel.toString() }) + "\n";
+        } else reply += t("SETTINGS.JUICY.GOOD.CHANNEL.NULL") + "\n";
+
+        insaneKillsChannel = insaneKillsChannel || interaction.guild.channels.cache.get(settings.juicy.insane.channel);
+        if (insaneKillsChannel) {
+          reply += t("SETTINGS.JUICY.INSANE.CHANNEL.SET", { channel: insaneKillsChannel.toString() }) + "\n";
+        } else reply += t("SETTINGS.JUICY.INSANE.CHANNEL.NULL") + "\n";
 
         return await editReply(reply);
       },

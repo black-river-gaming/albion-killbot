@@ -58,6 +58,7 @@
     "CATEGORY": {
       "DISABLED": "desativado",
       "ENABLED": "Ativado",
+      "ENABLED_SERVER": "Ativar no servidor {{ server }}.",
       "SET": "Notificações da categoria `{{ category }}` estão `{{ option }}s`"
     },
     "CHANNEL": {
@@ -72,6 +73,8 @@
       "GENERAL": "Mudar configurações gerais",
       "GUILD_TAGS": "Mostra as tags da guilda nos nomes dos jogadores.",
       "JUICY": "Alterar configurações para mortes suculentas.",
+      "JUICY_GOOD_KILLS_CHANNEL": "Canal para enviar mortes suculentas de boa qualidade.",
+      "JUICY_INSANE_KILLS_CHANNEL": "Canal para enviar mortes suculentas de qualidade insana.",
       "KILLS": "Mudar configurações de abates.",
       "LANG": "Alterar idioma.",
       "MODE": "Definir o formato das notificações.",
@@ -95,6 +98,20 @@
     },
     "GUILD_TAGS": {
       "SET": "Mostra as tags da guilda: {{ enabled }}"
+    },
+    "JUICY": {
+      "GOOD": {
+        "CHANNEL": {
+          "NULL": "Canal para enviar mortes suculentas de boa qualidade definido para o canal padrão.",
+          "SET": "Canal para enviar mortes suculentas de boa qualidade definido para {{{ channel }}}."
+        }
+      },
+      "INSANE": {
+        "CHANNEL": {
+          "NULL": "Canal para enviar mortes suculentas de qualidade insana definido para o canal padrão.",
+          "SET": "Canal para enviar mortes suculentas de qualidade insana definido para {{{ channel }}}."
+        }
+      }
     },
     "LANG": {
       "NOT_SUPPORTED": "Este idioma não é suportado.",
