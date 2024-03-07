@@ -3,14 +3,16 @@ import Settings from "components/Settings";
 import Loader from "components/common/Loader";
 import ChannelInput from "components/dashboard/ChannelInput";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
+import { isSubscriptionActive } from "helpers/subscriptions";
 import { capitalize } from "helpers/utils";
 import { Button, Col, Form, Row, Stack } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   useFetchConstantsQuery,
   useFetchServerQuery,
   useTestNotificationSettingsMutation,
 } from "store/api";
+import { useGetServerSubscriptionQuery } from "store/api/server";
 import {
   setJuicyChannel,
   setJuicyEnabled,
@@ -20,28 +22,53 @@ import {
 
 const JuicyPage = () => {
   const { serverId = "" } = useParams();
-
   const dispatch = useAppDispatch();
+
   const constants = useFetchConstantsQuery();
   const server = useFetchServerQuery(serverId);
+  const subscription = useGetServerSubscriptionQuery({ serverId });
+
   const juicy = useAppSelector((state) => state.settings.juicy);
   const [dispatchTestNotification, testNotification] =
     useTestNotificationSettingsMutation();
 
-  if (server.isFetching || constants.isFetching) return <Loader />;
-  if (!server.data || !constants.data) return <LoadError />;
+  if (server.isFetching || constants.isFetching || subscription.isFetching) {
+    return <Loader />;
+  }
+
+  if (!server.data || !constants.data) {
+    return <LoadError />;
+  }
 
   const { modes, providers } = constants.data;
   const { channels } = server.data;
 
+  const isPremium =
+    subscription.data && isSubscriptionActive(subscription.data);
+
   return (
-    <Settings>
+    <Settings
+      alerts={[
+        {
+          show: !isPremium,
+          variant: "danger",
+          message: (
+            <>
+              This is a Premium feature. To enable, please check the
+              <Link to="/premium"> Premium</Link> page to buy assign a
+              subscription.
+            </>
+          ),
+        },
+      ]}
+    >
       <Stack gap={2}>
         <Form.Group controlId="juicy-enabled">
           <Form.Check
             type="switch"
             label="Enabled"
             checked={juicy.enabled}
+            disabled={!isPremium}
             onChange={(e) => dispatch(setJuicyEnabled(e.target.checked))}
           />
         </Form.Group>
@@ -52,7 +79,7 @@ const JuicyPage = () => {
               <Form.Label>Notification Channel</Form.Label>
               <ChannelInput
                 aria-label="Juicy kills channel"
-                disabled={!juicy.enabled}
+                disabled={!isPremium || !juicy.enabled}
                 availableChannels={channels}
                 value={juicy.channel}
                 onChannelChange={(channelId) =>
@@ -63,7 +90,9 @@ const JuicyPage = () => {
           </Col>
           <Col xs={12} md="auto">
             <Button
-              disabled={!juicy.enabled || testNotification.isLoading}
+              disabled={
+                !isPremium || !juicy.enabled || testNotification.isLoading
+              }
               variant="secondary"
               type="button"
               onClick={() => {
@@ -84,7 +113,7 @@ const JuicyPage = () => {
           <Form.Label>Mode</Form.Label>
           <Form.Select
             aria-label="Notification mode"
-            disabled={!juicy.enabled}
+            disabled={!isPremium || !juicy.enabled}
             value={juicy.mode}
             onChange={(e) => dispatch(setJuicyMode(e.target.value))}
           >
@@ -100,7 +129,7 @@ const JuicyPage = () => {
           <Form.Label>Link Provider</Form.Label>
           <Form.Select
             aria-label="Links provider"
-            disabled={!juicy.enabled}
+            disabled={!isPremium || !juicy.enabled}
             value={juicy.provider}
             onChange={(e) => dispatch(setJuicyProvider(e.target.value))}
           >

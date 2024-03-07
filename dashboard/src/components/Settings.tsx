@@ -1,16 +1,23 @@
 import Loader from "components/common/Loader";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import React, { ReactNode, useEffect } from "react";
-import { Button, Card, Form, Stack } from "react-bootstrap";
+import { Alert, Button, Card, Form, Stack } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useFetchServerQuery, useUpdateSettingsMutation } from "store/api";
 import { loadSettings } from "store/settings";
 
-interface ISettingsPageProps {
+interface PageAlert {
+  show?: boolean;
+  variant: string;
+  message: ReactNode;
+}
+
+interface SettingsPageProps {
+  alerts?: PageAlert[];
   children?: ReactNode;
 }
 
-const Settings = ({ children }: ISettingsPageProps) => {
+const Settings = ({ alerts, children }: SettingsPageProps) => {
   const { serverId = "" } = useParams();
 
   const server = useFetchServerQuery(serverId);
@@ -31,29 +38,45 @@ const Settings = ({ children }: ISettingsPageProps) => {
     dispatchUpdateSettings({ serverId, settings });
   };
 
-  return (
-    <Card>
-      <Form onSubmit={handleSubmit}>
-        <Card.Body>{children}</Card.Body>
+  const renderAlert = (alert: Alert, index: number) => {
+    if (alert.show !== undefined && !alert.show) return;
+    return (
+      <Alert key={index} variant={alert.variant}>
+        {alert.message}
+      </Alert>
+    );
+  };
 
-        <Card.Footer>
-          <Stack direction="horizontal" gap={2} className="justify-content-end">
-            <Button
-              variant="secondary"
-              onClick={() => {
-                if (server?.data?.settings)
-                  dispatch(loadSettings(server.data.settings));
-              }}
+  return (
+    <Stack gap={2}>
+      {alerts?.map(renderAlert)}
+      <Card>
+        <Form onSubmit={handleSubmit}>
+          <Card.Body>{children}</Card.Body>
+
+          <Card.Footer>
+            <Stack
+              direction="horizontal"
+              gap={2}
+              className="justify-content-end"
             >
-              Reset
-            </Button>
-            <Button variant="primary" type="submit">
-              Save
-            </Button>
-          </Stack>
-        </Card.Footer>
-      </Form>
-    </Card>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  if (server?.data?.settings)
+                    dispatch(loadSettings(server.data.settings));
+                }}
+              >
+                Reset
+              </Button>
+              <Button variant="primary" type="submit">
+                Save
+              </Button>
+            </Stack>
+          </Card.Footer>
+        </Form>
+      </Card>
+    </Stack>
   );
 };
 
