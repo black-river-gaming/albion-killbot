@@ -38,7 +38,7 @@ const Settings = ({ alerts, children }: SettingsPageProps) => {
     dispatchUpdateSettings({ serverId, settings });
   };
 
-  const renderAlert = (alert: Alert, index: number) => {
+  const renderAlert = (alert: PageAlert, index: number) => {
     if (alert.show !== undefined && !alert.show) return;
     return (
       <Alert key={index} variant={alert.variant}>
