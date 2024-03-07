@@ -183,7 +183,11 @@ const Header = () => {
             </Dropdown.Menu>
           </Dropdown>
         ) : (
-          <Button href={DISCORD_OAUTH_URL}>Login</Button>
+          <div className="ps-4">
+            <Button href={DISCORD_OAUTH_URL} className="px-5 py-2">
+              Login
+            </Button>
+          </div>
         )}
       </Nav>
     );

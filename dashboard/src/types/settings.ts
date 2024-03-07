@@ -18,6 +18,12 @@ export interface ISettings {
     mode: string;
     provider?: string;
   };
+  juicy: {
+    enabled: boolean;
+    channel: string;
+    mode: string;
+    provider?: string;
+  };
   battles: {
     enabled: boolean;
     channel: string;

@@ -12,19 +12,19 @@ import {
   useTestNotificationSettingsMutation,
 } from "store/api";
 import {
-  setDeathsChannel,
-  setDeathsEnabled,
-  setDeathsMode,
-  setDeathsProvider,
+  setJuicyChannel,
+  setJuicyEnabled,
+  setJuicyMode,
+  setJuicyProvider,
 } from "store/settings";
 
-const DeathsPage = () => {
+const JuicyPage = () => {
   const { serverId = "" } = useParams();
 
   const dispatch = useAppDispatch();
   const constants = useFetchConstantsQuery();
   const server = useFetchServerQuery(serverId);
-  const deaths = useAppSelector((state) => state.settings.deaths);
+  const juicy = useAppSelector((state) => state.settings.juicy);
   const [dispatchTestNotification, testNotification] =
     useTestNotificationSettingsMutation();
 
@@ -37,41 +37,41 @@ const DeathsPage = () => {
   return (
     <Settings>
       <Stack gap={2}>
-        <Form.Group controlId="deaths-enabled">
+        <Form.Group controlId="juicy-enabled">
           <Form.Check
             type="switch"
             label="Enabled"
-            checked={deaths.enabled}
-            onChange={(e) => dispatch(setDeathsEnabled(e.target.checked))}
+            checked={juicy.enabled}
+            onChange={(e) => dispatch(setJuicyEnabled(e.target.checked))}
           />
         </Form.Group>
 
         <Row className="g-2 align-items-end">
           <Col xs={12} md={true}>
-            <Form.Group controlId="deaths-channel">
+            <Form.Group controlId="juicy-channel">
               <Form.Label>Notification Channel</Form.Label>
               <ChannelInput
-                aria-label="Deaths channel"
-                disabled={!deaths.enabled}
+                aria-label="Juicy kills channel"
+                disabled={!juicy.enabled}
                 availableChannels={channels}
-                value={deaths.channel}
+                value={juicy.channel}
                 onChannelChange={(channelId) =>
-                  dispatch(setDeathsChannel(channelId))
+                  dispatch(setJuicyChannel(channelId))
                 }
               />
             </Form.Group>
           </Col>
           <Col xs={12} md="auto">
             <Button
-              disabled={!deaths.enabled || testNotification.isLoading}
+              disabled={!juicy.enabled || testNotification.isLoading}
               variant="secondary"
               type="button"
               onClick={() => {
                 dispatchTestNotification({
                   serverId,
-                  type: "deaths",
-                  channelId: deaths.channel,
-                  mode: deaths.mode,
+                  type: "juicy",
+                  channelId: juicy.channel,
+                  mode: juicy.mode,
                 });
               }}
             >
@@ -80,13 +80,13 @@ const DeathsPage = () => {
           </Col>
         </Row>
 
-        <Form.Group controlId="deaths-mode">
+        <Form.Group controlId="juicy-mode">
           <Form.Label>Mode</Form.Label>
           <Form.Select
             aria-label="Notification mode"
-            disabled={!deaths.enabled}
-            value={deaths.mode}
-            onChange={(e) => dispatch(setDeathsMode(e.target.value))}
+            disabled={!juicy.enabled}
+            value={juicy.mode}
+            onChange={(e) => dispatch(setJuicyMode(e.target.value))}
           >
             {modes.map((mode) => (
               <option key={mode} value={mode}>
@@ -96,13 +96,13 @@ const DeathsPage = () => {
           </Form.Select>
         </Form.Group>
 
-        <Form.Group controlId="deaths-provider">
+        <Form.Group controlId="juicy-provider">
           <Form.Label>Link Provider</Form.Label>
           <Form.Select
             aria-label="Links provider"
-            disabled={!deaths.enabled}
-            value={deaths.provider}
-            onChange={(e) => dispatch(setDeathsProvider(e.target.value))}
+            disabled={!juicy.enabled}
+            value={juicy.provider}
+            onChange={(e) => dispatch(setJuicyProvider(e.target.value))}
           >
             {providers
               .filter((provider) => provider.events)
@@ -118,4 +118,4 @@ const DeathsPage = () => {
   );
 };
 
-export default DeathsPage;
+export default JuicyPage;

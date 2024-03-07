@@ -1,3 +1,4 @@
+const config = require("config");
 const crypto = require("crypto");
 const albion = require("../ports/albion");
 const { publish, subscribe } = require("../ports/queue");
@@ -66,6 +67,19 @@ async function fetchEventsTo(latestEventId, { server, offset = 0, silent = false
       events.push(evt);
       return true;
     });
+
+    // Prefetch lootValue if it's a juicy kill
+    for (const evt of events) {
+      if (config.get("features.juicy.enabled") && evt.TotalVictimKillFame > config.get("features.juicy.minFame")) {
+        evt.lootValue = await getEventVictimLootValue(evt, { server });
+        if (
+          evt.lootValue &&
+          evt.lootValue.equipment + evt.lootValue.inventory > config.get("features.juicy.minLootValue")
+        ) {
+          evt.juicy = true;
+        }
+      }
+    }
 
     return foundLatest
       ? events

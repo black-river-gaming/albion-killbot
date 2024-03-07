@@ -167,6 +167,18 @@ router.use(`/:serverId`, serverAdmin);
  *              provider:
  *                type: string
  *                description: Provider for links in the notifications
+ *        juicy:
+ *          allOf:
+ *          - $ref: '#/components/schemas/Category'
+ *          - type: object
+ *            properties:
+ *              mode:
+ *                type: string
+ *                description: Notification style
+ *                default: "image"
+ *              provider:
+ *                type: string
+ *                description: Provider for links in the notifications
  *        rankings:
  *          allOf:
  *          - $ref: '#/components/schemas/Category'

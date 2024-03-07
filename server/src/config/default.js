@@ -42,6 +42,11 @@ module.exports = {
       useHistoryPrices: getBool(process.env.FEATURE_USE_HISTORY_PRICES, false),
       displayTraitIcons: getBool(process.env.DISPLAY_TRAIT_ICONS, true),
     },
+    juicy: {
+      enabled: getBool(process.env.FEATURE_JUICY_KILLS, true),
+      minFame: getNumber(process.env.FEATURE_JUICY_MIN_FAME, 1000000),
+      minLootValue: getNumber(process.env.FEATURE_JUICY_MIN_LOOT_VALUE, 10000000),
+    },
     rankings: {
       enabled: getBool(process.env.FEATURE_RANKINGS, true),
     },

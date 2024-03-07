@@ -9,6 +9,7 @@ import AuthGuard from "pages/auth/AuthGuard";
 import DashboardPage from "pages/dashboard/DashboardPage";
 import BattlesPage from "pages/dashboard/server/BattlesPage";
 import DeathsPage from "pages/dashboard/server/DeathsPage";
+import JuicyPage from "pages/dashboard/server/JuicyPage";
 import KillsPage from "pages/dashboard/server/KillsPage";
 import RankingsPage from "pages/dashboard/server/RankingsPage";
 import ServerPage from "pages/dashboard/server/ServerPage";
@@ -33,6 +34,7 @@ const routes = createRoutesFromElements(
             <Route path="settings" element={<SettingsPage />} />
             <Route path="kills" element={<KillsPage />} />
             <Route path="deaths" element={<DeathsPage />} />
+            <Route path="juicy" element={<JuicyPage />} />
             <Route path="battles" element={<BattlesPage />} />
             <Route path="rankings" element={<RankingsPage />} />
             <Route path="track" element={<TrackPage />} />

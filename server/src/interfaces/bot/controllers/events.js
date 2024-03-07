@@ -12,8 +12,85 @@ const { generateEventImage, generateInventoryImage } = require("../../../service
 const { getSettings } = require("../../../services/settings");
 const { getTrack } = require("../../../services/track");
 const { getLimits } = require("../../../services/limits");
+const { hasSubscriptionByServerId } = require("../../../services/subscriptions");
 
 const { sendNotification } = require("./notifications");
+
+const sendEvent = async ({ client, server, guild, event, settings, track, limits, type, premium = false } = {}) => {
+  const { good, juicy, tracked } = event;
+  const lootValue = event.lootValue || (await getEventVictimLootValue(event, { server }));
+  const logMeta = {
+    server,
+    guild: transformGuild(guild),
+    event: transformEvent(event),
+    settings,
+    track,
+    limits,
+    type,
+  };
+
+  if (premium && !(await hasSubscriptionByServerId(guild.id))) {
+    logger.debug(`[${server}] Skipping event ${event.EventId} to "${guild.name}" because lack of premium.`, logMeta);
+    return;
+  }
+
+  const setting = settings[type];
+  if (!setting) {
+    logger.debug(`[${server}] Skipping event ${event.EventId} to "${guild.name}" because lack of settings.`, logMeta);
+    return;
+  }
+
+  const { enabled, mode, provider: providerId } = setting;
+  const { locale, showAttunement, guildTags, splitLootValue } = settings.general;
+
+  let channel = setting.channel;
+  if (tracked) {
+    if (good) channel = (tracked.kills && tracked.kills.channel) || channel;
+    else channel = (tracked.deaths && tracked.deaths.channel) || channel;
+  }
+
+  if (!enabled || !channel) {
+    logger.debug(
+      `[${server}] Skipping event ${event.EventId} to "${guild.name}" because disabled/channel not set.`,
+      logMeta,
+    );
+    return;
+  }
+
+  logger.info(
+    `[${server}] Sending ${good ? "kill" : juicy ? "juicy" : "death"} event ${event.EventId} to "${guild.name}".`,
+    logMeta,
+  );
+
+  if (mode === REPORT_MODES.IMAGE) {
+    const inventory = event.Victim.Inventory.filter((i) => i != null);
+    const hasInventory = inventory.length > 0;
+    const eventImage = await generateEventImage(event, { lootValue, showAttunement, splitLootValue });
+    await sendNotification(
+      client,
+      channel,
+      embedEventImage(event, eventImage, {
+        locale,
+        guildTags,
+        addFooter: !hasInventory,
+        providerId,
+      }),
+    );
+    if (hasInventory) {
+      const inventoryImage = await generateInventoryImage(inventory, { lootValue, splitLootValue });
+      await sendNotification(
+        client,
+        channel,
+        embedEventInventoryImage(event, inventoryImage, {
+          locale,
+          providerId,
+        }),
+      );
+    }
+  } else if (mode === REPORT_MODES.TEXT) {
+    await sendNotification(client, channel, embedEvent(event, { lootValue, locale, guildTags, providerId }));
+  }
+};
 
 async function subscribe(client) {
   const cb = async (event) => {
@@ -47,66 +124,30 @@ async function subscribe(client) {
         }
 
         const guildEvent = getTrackedEvent(event, track, limits);
-        if (!guildEvent) continue;
-        const lootValue = await getEventVictimLootValue(event, { server });
-
-        const { good, tracked } = guildEvent;
-        const { enabled, mode, provider: providerId } = good ? settings.kills : settings.deaths;
-        const { locale, showAttunement, guildTags, splitLootValue } = settings.general;
-
-        let channel = null;
-        if (good) channel = (tracked.kills && tracked.kills.channel) || settings.kills.channel;
-        else channel = (tracked.deaths && tracked.deaths.channel) || settings.deaths.channel;
-
-        if (!enabled || !channel) {
-          logger.debug(
-            `[${server}] Skipping event ${event.EventId} to "${guild.name}" because disabled/channel not set.`,
-            {
-              server,
-              guild: transformGuild(guild),
-              event: transformEvent(guildEvent),
-              settings,
-            },
-          );
-          continue;
-        }
-
-        logger.info(`[${server}] Sending ${good ? "kill" : "death"} event ${event.EventId} to "${guild.name}".`, {
-          guild: transformGuild(guild),
-          event: transformEvent(guildEvent),
-          lootValue,
-          settings,
-          track,
-          limits,
-        });
-
-        if (mode === REPORT_MODES.IMAGE) {
-          const inventory = guildEvent.Victim.Inventory.filter((i) => i != null);
-          const hasInventory = inventory.length > 0;
-          const eventImage = await generateEventImage(guildEvent, { lootValue, showAttunement, splitLootValue });
-          await sendNotification(
+        if (guildEvent) {
+          await sendEvent({
             client,
-            channel,
-            embedEventImage(guildEvent, eventImage, {
-              locale,
-              guildTags,
-              addFooter: !hasInventory,
-              providerId,
-            }),
-          );
-          if (hasInventory) {
-            const inventoryImage = await generateInventoryImage(inventory, { lootValue, splitLootValue });
-            await sendNotification(
-              client,
-              channel,
-              embedEventInventoryImage(guildEvent, inventoryImage, {
-                locale,
-                providerId,
-              }),
-            );
-          }
-        } else if (mode === REPORT_MODES.TEXT) {
-          await sendNotification(client, channel, embedEvent(guildEvent, { lootValue, locale, guildTags, providerId }));
+            server,
+            guild,
+            event: guildEvent,
+            settings,
+            track,
+            limits,
+            type: guildEvent.good ? "kills" : "deaths",
+          });
+        }
+        if (event.juicy) {
+          await sendEvent({
+            client,
+            server,
+            guild,
+            event,
+            settings,
+            track,
+            limits,
+            type: "juicy",
+            premium: true,
+          });
         }
       }
     } catch (error) {
