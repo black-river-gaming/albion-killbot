@@ -250,7 +250,7 @@ const embedEventInventoryImage = (event, image, { locale, providerId }) => {
   return {
     embeds: [
       {
-        color: juicy ? COLORS.YELLOW : good ? COLORS.DARK_GREEN : COLORS.RED,
+        color: juicy ? COLORS.GOLD : good ? COLORS.DARK_GREEN : COLORS.RED,
         url,
         image: {
           url: `attachment://${filename}`,
