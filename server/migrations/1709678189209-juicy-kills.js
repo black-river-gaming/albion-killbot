@@ -29,6 +29,7 @@ async function run() {
           },
         },
       );
+      logger.debug(`Updated server ${setting.server}`, { setting });
     } catch (error) {
       logger.error(`Unable to update server ${setting.server}: ${error.message}. Skipping.`, {
         setting,
