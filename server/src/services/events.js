@@ -74,7 +74,7 @@ async function fetchEventsTo(latestEventId, { server, offset = 0, silent = false
         evt.lootValue = await getEventVictimLootValue(evt, { server });
         if (
           evt.lootValue &&
-          evt.lootValue.equipment + evt.lootValue.inventory > config.get("features.juicy.minLootValue")
+          evt.lootValue.equipment + evt.lootValue.inventory > config.get("features.juicy.gucciLootValue")
         ) {
           evt.juicy = true;
         }

@@ -77,7 +77,7 @@ const sendEvent = async ({ client, server, guild, event, settings, track, limits
       }),
     );
     if (hasInventory) {
-      const inventoryImage = await generateInventoryImage(inventory, { lootValue, splitLootValue });
+      const inventoryImage = await generateInventoryImage(event, { lootValue, splitLootValue });
       await sendNotification(
         client,
         channel,

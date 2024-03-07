@@ -9,6 +9,8 @@ const { hasAwakening, transformTrait } = require("../helpers/albion");
 const { optimizeImage } = require("../helpers/images");
 const { digitsFormatter, fileSizeFormatter } = require("../helpers/utils");
 const logger = require("../helpers/logger");
+const { memoize } = require("../helpers/cache");
+const { SECOND } = require("../helpers/constants");
 
 const assetsPath = path.join(__dirname, "..", "assets");
 
@@ -388,93 +390,110 @@ const drawAssistBar = async (ctx, participants, x, y, width, height, radius) => 
 };
 
 async function generateEventImage(event, { lootValue, showAttunement = true, splitLootValue = false } = {}) {
-  showAttunement = showAttunement && hasAwakening(event);
+  return memoize(
+    `eventImage-${event.EventId}`,
+    async () => {
+      showAttunement = showAttunement && hasAwakening(event);
 
-  let canvas = createCanvas(1600, showAttunement ? 1550 : 1250);
-  const w = canvas.width;
-  const ctx = canvas.getContext("2d");
+      let canvas = createCanvas(1600, showAttunement ? 1550 : 1250);
+      const w = canvas.width;
+      const ctx = canvas.getContext("2d");
 
-  await drawImage(ctx, path.join(assetsPath, "background.png"), -1, -1, 1602, 1554);
-  await drawPlayer(ctx, event.Killer, 15, 0, { showAttunement });
-  await drawPlayer(ctx, event.Victim, 935, 0, { showAttunement });
-  await drawTimestamp(ctx, event, w / 2, 50);
-  const assistCount = Math.max(event.GroupMembers.length, event.Participants.length);
-  if (assistCount > 1) await drawAssistCount(ctx, assistCount, w / 2, 290, { iconSize: 80 });
-  await drawFame(ctx, event, w / 2, 470);
-  if (lootValue) await drawLootValue(ctx, lootValue, w / 2, 675, { splitLootValue });
-  await drawAssistBar(ctx, event.Participants, 35, showAttunement ? 1350 : 1050, 1530, 80, 40);
+      await drawImage(ctx, path.join(assetsPath, "background.png"), -1, -1, 1602, 1554);
+      await drawPlayer(ctx, event.Killer, 15, 0, { showAttunement });
+      await drawPlayer(ctx, event.Victim, 935, 0, { showAttunement });
+      await drawTimestamp(ctx, event, w / 2, 50);
+      const assistCount = Math.max(event.GroupMembers.length, event.Participants.length);
+      if (assistCount > 1) await drawAssistCount(ctx, assistCount, w / 2, 290, { iconSize: 80 });
+      await drawFame(ctx, event, w / 2, 470);
+      if (lootValue) await drawLootValue(ctx, lootValue, w / 2, 675, { splitLootValue });
+      await drawAssistBar(ctx, event.Participants, 35, showAttunement ? 1350 : 1050, 1530, 80, 40);
 
-  const buffer = await optimizeImage(canvas.toBuffer(), 580);
-  canvas = null;
+      const buffer = await optimizeImage(canvas.toBuffer(), 580);
+      canvas = null;
 
-  if (buffer.length > 2 * 1048576) {
-    logger.warn(`Event image bigger than usual. Size: ${fileSizeFormatter(buffer.length)}`);
-  }
-  return buffer;
+      if (buffer.length > 2 * 1048576) {
+        logger.warn(`Event image bigger than usual. Size: ${fileSizeFormatter(buffer.length)}`);
+      }
+      return buffer;
+    },
+    {
+      timeout: 60 * SECOND,
+    },
+  );
 }
 
-async function generateInventoryImage(inventory, { lootValue, splitLootValue = false } = {}) {
-  const hasInventoryLootValue = lootValue && splitLootValue && lootValue.inventory;
+async function generateInventoryImage(event, { lootValue, splitLootValue = false } = {}) {
+  return memoize(
+    `eventVictimInventoryImage-${event.EventId}`,
+    async () => {
+      const inventory = event.Victim.Inventory.filter((i) => i != null);
+      const hasInventoryLootValue = lootValue && splitLootValue && lootValue.inventory;
 
-  const BLOCK_SIZE = 130;
-  const WIDTH = 1600;
-  const PADDING = 20;
+      const BLOCK_SIZE = 130;
+      const WIDTH = 1600;
+      const PADDING = 20;
 
-  let x = PADDING;
-  let y = PADDING;
-  const itemsPerRow = Math.floor((WIDTH - PADDING * 2) / BLOCK_SIZE);
-  const rows = Math.ceil(inventory.length / itemsPerRow);
+      let x = PADDING;
+      let y = PADDING;
+      const itemsPerRow = Math.floor((WIDTH - PADDING * 2) / BLOCK_SIZE);
+      const rows = Math.ceil(inventory.length / itemsPerRow);
 
-  let canvas = createCanvas(WIDTH, rows * BLOCK_SIZE + PADDING * 2 + (hasInventoryLootValue ? 35 : 0));
-  const w = canvas.width;
-  const ctx = canvas.getContext("2d");
+      let canvas = createCanvas(WIDTH, rows * BLOCK_SIZE + PADDING * 2 + (hasInventoryLootValue ? 35 : 0));
+      const w = canvas.width;
+      const ctx = canvas.getContext("2d");
 
-  await drawImage(ctx, path.join(assetsPath, "/background.png"), 0, 0);
+      await drawImage(ctx, path.join(assetsPath, "/background.png"), 0, 0);
 
-  for (const item of inventory) {
-    if (!item) continue;
+      for (const item of inventory) {
+        if (!item) continue;
 
-    if (x + BLOCK_SIZE > WIDTH - PADDING) {
-      x = PADDING;
-      y += BLOCK_SIZE;
-    }
-    await drawItem(ctx, item, x, y, { size: BLOCK_SIZE });
-    x += BLOCK_SIZE;
-  }
+        if (x + BLOCK_SIZE > WIDTH - PADDING) {
+          x = PADDING;
+          y += BLOCK_SIZE;
+        }
+        await drawItem(ctx, item, x, y, { size: BLOCK_SIZE });
+        x += BLOCK_SIZE;
+      }
 
-  if (hasInventoryLootValue) {
-    y += BLOCK_SIZE;
+      if (hasInventoryLootValue) {
+        y += BLOCK_SIZE;
 
-    ctx.beginPath();
-    ctx.font = "36px Roboto";
-    ctx.fillStyle = "#FFF";
-    ctx.strokeStyle = "#000";
-    ctx.lineWidth = 4;
-    const lootValueText = digitsFormatter(lootValue.inventory);
-    const lootValueTextWidth = ctx.measureText(lootValueText).width;
-    const lootValueLineHeight = ctx.measureText("M").width;
-    const lootValueIconSize = 45;
+        ctx.beginPath();
+        ctx.font = "36px Roboto";
+        ctx.fillStyle = "#FFF";
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 4;
+        const lootValueText = digitsFormatter(lootValue.inventory);
+        const lootValueTextWidth = ctx.measureText(lootValueText).width;
+        const lootValueLineHeight = ctx.measureText("M").width;
+        const lootValueIconSize = 45;
 
-    await drawImage(
-      ctx,
-      path.join(assetsPath, "lootValue.png"),
-      w - PADDING * 2 - lootValueIconSize - PADDING * 0.5 - lootValueTextWidth,
-      y,
-      lootValueIconSize,
-      lootValueIconSize,
-    );
+        await drawImage(
+          ctx,
+          path.join(assetsPath, "lootValue.png"),
+          w - PADDING * 2 - lootValueIconSize - PADDING * 0.5 - lootValueTextWidth,
+          y,
+          lootValueIconSize,
+          lootValueIconSize,
+        );
 
-    ctx.strokeText(lootValueText, w - PADDING * 2 - lootValueTextWidth, y + lootValueLineHeight * 1.1);
-    ctx.fillText(lootValueText, w - PADDING * 2 - lootValueTextWidth, y + lootValueLineHeight * 1.1);
-  }
+        ctx.strokeText(lootValueText, w - PADDING * 2 - lootValueTextWidth, y + lootValueLineHeight * 1.1);
+        ctx.fillText(lootValueText, w - PADDING * 2 - lootValueTextWidth, y + lootValueLineHeight * 1.1);
+      }
 
-  const buffer = await optimizeImage(canvas.toBuffer(), 900);
-  canvas = null;
+      const buffer = await optimizeImage(canvas.toBuffer(), 900);
+      canvas = null;
 
-  if (buffer.length > 1048576) {
-    logger.warn(`Event image bigger than usual. Size: ${fileSizeFormatter(buffer.length)}`);
-  }
-  return buffer;
+      if (buffer.length > 1048576) {
+        logger.warn(`Event image bigger than usual. Size: ${fileSizeFormatter(buffer.length)}`);
+      }
+      return buffer;
+    },
+    {
+      timeout: 60 * SECOND,
+    },
+  );
 }
 
 module.exports = {

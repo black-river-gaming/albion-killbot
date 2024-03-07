@@ -33,7 +33,7 @@ async function getEventInventoryImage(req, res) {
   if (!inventory || inventory.length === 0) return res.sendStatus(404);
 
   const lootValue = await eventsService.getEventVictimLootValue(event, { server });
-  const eventInventoryImage = await generateInventoryImage(inventory, { lootValue });
+  const eventInventoryImage = await generateInventoryImage(event, { lootValue });
 
   return res
     .set("Content-Disposition", `inline; filename="${event.EventId}-inventory.png"`)

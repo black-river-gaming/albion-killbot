@@ -44,8 +44,9 @@ module.exports = {
     },
     juicy: {
       enabled: getBool(process.env.FEATURE_JUICY_KILLS, true),
-      minFame: getNumber(process.env.FEATURE_JUICY_MIN_FAME, 1000000),
-      minLootValue: getNumber(process.env.FEATURE_JUICY_MIN_LOOT_VALUE, 10000000),
+      minFame: getNumber(process.env.FEATURE_JUICY_MIN_FAME, 2000000),
+      gucciLootValue: getNumber(process.env.FEATURE_JUICY_GUCCI_LOOT_VALUE, 15000000),
+      uberLootValue: getNumber(process.env.FEATURE_JUICY_UBER_LOOT_VALUE, 30000000),
     },
     rankings: {
       enabled: getBool(process.env.FEATURE_RANKINGS, true),
