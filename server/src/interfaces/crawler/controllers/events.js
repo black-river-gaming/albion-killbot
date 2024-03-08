@@ -1,43 +1,40 @@
 const config = require("config");
 
-const { SECOND, SERVERS, MINUTE } = require("../../../helpers/constants");
+const { SECOND, MINUTE } = require("../../../helpers/constants");
 const logger = require("../../../helpers/logger");
 const { runInterval } = require("../../../helpers/scheduler");
 
 const eventsService = require("../../../services/events");
 const { addRankingEvent } = require("../../../services/rankings");
-const { transformEvent } = require("../../../helpers/albion");
+const { transformEvent, SERVER_LIST } = require("../../../helpers/albion");
 
-const serverData = {
-  [SERVERS.WEST]: {
+const serverData = {};
+for (const server of SERVER_LIST) {
+  serverData[server.id] = {
     latestEventId: null,
     publishedEventIds: [],
-  },
-  [SERVERS.EAST]: {
-    latestEventId: null,
-    publishedEventIds: [],
-  },
-};
+  };
+}
 
 async function fetchEvents(server) {
-  const { latestEventId, publishedEventIds } = serverData[server];
+  const { latestEventId, publishedEventIds } = serverData[server.id];
 
   if (!latestEventId) {
-    logger.info(`[${server}] Retrieving first batch of events.`, { server });
+    logger.info(`[${server.name}] Retrieving first batch of events.`, { server });
   } else {
-    logger.info(`[${server}] Fetching Albion Online events from API up to event ${latestEventId}.`, {
+    logger.info(`[${server.name}] Fetching Albion Online events from API up to event ${latestEventId}.`, {
       server,
       latestEventId,
     });
   }
 
   const events = await eventsService.fetchEventsTo(latestEventId, { server });
-  if (events.length === 0) return logger.verbose(`[${server}] No new events.`, { server });
+  if (events.length === 0) return logger.verbose(`[${server.name}] No new events.`, { server });
 
   const eventsToPublish = [];
   for (const evt of events.sort((a, b) => a.EventId - b.EventId)) {
     if (latestEventId && evt.EventId <= latestEventId) {
-      logger.warn(`[${server}] The published id is lower than latestEvent! Skipping.`, {
+      logger.warn(`[${server.name}] The published id is lower than latestEvent! Skipping.`, {
         eventId: evt.EventId,
         latestEventId,
         server,
@@ -50,13 +47,13 @@ async function fetchEvents(server) {
     addRankingEvent(evt);
     eventsToPublish.push(evt);
     publishedEventIds.push(evt.EventId);
-    serverData[server].latestEventId = evt.EventId;
+    serverData[server.id].latestEventId = evt.EventId;
   }
 
   if (eventsToPublish.length > 0) {
     if (config.get("amqp.events.batch")) await eventsService.publishEvent(eventsToPublish);
 
-    logger.verbose(`[${server}] Published ${eventsToPublish.length} events.`, {
+    logger.verbose(`[${server.name}] Published ${eventsToPublish.length} events.`, {
       server,
       length: eventsToPublish.length,
       eventIds: eventsToPublish.map((event) => event.EventId),
@@ -65,7 +62,7 @@ async function fetchEvents(server) {
 }
 
 const fetchEventsDelayed = async (server) => {
-  const { publishedEventIds } = serverData[server];
+  const { publishedEventIds } = serverData[server.id];
 
   // Don't to that until we have published a minimum amount of events
   if (publishedEventIds.length < 1000) return;
@@ -78,7 +75,7 @@ const fetchEventsDelayed = async (server) => {
 
   for (const evt of events.sort((a, b) => a.EventId - b.EventId)) {
     if (!publishedEventIds.includes(evt.EventId)) {
-      logger.debug(`[${server}] Event ${evt.EventId} was not published in the normal crawl function!`, {
+      logger.debug(`[${server.name}] Event ${evt.EventId} was not published in the normal crawl function!`, {
         server,
         event: transformEvent(evt),
       });
@@ -94,7 +91,7 @@ const fetchEventsDelayed = async (server) => {
   if (eventsToPublish.length > 0) {
     if (config.get("amqp.events.batch")) await eventsService.publishEvent(eventsToPublish);
 
-    logger.warn(`[${server}] Published ${eventsToPublish.length} delayed events.`, {
+    logger.warn(`[${server.name}] Published ${eventsToPublish.length} delayed events.`, {
       server,
       eventIds: eventsToPublish.map((event) => event.EventId),
     });
@@ -102,27 +99,19 @@ const fetchEventsDelayed = async (server) => {
 };
 
 const init = async () => {
-  if (config.get("crawler.events.west")) {
-    runInterval("Fetch events for west server", fetchEvents, {
-      interval: 30 * SECOND,
-      runOnStart: true,
-      fnOpts: [SERVERS.WEST],
-    });
-    runInterval("Check missed events for west server", fetchEventsDelayed, {
-      interval: 5 * MINUTE,
-      fnOpts: [SERVERS.WEST],
-    });
-  }
-  if (config.get("crawler.events.east")) {
-    runInterval("Fetch events for east server", fetchEvents, {
-      interval: 30 * SECOND,
-      runOnStart: true,
-      fnOpts: [SERVERS.EAST],
-    });
-    runInterval("Check missed events for east server", fetchEventsDelayed, {
-      interval: 5 * MINUTE,
-      fnOpts: [SERVERS.EAST],
-    });
+  for (const server of SERVER_LIST) {
+    const configKey = `crawler.events.${server.id}`;
+    if (config.has(configKey) && config.get(configKey)) {
+      runInterval(`[${server.name}] Fetch events`, fetchEvents, {
+        interval: 30 * SECOND,
+        runOnStart: true,
+        fnOpts: [server],
+      });
+      runInterval(`[${server.name}] Fetch delayed events`, fetchEventsDelayed, {
+        interval: 5 * MINUTE,
+        fnOpts: [server],
+      });
+    }
   }
 };
 

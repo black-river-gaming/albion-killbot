@@ -8,14 +8,14 @@ const cache = require("./adapters/fsCache");
 
 const { sleep } = require("../helpers/scheduler");
 const logger = require("../helpers/logger");
-const { getVictimItems } = require("../helpers/albion");
+const { getVictimItems, SERVER_DEFAULT } = require("../helpers/albion");
 const { memoize } = require("../helpers/cache");
 const { average } = require("../helpers/utils");
-const { SERVERS, SECOND } = require("../helpers/constants");
+const { SECOND } = require("../helpers/constants");
 
 const ITEMS_DIR = "items";
 
-async function getEvent(eventId, { server = SERVERS.WEST }) {
+async function getEvent(eventId, { server = SERVER_DEFAULT }) {
   try {
     const event = await albionApiClient.getEvent(eventId, { server });
     event.server = server;
@@ -25,7 +25,7 @@ async function getEvent(eventId, { server = SERVERS.WEST }) {
   }
 }
 
-async function getEvents({ server = SERVERS.WEST, limit, offset }) {
+async function getEvents({ server = SERVER_DEFAULT, limit, offset }) {
   const events = await albionApiClient.getEvents({ server, limit, offset });
   return events.map((event) => ({ server, ...event }));
 }
@@ -40,7 +40,7 @@ async function getBattle(battleId, { server }) {
   }
 }
 
-async function getBattles({ server = SERVERS.WEST, limit, offset }) {
+async function getBattles({ server = SERVER_DEFAULT, limit, offset }) {
   const battles = await albionApiClient.getBattles({ server, limit, offset });
   return battles.map((battle) => ({ server, ...battle }));
 }
@@ -90,15 +90,15 @@ const getItemFile = async (item, tries = 0) => {
   return getItemFile(item, tries + 1);
 };
 
-async function getPlayer(playerId, { server = SERVERS.WEST, silent = false }) {
+async function getPlayer(playerId, { server = SERVER_DEFAULT, silent = false }) {
   try {
-    logger.verbose(`Fetch ${server} player: ${playerId}`);
+    logger.verbose(`Fetch ${server.name} player: ${playerId}`);
     const player = await albionApiClient.getPlayer(playerId, { server });
     player.server = server;
     return player;
   } catch (error) {
     if (!silent)
-      logger.error(`Failed to fetch ${server} player [${playerId}]: ${error.message}`, {
+      logger.error(`Failed to fetch ${server.name} player [${playerId}]: ${error.message}`, {
         error,
         server,
         silent,
@@ -108,29 +108,29 @@ async function getPlayer(playerId, { server = SERVERS.WEST, silent = false }) {
   }
 }
 
-async function getGuild(guildId, { server = SERVERS.WEST, rankings = false, silent = false }) {
+async function getGuild(guildId, { server = SERVER_DEFAULT, rankings = false, silent = false }) {
   try {
-    logger.verbose(`Fetch ${server} guild: ${guildId}`, { server, rankings, silent });
+    logger.verbose(`Fetch ${server.name} guild: ${guildId}`, { server, rankings, silent });
     const guild = await albionApiClient.getGuild(guildId, { server });
     guild.server = server;
 
     if (rankings) {
       guild.rankings = {};
-      logger.verbose(`[${guild.Name}/${server}] Fetching PvE rankings...`);
+      logger.verbose(`[${guild.Name}/${server.name}] Fetching PvE rankings...`);
       guild.rankings.pve = await albionApiClient.getStatistics(guildId, albionApiClient.STATISTICS_TYPES.PVE, {
         server,
       });
-      logger.verbose(`[${guild.Name}/${server}] Fetching PvP rankings...`);
+      logger.verbose(`[${guild.Name}/${server.name}] Fetching PvP rankings...`);
       guild.rankings.pvp = await albionApiClient.getPlayerFame(guildId, {
         server,
       });
-      logger.verbose(`[${guild.Name}/${server}] Fetching Gathering rankings...`);
+      logger.verbose(`[${guild.Name}/${server.name}] Fetching Gathering rankings...`);
       guild.rankings.gathering = await albionApiClient.getStatistics(
         guildId,
         albionApiClient.STATISTICS_TYPES.GATHERING,
         { server },
       );
-      logger.verbose(`[${guild.Name}/${server}] Fetching Crafting rankings...`);
+      logger.verbose(`[${guild.Name}/${server.name}] Fetching Crafting rankings...`);
       guild.rankings.crafting = await albionApiClient.getStatistics(
         guildId,
         albionApiClient.STATISTICS_TYPES.CRAFTING,
@@ -141,7 +141,7 @@ async function getGuild(guildId, { server = SERVERS.WEST, rankings = false, sile
     return guild;
   } catch (error) {
     if (!silent)
-      logger.error(`Failed to fetch ${server} guild [${guildId}]: ${error.message}`, {
+      logger.error(`Failed to fetch ${server.name} guild [${guildId}]: ${error.message}`, {
         error,
         server,
         silent,
@@ -151,15 +151,15 @@ async function getGuild(guildId, { server = SERVERS.WEST, rankings = false, sile
   }
 }
 
-async function getAlliance(allianceId, { server = SERVERS.WEST, silent = false }) {
+async function getAlliance(allianceId, { server = SERVER_DEFAULT, silent = false }) {
   try {
-    logger.verbose(`Fetch ${server} alliance: ${allianceId}`, { allianceId, server, silent });
+    logger.verbose(`Fetch ${server.name} alliance: ${allianceId}`, { allianceId, server, silent });
     const alliance = await albionApiClient.getAlliance(allianceId, { server });
     alliance.server = server;
     return alliance;
   } catch (error) {
     if (!silent)
-      logger.error(`Failed to fetch ${server} alliance [${allianceId}]: ${error.message}`, {
+      logger.error(`Failed to fetch ${server.name} alliance [${allianceId}]: ${error.message}`, {
         error,
         server,
         silent,
@@ -169,9 +169,9 @@ async function getAlliance(allianceId, { server = SERVERS.WEST, silent = false }
   }
 }
 
-async function search(query, { server = SERVERS.WEST }) {
+async function search(query, { server = SERVER_DEFAULT }) {
   try {
-    logger.verbose(`Searching entities in ${server} for: ${query}`, { query, server });
+    logger.verbose(`Searching entities in ${server.name} for: ${query}`, { query, server });
     return await albionApiClient.search(query, { server });
   } catch (error) {
     logger.error(`Failed to search entities in API: ${error.message}`, { error, query, server });
@@ -254,9 +254,9 @@ const useHistoryLootValue = async (server, itemList, qualities) => {
   };
 };
 
-async function getLootValue(event, { server = SERVERS.WEST }) {
+async function getLootValue(event, { server = SERVER_DEFAULT }) {
   return memoize(
-    `albion.events.${server}.${event.EventId}.lootValue`,
+    `albion.events.${server.id}.${event.EventId}.lootValue`,
     async () => {
       try {
         const victimItems = getVictimItems(event);

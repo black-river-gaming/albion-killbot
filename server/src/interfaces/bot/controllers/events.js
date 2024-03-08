@@ -5,7 +5,7 @@ const { REPORT_MODES } = require("../../../helpers/constants");
 const { getTrackedEvent } = require("../../../helpers/tracking");
 const { embedEvent, embedEventImage, embedEventInventoryImage } = require("../../../helpers/embeds");
 const { transformGuild } = require("../../../helpers/discord");
-const { transformEvent } = require("../../../helpers/albion");
+const { getServerById, transformEvent } = require("../../../helpers/albion");
 
 const { subscribeEvents, getEventVictimLootValue } = require("../../../services/events");
 const { generateEventImage, generateInventoryImage } = require("../../../services/images");
@@ -30,13 +30,19 @@ const sendEvent = async ({ client, server, guild, event, settings, track, limits
   };
 
   if (premium && !(await hasSubscriptionByServerId(guild.id))) {
-    logger.debug(`[${server}] Skipping event ${event.EventId} to "${guild.name}" because lack of premium.`, logMeta);
+    logger.debug(
+      `[${server.name}] Skipping event ${event.EventId} to "${guild.name}" because lack of premium.`,
+      logMeta,
+    );
     return;
   }
 
   const setting = settings[type];
   if (!setting) {
-    logger.debug(`[${server}] Skipping event ${event.EventId} to "${guild.name}" because lack of settings.`, logMeta);
+    logger.debug(
+      `[${server.name}] Skipping event ${event.EventId} to "${guild.name}" because lack of settings.`,
+      logMeta,
+    );
     return;
   }
 
@@ -51,14 +57,14 @@ const sendEvent = async ({ client, server, guild, event, settings, track, limits
 
   if (!enabled || !channel) {
     logger.debug(
-      `[${server}] Skipping event ${event.EventId} to "${guild.name}" because disabled/channel not set.`,
+      `[${server.name}] Skipping event ${event.EventId} to "${guild.name}" because disabled/channel not set.`,
       logMeta,
     );
     return;
   }
 
   logger.info(
-    `[${server}] Sending ${good ? "kill" : juicy ? "juicy" : "death"} event ${event.EventId} to "${guild.name}".`,
+    `[${server.name}] Sending ${good ? "kill" : juicy ? "juicy" : "death"} event ${event.EventId} to "${guild.name}".`,
     logMeta,
   );
 
@@ -94,9 +100,10 @@ const sendEvent = async ({ client, server, guild, event, settings, track, limits
 
 async function subscribe(client) {
   const cb = async (event) => {
-    const { server } = event;
+    const server = getServerById(event.server);
+    if (!server) throw new Error(`Albion Server not found: ${event.server}`);
 
-    logger.verbose(`[${server}] Processing event: ${event.EventId}`, {
+    logger.verbose(`[${server.name}] Processing event: ${event.EventId}`, {
       server,
       guilds: client.guilds.cache.size,
       eventId: event.EventId,
@@ -111,7 +118,7 @@ async function subscribe(client) {
         // This should never happen
         if (!settings || !track || !limits) {
           logger.warn(
-            `[${server}] Skipping event ${event.EventId} to "${guild.name}" because settings/track/limits not found.`,
+            `[${server.name}] Skipping event ${event.EventId} to "${guild.name}" because settings/track/limits not found.`,
             {
               server,
               guild: transformGuild(guild),
@@ -151,7 +158,7 @@ async function subscribe(client) {
         }
       }
     } catch (error) {
-      logger.error(`[${server}] Error processing event ${event.EventId}: ${error.message}\n${error.stack}`, {
+      logger.error(`[${server.name}] Error processing event ${event.EventId}: ${error.message}\n${error.stack}`, {
         error,
       });
     }
@@ -161,9 +168,10 @@ async function subscribe(client) {
 
   const batchCb = async (events) => {
     if (!Array.isArray(events) || events.length === 0) return true;
-    const server = events[0].server;
+    const server = getServerById(events[0].server);
+    if (!server) throw new Error(`Albion Server not found: ${events[0].server}`);
 
-    logger.verbose(`[${server}] Processing ${events.length} events.`, {
+    logger.verbose(`[${server.name}] Processing ${events.length} events.`, {
       server,
       events: events.length,
       guilds: client.guilds.cache.size,
@@ -173,7 +181,7 @@ async function subscribe(client) {
       await cb(event);
     }
 
-    logger.debug(`[${server}] Process events complete.`);
+    logger.debug(`[${server.name}] Process events complete.`);
     return true;
   };
 

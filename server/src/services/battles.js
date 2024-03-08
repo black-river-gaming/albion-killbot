@@ -22,7 +22,10 @@ async function fetchBattlesTo(latestBattleId, { server, offset = 0, silent = fal
 
     if (!silent) {
       logger.verbose(
-        `[${server}] Fetching battles [offset: ${String(offset).padStart(3, "0")}, latestBattleId: ${latestBattleId}]`,
+        `[${server.name}] Fetching battles [offset: ${String(offset).padStart(
+          3,
+          "0",
+        )}, latestBattleId: ${latestBattleId}]`,
         {
           server,
           offset,
@@ -40,7 +43,7 @@ async function fetchBattlesTo(latestBattleId, { server, offset = 0, silent = fal
       // Ignore items already on the queue
       if (battles.findIndex((e) => e.id === batl.id) >= 0) return true;
       // Set battle server for later
-      batl.server = server;
+      batl.server = server.id;
       battles.push(batl);
       return true;
     });
@@ -50,7 +53,7 @@ async function fetchBattlesTo(latestBattleId, { server, offset = 0, silent = fal
       : fetchBattlesTo(latestBattleId, { server, offset: offset + albionBattles.length, silent }, battles);
   } catch (error) {
     if (!silent) {
-      logger.warn(`[${server}] Unable to fetch battle data from API [${error.message}]. Retrying...`, {
+      logger.warn(`[${server.name}] Unable to fetch battle data from API [${error.message}]. Retrying...`, {
         server,
         error,
       });

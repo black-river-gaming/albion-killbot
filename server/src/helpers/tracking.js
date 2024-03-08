@@ -32,19 +32,23 @@ function getTrackedEvent(event, track, limits) {
     return null;
   }
 
+  const playerIds = players.filter((item) => item.server === event.server).map((item) => item.id);
+  const guildIds = guilds.filter((item) => item.server === event.server).map((item) => item.id);
+  const allianceIds = alliances.filter((item) => item.server === event.server).map((item) => item.id);
+
   // Scan track lists until we find any tracked object
   let good = false;
   let tracked = null;
 
   if (!tracked) good = true;
-  if (!tracked) tracked = players.find((item) => item.id === event.Killer.Id);
-  if (!tracked) tracked = guilds.find((item) => item.id === event.Killer.GuildId);
-  if (!tracked) tracked = alliances.find((item) => item.id === event.Killer.AllianceId);
+  if (!tracked) tracked = playerIds.includes(event.Killer.Id);
+  if (!tracked) tracked = guildIds.includes(event.Killer.GuildId);
+  if (!tracked) tracked = allianceIds.includes(event.Killer.AllianceId);
 
   if (!tracked) good = false;
-  if (!tracked) tracked = players.find((item) => item.id === event.Victim.Id);
-  if (!tracked) tracked = guilds.find((item) => item.id === event.Victim.GuildId);
-  if (!tracked) tracked = alliances.find((item) => item.id === event.Victim.AllianceId);
+  if (!tracked) tracked = playerIds.includes(event.Victim.Id);
+  if (!tracked) tracked = guildIds.includes(event.Victim.GuildId);
+  if (!tracked) tracked = allianceIds.includes(event.Victim.AllianceId);
 
   if (tracked) {
     // We need to create a new object here so we don't change the original event
@@ -63,14 +67,14 @@ function getTrackedBattle(battle, track, limits) {
     return null;
   }
 
-  const playerIds = players.filter((item) => item.server === battle.server).map((item) => item.id);
-  const guildIds = guilds.filter((item) => item.server === battle.server).map((item) => item.id);
-  const allianceIds = alliances.filter((item) => item.server === battle.server).map((item) => item.id);
-
   // Ignore battles without fame
   if (battle.totalFame <= 0) {
     return null;
   }
+
+  const playerIds = players.filter((item) => item.server === battle.server).map((item) => item.id);
+  const guildIds = guilds.filter((item) => item.server === battle.server).map((item) => item.id);
+  const allianceIds = alliances.filter((item) => item.server === battle.server).map((item) => item.id);
 
   // Check for tracked ids in players, guilds and alliances
   const hasTrackedPlayer = Object.keys(battle.players || {}).some((id) => playerIds.indexOf(id) >= 0);

@@ -4,6 +4,7 @@ const logger = require("../../../helpers/logger");
 const { getTrackedBattle, hasMinimumTreshold } = require("../../../helpers/tracking");
 const { embedBattle } = require("../../../helpers/embeds");
 const { transformGuild } = require("../../../helpers/discord");
+const { getServerById } = require("../../../helpers/albion");
 
 const { subscribeBattles } = require("../../../services/battles");
 const { getSettings } = require("../../../services/settings");
@@ -14,9 +15,10 @@ const { sendNotification } = require("./notifications");
 
 async function subscribe(client) {
   const cb = async (battle) => {
-    const { server } = battle;
+    const server = getServerById(battle.server);
+    if (!server) throw new Error(`Albion Server not found: ${battle.server}`);
 
-    logger.verbose(`[${server}] Received battle: ${battle.id}`, {
+    logger.verbose(`[${server.name}] Received battle: ${battle.id}`, {
       server,
       guilds: client.guilds.cache.size,
       battleId: battle.id,
@@ -31,7 +33,7 @@ async function subscribe(client) {
         // This should never happen
         if (!settings || !track || !limits) {
           logger.warn(
-            `[${server}] Skipping battle ${battle.id} to "${guild.name}" because settings/track/limits not found.`,
+            `[${server.name}] Skipping battle ${battle.id} to "${guild.name}" because settings/track/limits not found.`,
             {
               server,
               guild: transformGuild(guild),
@@ -50,7 +52,7 @@ async function subscribe(client) {
 
         if (!enabled || !channel) {
           logger.debug(
-            `[${server}] Skipping battle ${battle.id} to "${guild.name}" because disabled/channel not set.`,
+            `[${server.name}] Skipping battle ${battle.id} to "${guild.name}" because disabled/channel not set.`,
             {
               server,
               guild: transformGuild(guild),
@@ -61,7 +63,7 @@ async function subscribe(client) {
           continue;
         }
         if (!hasMinimumTreshold(battle, threshold)) {
-          logger.debug(`[${server}] Skipping battle ${battle.id} to ${guild.name} because of threshold.`, {
+          logger.debug(`[${server.name}] Skipping battle ${battle.id} to ${guild.name} because of threshold.`, {
             guild: transformGuild(guild),
             battle,
             settings,
@@ -69,7 +71,7 @@ async function subscribe(client) {
           continue;
         }
 
-        logger.info(`[${server}] Sending battle ${battle.id} to "${guild.name}".`, {
+        logger.info(`[${server.name}] Sending battle ${battle.id} to "${guild.name}".`, {
           guild: transformGuild(guild),
           battle,
           settings,
@@ -79,7 +81,7 @@ async function subscribe(client) {
         await sendNotification(client, channel, embedBattle(battle, { locale, providerId }));
       }
     } catch (error) {
-      logger.error(`[${server}] Error processing battle ${battle.id}: ${error.message}`, { error });
+      logger.error(`[${server.name}] Error processing battle ${battle.id}: ${error.message}`, { error });
     }
 
     return true;
@@ -87,9 +89,10 @@ async function subscribe(client) {
 
   const batchCb = async (battles) => {
     if (!Array.isArray(battles) || battles.length === 0) return true;
-    const server = battles[0].server;
+    const server = getServerById(battles[0].server);
+    if (!server) throw new Error(`Albion Server not found: ${battles[0].server}`);
 
-    logger.verbose(`[${server}] Processing ${battles.length} battles.`, {
+    logger.verbose(`[${server.name}] Processing ${battles.length} battles.`, {
       server,
       events: battles.length,
       guilds: client.guilds.cache.size,
@@ -99,7 +102,7 @@ async function subscribe(client) {
       await cb(battle);
     }
 
-    logger.debug(`[${server}] Process battles complete.`);
+    logger.debug(`[${server.name}] Process battles complete.`);
     return true;
   };
 

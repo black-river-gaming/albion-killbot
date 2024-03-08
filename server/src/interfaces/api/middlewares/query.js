@@ -1,8 +1,8 @@
-const { SERVERS, SERVER_LIST } = require("../../../helpers/constants");
+const { getServerById, SERVER_DEFAULT } = require("../../../helpers/albion");
 
 function validateServer(req, res, next) {
-  if (!req.query.server) req.query.server = SERVERS.WEST;
-  if (SERVER_LIST.indexOf(req.query.server) === -1) return res.sendStatus(400);
+  if (!req.query.server) req.query.server = SERVER_DEFAULT.id;
+  if (!getServerById(req.query.server)) return res.sendStatus(400);
 
   next();
 }
