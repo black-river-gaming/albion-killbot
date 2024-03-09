@@ -1,30 +1,30 @@
 const albion = require("../ports/albion");
 const { toTrackEntity, getServerById } = require("../helpers/albion");
 
-async function getPlayer(serverId, playerId) {
-  const player = await albion.getPlayer(playerId, { server: getServerById(serverId), silent: true });
-  return toTrackEntity(player, serverId);
+async function getPlayer(server, playerId) {
+  const player = await albion.getPlayer(playerId, { server, silent: true });
+  return toTrackEntity(player, server);
 }
 
-async function getGuild(serverId, guildId) {
+async function getGuild(server, guildId) {
   const guild = await albion.getGuild(guildId, {
-    server: getServerById(serverId),
+    server: getServerById(server),
     rankings: false,
     silent: true,
   });
-  return toTrackEntity(guild, serverId);
+  return toTrackEntity(guild, server);
 }
 
-async function getAlliance(serverId, allianceId) {
-  const alliance = await albion.getAlliance(allianceId, { server: getServerById(serverId), silent: true });
-  return toTrackEntity(alliance, serverId);
+async function getAlliance(server, allianceId) {
+  const alliance = await albion.getAlliance(allianceId, { server, silent: true });
+  return toTrackEntity(alliance, server);
 }
 
-async function search(serverId, q) {
-  const search = await albion.search(q, { server: getServerById(serverId) });
+async function search(server, q) {
+  const search = await albion.search(q, { server });
   return {
-    players: search.players.map((player) => toTrackEntity(player, serverId)),
-    guilds: search.guilds.map((guild) => toTrackEntity(guild, serverId)),
+    players: search.players.map((player) => toTrackEntity(player, server)),
+    guilds: search.guilds.map((guild) => toTrackEntity(guild, server)),
     alliances: [],
   };
 }

@@ -32,7 +32,7 @@ function toTrackEntity(entity, server) {
     return {
       id: entity.Id,
       name: entity.Name,
-      server,
+      server: server.id,
     };
   }
 
@@ -40,7 +40,7 @@ function toTrackEntity(entity, server) {
     return {
       id: entity.AllianceId,
       name: entity.AllianceTag,
-      server,
+      server: server.id,
     };
   }
 
