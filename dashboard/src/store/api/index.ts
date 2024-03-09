@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IConstants } from "types/constants";
 import { IServer, ServerPartial } from "types/server";
 import { ISettings } from "types/settings";
 import { ISearchResults, ITrackList } from "types/track";
 import { User } from "types/user";
+import { IGetConstantsRequest, IGetConstantsResponse } from "./types";
 
 const { REACT_APP_API_URL = "/api" } = process.env;
 
@@ -14,7 +14,7 @@ const api = createApi({
   }),
   tagTypes: ["Admin", "User", "Subscription", "Server"],
   endpoints: (builder) => ({
-    fetchConstants: builder.query<IConstants, void>({
+    getConstants: builder.query<IGetConstantsResponse, IGetConstantsRequest>({
       query: () => `/constants`,
     }),
     auth: builder.mutation<void, string>({
@@ -94,7 +94,7 @@ const api = createApi({
 
 export const {
   useAuthMutation,
-  useFetchConstantsQuery,
+  useGetConstantsQuery,
   useFetchServerQuery,
   useFetchServersQuery,
   useFetchUserQuery,

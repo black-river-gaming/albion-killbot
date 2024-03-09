@@ -7,8 +7,8 @@ import { getFrequency } from "helpers/utils";
 import { Button, Col, Form, Row, Stack } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import {
-  useFetchConstantsQuery,
   useFetchServerQuery,
+  useGetConstantsQuery,
   useTestNotificationSettingsMutation,
 } from "store/api";
 import {
@@ -23,7 +23,7 @@ const RankingsPage = () => {
   const { serverId = "" } = useParams();
 
   const dispatch = useAppDispatch();
-  const constants = useFetchConstantsQuery();
+  const constants = useGetConstantsQuery();
   const server = useFetchServerQuery(serverId);
   const rankings = useAppSelector((state) => state.settings.rankings);
   const [dispatchTestNotification, testNotification] =

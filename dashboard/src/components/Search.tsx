@@ -2,7 +2,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Button, Card, Dropdown, Form, InputGroup } from "react-bootstrap";
-import { useFetchConstantsQuery, useLazySearchQuery } from "store/api";
+import { useGetConstantsQuery, useLazySearchQuery } from "store/api";
 import { IAlbionServer } from "types/constants";
 import { Limits } from "types/limits";
 import SearchResults from "./SearchResults";
@@ -13,7 +13,7 @@ interface ISearchProps {
 }
 
 const Search = ({ limits }: ISearchProps) => {
-  const constants = useFetchConstantsQuery();
+  const constants = useGetConstantsQuery();
   const [query, setQuery] = useState("");
   const [server, setServer] = useState<IAlbionServer>();
   const [search, searchResults] = useLazySearchQuery();

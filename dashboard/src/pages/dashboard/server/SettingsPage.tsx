@@ -9,7 +9,7 @@ import Loader from "components/common/Loader";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { getLocaleName } from "helpers/utils";
 import { Button, Form, OverlayTrigger, Stack, Tooltip } from "react-bootstrap";
-import { useFetchConstantsQuery } from "store/api";
+import { useGetConstantsQuery } from "store/api";
 import {
   setGeneralGuildTags,
   setGeneralLocale,
@@ -18,7 +18,7 @@ import {
 } from "store/settings";
 
 const SettingsPage = () => {
-  const constants = useFetchConstantsQuery();
+  const constants = useGetConstantsQuery();
   const general = useAppSelector((state) => state.settings.general);
   const dispatch = useAppDispatch();
 

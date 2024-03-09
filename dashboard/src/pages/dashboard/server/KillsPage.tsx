@@ -7,8 +7,8 @@ import { capitalize } from "helpers/utils";
 import { Button, Col, Form, Row, Stack } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import {
-  useFetchConstantsQuery,
   useFetchServerQuery,
+  useGetConstantsQuery,
   useTestNotificationSettingsMutation,
 } from "store/api";
 import {
@@ -22,7 +22,7 @@ const KillsPage = () => {
   const { serverId = "" } = useParams();
 
   const dispatch = useAppDispatch();
-  const constants = useFetchConstantsQuery();
+  const constants = useGetConstantsQuery();
   const server = useFetchServerQuery(serverId);
   const kills = useAppSelector((state) => state.settings.kills);
   const [dispatchTestNotification, testNotification] =

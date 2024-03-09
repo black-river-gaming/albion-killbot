@@ -8,8 +8,8 @@ import { capitalize } from "helpers/utils";
 import { Button, Col, Form, Row, Stack } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import {
-  useFetchConstantsQuery,
   useFetchServerQuery,
+  useGetConstantsQuery,
   useTestNotificationSettingsMutation,
 } from "store/api";
 import { useGetServerSubscriptionQuery } from "store/api/server";
@@ -24,7 +24,7 @@ const JuicyPage = () => {
   const { serverId = "" } = useParams();
   const dispatch = useAppDispatch();
 
-  const constants = useFetchConstantsQuery();
+  const constants = useGetConstantsQuery();
   const server = useFetchServerQuery(serverId);
   const subscription = useGetServerSubscriptionQuery({ serverId });
 

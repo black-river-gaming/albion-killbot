@@ -1,7 +1,7 @@
 import { useAppDispatch } from "helpers/hooks";
 import { capitalize } from "helpers/utils";
 import { Badge, Button, ListGroup, Stack } from "react-bootstrap";
-import { useFetchConstantsQuery } from "store/api";
+import { useGetConstantsQuery } from "store/api";
 import { untrackAlliance, untrackGuild, untrackPlayer } from "store/track";
 import { ITrackList, TRACK_TYPE } from "types/track";
 import TrackItemOptions from "./TrackItemOptions";
@@ -14,7 +14,7 @@ interface ITrackListItemProps {
 
 const TrackList = ({ type, limit = 0, list }: ITrackListItemProps) => {
   const dispatch = useAppDispatch();
-  const constants = useFetchConstantsQuery();
+  const constants = useGetConstantsQuery();
 
   return (
     <ListGroup>
