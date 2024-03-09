@@ -1,8 +1,8 @@
 const axios = require("axios");
 const moment = require("moment");
-const { SERVERS } = require("../../helpers/constants");
 const logger = require("../../helpers/logger");
 const { sleep } = require("../../helpers/scheduler");
+const { SERVERS } = require("../../helpers/albion");
 
 const ALLIANCES_ENDPOINT = "alliances";
 const BATTLES_ENDPOINT = "battles";
@@ -23,11 +23,11 @@ const DEFAULT_LIMIT = 51;
 
 const ALBION_SERVERS = [
   {
-    name: SERVERS.WEST,
+    id: SERVERS.AMERICAS.id,
     url: "https://gameinfo.albiononline.com/api/gameinfo/",
   },
   {
-    name: SERVERS.EAST,
+    id: SERVERS.ASIA.id,
     url: "https://gameinfo-sgp.albiononline.com/api/gameinfo/",
   },
 ];
@@ -39,7 +39,7 @@ const albionApiClient = axios.create({
 // Setup timeouts for crawler axios client because sometimes server just hangs indefinetly
 albionApiClient.interceptors.request.use((config) => {
   if (config.server) {
-    const server = ALBION_SERVERS.find((server) => server.name === config.server);
+    const server = ALBION_SERVERS.find((server) => server.id === config.server.id);
     if (server) config.baseURL = server.url;
   }
 

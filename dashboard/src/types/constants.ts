@@ -1,3 +1,8 @@
+export interface IAlbionServer {
+  id: string;
+  name: string;
+}
+
 export interface IConstants {
   languages: string[];
   modes: string[];
@@ -8,6 +13,6 @@ export interface IConstants {
     events: boolean;
     battles: boolean;
   }[];
-  servers: string[];
+  servers: IAlbionServer[];
   subscriptionStatuses: string[];
 }

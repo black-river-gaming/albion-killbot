@@ -40,7 +40,6 @@ async function reload(client) {
     logger.verbose(`Successfully reloaded ${data.length} application slash commands.`);
   } catch (error) {
     logger.error(`An error ocurred while reloading slash commands: ${error.message}`, { error });
-    console.error(error);
   }
 }
 

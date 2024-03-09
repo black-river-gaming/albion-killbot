@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { SERVERS } = require("../../../helpers/constants");
+const { SERVER_LIST } = require("../../../helpers/albion");
 const { getLocale } = require("../../../helpers/locale");
 const { getTrackedItem } = require("../../../helpers/tracking");
 const { removeTrack, TRACK_TYPE } = require("../../../services/track");
@@ -11,16 +11,16 @@ const player = (subcommand) =>
     .setName("player")
     .setDescription(t("HELP.UNTRACK"))
     .addStringOption((option) =>
-      option.setName("server").setDescription(t("TRACK.SERVER.DESCRIPTION")).setRequired(true).setChoices(
-        {
-          name: SERVERS.WEST,
-          value: SERVERS.WEST,
-        },
-        {
-          name: SERVERS.EAST,
-          value: SERVERS.EAST,
-        },
-      ),
+      option
+        .setName("server")
+        .setDescription(t("TRACK.SERVER.DESCRIPTION"))
+        .setRequired(true)
+        .setChoices(
+          ...SERVER_LIST.map((server) => ({
+            name: server.name,
+            value: server.id,
+          })),
+        ),
     )
     .addStringOption((option) =>
       option.setName("player").setDescription(t("TRACK.PLAYERS.DESCRIPTION")).setRequired(true),
@@ -31,16 +31,16 @@ const guild = (subcommand) =>
     .setName("guild")
     .setDescription(t("HELP.UNTRACK"))
     .addStringOption((option) =>
-      option.setName("server").setDescription(t("TRACK.SERVER.DESCRIPTION")).setRequired(true).setChoices(
-        {
-          name: SERVERS.WEST,
-          value: SERVERS.WEST,
-        },
-        {
-          name: SERVERS.EAST,
-          value: SERVERS.EAST,
-        },
-      ),
+      option
+        .setName("server")
+        .setDescription(t("TRACK.SERVER.DESCRIPTION"))
+        .setRequired(true)
+        .setChoices(
+          ...SERVER_LIST.map((server) => ({
+            name: server.name,
+            value: server.id,
+          })),
+        ),
     )
     .addStringOption((option) =>
       option.setName("guild").setDescription(t("TRACK.GUILDS.DESCRIPTION")).setRequired(true),
@@ -51,16 +51,16 @@ const alliance = (subcommand) =>
     .setName("alliance")
     .setDescription(t("HELP.UNTRACK"))
     .addStringOption((option) =>
-      option.setName("server").setDescription(t("TRACK.SERVER.DESCRIPTION")).setRequired(true).setChoices(
-        {
-          name: SERVERS.WEST,
-          value: SERVERS.WEST,
-        },
-        {
-          name: SERVERS.EAST,
-          value: SERVERS.EAST,
-        },
-      ),
+      option
+        .setName("server")
+        .setDescription(t("TRACK.SERVER.DESCRIPTION"))
+        .setRequired(true)
+        .setChoices(
+          ...SERVER_LIST.map((server) => ({
+            name: server.name,
+            value: server.id,
+          })),
+        ),
     )
     .addStringOption((option) =>
       option.setName("alliance").setDescription(t("TRACK.ALLIANCE.DESCRIPTION")).setRequired(true),

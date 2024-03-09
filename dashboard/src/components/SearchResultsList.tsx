@@ -1,4 +1,5 @@
 import { Badge, Button, ButtonGroup, ListGroup, Stack } from "react-bootstrap";
+import { useFetchConstantsQuery } from "store/api";
 import { ITrackList } from "types/track";
 
 interface ISearchResultListsProps {
@@ -17,6 +18,8 @@ const SearchResultsList = ({
   track,
   onTrackClick,
 }: ISearchResultListsProps) => {
+  const constants = useFetchConstantsQuery();
+
   return (
     <ListGroup>
       <ListGroup.Item
@@ -27,10 +30,16 @@ const SearchResultsList = ({
       </ListGroup.Item>
 
       {list.map((item) => {
-        const { id, name, server } = item;
+        if (!constants.data) return null;
+        const server = constants.data.servers.find(
+          (server) => server.id === item.server
+        );
+        if (!server) return null;
+
+        const { id, name } = item;
         const isTracked =
           track &&
-          track.some((item) => item.id === id && item.server === server);
+          track.some((item) => item.id === id && item.server === server.id);
 
         return (
           <ListGroup.Item key={id} className="paper">
@@ -43,9 +52,7 @@ const SearchResultsList = ({
                   className="d-flex align-items-baseline"
                 >
                   <div>{name}</div>
-                  <Badge bg={server.toLowerCase().replace(" ", "-")}>
-                    {server}
-                  </Badge>
+                  {server && <Badge bg={server.id}>{server.name}</Badge>}
                 </Stack>
               </Stack>
               <ButtonGroup size="sm">
@@ -58,7 +65,7 @@ const SearchResultsList = ({
                     size="sm"
                     variant="success"
                     onClick={(e) => {
-                      return onTrackClick(e, { id, name, server });
+                      return onTrackClick(e, item);
                     }}
                   >
                     Add

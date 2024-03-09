@@ -1,10 +1,5 @@
-const {
-  REPORT_PROVIDERS,
-  REPORT_MODES,
-  SERVER_LIST,
-  SUBSCRIPTION_STATUS,
-  RANKING_MODES,
-} = require("../../../helpers/constants");
+const { SERVER_LIST } = require("../../../helpers/albion");
+const { REPORT_PROVIDERS, REPORT_MODES, SUBSCRIPTION_STATUS, RANKING_MODES } = require("../../../helpers/constants");
 const { getLocale } = require("../../../helpers/locale");
 
 const router = require("express").Router();

@@ -1,13 +1,13 @@
 const axios = require("axios");
-const { SERVERS } = require("../../helpers/constants");
+const { SERVERS } = require("../../helpers/albion");
 
 const ALBION_SERVERS = [
   {
-    name: SERVERS.WEST,
+    id: SERVERS.AMERICAS.id,
     url: "https://www.albion-online-data.com/api/v2/stats/",
   },
   {
-    name: SERVERS.EAST,
+    id: SERVERS.ASIA.id,
     url: "https://east.albion-online-data.com/api/v2/stats/",
   },
 ];
@@ -18,7 +18,7 @@ const albionDataApiClient = axios.create({
 
 albionDataApiClient.interceptors.request.use((config) => {
   if (config.server) {
-    const server = ALBION_SERVERS.find((server) => server.name === config.server);
+    const server = ALBION_SERVERS.find((server) => server.id === config.server.id);
     if (server) config.baseURL = server.url;
   }
 

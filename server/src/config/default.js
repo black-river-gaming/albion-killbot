@@ -120,12 +120,12 @@ module.exports = {
 
   crawler: {
     events: {
-      west: true,
-      east: true,
+      americas: true,
+      asia: true,
     },
     battles: {
-      west: true,
-      east: true,
+      americas: true,
+      asia: true,
     },
   },
 };

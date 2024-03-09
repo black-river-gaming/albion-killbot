@@ -47,8 +47,8 @@ const theme: ThemeProps = {
   },
 
   servers: {
-    "Albion West": "#33673b",
-    "Albion East": "#cc3f0c",
+    americas: "#33673b",
+    asia: "#cc3f0c",
   },
 };
 

@@ -3,13 +3,6 @@ const MINUTE = SECOND * 60;
 const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;
 
-const SERVERS = {
-  EAST: "Albion East",
-  WEST: "Albion West",
-};
-
-const SERVER_LIST = [SERVERS.WEST, SERVERS.EAST];
-
 const SUBSCRIPTION_STATUS = {
   FREE: "Free",
   ACTIVE: "Active",
@@ -22,8 +15,8 @@ const REPORT_MODES = {
 };
 
 const albionKillboardServers = {
-  "Albion West": "live_us",
-  "Albion East": "live_sgp",
+  americas: "live_us",
+  asia: "live_sgp",
 };
 
 const REPORT_PROVIDERS = [
@@ -64,7 +57,5 @@ module.exports = {
   RANKING_MODES,
   REPORT_MODES,
   REPORT_PROVIDERS,
-  SERVERS,
-  SERVER_LIST,
   SUBSCRIPTION_STATUS,
 };

@@ -1,3 +1,20 @@
+// This stores the information about servers used in the entire application
+const SERVERS = {
+  AMERICAS: {
+    id: "americas",
+    name: "Albion West",
+  },
+  ASIA: {
+    id: "asia",
+    name: "Albion East",
+  },
+};
+const SERVER_DEFAULT = SERVERS.AMERICAS;
+// This is an ordered list we'd like to display
+const SERVER_LIST = [SERVERS.AMERICAS, SERVERS.ASIA];
+
+const getServerById = (serverId) => Object.values(SERVERS).find((server) => server.id === serverId);
+
 function isAlbionId(id) {
   return /[\w-]{22}/.test(id);
 }
@@ -15,7 +32,7 @@ function toTrackEntity(entity, server) {
     return {
       id: entity.Id,
       name: entity.Name,
-      server,
+      server: server.id,
     };
   }
 
@@ -23,7 +40,7 @@ function toTrackEntity(entity, server) {
     return {
       id: entity.AllianceId,
       name: entity.AllianceTag,
-      server,
+      server: server.id,
     };
   }
 
@@ -138,6 +155,10 @@ const transformTrait = (trait) => {
 };
 
 module.exports = {
+  SERVERS,
+  SERVER_DEFAULT,
+  SERVER_LIST,
+  getServerById,
   getVictimItems,
   hasAwakening,
   isAlbionId,

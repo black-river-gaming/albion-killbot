@@ -1,7 +1,8 @@
 const moment = require("moment");
-const { SERVER_LIST, REPORT_PROVIDERS } = require("./constants");
+const { REPORT_PROVIDERS } = require("./constants");
 const { getLocale } = require("./locale");
 const { digitsFormatter, humanFormatter, printSpace } = require("./utils");
+const { SERVER_LIST } = require("./albion");
 
 const BATTLE = 16752981;
 const RANKING_LINE_LENGTH = 23;
@@ -388,7 +389,7 @@ const embedTrackList = (track, limits, { locale }) => {
   const printTrackList = (server, list, limit) => {
     if (!list || !Array.isArray(list)) return t("TRACK.NONE");
 
-    list = list.filter((item) => item.server === server);
+    list = list.filter((item) => item.server === server.id);
     if (list.length === 0) return t("TRACK.NONE");
 
     let value = "";
@@ -407,7 +408,7 @@ const embedTrackList = (track, limits, { locale }) => {
         color: COLORS.GREY,
         title: t("TRACK.PLAYERS.TITLE", { actual: track.players.length, max: limits.players }),
         fields: SERVER_LIST.map((server) => ({
-          name: server,
+          name: server.name,
           value: printTrackList(server, track.players, limits.players),
           inline: true,
         })),
@@ -416,7 +417,7 @@ const embedTrackList = (track, limits, { locale }) => {
         color: COLORS.LIGHT_GREEN,
         title: t("TRACK.GUILDS.TITLE", { actual: track.guilds.length, max: limits.guilds }),
         fields: SERVER_LIST.map((server) => ({
-          name: server,
+          name: server.name,
           value: printTrackList(server, track.guilds, limits.guilds),
           inline: true,
         })),
@@ -425,7 +426,7 @@ const embedTrackList = (track, limits, { locale }) => {
         color: COLORS.LIGHT_RED,
         title: t("TRACK.ALLIANCES.TITLE", { actual: track.alliances.length, max: limits.alliances }),
         fields: SERVER_LIST.map((server) => ({
-          name: server,
+          name: server.name,
           value: printTrackList(server, track.alliances, limits.alliances),
           inline: true,
         })),

@@ -1,11 +1,10 @@
 const searchService = require("../../../services/search");
-const { isAlbionId } = require("../../../helpers/albion");
+const { isAlbionId, getServerById } = require("../../../helpers/albion");
 const logger = require("../../../helpers/logger");
-const { SERVERS } = require("../../../helpers/constants");
 
 async function search(req, res) {
   const { query } = req.params;
-  const { server = SERVERS.WEST } = req.query;
+  const server = getServerById(req.query.server);
 
   try {
     if (isAlbionId(query)) {

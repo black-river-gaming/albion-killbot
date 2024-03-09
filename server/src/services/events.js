@@ -10,7 +10,7 @@ const EVENTS_QUEUE_PREFIX = "events";
 
 async function fetchEvents({ server, offset, limit = 51 }) {
   try {
-    logger.verbose(`[${server}] Fetching events with offset: ${String(offset).padStart(3, "0")}`, {
+    logger.verbose(`[${server.name}] Fetching events with offset: ${String(offset).padStart(3, "0")}`, {
       server,
       offset,
       limit,
@@ -21,7 +21,7 @@ async function fetchEvents({ server, offset, limit = 51 }) {
       limit,
     });
   } catch (error) {
-    logger.warn(`[${server}] Unable to fetch event data from API: ${error.message}. Retrying...`, {
+    logger.warn(`[${server.name}] Unable to fetch event data from API: ${error.message}. Retrying...`, {
       server,
       error,
     });
@@ -45,7 +45,10 @@ async function fetchEventsTo(latestEventId, { server, offset = 0, silent = false
 
     if (!silent) {
       logger.verbose(
-        `[${server}] Fetching events [offset: ${String(offset).padStart(3, "0")}, latestEventId: ${latestEventId}]`,
+        `[${server.name}] Fetching events [offset: ${String(offset).padStart(
+          3,
+          "0",
+        )}, latestEventId: ${latestEventId}]`,
         {
           server,
           offset,
@@ -63,7 +66,7 @@ async function fetchEventsTo(latestEventId, { server, offset = 0, silent = false
       // Ignore items already on the queue
       if (events.findIndex((e) => e.EventId === evt.EventId) >= 0) return true;
       // Set event server for later
-      evt.server = server;
+      evt.server = server.id;
       events.push(evt);
       return true;
     });
@@ -86,7 +89,7 @@ async function fetchEventsTo(latestEventId, { server, offset = 0, silent = false
       : fetchEventsTo(latestEventId, { server, offset: offset + albionEvents.length, silent }, events);
   } catch (error) {
     if (!silent) {
-      logger.warn(`[${server}] Unable to fetch event data from API: ${error.message}. Retrying...`, {
+      logger.warn(`[${server.name}] Unable to fetch event data from API: ${error.message}. Retrying...`, {
         server,
         error,
       });

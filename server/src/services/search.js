@@ -1,5 +1,5 @@
 const albion = require("../ports/albion");
-const { toTrackEntity } = require("../helpers/albion");
+const { toTrackEntity, getServerById } = require("../helpers/albion");
 
 async function getPlayer(server, playerId) {
   const player = await albion.getPlayer(playerId, { server, silent: true });
@@ -8,7 +8,7 @@ async function getPlayer(server, playerId) {
 
 async function getGuild(server, guildId) {
   const guild = await albion.getGuild(guildId, {
-    server,
+    server: getServerById(server),
     rankings: false,
     silent: true,
   });
