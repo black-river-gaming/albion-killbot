@@ -1,6 +1,7 @@
 import { useAppDispatch } from "helpers/hooks";
 import { capitalize } from "helpers/utils";
 import { Badge, Button, ListGroup, Stack } from "react-bootstrap";
+import { useFetchConstantsQuery } from "store/api";
 import { untrackAlliance, untrackGuild, untrackPlayer } from "store/track";
 import { ITrackList, TRACK_TYPE } from "types/track";
 import TrackItemOptions from "./TrackItemOptions";
@@ -13,6 +14,7 @@ interface ITrackListItemProps {
 
 const TrackList = ({ type, limit = 0, list }: ITrackListItemProps) => {
   const dispatch = useAppDispatch();
+  const constants = useFetchConstantsQuery();
 
   return (
     <ListGroup>
@@ -27,7 +29,13 @@ const TrackList = ({ type, limit = 0, list }: ITrackListItemProps) => {
       </ListGroup.Item>
 
       {list.map((item, i) => {
-        const { id, name, server } = item;
+        if (!constants.data) return null;
+
+        const { id, name } = item;
+        const server = constants.data.servers.find(
+          (server) => server.id === item.server
+        );
+
         return (
           <ListGroup.Item key={id} className="paper">
             <div className="d-flex justify-content-between align-items-center">
@@ -39,9 +47,7 @@ const TrackList = ({ type, limit = 0, list }: ITrackListItemProps) => {
                   className="d-flex align-items-baseline"
                 >
                   <div className={i >= limit ? "text-danger" : ""}>{name}</div>
-                  <Badge bg={server.toLowerCase().replace(" ", "-")}>
-                    {server}
-                  </Badge>
+                  {server && <Badge bg={server.id}>{server.name}</Badge>}
                 </Stack>
               </Stack>
               <Stack direction="horizontal" gap={2}>

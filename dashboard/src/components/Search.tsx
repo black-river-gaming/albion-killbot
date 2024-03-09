@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Button, Card, Dropdown, Form, InputGroup } from "react-bootstrap";
 import { useFetchConstantsQuery, useLazySearchQuery } from "store/api";
+import { IAlbionServer } from "types/constants";
 import { Limits } from "types/limits";
 import SearchResults from "./SearchResults";
 import Loader from "./common/Loader";
@@ -14,7 +15,7 @@ interface ISearchProps {
 const Search = ({ limits }: ISearchProps) => {
   const constants = useFetchConstantsQuery();
   const [query, setQuery] = useState("");
-  const [server, setServer] = useState<string>("");
+  const [server, setServer] = useState<IAlbionServer>();
   const [search, searchResults] = useLazySearchQuery();
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const Search = ({ limits }: ISearchProps) => {
     if (!server) return;
 
     e?.preventDefault();
-    search({ server, query }, true);
+    search({ server: server.id, query }, true);
   };
 
   return (
@@ -46,15 +47,17 @@ const Search = ({ limits }: ISearchProps) => {
                 onChange={(e) => setQuery(e.target.value)}
               />
               <Dropdown>
-                <Dropdown.Toggle variant="primary">{server}</Dropdown.Toggle>
+                <Dropdown.Toggle variant="primary">
+                  {server?.name}
+                </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  {servers.map((server: string) => (
+                  {servers.map((server) => (
                     <Dropdown.Item
-                      key={server}
+                      key={server.id}
                       onClick={() => setServer(server)}
                     >
-                      {server}
+                      {server.name}
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
