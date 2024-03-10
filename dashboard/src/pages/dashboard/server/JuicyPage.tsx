@@ -84,15 +84,17 @@ const JuicyPage = () => {
 
         <Row className="g-2 align-items-end">
           <Col xs={12} md={true}>
-            <Form.Group controlId="juicy-channel">
-              <Form.Label>Notification Channel</Form.Label>
+            <Form.Group controlId="good-channel">
+              <Form.Label>Good Kills Notification Channel</Form.Label>
               <ChannelInput
-                aria-label="Juicy kills channel"
+                aria-label="Good kills notification channel"
                 disabled={!isPremium}
                 availableChannels={channels}
-                value={juicy.channel}
+                value={juicy.good.channel}
                 onChannelChange={(channelId) =>
-                  dispatch(setJuicyChannel(channelId))
+                  dispatch(
+                    setJuicyChannel({ type: "good", channel: channelId })
+                  )
                 }
               />
             </Form.Group>
@@ -105,8 +107,44 @@ const JuicyPage = () => {
               onClick={() => {
                 dispatchTestNotification({
                   serverId,
-                  type: "juicy",
-                  channelId: juicy.channel,
+                  type: "good",
+                  channelId: juicy.good.channel,
+                  mode: juicy.mode,
+                });
+              }}
+            >
+              Test Notification
+            </Button>
+          </Col>
+        </Row>
+
+        <Row className="g-2 align-items-end">
+          <Col xs={12} md={true}>
+            <Form.Group controlId="insane-channel">
+              <Form.Label>Insane Kills Notification Channel</Form.Label>
+              <ChannelInput
+                aria-label="Insane kills notification channel"
+                disabled={!isPremium}
+                availableChannels={channels}
+                value={juicy.insane.channel}
+                onChannelChange={(channelId) =>
+                  dispatch(
+                    setJuicyChannel({ type: "insane", channel: channelId })
+                  )
+                }
+              />
+            </Form.Group>
+          </Col>
+          <Col xs={12} md="auto">
+            <Button
+              disabled={!isPremium || testNotification.isLoading}
+              variant="secondary"
+              type="button"
+              onClick={() => {
+                dispatchTestNotification({
+                  serverId,
+                  type: "insane",
+                  channelId: juicy.insane.channel,
                   mode: juicy.mode,
                 });
               }}

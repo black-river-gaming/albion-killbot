@@ -22,7 +22,12 @@ export interface ISettings {
     enabled: {
       [serverId: string]: boolean;
     };
-    channel: string;
+    good: {
+      channel: string;
+    };
+    insane: {
+      channel: string;
+    };
     mode: string;
     provider?: string;
   };
