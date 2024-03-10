@@ -1,3 +1,7 @@
+import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import goodKill from "assets/settings/goodKill.png";
+import insaneKill from "assets/settings/insaneKill.png";
 import LoadError from "components/LoadError";
 import Settings from "components/Settings";
 import Loader from "components/common/Loader";
@@ -5,7 +9,15 @@ import ChannelInput from "components/dashboard/ChannelInput";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { isSubscriptionActive } from "helpers/subscriptions";
 import { capitalize } from "helpers/utils";
-import { Button, Col, Form, Row, Stack } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Form,
+  OverlayTrigger,
+  Row,
+  Stack,
+  Tooltip,
+} from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import {
   useFetchServerQuery,
@@ -85,7 +97,35 @@ const JuicyPage = () => {
         <Row className="g-2 align-items-end">
           <Col xs={12} md={true}>
             <Form.Group controlId="good-channel">
-              <Form.Label>Good Kills Notification Channel</Form.Label>
+              <Form.Label>
+                <Stack direction="horizontal" gap={1}>
+                  <div>Good Kills Notification Channel</div>
+                  <OverlayTrigger
+                    placement="auto-end"
+                    overlay={
+                      <Tooltip>
+                        <Stack gap={2} className="align-items-center">
+                          <pre>
+                            Good Kills are kills whose the loot is worth a
+                            certain threshold.
+                            <br />
+                            (Roughly around ~15m)
+                          </pre>
+                          <img
+                            src={goodKill}
+                            alt="Example of Good Kill"
+                            style={{ borderRadius: "0.2rem" }}
+                          />
+                        </Stack>
+                      </Tooltip>
+                    }
+                  >
+                    <Button className="btn-icon" variant="secondary" size="sm">
+                      <FontAwesomeIcon icon={faQuestionCircle} />
+                    </Button>
+                  </OverlayTrigger>
+                </Stack>
+              </Form.Label>
               <ChannelInput
                 aria-label="Good kills notification channel"
                 disabled={!isPremium}
@@ -121,7 +161,36 @@ const JuicyPage = () => {
         <Row className="g-2 align-items-end">
           <Col xs={12} md={true}>
             <Form.Group controlId="insane-channel">
-              <Form.Label>Insane Kills Notification Channel</Form.Label>
+              <Form.Label>
+                <Stack direction="horizontal" gap={1}>
+                  <div>Insane Kills Notification Channel</div>
+                  <OverlayTrigger
+                    placement="auto-end"
+                    overlay={
+                      <Tooltip>
+                        <Stack gap={2} className="align-items-center">
+                          <pre>
+                            Insane kills are the most expensible kills on the
+                            entire server!
+                            <br />
+                            The loot value has no limits but is expected to be
+                            at least ~30m
+                          </pre>
+                          <img
+                            src={insaneKill}
+                            alt="Example of Insane Kill"
+                            style={{ borderRadius: "0.2rem" }}
+                          />
+                        </Stack>
+                      </Tooltip>
+                    }
+                  >
+                    <Button className="btn-icon" variant="secondary" size="sm">
+                      <FontAwesomeIcon icon={faQuestionCircle} />
+                    </Button>
+                  </OverlayTrigger>
+                </Stack>
+              </Form.Label>
               <ChannelInput
                 aria-label="Insane kills notification channel"
                 disabled={!isPremium}
