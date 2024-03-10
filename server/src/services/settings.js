@@ -24,9 +24,14 @@ const DEFAULT_SETTINGS = Object.freeze({
     mode: REPORT_MODES.IMAGE,
   },
   juicy: {
-    enabled: false,
-    channel: null,
+    enabled: {},
     mode: REPORT_MODES.IMAGE,
+    good: {
+      channel: null,
+    },
+    insane: {
+      channel: null,
+    },
   },
   battles: {
     enabled: true,

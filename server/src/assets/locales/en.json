@@ -58,6 +58,7 @@
     "CATEGORY": {
       "DISABLED": "Disabled",
       "ENABLED": "Enabled",
+      "ENABLED_SERVER": "Enable on server {{ server }}.",
       "SET": "Notifications for category `{{ category }}` are `{{ option }}`"
     },
     "CHANNEL": {
@@ -72,6 +73,8 @@
       "GENERAL": "Change general settings",
       "GUILD_TAGS": "Show guild tags in player's names.",
       "JUICY": "Change settings for juicy kills.",
+      "JUICY_GOOD_KILLS_CHANNEL": "Channel to send juicy kills of good quality.",
+      "JUICY_INSANE_KILLS_CHANNEL": "Channel to send juicy kills of insane quality.",
       "KILLS": "Change settings for kill notifications.",
       "LANG": "Change language.",
       "MODE": "Set notification format.",
@@ -95,6 +98,20 @@
     },
     "GUILD_TAGS": {
       "SET": "Display guild tags: {{ enabled }}"
+    },
+    "JUICY": {
+      "GOOD": {
+        "CHANNEL": {
+          "NULL": "Channel to send juicy kills of good quality defined to the default channel.",
+          "SET": "Channel to send juicy kills of good quality defined to {{{ channel }}}."
+        }
+      },
+      "INSANE": {
+        "CHANNEL": {
+          "NULL": "Channel to send juicy kills of insane quality defined to the default channel.",
+          "SET": "Channel to send juicy kills of insane quality defined to {{{ channel }}}."
+        }
+      }
     },
     "LANG": {
       "NOT_SUPPORTED": "This language is not supported.",

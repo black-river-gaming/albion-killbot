@@ -1,3 +1,7 @@
+import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import goodKill from "assets/settings/goodKill.png";
+import insaneKill from "assets/settings/insaneKill.png";
 import LoadError from "components/LoadError";
 import Settings from "components/Settings";
 import Loader from "components/common/Loader";
@@ -5,11 +9,19 @@ import ChannelInput from "components/dashboard/ChannelInput";
 import { useAppDispatch, useAppSelector } from "helpers/hooks";
 import { isSubscriptionActive } from "helpers/subscriptions";
 import { capitalize } from "helpers/utils";
-import { Button, Col, Form, Row, Stack } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Form,
+  OverlayTrigger,
+  Row,
+  Stack,
+  Tooltip,
+} from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import {
-  useFetchConstantsQuery,
   useFetchServerQuery,
+  useGetConstantsQuery,
   useTestNotificationSettingsMutation,
 } from "store/api";
 import { useGetServerSubscriptionQuery } from "store/api/server";
@@ -24,7 +36,7 @@ const JuicyPage = () => {
   const { serverId = "" } = useParams();
   const dispatch = useAppDispatch();
 
-  const constants = useFetchConstantsQuery();
+  const constants = useGetConstantsQuery();
   const server = useFetchServerQuery(serverId);
   const subscription = useGetServerSubscriptionQuery({ serverId });
 
@@ -63,43 +75,145 @@ const JuicyPage = () => {
       ]}
     >
       <Stack gap={2}>
-        <Form.Group controlId="juicy-enabled">
-          <Form.Check
-            type="switch"
-            label="Enabled"
-            checked={juicy.enabled}
-            disabled={!isPremium}
-            onChange={(e) => dispatch(setJuicyEnabled(e.target.checked))}
-          />
-        </Form.Group>
+        {constants.data.servers.map((server) => (
+          <Form.Group controlId={`juicy-enabled-${server.id}`}>
+            <Form.Check
+              type="switch"
+              label={server.name}
+              checked={juicy.enabled[server.id]}
+              disabled={!isPremium}
+              onChange={(e) =>
+                dispatch(
+                  setJuicyEnabled({
+                    serverId: server.id,
+                    enabled: e.target.checked,
+                  })
+                )
+              }
+            />
+          </Form.Group>
+        ))}
 
         <Row className="g-2 align-items-end">
           <Col xs={12} md={true}>
-            <Form.Group controlId="juicy-channel">
-              <Form.Label>Notification Channel</Form.Label>
+            <Form.Group controlId="good-channel">
+              <Form.Label>
+                <Stack direction="horizontal" gap={1}>
+                  <div>Good Kills Notification Channel</div>
+                  <OverlayTrigger
+                    placement="auto-end"
+                    overlay={
+                      <Tooltip>
+                        <Stack gap={2} className="align-items-center">
+                          <pre>
+                            Good Kills are kills whose the loot is worth a
+                            certain threshold.
+                            <br />
+                            (Roughly around ~15m)
+                          </pre>
+                          <img
+                            src={goodKill}
+                            alt="Example of Good Kill"
+                            style={{ borderRadius: "0.2rem" }}
+                          />
+                        </Stack>
+                      </Tooltip>
+                    }
+                  >
+                    <Button className="btn-icon" variant="secondary" size="sm">
+                      <FontAwesomeIcon icon={faQuestionCircle} />
+                    </Button>
+                  </OverlayTrigger>
+                </Stack>
+              </Form.Label>
               <ChannelInput
-                aria-label="Juicy kills channel"
-                disabled={!isPremium || !juicy.enabled}
+                aria-label="Good kills notification channel"
+                disabled={!isPremium}
                 availableChannels={channels}
-                value={juicy.channel}
+                value={juicy.good.channel}
                 onChannelChange={(channelId) =>
-                  dispatch(setJuicyChannel(channelId))
+                  dispatch(
+                    setJuicyChannel({ type: "good", channel: channelId })
+                  )
                 }
               />
             </Form.Group>
           </Col>
           <Col xs={12} md="auto">
             <Button
-              disabled={
-                !isPremium || !juicy.enabled || testNotification.isLoading
-              }
+              disabled={!isPremium || testNotification.isLoading}
               variant="secondary"
               type="button"
               onClick={() => {
                 dispatchTestNotification({
                   serverId,
-                  type: "juicy",
-                  channelId: juicy.channel,
+                  type: "good",
+                  channelId: juicy.good.channel,
+                  mode: juicy.mode,
+                });
+              }}
+            >
+              Test Notification
+            </Button>
+          </Col>
+        </Row>
+
+        <Row className="g-2 align-items-end">
+          <Col xs={12} md={true}>
+            <Form.Group controlId="insane-channel">
+              <Form.Label>
+                <Stack direction="horizontal" gap={1}>
+                  <div>Insane Kills Notification Channel</div>
+                  <OverlayTrigger
+                    placement="auto-end"
+                    overlay={
+                      <Tooltip>
+                        <Stack gap={2} className="align-items-center">
+                          <pre>
+                            Insane kills are the most expensible kills on the
+                            entire server!
+                            <br />
+                            The loot value has no limits but is expected to be
+                            at least ~30m
+                          </pre>
+                          <img
+                            src={insaneKill}
+                            alt="Example of Insane Kill"
+                            style={{ borderRadius: "0.2rem" }}
+                          />
+                        </Stack>
+                      </Tooltip>
+                    }
+                  >
+                    <Button className="btn-icon" variant="secondary" size="sm">
+                      <FontAwesomeIcon icon={faQuestionCircle} />
+                    </Button>
+                  </OverlayTrigger>
+                </Stack>
+              </Form.Label>
+              <ChannelInput
+                aria-label="Insane kills notification channel"
+                disabled={!isPremium}
+                availableChannels={channels}
+                value={juicy.insane.channel}
+                onChannelChange={(channelId) =>
+                  dispatch(
+                    setJuicyChannel({ type: "insane", channel: channelId })
+                  )
+                }
+              />
+            </Form.Group>
+          </Col>
+          <Col xs={12} md="auto">
+            <Button
+              disabled={!isPremium || testNotification.isLoading}
+              variant="secondary"
+              type="button"
+              onClick={() => {
+                dispatchTestNotification({
+                  serverId,
+                  type: "insane",
+                  channelId: juicy.insane.channel,
                   mode: juicy.mode,
                 });
               }}
@@ -113,7 +227,7 @@ const JuicyPage = () => {
           <Form.Label>Mode</Form.Label>
           <Form.Select
             aria-label="Notification mode"
-            disabled={!isPremium || !juicy.enabled}
+            disabled={!isPremium}
             value={juicy.mode}
             onChange={(e) => dispatch(setJuicyMode(e.target.value))}
           >
@@ -129,7 +243,7 @@ const JuicyPage = () => {
           <Form.Label>Link Provider</Form.Label>
           <Form.Select
             aria-label="Links provider"
-            disabled={!isPremium || !juicy.enabled}
+            disabled={!isPremium}
             value={juicy.provider}
             onChange={(e) => dispatch(setJuicyProvider(e.target.value))}
           >

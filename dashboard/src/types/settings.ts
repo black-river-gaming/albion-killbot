@@ -19,8 +19,15 @@ export interface ISettings {
     provider?: string;
   };
   juicy: {
-    enabled: boolean;
-    channel: string;
+    enabled: {
+      [serverId: string]: boolean;
+    };
+    good: {
+      channel: string;
+    };
+    insane: {
+      channel: string;
+    };
     mode: string;
     provider?: string;
   };

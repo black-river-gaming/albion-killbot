@@ -12,14 +12,6 @@ async function fetchBattlesTo(latestBattleId, { server, offset = 0, silent = fal
   if (offset >= 1000) return battles;
 
   try {
-    // If not latestBattle, just fetch a single one to create a reference
-    if (!latestBattleId) {
-      return await albion.getBattles({
-        server,
-        limit: 1,
-      });
-    }
-
     if (!silent) {
       logger.verbose(
         `[${server.name}] Fetching battles [offset: ${String(offset).padStart(
@@ -39,6 +31,7 @@ async function fetchBattlesTo(latestBattleId, { server, offset = 0, silent = fal
     });
 
     const foundLatest = !albionBattles.every((batl) => {
+      if (!latestBattleId) latestBattleId = batl.id - 1;
       if (batl.id <= latestBattleId) return false;
       // Ignore items already on the queue
       if (battles.findIndex((e) => e.id === batl.id) >= 0) return true;

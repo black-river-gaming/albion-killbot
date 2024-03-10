@@ -78,6 +78,10 @@ const mergeObjects = (target, ...sources) => {
   return mergeObjects(target, ...sources);
 };
 
+const toHiphenLowerCase = (text) => {
+  return text.toLowerCase().replace(/ /g, "-");
+};
+
 module.exports = {
   average,
   clone,
@@ -90,4 +94,5 @@ module.exports = {
   mergeObjects,
   parseFileSize,
   printSpace,
+  toHiphenLowerCase,
 };

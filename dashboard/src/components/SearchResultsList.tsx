@@ -1,5 +1,5 @@
 import { Badge, Button, ButtonGroup, ListGroup, Stack } from "react-bootstrap";
-import { useFetchConstantsQuery } from "store/api";
+import { useGetConstantsQuery } from "store/api";
 import { ITrackList } from "types/track";
 
 interface ISearchResultListsProps {
@@ -18,7 +18,7 @@ const SearchResultsList = ({
   track,
   onTrackClick,
 }: ISearchResultListsProps) => {
-  const constants = useFetchConstantsQuery();
+  const constants = useGetConstantsQuery();
 
   return (
     <ListGroup>

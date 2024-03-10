@@ -58,6 +58,7 @@
     "CATEGORY": {
       "DISABLED": "Disabled",
       "ENABLED": "Enabled",
+      "ENABLED_SERVER": "Habilitar en el servidor {{ server }}.",
       "SET": "Notifications for category `{{ category }}` are `{{ option }}`"
     },
     "CHANNEL": {
@@ -72,6 +73,8 @@
       "GENERAL": "Cambiar la configuración general",
       "GUILD_TAGS": "Mostrar etiquetas de gremio en los nombres de los jugadores.",
       "JUICY": "Cambiar configuraciones para muertes jugosas.",
+      "JUICY_GOOD_KILLS_CHANNEL": "Canal para enviar muertes jugosas de buena calidad.",
+      "JUICY_INSANE_KILLS_CHANNEL": "Canal para enviar muertes jugosas de calidad insana.",
       "KILLS": "Change settings for kill notifications.",
       "LANG": "Change language.",
       "MODE": "Establecer formato de notificación.",
@@ -95,6 +98,20 @@
     },
     "GUILD_TAGS": {
       "SET": "Mostrar etiquetas de gremio: {{ enabled }}"
+    },
+    "JUICY": {
+      "GOOD": {
+        "CHANNEL": {
+          "NULL": "Canal para enviar muertes jugosas de buena calidad definido al canal predeterminado.",
+          "SET": "Canal para enviar muertes jugosas de buena calidad definido en {{{ channel }}}."
+        }
+      },
+      "INSANE": {
+        "CHANNEL": {
+          "NULL": "Canal para enviar muertes jugosas de calidad insana definido al canal predeterminado.",
+          "SET": "Canal para enviar muertes jugosas de calidad insana definido en {{{ channel }}}."
+        }
+      }
     },
     "LANG": {
       "NOT_SUPPORTED": "Este idioma no es soportado.",

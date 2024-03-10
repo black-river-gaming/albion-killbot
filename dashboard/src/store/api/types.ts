@@ -1,3 +1,4 @@
+import { IConstants } from "types/constants";
 import {
   ISubscription,
   ISubscriptionExtended,
@@ -24,6 +25,10 @@ export type IUpdateSubscription = {
 export type IDeleteSubscription = {
   id: string;
 };
+
+// Constants
+export type IGetConstantsRequest = void;
+export type IGetConstantsResponse = IConstants;
 
 // Server
 export type IGetSubscriptionRequest = {

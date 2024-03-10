@@ -34,34 +34,53 @@ const MAXLEN = {
   AUTHOR: 256,
 };
 
+const getEventColor = (event) => {
+  if (event.juicy)
+    return (
+      {
+        good: COLORS.GOLD,
+        insane: COLORS.YELLOW,
+      }[event.juicy] || COLORS.GREY
+    );
+  if (event.good !== undefined) return event.good ? COLORS.DARK_GREEN : COLORS.RED;
+  return COLORS.GREY;
+};
+
+const getPlayerName = (event, player, { guildTags = false }) => {
+  let name = "";
+
+  if (player === "Victim") {
+    if (event.juicy === "good") name += ":moneybag: ";
+    if (event.juicy === "insane") name += ":star: ";
+  }
+
+  if (guildTags && event[player].GuildName) {
+    name += `[${event[player].GuildName}] `;
+  }
+  name += event[player].Name;
+
+  if (player === "Victim") {
+    if (event.juicy === "good") name += " :moneybag:";
+    if (event.juicy === "insane") name += " :star:";
+  }
+
+  return name;
+};
+
 const footer = {
   text: "Powered by Albion Killbot",
 };
 
-const embedEvent = (event, { lootValue, locale, guildTags = true, providerId, test } = {}) => {
+const embedEvent = (event, { locale, guildTags = true, providerId, test } = {}) => {
   const l = getLocale(locale);
   const { t } = l;
 
-  const { good, juicy } = event;
-  const lootSum = lootValue ? lootValue.equipment + lootValue.inventory : null;
-
-  let killer = "";
-  if (guildTags && event.Killer.GuildName) {
-    killer += `[${event.Killer.GuildName}] `;
-  }
-  killer += event.Killer.Name;
-
-  let victim = "";
-  if (juicy) victim += ":moneybag: ";
-  if (guildTags && event.Victim.GuildName) {
-    victim += `[${event.Victim.GuildName}] `;
-  }
-  victim += event.Victim.Name;
-  if (juicy) victim += " :moneybag:";
+  const { good } = event;
+  const lootSum = event.lootValue ? event.lootValue.equipment + event.lootValue.inventory : null;
 
   const title = t(good ? "KILL.GOOD_TITLE" : "KILL.BAD_TITLE", {
-    killer,
-    victim,
+    killer: getPlayerName(event, "Killer", { guildTags }),
+    victim: getPlayerName(event, "Victim", { guildTags }),
   });
 
   let description;
@@ -74,7 +93,7 @@ const embedEvent = (event, { lootValue, locale, guildTags = true, providerId, te
     const assist = [];
     event.Participants.forEach((participant) => {
       // Self-damage isn't assist :P
-      if (participant.Name === event.Victim.Name) {
+      if (participant.Id === event.Victim.Id) {
         return;
       }
       const damagePercent = Math.round((participant.DamageDone / Math.max(1, totalDamage)) * 100);
@@ -112,7 +131,7 @@ const embedEvent = (event, { lootValue, locale, guildTags = true, providerId, te
     content: test ? t("KILL.TEST") : undefined,
     embeds: [
       {
-        color: juicy ? COLORS.GOLD : good ? COLORS.DARK_GREEN : COLORS.RED,
+        color: getEventColor(event),
         title,
         url,
         description,
@@ -177,25 +196,11 @@ const embedEventImage = (event, image, { locale, guildTags = true, addFooter, pr
   const l = getLocale(locale);
   const { t } = l;
 
-  const { good, juicy } = event;
-
-  let killer = "";
-  if (guildTags && event.Killer.GuildName) {
-    killer += `[${event.Killer.GuildName}] `;
-  }
-  killer += event.Killer.Name;
-
-  let victim = "";
-  if (juicy) victim += ":moneybag: ";
-  if (guildTags && event.Victim.GuildName) {
-    victim += `[${event.Victim.GuildName}] `;
-  }
-  victim += event.Victim.Name;
-  if (juicy) victim += " :moneybag:";
+  const { good } = event;
 
   const title = t(good ? "KILL.GOOD_TITLE" : "KILL.BAD_TITLE", {
-    killer,
-    victim,
+    killer: getPlayerName(event, "Killer", { guildTags }),
+    victim: getPlayerName(event, "Victim", { guildTags }),
   });
   const filename = `${event.EventId}-event.png`;
 
@@ -213,7 +218,7 @@ const embedEventImage = (event, image, { locale, guildTags = true, addFooter, pr
     content: test ? t("KILL.TEST") : undefined,
     embeds: [
       {
-        color: juicy ? COLORS.GOLD : good ? COLORS.DARK_GREEN : COLORS.RED,
+        color: getEventColor(event),
         title,
         url,
         image: {
@@ -234,7 +239,6 @@ const embedEventImage = (event, image, { locale, guildTags = true, addFooter, pr
 
 const embedEventInventoryImage = (event, image, { locale, providerId }) => {
   const l = getLocale(locale);
-  const { good, juicy } = event;
 
   const filename = `${event.EventId}-inventory.png`;
 
@@ -251,7 +255,7 @@ const embedEventInventoryImage = (event, image, { locale, providerId }) => {
   return {
     embeds: [
       {
-        color: juicy ? COLORS.GOLD : good ? COLORS.DARK_GREEN : COLORS.RED,
+        color: getEventColor(event),
         url,
         image: {
           url: `attachment://${filename}`,

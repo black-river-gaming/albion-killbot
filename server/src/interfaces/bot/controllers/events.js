@@ -18,7 +18,7 @@ const { sendNotification } = require("./notifications");
 
 const sendEvent = async ({ client, server, guild, event, settings, track, limits, type, premium = false } = {}) => {
   const { good, juicy, tracked } = event;
-  const lootValue = event.lootValue || (await getEventVictimLootValue(event, { server }));
+  if (!event.lootValue) event.lootValue = await getEventVictimLootValue(event, { server });
   const logMeta = {
     server,
     guild: transformGuild(guild),
@@ -28,14 +28,11 @@ const sendEvent = async ({ client, server, guild, event, settings, track, limits
     limits,
     type,
   };
+  let killType = "unknown";
+  if (type === "kills" || type === "deaths") killType = good ? "kill" : "death";
+  else if (type === "juicy") killType = juicy;
 
-  if (premium && !(await hasSubscriptionByServerId(guild.id))) {
-    logger.debug(
-      `[${server.name}] Skipping event ${event.EventId} to "${guild.name}" because lack of premium.`,
-      logMeta,
-    );
-    return;
-  }
+  if (premium && !(await hasSubscriptionByServerId(guild.id))) return;
 
   const setting = settings[type];
   if (!setting) {
@@ -49,29 +46,43 @@ const sendEvent = async ({ client, server, guild, event, settings, track, limits
   const { enabled, mode, provider: providerId } = setting;
   const { locale, showAttunement, guildTags, splitLootValue } = settings.general;
 
-  let channel = setting.channel;
-  if (tracked) {
-    if (good) channel = (tracked.kills && tracked.kills.channel) || channel;
-    else channel = (tracked.deaths && tracked.deaths.channel) || channel;
-  }
-
-  if (!enabled || !channel) {
-    logger.debug(
-      `[${server.name}] Skipping event ${event.EventId} to "${guild.name}" because disabled/channel not set.`,
+  // Simple enabled on/off
+  if (typeof enabled === "boolean" && !enabled) {
+    return logger.debug(
+      `[${server.name}] Skipping ${killType} event ${event.EventId} to "${guild.name}" because disabled.`,
       logMeta,
     );
-    return;
   }
 
-  logger.info(
-    `[${server.name}] Sending ${good ? "kill" : juicy ? "juicy" : "death"} event ${event.EventId} to "${guild.name}".`,
-    logMeta,
-  );
+  // Enabled per server
+  if (typeof enabled === "object" && !enabled[event.server]) {
+    return logger.debug(
+      `[${server.name}] Skipping ${killType} event ${event.EventId} to "${guild.name}" because disabled.`,
+      logMeta,
+    );
+  }
+
+  let channel = setting.channel;
+  if (type === "kills" || type === "deaths") {
+    if (good) channel = (tracked.kills && tracked.kills.channel) || channel;
+    else channel = (tracked.deaths && tracked.deaths.channel) || channel;
+  } else if (type === "juicy") {
+    channel = setting[juicy].channel;
+  }
+
+  if (!channel) {
+    return logger.debug(
+      `[${server.name}] Skipping ${killType} event ${event.EventId} to "${guild.name}" because channel not set.`,
+      logMeta,
+    );
+  }
+
+  logger.info(`[${server.name}] Sending ${killType} event ${event.EventId} to "${guild.name}".`, logMeta);
 
   if (mode === REPORT_MODES.IMAGE) {
     const inventory = event.Victim.Inventory.filter((i) => i != null);
     const hasInventory = inventory.length > 0;
-    const eventImage = await generateEventImage(event, { lootValue, showAttunement, splitLootValue });
+    const eventImage = await generateEventImage(event, { showAttunement, splitLootValue });
     await sendNotification(
       client,
       channel,
@@ -83,7 +94,7 @@ const sendEvent = async ({ client, server, guild, event, settings, track, limits
       }),
     );
     if (hasInventory) {
-      const inventoryImage = await generateInventoryImage(event, { lootValue, splitLootValue });
+      const inventoryImage = await generateInventoryImage(event, { splitLootValue });
       await sendNotification(
         client,
         channel,
@@ -94,7 +105,7 @@ const sendEvent = async ({ client, server, guild, event, settings, track, limits
       );
     }
   } else if (mode === REPORT_MODES.TEXT) {
-    await sendNotification(client, channel, embedEvent(event, { lootValue, locale, guildTags, providerId }));
+    await sendNotification(client, channel, embedEvent(event, { locale, guildTags, providerId }));
   }
 };
 
@@ -143,7 +154,7 @@ async function subscribe(client) {
             type: guildEvent.good ? "kills" : "deaths",
           });
         }
-        if (event.juicy) {
+        if (event.juicy && settings.juicy.enabled[event.server]) {
           await sendEvent({
             client,
             server,

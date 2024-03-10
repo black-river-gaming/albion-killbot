@@ -389,7 +389,7 @@ const drawAssistBar = async (ctx, participants, x, y, width, height, radius) => 
   return height + py;
 };
 
-async function generateEventImage(event, { lootValue, showAttunement = true, splitLootValue = false } = {}) {
+async function generateEventImage(event, { showAttunement = true, splitLootValue = false } = {}) {
   return memoize(
     `eventImage-${event.EventId}`,
     async () => {
@@ -406,7 +406,7 @@ async function generateEventImage(event, { lootValue, showAttunement = true, spl
       const assistCount = Math.max(event.GroupMembers.length, event.Participants.length);
       if (assistCount > 1) await drawAssistCount(ctx, assistCount, w / 2, 290, { iconSize: 80 });
       await drawFame(ctx, event, w / 2, 470);
-      if (lootValue) await drawLootValue(ctx, lootValue, w / 2, 675, { splitLootValue });
+      if (event.lootValue) await drawLootValue(ctx, event.lootValue, w / 2, 675, { splitLootValue });
       await drawAssistBar(ctx, event.Participants, 35, showAttunement ? 1350 : 1050, 1530, 80, 40);
 
       const buffer = await optimizeImage(canvas.toBuffer(), 580);

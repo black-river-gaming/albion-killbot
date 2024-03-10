@@ -20,8 +20,16 @@ const initialState: ISettings = {
     mode: "image",
   },
   juicy: {
-    enabled: true,
-    channel: "",
+    enabled: {
+      americas: false,
+      asia: false,
+    },
+    good: {
+      channel: "",
+    },
+    insane: {
+      channel: "",
+    },
     mode: "image",
   },
   battles: {
@@ -91,11 +99,17 @@ export const settingsSlice = createSlice({
     setDeathsProvider: (state, action: PayloadAction<string>) => {
       state.deaths.provider = action.payload;
     },
-    setJuicyEnabled: (state, action: PayloadAction<boolean>) => {
-      state.juicy.enabled = action.payload;
+    setJuicyEnabled: (
+      state,
+      action: PayloadAction<{ serverId: string; enabled: boolean }>
+    ) => {
+      state.juicy.enabled[action.payload.serverId] = action.payload.enabled;
     },
-    setJuicyChannel: (state, action: PayloadAction<string>) => {
-      state.juicy.channel = action.payload;
+    setJuicyChannel: (
+      state,
+      action: PayloadAction<{ type: "good" | "insane"; channel: string }>
+    ) => {
+      state.juicy[action.payload.type].channel = action.payload.channel;
     },
     setJuicyMode: (state, action: PayloadAction<string>) => {
       state.juicy.mode = action.payload;
