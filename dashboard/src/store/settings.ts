@@ -20,7 +20,10 @@ const initialState: ISettings = {
     mode: "image",
   },
   juicy: {
-    enabled: true,
+    enabled: {
+      americas: false,
+      asia: false,
+    },
     channel: "",
     mode: "image",
   },
@@ -91,8 +94,11 @@ export const settingsSlice = createSlice({
     setDeathsProvider: (state, action: PayloadAction<string>) => {
       state.deaths.provider = action.payload;
     },
-    setJuicyEnabled: (state, action: PayloadAction<boolean>) => {
-      state.juicy.enabled = action.payload;
+    setJuicyEnabled: (
+      state,
+      action: PayloadAction<{ serverId: string; enabled: boolean }>
+    ) => {
+      state.juicy.enabled[action.payload.serverId] = action.payload.enabled;
     },
     setJuicyChannel: (state, action: PayloadAction<string>) => {
       state.juicy.channel = action.payload;

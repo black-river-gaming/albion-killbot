@@ -3,7 +3,6 @@ const { find, findOne, updateOne, deleteOne } = require("../ports/database");
 const { memoize, set, remove } = require("../helpers/cache");
 const { REPORT_MODES, MINUTE } = require("../helpers/constants");
 const { clone, mergeObjects } = require("../helpers/utils");
-const { SERVER_LIST } = require("../helpers/albion");
 
 const SETTINGS_COLLECTION = "settings";
 
@@ -25,13 +24,7 @@ const DEFAULT_SETTINGS = Object.freeze({
     mode: REPORT_MODES.IMAGE,
   },
   juicy: {
-    enabled: SERVER_LIST.reduce(
-      (servers, server) => ({
-        ...servers,
-        [server.id]: false,
-      }),
-      {},
-    ),
+    enabled: {},
     mode: REPORT_MODES.IMAGE,
     good: {
       channel: null,

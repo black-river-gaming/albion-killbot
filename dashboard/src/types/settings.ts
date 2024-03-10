@@ -19,7 +19,9 @@ export interface ISettings {
     provider?: string;
   };
   juicy: {
-    enabled: boolean;
+    enabled: {
+      [serverId: string]: boolean;
+    };
     channel: string;
     mode: string;
     provider?: string;

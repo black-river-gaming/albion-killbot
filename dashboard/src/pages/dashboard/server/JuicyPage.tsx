@@ -63,15 +63,24 @@ const JuicyPage = () => {
       ]}
     >
       <Stack gap={2}>
-        <Form.Group controlId="juicy-enabled">
-          <Form.Check
-            type="switch"
-            label="Enabled"
-            checked={juicy.enabled}
-            disabled={!isPremium}
-            onChange={(e) => dispatch(setJuicyEnabled(e.target.checked))}
-          />
-        </Form.Group>
+        {constants.data.servers.map((server) => (
+          <Form.Group controlId={`juicy-enabled-${server.id}`}>
+            <Form.Check
+              type="switch"
+              label={server.name}
+              checked={juicy.enabled[server.id]}
+              disabled={!isPremium}
+              onChange={(e) =>
+                dispatch(
+                  setJuicyEnabled({
+                    serverId: server.id,
+                    enabled: e.target.checked,
+                  })
+                )
+              }
+            />
+          </Form.Group>
+        ))}
 
         <Row className="g-2 align-items-end">
           <Col xs={12} md={true}>
@@ -79,7 +88,7 @@ const JuicyPage = () => {
               <Form.Label>Notification Channel</Form.Label>
               <ChannelInput
                 aria-label="Juicy kills channel"
-                disabled={!isPremium || !juicy.enabled}
+                disabled={!isPremium}
                 availableChannels={channels}
                 value={juicy.channel}
                 onChannelChange={(channelId) =>
@@ -90,9 +99,7 @@ const JuicyPage = () => {
           </Col>
           <Col xs={12} md="auto">
             <Button
-              disabled={
-                !isPremium || !juicy.enabled || testNotification.isLoading
-              }
+              disabled={!isPremium || testNotification.isLoading}
               variant="secondary"
               type="button"
               onClick={() => {
@@ -113,7 +120,7 @@ const JuicyPage = () => {
           <Form.Label>Mode</Form.Label>
           <Form.Select
             aria-label="Notification mode"
-            disabled={!isPremium || !juicy.enabled}
+            disabled={!isPremium}
             value={juicy.mode}
             onChange={(e) => dispatch(setJuicyMode(e.target.value))}
           >
@@ -129,7 +136,7 @@ const JuicyPage = () => {
           <Form.Label>Link Provider</Form.Label>
           <Form.Select
             aria-label="Links provider"
-            disabled={!isPremium || !juicy.enabled}
+            disabled={!isPremium}
             value={juicy.provider}
             onChange={(e) => dispatch(setJuicyProvider(e.target.value))}
           >
