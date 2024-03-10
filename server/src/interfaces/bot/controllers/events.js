@@ -18,7 +18,7 @@ const { sendNotification } = require("./notifications");
 
 const sendEvent = async ({ client, server, guild, event, settings, track, limits, type, premium = false } = {}) => {
   const { good, juicy, tracked } = event;
-  const lootValue = event.lootValue || (await getEventVictimLootValue(event, { server }));
+  if (!event.lootValue) event.lootValue = await getEventVictimLootValue(event, { server });
   const logMeta = {
     server,
     guild: transformGuild(guild),
@@ -82,7 +82,7 @@ const sendEvent = async ({ client, server, guild, event, settings, track, limits
   if (mode === REPORT_MODES.IMAGE) {
     const inventory = event.Victim.Inventory.filter((i) => i != null);
     const hasInventory = inventory.length > 0;
-    const eventImage = await generateEventImage(event, { lootValue, showAttunement, splitLootValue });
+    const eventImage = await generateEventImage(event, { showAttunement, splitLootValue });
     await sendNotification(
       client,
       channel,
@@ -94,7 +94,7 @@ const sendEvent = async ({ client, server, guild, event, settings, track, limits
       }),
     );
     if (hasInventory) {
-      const inventoryImage = await generateInventoryImage(event, { lootValue, splitLootValue });
+      const inventoryImage = await generateInventoryImage(event, { splitLootValue });
       await sendNotification(
         client,
         channel,
@@ -105,7 +105,7 @@ const sendEvent = async ({ client, server, guild, event, settings, track, limits
       );
     }
   } else if (mode === REPORT_MODES.TEXT) {
-    await sendNotification(client, channel, embedEvent(event, { lootValue, locale, guildTags, providerId }));
+    await sendNotification(client, channel, embedEvent(event, { locale, guildTags, providerId }));
   }
 };
 

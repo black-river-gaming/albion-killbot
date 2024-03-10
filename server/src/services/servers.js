@@ -5,6 +5,8 @@ const settingsService = require("./settings");
 const { embedEvent, embedEventImage, embedBattle, embedRanking } = require("../helpers/embeds");
 const { generateEventImage } = require("./images");
 const FAKE_EVENT = require("../assets/mocks/event_934270718.json");
+const FAKE_GOOD_EVENT = require("../assets/mocks/event_1000422003.json");
+const FAKE_INSANE_EVENT = require("../assets/mocks/event_1000545635.json");
 const FAKE_BATTLE = require("../assets/mocks/battle_934264285.json");
 const FAKE_PVP_RANKING = require("../assets/mocks/ranking_daily.json");
 const axios = require("axios");
@@ -100,24 +102,32 @@ async function testNotification(serverId, { channelId, type = "kills", mode = "i
       channelId = settings[type].channel;
     }
 
+    const actions = new Map();
+    actions.set("event.text", async (event) => {
+      await discord.sendMessage(channelId, embedEvent(event, { test: true }));
+      return true;
+    });
+    actions.set("event.image", async (event) => {
+      const image = await generateEventImage(event);
+      await discord.sendMessage(channelId, embedEventImage(event, image, { test: true }));
+      return true;
+    });
+
+    let action;
     switch (type) {
       case "kills":
       case "deaths":
-      case "juicy":
-        const event = { ...FAKE_EVENT, good: type === "kills", juicy: type === "juicy" };
-        const actions = new Map();
-        actions.set("text", async () => {
-          await discord.sendMessage(channelId, embedEvent(event, { test: true }));
-          return true;
-        });
-        actions.set("image", async () => {
-          const image = await generateEventImage(event);
-          await discord.sendMessage(channelId, embedEventImage(event, image, { test: true }));
-          return true;
-        });
-
-        if (!actions.has(mode) || typeof actions.get(mode) !== "function") throw new Error(`Unknown mode ${mode}`);
-        return await actions.get(mode)();
+        action = `event.${mode}`;
+        if (!actions.has(action) || typeof actions.get(action) !== "function") throw new Error(`Unknown mode ${mode}`);
+        return await actions.get(action)({ ...FAKE_EVENT, good: type === "kills" });
+      case "good":
+        action = `event.${mode}`;
+        if (!actions.has(action) || typeof actions.get(action) !== "function") throw new Error(`Unknown mode ${mode}`);
+        return await actions.get(action)({ ...FAKE_GOOD_EVENT, juicy: "good" });
+      case "insane":
+        action = `event.${mode}`;
+        if (!actions.has(action) || typeof actions.get(action) !== "function") throw new Error(`Unknown mode ${mode}`);
+        return await actions.get(action)({ ...FAKE_INSANE_EVENT, juicy: "insane" });
       case "battles":
         await discord.sendMessage(channelId, embedBattle(FAKE_BATTLE, { test: true }));
         return true;

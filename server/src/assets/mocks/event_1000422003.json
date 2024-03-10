@@ -1,0 +1,990 @@
+{
+  "numberOfParticipants": 4,
+  "groupMemberCount": 5,
+  "EventId": 1000422003,
+  "TimeStamp": "2024-03-10T12:40:41.251301100Z",
+  "Version": 4,
+  "Killer": {
+    "AverageItemPower": 1126.83,
+    "Equipment": {
+      "MainHand": {
+        "Type": "T4_2H_DUALAXE_KEEPER@2",
+        "Count": 1,
+        "Quality": 4,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "OffHand": null,
+      "Head": {
+        "Type": "T4_HEAD_LEATHER_UNDEAD@2",
+        "Count": 1,
+        "Quality": 3,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Armor": {
+        "Type": "T6_ARMOR_CLOTH_HELL",
+        "Count": 1,
+        "Quality": 2,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Shoes": {
+        "Type": "T4_SHOES_CLOTH_ROYAL@2",
+        "Count": 1,
+        "Quality": 3,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Bag": {
+        "Type": "T5_BAG",
+        "Count": 1,
+        "Quality": 3,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Cape": {
+        "Type": "T5_CAPEITEM_FW_THETFORD@2",
+        "Count": 1,
+        "Quality": 4,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Mount": {
+        "Type": "T3_MOUNT_HORSE",
+        "Count": 1,
+        "Quality": 1,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Potion": {
+        "Type": "T6_POTION_COOLDOWN",
+        "Count": 1,
+        "Quality": 0,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Food": {
+        "Type": "T8_MEAL_STEW",
+        "Count": 1,
+        "Quality": 0,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      }
+    },
+    "Inventory": [],
+    "Name": "Poly1",
+    "Id": "wwpMrft-QguIKrtu4H-5sg",
+    "GuildName": "Th3 Knights",
+    "GuildId": "RR47nlCxQWuVLAHs5SKRWQ",
+    "AllianceName": "TUF",
+    "AllianceId": "rYshg_S0T4SrYI2SesW0pQ",
+    "AllianceTag": "",
+    "Avatar": "AVATAR_11",
+    "AvatarRing": "AVATARRING_ADC_JUL2019",
+    "DeathFame": 0,
+    "KillFame": 1001667,
+    "FameRatio": 10016669.85,
+    "LifetimeStatistics": {
+      "PvE": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0, "Hellgate": 0, "CorruptedDungeon": 0, "Mists": 0 },
+      "Gathering": {
+        "Fiber": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "Hide": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "Ore": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "Rock": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "Wood": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "All": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 }
+      },
+      "Crafting": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+      "CrystalLeague": 0,
+      "FishingFame": 0,
+      "FarmingFame": 0,
+      "Timestamp": null
+    }
+  },
+  "Victim": {
+    "AverageItemPower": 1701.17578,
+    "Equipment": {
+      "MainHand": {
+        "Type": "T8_MAIN_AXE@3",
+        "Count": 1,
+        "Quality": 3,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "OffHand": {
+        "Type": "T7_OFF_DEMONSKULL_HELL@3",
+        "Count": 1,
+        "Quality": 2,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Head": {
+        "Type": "T8_HEAD_CLOTH_HELL@3",
+        "Count": 1,
+        "Quality": 2,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Armor": {
+        "Type": "T8_ARMOR_LEATHER_HELL@2",
+        "Count": 1,
+        "Quality": 4,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Shoes": {
+        "Type": "T8_SHOES_PLATE_SET1@3",
+        "Count": 1,
+        "Quality": 4,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Bag": {
+        "Type": "T8_BAG",
+        "Count": 1,
+        "Quality": 2,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Cape": {
+        "Type": "T8_CAPEITEM_AVALON@3",
+        "Count": 1,
+        "Quality": 1,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Mount": {
+        "Type": "T6_MOUNT_DIREWOLF",
+        "Count": 1,
+        "Quality": 3,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Potion": {
+        "Type": "T6_POTION_HEAL@2",
+        "Count": 6,
+        "Quality": 0,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      "Food": {
+        "Type": "T8_MEAL_STEW_FISH@2",
+        "Count": 2,
+        "Quality": 0,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      }
+    },
+    "Inventory": [
+      {
+        "Type": "T8_POTION_CLEANSE",
+        "Count": 4,
+        "Quality": 0,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      {
+        "Type": "T6_MEAL_STEW_FISH@2",
+        "Count": 2,
+        "Quality": 0,
+        "ActiveSpells": [],
+        "PassiveSpells": [],
+        "LegendarySoul": null
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "Name": "grasklokje",
+    "Id": "_k-SdhhMTi6rbFCYk1GhCQ",
+    "GuildName": "Dutch Legend",
+    "GuildId": "2rIadmV2TNiUKITeeExf1A",
+    "AllianceName": "",
+    "AllianceId": "",
+    "AllianceTag": "",
+    "Avatar": "AVATAR_FAMERANK_04",
+    "AvatarRing": "AVATARRING_ADC_JAN2019",
+    "DeathFame": 5008335,
+    "KillFame": 0,
+    "FameRatio": 0.0,
+    "LifetimeStatistics": {
+      "PvE": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0, "Hellgate": 0, "CorruptedDungeon": 0, "Mists": 0 },
+      "Gathering": {
+        "Fiber": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "Hide": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "Ore": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "Rock": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "Wood": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "All": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 }
+      },
+      "Crafting": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+      "CrystalLeague": 0,
+      "FishingFame": 0,
+      "FarmingFame": 0,
+      "Timestamp": null
+    }
+  },
+  "TotalVictimKillFame": 5008335,
+  "Location": null,
+  "Participants": [
+    {
+      "AverageItemPower": 1108.30249,
+      "Equipment": {
+        "MainHand": {
+          "Type": "T4_2H_DUALSICKLE_UNDEAD@2",
+          "Count": 1,
+          "Quality": 2,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "OffHand": null,
+        "Head": {
+          "Type": "T5_HEAD_LEATHER_MORGANA@2",
+          "Count": 1,
+          "Quality": 4,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Armor": {
+          "Type": "T6_ARMOR_LEATHER_SET3",
+          "Count": 1,
+          "Quality": 2,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Shoes": {
+          "Type": "T4_SHOES_CLOTH_ROYAL@3",
+          "Count": 1,
+          "Quality": 3,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Bag": null,
+        "Cape": {
+          "Type": "T4_CAPEITEM_FW_THETFORD@2",
+          "Count": 1,
+          "Quality": 4,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Mount": {
+          "Type": "T3_MOUNT_HORSE",
+          "Count": 1,
+          "Quality": 2,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Potion": {
+          "Type": "T4_POTION_COOLDOWN",
+          "Count": 2,
+          "Quality": 0,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Food": {
+          "Type": "T8_MEAL_STEW",
+          "Count": 2,
+          "Quality": 0,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        }
+      },
+      "Inventory": [],
+      "Name": "BetterCallSeif",
+      "Id": "GJVKyIFgRwefMNoKCtjwpw",
+      "GuildName": "Th3 Knights",
+      "GuildId": "RR47nlCxQWuVLAHs5SKRWQ",
+      "AllianceName": "TUF",
+      "AllianceId": "rYshg_S0T4SrYI2SesW0pQ",
+      "AllianceTag": "",
+      "Avatar": "AVATAR_WOLF_01",
+      "AvatarRing": "RING1",
+      "DeathFame": 0,
+      "KillFame": 0,
+      "FameRatio": 0.0,
+      "LifetimeStatistics": {
+        "PvE": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0, "Hellgate": 0, "CorruptedDungeon": 0, "Mists": 0 },
+        "Gathering": {
+          "Fiber": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Hide": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Ore": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Rock": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Wood": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "All": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 }
+        },
+        "Crafting": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "CrystalLeague": 0,
+        "FishingFame": 0,
+        "FarmingFame": 0,
+        "Timestamp": null
+      },
+      "DamageDone": 1285.0,
+      "SupportHealingDone": 0.0
+    },
+    {
+      "AverageItemPower": 1224.93835,
+      "Equipment": {
+        "MainHand": {
+          "Type": "T4_2H_INFERNOSTAFF_MORGANA@2",
+          "Count": 1,
+          "Quality": 2,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "OffHand": null,
+        "Head": {
+          "Type": "T5_HEAD_CLOTH_SET2@1",
+          "Count": 1,
+          "Quality": 2,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Armor": {
+          "Type": "T6_ARMOR_CLOTH_SET1@1",
+          "Count": 1,
+          "Quality": 4,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Shoes": {
+          "Type": "T4_SHOES_CLOTH_ROYAL@2",
+          "Count": 1,
+          "Quality": 3,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Bag": {
+          "Type": "T4_BAG",
+          "Count": 1,
+          "Quality": 3,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Cape": {
+          "Type": "T4_CAPEITEM_FW_CAERLEON@2",
+          "Count": 1,
+          "Quality": 2,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Mount": {
+          "Type": "T3_MOUNT_HORSE",
+          "Count": 1,
+          "Quality": 2,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Potion": {
+          "Type": "T6_POTION_COOLDOWN",
+          "Count": 8,
+          "Quality": 0,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Food": {
+          "Type": "T8_MEAL_STEW",
+          "Count": 2,
+          "Quality": 0,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        }
+      },
+      "Inventory": [],
+      "Name": "sugerDaddyx",
+      "Id": "Wabt4B7ZTmqd9P5atoGTSg",
+      "GuildName": "Th3 Knights",
+      "GuildId": "RR47nlCxQWuVLAHs5SKRWQ",
+      "AllianceName": "TUF",
+      "AllianceId": "rYshg_S0T4SrYI2SesW0pQ",
+      "AllianceTag": "",
+      "Avatar": "GVGSEASON_20_SILVER",
+      "AvatarRing": "AVATARRING_ADC_MAY2019",
+      "DeathFame": 0,
+      "KillFame": 0,
+      "FameRatio": 0.0,
+      "LifetimeStatistics": {
+        "PvE": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0, "Hellgate": 0, "CorruptedDungeon": 0, "Mists": 0 },
+        "Gathering": {
+          "Fiber": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Hide": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Ore": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Rock": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Wood": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "All": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 }
+        },
+        "Crafting": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "CrystalLeague": 0,
+        "FishingFame": 0,
+        "FarmingFame": 0,
+        "Timestamp": null
+      },
+      "DamageDone": 1257.5,
+      "SupportHealingDone": 0.0
+    },
+    {
+      "AverageItemPower": 1126.83,
+      "Equipment": {
+        "MainHand": {
+          "Type": "T4_2H_DUALAXE_KEEPER@2",
+          "Count": 1,
+          "Quality": 4,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "OffHand": null,
+        "Head": {
+          "Type": "T4_HEAD_LEATHER_UNDEAD@2",
+          "Count": 1,
+          "Quality": 3,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Armor": {
+          "Type": "T6_ARMOR_CLOTH_HELL",
+          "Count": 1,
+          "Quality": 2,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Shoes": {
+          "Type": "T4_SHOES_CLOTH_ROYAL@2",
+          "Count": 1,
+          "Quality": 3,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Bag": {
+          "Type": "T5_BAG",
+          "Count": 1,
+          "Quality": 3,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Cape": {
+          "Type": "T5_CAPEITEM_FW_THETFORD@2",
+          "Count": 1,
+          "Quality": 4,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Mount": {
+          "Type": "T3_MOUNT_HORSE",
+          "Count": 1,
+          "Quality": 1,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Potion": {
+          "Type": "T6_POTION_COOLDOWN",
+          "Count": 1,
+          "Quality": 0,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Food": {
+          "Type": "T8_MEAL_STEW",
+          "Count": 1,
+          "Quality": 0,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        }
+      },
+      "Inventory": [],
+      "Name": "Poly1",
+      "Id": "wwpMrft-QguIKrtu4H-5sg",
+      "GuildName": "Th3 Knights",
+      "GuildId": "RR47nlCxQWuVLAHs5SKRWQ",
+      "AllianceName": "TUF",
+      "AllianceId": "rYshg_S0T4SrYI2SesW0pQ",
+      "AllianceTag": "",
+      "Avatar": "AVATAR_11",
+      "AvatarRing": "AVATARRING_ADC_JUL2019",
+      "DeathFame": 0,
+      "KillFame": 0,
+      "FameRatio": 0.0,
+      "LifetimeStatistics": {
+        "PvE": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0, "Hellgate": 0, "CorruptedDungeon": 0, "Mists": 0 },
+        "Gathering": {
+          "Fiber": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Hide": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Ore": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Rock": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Wood": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "All": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 }
+        },
+        "Crafting": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "CrystalLeague": 0,
+        "FishingFame": 0,
+        "FarmingFame": 0,
+        "Timestamp": null
+      },
+      "DamageDone": 917.0,
+      "SupportHealingDone": 0.0
+    },
+    {
+      "AverageItemPower": 992.9092,
+      "Equipment": {
+        "MainHand": {
+          "Type": "T4_2H_DOUBLEBLADEDSTAFF@1",
+          "Count": 1,
+          "Quality": 3,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "OffHand": null,
+        "Head": {
+          "Type": "T5_HEAD_GATHERER_HIDE",
+          "Count": 1,
+          "Quality": 1,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Armor": {
+          "Type": "T5_ARMOR_PLATE_UNDEAD",
+          "Count": 1,
+          "Quality": 4,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Shoes": {
+          "Type": "T6_SHOES_LEATHER_SET2",
+          "Count": 1,
+          "Quality": 3,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Bag": {
+          "Type": "T4_BAG@1",
+          "Count": 1,
+          "Quality": 4,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Cape": {
+          "Type": "T4_CAPEITEM_DEMON@1",
+          "Count": 1,
+          "Quality": 3,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Mount": {
+          "Type": "T3_MOUNT_HORSE",
+          "Count": 1,
+          "Quality": 2,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Potion": {
+          "Type": "T3_POTION_SLOWFIELD",
+          "Count": 9,
+          "Quality": 0,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "Food": {
+          "Type": "T8_FISH_SALTWATER_ALL_COMMON",
+          "Count": 2,
+          "Quality": 0,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        }
+      },
+      "Inventory": [],
+      "Name": "SadmanNo1",
+      "Id": "JpH8l13JR-qHOfuWt95luQ",
+      "GuildName": "SadmanNo1 company",
+      "GuildId": "CaOXpE4ESHyYYx3wxZ5xBg",
+      "AllianceName": "",
+      "AllianceId": "",
+      "AllianceTag": "",
+      "Avatar": "AVATAR_ANNIVERSARY_2023",
+      "AvatarRing": "AVATARRING_ANNIVERSARY_2023",
+      "DeathFame": 0,
+      "KillFame": 0,
+      "FameRatio": 0.0,
+      "LifetimeStatistics": {
+        "PvE": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0, "Hellgate": 0, "CorruptedDungeon": 0, "Mists": 0 },
+        "Gathering": {
+          "Fiber": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Hide": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Ore": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Rock": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Wood": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "All": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 }
+        },
+        "Crafting": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "CrystalLeague": 0,
+        "FishingFame": 0,
+        "FarmingFame": 0,
+        "Timestamp": null
+      },
+      "DamageDone": 516.0,
+      "SupportHealingDone": 0.0
+    }
+  ],
+  "GroupMembers": [
+    {
+      "AverageItemPower": 0.0,
+      "Equipment": {
+        "MainHand": {
+          "Type": "T4_2H_DUALAXE_KEEPER@2",
+          "Count": 1,
+          "Quality": 4,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "OffHand": null,
+        "Head": null,
+        "Armor": null,
+        "Shoes": null,
+        "Bag": null,
+        "Cape": null,
+        "Mount": null,
+        "Potion": null,
+        "Food": null
+      },
+      "Inventory": [],
+      "Name": "Poly1",
+      "Id": "wwpMrft-QguIKrtu4H-5sg",
+      "GuildName": "Th3 Knights",
+      "GuildId": "RR47nlCxQWuVLAHs5SKRWQ",
+      "AllianceName": "TUF",
+      "AllianceId": "rYshg_S0T4SrYI2SesW0pQ",
+      "AllianceTag": "",
+      "Avatar": "AVATAR_11",
+      "AvatarRing": "AVATARRING_ADC_JUL2019",
+      "DeathFame": 0,
+      "KillFame": 1001667,
+      "FameRatio": 10016669.85,
+      "LifetimeStatistics": {
+        "PvE": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0, "Hellgate": 0, "CorruptedDungeon": 0, "Mists": 0 },
+        "Gathering": {
+          "Fiber": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Hide": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Ore": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Rock": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Wood": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "All": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 }
+        },
+        "Crafting": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "CrystalLeague": 0,
+        "FishingFame": 0,
+        "FarmingFame": 0,
+        "Timestamp": null
+      }
+    },
+    {
+      "AverageItemPower": 0.0,
+      "Equipment": {
+        "MainHand": {
+          "Type": "T4_2H_DOUBLEBLADEDSTAFF@1",
+          "Count": 1,
+          "Quality": 3,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "OffHand": null,
+        "Head": null,
+        "Armor": null,
+        "Shoes": null,
+        "Bag": null,
+        "Cape": null,
+        "Mount": null,
+        "Potion": null,
+        "Food": null
+      },
+      "Inventory": [],
+      "Name": "SadmanNo1",
+      "Id": "JpH8l13JR-qHOfuWt95luQ",
+      "GuildName": "SadmanNo1 company",
+      "GuildId": "CaOXpE4ESHyYYx3wxZ5xBg",
+      "AllianceName": "",
+      "AllianceId": "",
+      "AllianceTag": "",
+      "Avatar": "AVATAR_ANNIVERSARY_2023",
+      "AvatarRing": "AVATARRING_ANNIVERSARY_2023",
+      "DeathFame": 0,
+      "KillFame": 1001667,
+      "FameRatio": 10016669.85,
+      "LifetimeStatistics": {
+        "PvE": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0, "Hellgate": 0, "CorruptedDungeon": 0, "Mists": 0 },
+        "Gathering": {
+          "Fiber": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Hide": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Ore": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Rock": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Wood": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "All": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 }
+        },
+        "Crafting": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "CrystalLeague": 0,
+        "FishingFame": 0,
+        "FarmingFame": 0,
+        "Timestamp": null
+      }
+    },
+    {
+      "AverageItemPower": 0.0,
+      "Equipment": {
+        "MainHand": {
+          "Type": "T4_MAIN_MACE_HELL@1",
+          "Count": 1,
+          "Quality": 4,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "OffHand": null,
+        "Head": null,
+        "Armor": null,
+        "Shoes": null,
+        "Bag": null,
+        "Cape": null,
+        "Mount": null,
+        "Potion": null,
+        "Food": null
+      },
+      "Inventory": [],
+      "Name": "PAPL01",
+      "Id": "cla8zlXFRlWjJAYb2Mz6mw",
+      "GuildName": "Th3 Knights",
+      "GuildId": "RR47nlCxQWuVLAHs5SKRWQ",
+      "AllianceName": "TUF",
+      "AllianceId": "rYshg_S0T4SrYI2SesW0pQ",
+      "AllianceTag": "",
+      "Avatar": "AVATAR_HARVESTER_01",
+      "AvatarRing": "AVATARRING_ARENA_SILVER1",
+      "DeathFame": 0,
+      "KillFame": 1001667,
+      "FameRatio": 10016669.85,
+      "LifetimeStatistics": {
+        "PvE": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0, "Hellgate": 0, "CorruptedDungeon": 0, "Mists": 0 },
+        "Gathering": {
+          "Fiber": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Hide": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Ore": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Rock": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Wood": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "All": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 }
+        },
+        "Crafting": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "CrystalLeague": 0,
+        "FishingFame": 0,
+        "FarmingFame": 0,
+        "Timestamp": null
+      }
+    },
+    {
+      "AverageItemPower": 0.0,
+      "Equipment": {
+        "MainHand": {
+          "Type": "T4_2H_DUALSICKLE_UNDEAD@2",
+          "Count": 1,
+          "Quality": 2,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "OffHand": null,
+        "Head": null,
+        "Armor": null,
+        "Shoes": null,
+        "Bag": null,
+        "Cape": null,
+        "Mount": null,
+        "Potion": null,
+        "Food": null
+      },
+      "Inventory": [],
+      "Name": "BetterCallSeif",
+      "Id": "GJVKyIFgRwefMNoKCtjwpw",
+      "GuildName": "Th3 Knights",
+      "GuildId": "RR47nlCxQWuVLAHs5SKRWQ",
+      "AllianceName": "TUF",
+      "AllianceId": "rYshg_S0T4SrYI2SesW0pQ",
+      "AllianceTag": "",
+      "Avatar": "AVATAR_WOLF_01",
+      "AvatarRing": "RING1",
+      "DeathFame": 0,
+      "KillFame": 1001667,
+      "FameRatio": 10016669.85,
+      "LifetimeStatistics": {
+        "PvE": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0, "Hellgate": 0, "CorruptedDungeon": 0, "Mists": 0 },
+        "Gathering": {
+          "Fiber": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Hide": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Ore": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Rock": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Wood": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "All": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 }
+        },
+        "Crafting": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "CrystalLeague": 0,
+        "FishingFame": 0,
+        "FarmingFame": 0,
+        "Timestamp": null
+      }
+    },
+    {
+      "AverageItemPower": 0.0,
+      "Equipment": {
+        "MainHand": {
+          "Type": "T4_2H_INFERNOSTAFF_MORGANA@2",
+          "Count": 1,
+          "Quality": 2,
+          "ActiveSpells": [],
+          "PassiveSpells": [],
+          "LegendarySoul": null
+        },
+        "OffHand": null,
+        "Head": null,
+        "Armor": null,
+        "Shoes": null,
+        "Bag": null,
+        "Cape": null,
+        "Mount": null,
+        "Potion": null,
+        "Food": null
+      },
+      "Inventory": [],
+      "Name": "sugerDaddyx",
+      "Id": "Wabt4B7ZTmqd9P5atoGTSg",
+      "GuildName": "Th3 Knights",
+      "GuildId": "RR47nlCxQWuVLAHs5SKRWQ",
+      "AllianceName": "TUF",
+      "AllianceId": "rYshg_S0T4SrYI2SesW0pQ",
+      "AllianceTag": "",
+      "Avatar": "GVGSEASON_20_SILVER",
+      "AvatarRing": "AVATARRING_ADC_MAY2019",
+      "DeathFame": 0,
+      "KillFame": 1001667,
+      "FameRatio": 10016669.85,
+      "LifetimeStatistics": {
+        "PvE": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0, "Hellgate": 0, "CorruptedDungeon": 0, "Mists": 0 },
+        "Gathering": {
+          "Fiber": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Hide": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Ore": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Rock": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "Wood": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+          "All": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 }
+        },
+        "Crafting": { "Total": 0, "Royal": 0, "Outlands": 0, "Avalon": 0 },
+        "CrystalLeague": 0,
+        "FishingFame": 0,
+        "FarmingFame": 0,
+        "Timestamp": null
+      }
+    }
+  ],
+  "GvGMatch": null,
+  "BattleId": 1000420756,
+  "KillArea": "OPEN_WORLD",
+  "Category": null,
+  "Type": "KILL",
+  "lootValue": {
+    "equipment": 14366389,
+    "inventory": 300
+  }
+}

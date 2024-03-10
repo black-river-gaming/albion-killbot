@@ -35,7 +35,6 @@ const MAXLEN = {
 };
 
 const getEventColor = (event) => {
-  if (event.tracked) return event.good ? COLORS.DARK_GREEN : COLORS.RED;
   if (event.juicy)
     return (
       {
@@ -43,6 +42,7 @@ const getEventColor = (event) => {
         insane: COLORS.YELLOW,
       }[event.juicy] || COLORS.GREY
     );
+  if (event.good !== undefined) return event.good ? COLORS.DARK_GREEN : COLORS.RED;
   return COLORS.GREY;
 };
 
@@ -50,12 +50,12 @@ const footer = {
   text: "Powered by Albion Killbot",
 };
 
-const embedEvent = (event, { lootValue, locale, guildTags = true, providerId, test } = {}) => {
+const embedEvent = (event, { locale, guildTags = true, providerId, test } = {}) => {
   const l = getLocale(locale);
   const { t } = l;
 
   const { good, juicy } = event;
-  const lootSum = lootValue ? lootValue.equipment + lootValue.inventory : null;
+  const lootSum = event.lootValue ? event.lootValue.equipment + event.lootValue.inventory : null;
 
   let killer = "";
   if (guildTags && event.Killer.GuildName) {
