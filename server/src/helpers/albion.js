@@ -98,6 +98,7 @@ const transformEvent = (event) => ({
   killer: transformEventPlayer(event.Killer),
   victim: transformEventPlayer(event.Victim),
   participants: event.Participants.map(transformEventPlayer),
+  lootValue: event.lootValue,
 });
 
 const hasAwakening = (event) => {
