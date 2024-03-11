@@ -423,12 +423,12 @@ async function generateEventImage(event, { showAttunement = true, splitLootValue
   );
 }
 
-async function generateInventoryImage(event, { lootValue, splitLootValue = false } = {}) {
+async function generateInventoryImage(event, { splitLootValue = false } = {}) {
   return memoize(
     `eventVictimInventoryImage-${event.EventId}`,
     async () => {
       const inventory = event.Victim.Inventory.filter((i) => i != null);
-      const hasInventoryLootValue = lootValue && splitLootValue && lootValue.inventory;
+      const hasInventoryLootValue = splitLootValue && event.lootValue && event.lootValue.inventory;
 
       const BLOCK_SIZE = 130;
       const WIDTH = 1600;
@@ -464,7 +464,7 @@ async function generateInventoryImage(event, { lootValue, splitLootValue = false
         ctx.fillStyle = "#FFF";
         ctx.strokeStyle = "#000";
         ctx.lineWidth = 4;
-        const lootValueText = digitsFormatter(lootValue.inventory);
+        const lootValueText = digitsFormatter(event.lootValue.inventory);
         const lootValueTextWidth = ctx.measureText(lootValueText).width;
         const lootValueLineHeight = ctx.measureText("M").width;
         const lootValueIconSize = 45;
