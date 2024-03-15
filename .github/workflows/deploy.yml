@@ -32,10 +32,10 @@ jobs:
     environment: production
     steps:
       - name: Deploy api
-        uses: cross-the-world/ssh-pipeline@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ vars.SSH_HOST_API }}
-          user: ${{ vars.SSH_USER }}
+          username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
             docker compose pull &&
@@ -48,10 +48,10 @@ jobs:
     environment: production
     steps:
       - name: Deploy crawler
-        uses: cross-the-world/ssh-pipeline@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ vars.SSH_HOST_CRAWLER }}
-          user: ${{ vars.SSH_USER }}
+          username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
             docker compose pull &&
@@ -76,10 +76,10 @@ jobs:
           SSH_HOST: SSH_HOST_BOT_2
     steps:
       - name: Deploy bot shard '#${{ matrix.shard }}'
-        uses: cross-the-world/ssh-pipeline@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ vars[matrix.SSH_HOST] }}
-          user: ${{ vars.SSH_USER }}
+          username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
             touch migration-state.json &&
