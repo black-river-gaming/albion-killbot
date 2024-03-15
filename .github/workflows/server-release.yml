@@ -42,7 +42,8 @@ jobs:
     needs: publish
     uses: ./.github/workflows/deploy.yml
     with:
-      api-crawler: true
+      api: true
+      crawler: true
       bot: true
     secrets: inherit
 

@@ -3,7 +3,10 @@ name: Deploy
 on:
   workflow_call:
     inputs:
-      api-crawler:
+      api:
+        required: true
+        type: boolean
+      crawler:
         required: true
         type: boolean
       bot:
@@ -11,7 +14,10 @@ on:
         type: boolean
   workflow_dispatch:
     inputs:
-      api-crawler:
+      api:
+        required: true
+        type: boolean
+      crawler:
         required: true
         type: boolean
       bot:
@@ -19,13 +25,13 @@ on:
         type: boolean
 
 jobs:
-  deploy-api-crawler:
-    name: Deploy api & crawler
-    if: ${{ inputs.api-crawler }}
+  deploy-api:
+    name: Deploy api
+    if: ${{ inputs.api }}
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - name: Deploy api and crawler
+      - name: Deploy api
         uses: cross-the-world/ssh-pipeline@master
         with:
           host: ${{ vars.SSH_HOST_API }}
@@ -33,10 +39,26 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             docker compose pull &&
+            docker compose --ansi never up -d --force-recreate
+    
+  deploy-crawler:
+    name: Deploy crawler
+    if: ${{ inputs.crawler }}
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Deploy crawler
+        uses: cross-the-world/ssh-pipeline@master
+        with:
+          host: ${{ vars.SSH_HOST_CRAWLER }}
+          user: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker compose pull &&
             touch migration-state.json &&
             docker compose --ansi never run --rm crawler npm run db:migrate &&
             docker compose --ansi never up -d --force-recreate
-    
+
   deploy-bot:
     name: Deploy bot shards
     if: ${{ inputs.bot }}
