@@ -18,7 +18,7 @@ async function subscribe(client) {
     const server = getServerById(battle.server);
     if (!server) throw new Error(`Albion Server not found: ${battle.server}`);
 
-    logger.verbose(`[${server.name}] Received battle: ${battle.id}`, {
+    logger.debug(`[${server.name}] Processing battle: ${battle.id}`, {
       server,
       guilds: client.guilds.cache.size,
       battleId: battle.id,

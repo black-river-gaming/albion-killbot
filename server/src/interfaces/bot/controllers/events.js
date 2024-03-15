@@ -114,7 +114,7 @@ async function subscribe(client) {
     const server = getServerById(event.server);
     if (!server) throw new Error(`Albion Server not found: ${event.server}`);
 
-    logger.verbose(`[${server.name}] Processing event: ${event.EventId}`, {
+    logger.debug(`[${server.name}] Processing event: ${event.EventId}`, {
       server,
       guilds: client.guilds.cache.size,
       eventId: event.EventId,
