@@ -264,6 +264,7 @@ const Header = () => {
               alt="Albion Killbot"
               style={{
                 height: "5rem",
+                maxWidth: "70vw",
               }}
             />
           </Nav.Link>

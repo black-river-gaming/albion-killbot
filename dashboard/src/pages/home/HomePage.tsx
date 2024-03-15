@@ -36,7 +36,7 @@ const features = [
     name: "Juicy Kills",
     icon: faSackDollar,
     description:
-      "Gucci kills allows you to get a feed of the most expensive kills in Albion Online.",
+      "Juicy kills allows you to get a feed of the most expensive kills in Albion Online.",
   },
   {
     new: true,
