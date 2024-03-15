@@ -82,27 +82,21 @@ const TrackPage = () => {
       <Card>
         <Card.Header>Notification List</Card.Header>
         <Stack gap={3} className="p-2">
-          {track.players.length > 0 && (
-            <TrackList
-              type={TRACK_TYPE.PLAYERS}
-              limit={limits.players}
-              list={track.players}
-            />
-          )}
-          {track.guilds.length > 0 && (
-            <TrackList
-              type={TRACK_TYPE.GUILDS}
-              limit={limits.guilds}
-              list={track.guilds}
-            />
-          )}
-          {track.alliances.length > 0 && (
-            <TrackList
-              type={TRACK_TYPE.ALLIANCES}
-              limit={limits.alliances}
-              list={track.alliances}
-            />
-          )}
+          <TrackList
+            type={TRACK_TYPE.PLAYERS}
+            limit={limits.players}
+            list={track.players}
+          />
+          <TrackList
+            type={TRACK_TYPE.GUILDS}
+            limit={limits.guilds}
+            list={track.guilds}
+          />
+          <TrackList
+            type={TRACK_TYPE.ALLIANCES}
+            limit={limits.alliances}
+            list={track.alliances}
+          />
 
           {emptyList && (
             <div className="px-2">
