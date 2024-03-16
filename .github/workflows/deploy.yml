@@ -39,7 +39,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             docker compose pull &&
-            docker compose --ansi never up -d --force-recreate
+            docker compose --ansi never up -d --force-recreate api
     
   deploy-crawler:
     name: Deploy crawler
@@ -57,7 +57,7 @@ jobs:
             docker compose pull &&
             touch migration-state.json &&
             docker compose --ansi never run --rm crawler npm run db:migrate &&
-            docker compose --ansi never up -d --force-recreate
+            docker compose --ansi never up -d --force-recreate crawler
 
   deploy-bot:
     name: Deploy bot shards
@@ -83,5 +83,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             touch migration-state.json &&
-            docker compose --ansi never up -d --pull always --force-recreate
+            docker compose --ansi never up -d --pull always --force-recreate bot
 
