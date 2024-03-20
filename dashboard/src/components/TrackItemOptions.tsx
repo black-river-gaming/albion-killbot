@@ -28,7 +28,7 @@ const TrackItemOptions = ({ type, item }: ITrackItemOptionsProps) => {
       <Modal show={show} centered={true}>
         <Modal.Title>
           <Stack className="p-3 gap-1">
-            <div className="id-text">#{id}</div>
+            <div className="id-text">{id}</div>
             <div>{name}</div>
           </Stack>
         </Modal.Title>

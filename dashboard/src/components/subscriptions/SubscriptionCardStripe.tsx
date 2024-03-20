@@ -42,7 +42,7 @@ const SubscriptionCardStripe = ({ subscription }: Props) => {
       <Card.Header>
         <h6 className="m-0">
           <Stack direction="horizontal" gap={2}>
-            <div>#{subscription.id}</div>
+            <div>{subscription.id}</div>
           </Stack>
         </h6>
       </Card.Header>

@@ -64,7 +64,7 @@ const ServerCard = ({
                   className="text-muted"
                   style={{ fontSize: 10, lineHeight: 1 }}
                 >
-                  #{server.id}
+                  {server.id}
                 </div>
               )}
               <div className="m-0">{server.name}</div>

@@ -40,7 +40,7 @@ const TrackList = ({ type, limit = 0, list }: ITrackListItemProps) => {
           <ListGroup.Item key={id} className="paper">
             <div className="d-flex justify-content-between align-items-center">
               <Stack>
-                <span className="id-text">#{id}</span>
+                <span className="id-text">{id}</span>
                 <Stack
                   direction="horizontal"
                   gap={2}
