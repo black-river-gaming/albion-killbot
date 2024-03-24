@@ -4,7 +4,7 @@ const moment = require("moment");
 const stripe = require("../ports/stripe");
 const { find, findOne, insertOne, updateOne, updateMany, deleteOne } = require("../ports/database");
 const { remove } = require("../helpers/cache");
-const { SUBSCRIPTION_STATUS } = require("../helpers/constants");
+const { SUBSCRIPTION_STATUS, DAY } = require("../helpers/constants");
 
 const SUBSCRIPTIONS_COLLECTION = "subscriptions";
 const subscriptionEvents = new EventEmitter();
@@ -14,9 +14,9 @@ function isSubscriptionsEnabled() {
   return config.get("features.subscriptions.enabled");
 }
 
-function getSubscriptionExpires(subscription, unit = "days") {
+function getSubscriptionExpires(subscription) {
   if (!subscription || !subscription.expires) return 0;
-  return moment(subscription.expires).diff(moment(), unit);
+  return moment(subscription.expires).diff(moment());
 }
 
 /* Stripe */
@@ -107,7 +107,8 @@ function isActiveSubscription(subscription) {
   if (!isSubscriptionsEnabled()) return false;
   if (!subscription) return false;
   if (subscription.expires === "never") return true;
-  return getSubscriptionExpires(subscription) > 0;
+  // We have a grace period of 3 days
+  return getSubscriptionExpires(subscription) > DAY * -3;
 }
 
 async function hasSubscriptionByServerId(server) {
