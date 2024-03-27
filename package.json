@@ -2,7 +2,7 @@
   "name": "albion-killbot",
   "description": "A Discord bot to display Albion Online kills/deaths in chat.",
   "repository": "https://github.com/black-river-gaming/albion-killbot.git",
-  "version": "4.22.4",
+  "version": "4.22.6",
   "author": "Agnaldo Junior <agnaldo.junior01@gmail.com>",
   "license": "MIT",
   "bin": {
