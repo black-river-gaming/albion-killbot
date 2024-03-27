@@ -36,7 +36,7 @@ const command = {
       });
     }
 
-    const days = getSubscriptionExpires(subscription, "days");
+    const days = getSubscriptionExpires(subscription, { unit: "days" });
     return await interaction.reply({
       content: days < 0 ? t("SUBSCRIPTION.STATUS.EXPIRED") : t("SUBSCRIPTION.STATUS.DAYS_REMAINING", { days }),
       ephemeral,

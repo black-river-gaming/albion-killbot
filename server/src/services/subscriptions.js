@@ -14,9 +14,9 @@ function isSubscriptionsEnabled() {
   return config.get("features.subscriptions.enabled");
 }
 
-function getSubscriptionExpires(subscription) {
+function getSubscriptionExpires(subscription, { unit } = {}) {
   if (!subscription || !subscription.expires) return 0;
-  return moment(subscription.expires).diff(moment());
+  return moment(subscription.expires).diff(moment(), unit);
 }
 
 /* Stripe */
@@ -105,7 +105,7 @@ async function getSubscriptionByCheckoutId(checkoutId) {
 
 function isActiveSubscription(subscription) {
   if (!isSubscriptionsEnabled()) return false;
-  if (!subscription) return false;
+  if (!subscription || !subscription.expires) return false;
   if (subscription.expires === "never") return true;
   // We have a grace period of 3 days
   return getSubscriptionExpires(subscription) > DAY * -3;

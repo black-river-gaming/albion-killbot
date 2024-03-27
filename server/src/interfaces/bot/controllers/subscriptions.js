@@ -112,7 +112,7 @@ const checkExpireNotice = async (client) => {
     if (!subscription || isActiveSubscription(subscription)) continue;
 
     // The check occurs every minute so this is expected to run only once
-    if (getSubscriptionExpires(subscription, "minutes") === 0) {
+    if (getSubscriptionExpires(subscription, { unit: "minutes" }) === 0) {
       logger.verbose(`[${guild.name}] Subscription has expired. Notifying subscription owner.`, {
         guild: transformGuild(guild),
         subscription,

@@ -34,7 +34,7 @@ const SubscriptionCardStripe = ({ subscription }: Props) => {
 
   if (!subscription.stripe) return <div>Invalid subscription data</div>;
 
-  const { owner, server, stripe } = subscription;
+  const { owner, expires, server, stripe } = subscription;
   const { price } = stripe;
 
   return (
@@ -63,6 +63,16 @@ const SubscriptionCardStripe = ({ subscription }: Props) => {
           </div>
 
           <div className="text-muted">Period End:</div>
+          <div>
+            {new Date(expires).toLocaleDateString(undefined, {
+              day: "2-digit",
+              weekday: "long",
+              month: "short",
+              year: "numeric",
+            })}
+          </div>
+
+          <div className="text-muted">Next Renew:</div>
           <div>
             {new Date(stripe.current_period_end * 1000).toLocaleDateString(
               undefined,
