@@ -49,6 +49,7 @@ const theme: ThemeProps = {
   servers: {
     americas: "#33673b",
     asia: "#cc3f0c",
+    europe: "#3b68a3",
   },
 };
 

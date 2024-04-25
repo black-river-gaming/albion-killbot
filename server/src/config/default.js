@@ -122,10 +122,12 @@ module.exports = {
     events: {
       americas: true,
       asia: true,
+      europe: true,
     },
     battles: {
       americas: true,
       asia: true,
+      europe: true,
     },
   },
 };
