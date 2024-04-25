@@ -3,15 +3,22 @@ const SERVERS = {
   AMERICAS: {
     id: "americas",
     name: "Albion West",
+    liveId: "live_us",
   },
   ASIA: {
     id: "asia",
     name: "Albion East",
+    liveId: "live_sgp",
+  },
+  EUROPE: {
+    id: "europe",
+    name: "Albion Europe",
+    liveId: "live_ams",
   },
 };
 const SERVER_DEFAULT = SERVERS.AMERICAS;
 // This is an ordered list we'd like to display
-const SERVER_LIST = [SERVERS.AMERICAS, SERVERS.ASIA];
+const SERVER_LIST = [SERVERS.AMERICAS, SERVERS.ASIA, SERVERS.EUROPE];
 
 const getServerById = (serverId) => Object.values(SERVERS).find((server) => server.id === serverId);
 

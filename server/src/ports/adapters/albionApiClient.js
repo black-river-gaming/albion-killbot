@@ -30,6 +30,10 @@ const ALBION_SERVERS = [
     id: SERVERS.ASIA.id,
     url: "https://gameinfo-sgp.albiononline.com/api/gameinfo/",
   },
+  {
+    id: SERVERS.EUROPE.id,
+    url: "https://gameinfo-ams.albiononline.com/api/gameinfo/",
+  },
 ];
 
 const albionApiClient = axios.create({

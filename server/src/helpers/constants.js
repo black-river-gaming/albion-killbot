@@ -14,19 +14,18 @@ const REPORT_MODES = {
   TEXT: "text",
 };
 
-const albionKillboardServers = {
+const liveId = {
   americas: "live_us",
   asia: "live_sgp",
+  europe: "live_ams",
 };
 
 const REPORT_PROVIDERS = [
   {
     id: "albion-killboard",
     name: "Albion Killboard",
-    events: ({ id, server }) =>
-      `https://albiononline.com/killboard/kill/${id}?server=${albionKillboardServers[server]}`,
-    battles: ({ id, server }) =>
-      `https://albiononline.com/killboard/battles/${id}?server=${albionKillboardServers[server]}`,
+    events: ({ id, server }) => `https://albiononline.com/killboard/kill/${id}?server=${liveId[server]}`,
+    battles: ({ id, server }) => `https://albiononline.com/killboard/battles/${id}?server=${liveId[server]}`,
   },
   {
     id: "albion2d",

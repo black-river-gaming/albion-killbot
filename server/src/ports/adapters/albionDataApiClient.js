@@ -10,6 +10,10 @@ const ALBION_SERVERS = [
     id: SERVERS.ASIA.id,
     url: "https://east.albion-online-data.com/api/v2/stats/",
   },
+  // {
+  //   id: SERVERS.EUROPE.id,
+  //   url: "https://europe.albion-online-data.com/api/v2/stats/",
+  // },
 ];
 
 const albionDataApiClient = axios.create({
