@@ -2,6 +2,7 @@ import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import {
   faCrown,
   faEarthAsia,
+  faEarthEurope,
   faGear,
   faLandmarkFlag,
   faRankingStar,
@@ -32,6 +33,12 @@ const screenshots = [screenshot1, screenshot2, screenshot3, screenshot4];
 const features = [
   {
     new: true,
+    name: "Europe Server Support",
+    icon: faEarthEurope,
+    description: "You can track entities from the new Albion Europe server.",
+  },
+  {
+    new: true,
     premium: true,
     name: "Juicy Kills",
     icon: faSackDollar,
@@ -45,9 +52,9 @@ const features = [
     description: "Our reports now display information about awakened weapons",
   },
   {
-    name: "East Server Support",
+    name: "Asia Server Support",
     icon: faEarthAsia,
-    description: "You can track entities from the new Albion East server.",
+    description: "You can track entities from the new Albion Asia server.",
   },
   {
     name: "Kills",
