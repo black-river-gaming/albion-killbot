@@ -126,8 +126,8 @@ router.use(validateServer);
  *       in: query
  *       schema:
  *         type: string
- *         enum: ["Albion West", "Albion East"]
- *         default: "Albion West"
+ *         enum: ["americas", "asia"]
+ *         default: "americas"
  *     summary: Get battle report.
  *     operationId: getBattle
  *     responses:

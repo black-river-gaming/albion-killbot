@@ -37,8 +37,8 @@ const searchController = require("../controllers/search");
  *       in: query
  *       schema:
  *         type: string
- *         enum: ["Albion West", "Albion East"]
- *         default: "Albion West"
+ *         enum: ["americas", "asia"]
+ *         default: "americas"
  *     summary: Search Albion Online (players, guilds and alliances)
  *     operationId: search
  *     responses:
