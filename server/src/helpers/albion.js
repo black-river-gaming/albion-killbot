@@ -2,12 +2,12 @@
 const SERVERS = {
   AMERICAS: {
     id: "americas",
-    name: "Albion West",
+    name: "Albion Americas",
     liveId: "live_us",
   },
   ASIA: {
     id: "asia",
-    name: "Albion East",
+    name: "Albion Asia",
     liveId: "live_sgp",
   },
   EUROPE: {
