@@ -1,6 +1,6 @@
 const config = require("config");
 const { SlashCommandBuilder } = require("discord.js");
-const { SERVER_LIST } = require("../../../helpers/albion");
+const { SERVER_LIST, getServerById } = require("../../../helpers/albion");
 const { getLocale } = require("../../../helpers/locale");
 const { getAlliance, search } = require("../../../services/search");
 const { getLimits, getPremiumLimits } = require("../../../services/limits");
@@ -102,7 +102,7 @@ const command = {
     const premiumLimits = getPremiumLimits();
     const subscription = await getSubscriptionByServerId(interaction.guild.id);
 
-    const server = interaction.options.getString("server");
+    const server = getServerById(interaction.options.getString("server"));
     const playerName = interaction.options.getString("player");
     const guildName = interaction.options.getString("guild");
     const allianceId = interaction.options.getString("alliance");
@@ -143,11 +143,11 @@ const command = {
       let trackItem;
 
       if (type == "alliances") {
-        if (isTracked({ id: value, server }, track[type])) return addContent(t("TRACK.ALREADY_TRACKED"));
+        if (isTracked({ id: value, server: server.id }, track[type])) return addContent(t("TRACK.ALREADY_TRACKED"));
 
         trackItem = await getAlliance(server, value);
       } else {
-        if (isTracked({ name: value, server }, track[type])) return addContent(t("TRACK.ALREADY_TRACKED"));
+        if (isTracked({ name: value, server: server.id }, track[type])) return addContent(t("TRACK.ALREADY_TRACKED"));
 
         const searchResults = await search(server, value);
         if (!searchResults) return addContent(t("TRACK.SEARCH_FAILED"));
@@ -156,7 +156,7 @@ const command = {
       }
 
       if (!trackItem) return addContent(t("TRACK.NOT_FOUND"));
-      trackItem.server = server;
+      trackItem.server = server.id;
 
       if (killsChannel) {
         trackItem.kills = {
