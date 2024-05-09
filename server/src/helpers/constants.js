@@ -20,6 +20,8 @@ const liveId = {
   europe: "live_ams",
 };
 
+const albion2dSudbdomain = (server) => (server !== "americas" ? `${server}.` : "");
+
 const REPORT_PROVIDERS = [
   {
     id: "albion-killboard",
@@ -30,8 +32,10 @@ const REPORT_PROVIDERS = [
   {
     id: "albion2d",
     name: "Albion Online 2D",
-    events: ({ id, lang }) => `https://albiononline2d.com/${lang}/scoreboard/events/${id}`,
-    battles: ({ id, lang }) => `https://albiononline2d.com/${lang}/scoreboard/battles/${id}`,
+    events: ({ id, server, lang }) =>
+      `https://${albion2dSudbdomain(server)}albiononline2d.com/${lang}/scoreboard/events/${id}`,
+    battles: ({ id, server, lang }) =>
+      `https://${albion2dSudbdomain(server)}albiononline2d.com/${lang}/scoreboard/battles/${id}`,
   },
   {
     id: "albion-battles",
