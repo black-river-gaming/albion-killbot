@@ -141,7 +141,7 @@ async function getGuild(guildId, { server = SERVER_DEFAULT, rankings = false, si
     return guild;
   } catch (error) {
     if (!silent)
-      logger.error(`Failed to fetch ${server.name} guild [${guildId}]: ${error.message}`, {
+      logger.error(`[${server.name}] Failed to fetch guild [${guildId}]: ${error.message}`, {
         error,
         server,
         silent,
@@ -159,7 +159,7 @@ async function getAlliance(allianceId, { server = SERVER_DEFAULT, silent = false
     return alliance;
   } catch (error) {
     if (!silent)
-      logger.error(`Failed to fetch ${server.name} alliance [${allianceId}]: ${error.message}`, {
+      logger.error(`[${server.name}] Failed to fetch alliance [${allianceId}]: ${error.message}`, {
         error,
         server,
         silent,
@@ -174,7 +174,11 @@ async function search(query, { server = SERVER_DEFAULT }) {
     logger.verbose(`Searching entities in ${server.name} for: ${query}`, { query, server });
     return await albionApiClient.search(query, { server });
   } catch (error) {
-    logger.error(`Failed to search entities in API: ${error.message}`, { error, query, server });
+    logger.error(`[${server.name}] Failed to search query [${query}] in API: ${error.message}`, {
+      error,
+      query,
+      server,
+    });
     return null;
   }
 }
@@ -285,8 +289,9 @@ async function getLootValue(event, { server = SERVER_DEFAULT }) {
           itemPriceData,
         };
       } catch (error) {
-        logger.warn(`Failed to fetch kill loot value for event ${event.EventId}: ${error.message}`, {
+        logger.warn(`[${server.name}] Failed to fetch kill loot value for event ${event.EventId}: ${error.message}`, {
           error,
+          server,
           event,
         });
         return null;
