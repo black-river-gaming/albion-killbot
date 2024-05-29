@@ -125,7 +125,7 @@ async function getRanking(serverId, type = "daily", { limit = 5 } = {}) {
   };
 }
 
-async function deleteRankingsEmpty() {
+async function deleteRankingsEmpty({ maxEntries = 10000 }) {
   const minDate = moment().subtract(31, "days").unix();
   const entriesToDelete = [];
 
@@ -134,15 +134,16 @@ async function deleteRankingsEmpty() {
     const entry = await rankings.next();
     entry.scores = entry.scores.filter((score) => score.date >= minDate);
     if (entry.scores.length === 0) entriesToDelete.push(entry._id);
+    if (entriesToDelete.length >= maxEntries) break;
   }
 
   if (entriesToDelete.length > 0) {
-    logger.verbose(`Deleting ${entriesToDelete.length} old entries.`);
+    logger.verbose(`Clear Rankings: Deleting ${entriesToDelete.length} old entries.`);
     await getCollection(RANKINGS_COLLECTION).deleteMany({
       _id: { $in: entriesToDelete },
     });
   }
-  logger.debug(`Clearing rankings successfull.`);
+  logger.debug(`Clear rankings: successfull.`);
 }
 
 module.exports = {
