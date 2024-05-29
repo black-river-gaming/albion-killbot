@@ -125,7 +125,7 @@ async function getRanking(serverId, type = "daily", { limit = 5 } = {}) {
   };
 }
 
-async function deleteRankingsEmpty({ maxEntries = 10000 }) {
+async function deleteRankingsEmpty({ maxEntries = 10000 } = {}) {
   const minDate = moment().subtract(31, "days").unix();
   const entriesToDelete = [];
 
