@@ -1,7 +1,7 @@
 const config = require("config");
 const moment = require("moment");
 
-const { find, updateOne, deleteMany, findOne } = require("../ports/database");
+const { find, updateOne, findOne, getCollection } = require("../ports/database");
 const { getTrack } = require("./track");
 const logger = require("../helpers/logger");
 
@@ -126,7 +126,23 @@ async function getRanking(serverId, type = "daily", { limit = 5 } = {}) {
 }
 
 async function deleteRankingsEmpty() {
-  await deleteMany(RANKINGS_COLLECTION, { scores: [] });
+  const minDate = moment().subtract(31, "days").unix();
+  const entriesToDelete = [];
+
+  const rankings = await getCollection(RANKINGS_COLLECTION).find({});
+  while (await rankings.hasNext()) {
+    const entry = await rankings.next();
+    entry.scores = entry.scores.filter((score) => score.date >= minDate);
+    if (entry.scores.length === 0) entriesToDelete.push(entry._id);
+  }
+
+  if (entriesToDelete.length > 0) {
+    logger.verbose(`Deleting ${entriesToDelete.length} old entries.`);
+    await getCollection(RANKINGS_COLLECTION).deleteMany({
+      _id: { $in: entriesToDelete },
+    });
+  }
+  logger.debug(`Clearing rankings successfull.`);
 }
 
 module.exports = {
