@@ -2,11 +2,9 @@ import Loader from "components/common/Loader";
 import Page from "components/Page";
 import ServerSelect from "components/ServerSelect";
 import SubscriptionStripePriceCard from "components/subscriptions/SubscriptionStripePriceCard";
-import LocaleCurrency from "locale-currency";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Col, Dropdown, Modal, Row, Stack } from "react-bootstrap";
 import { Link, useSearchParams } from "react-router-dom";
-import { useFetchUserQuery } from "store/api";
 import {
   useCreateSubscriptionCheckoutMutation,
   useFetchSubscriptionPricesQuery,
@@ -14,25 +12,13 @@ import {
 import { SubscriptionPrice } from "types/subscription";
 
 const PremiumPage = () => {
-  const user = useFetchUserQuery();
-  const [currency, setCurrency] = useState(
-    LocaleCurrency.getCurrency(user.data?.locale || "en-US").toLowerCase()
-  );
+  const [currency, setCurrency] = useState("USD");
   const pricesResponse = useFetchSubscriptionPricesQuery({ currency });
   const [dispatchCreateSubscriptionCheckout, createSubscriptionCheckout] =
     useCreateSubscriptionCheckoutMutation();
   const [queryParams] = useSearchParams();
   const status = queryParams.get("status");
   const [priceId, setPriceId] = useState("");
-
-  useEffect(() => {
-    if (
-      pricesResponse.data?.currencies &&
-      !pricesResponse.data.currencies.includes(currency)
-    ) {
-      setCurrency(pricesResponse.data.currencies[0]);
-    }
-  }, [pricesResponse.data?.currencies, currency]);
 
   if (createSubscriptionCheckout.isLoading) return <Loader />;
   if (createSubscriptionCheckout.isSuccess && createSubscriptionCheckout.data) {

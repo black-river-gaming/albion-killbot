@@ -5,7 +5,7 @@ import SubscriptionCard from "components/subscriptions/SubscriptionCard";
 import SubscriptionCardStripe from "components/subscriptions/SubscriptionCardStripe";
 import SubscriptionStripePriceCard from "components/subscriptions/SubscriptionStripePriceCard";
 import { Stack } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useGetServerSubscriptionQuery } from "store/api/server";
 import {
   useCreateSubscriptionCheckoutMutation,
@@ -41,9 +41,13 @@ const ServerSubscriptionPage = () => {
         {prices.isLoading && <Loader />}
         {prices.data && (
           <Box>
-            <h5 className="d-flex justify-content-center">
-              Ascend to Power - Unlock Premium Benefits
-            </h5>
+            <div className="d-flex flex-column align-items-center">
+              <h5>Ascend to Power - Unlock Premium Benefits</h5>
+              <p>
+                To see prices in other currencies, visit the{" "}
+                <Link to="/premium">Premium Page</Link>.
+              </p>
+            </div>
             <div
               className="pb-2"
               style={{
