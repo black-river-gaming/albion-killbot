@@ -23,11 +23,13 @@ on:
       bot:
         required: true
         type: boolean
+  schedule:
+    - cron: '30 4 * * 0'
 
 jobs:
   deploy-api:
     name: Deploy api
-    if: ${{ inputs.api }}
+    if: ${{ inputs.api || 'false' }}
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -43,7 +45,7 @@ jobs:
     
   deploy-crawler:
     name: Deploy crawler
-    if: ${{ inputs.crawler }}
+    if: ${{ inputs.crawler || 'false' }}
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -61,7 +63,7 @@ jobs:
 
   deploy-bot:
     name: Deploy bot shards
-    if: ${{ inputs.bot }}
+    if: ${{ inputs.bot || 'true' }}
     runs-on: ubuntu-latest
     environment: production
     strategy:
