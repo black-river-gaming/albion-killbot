@@ -6,6 +6,7 @@ const moment = require("moment");
 const logger = require("../../../helpers/logger");
 const { disableCache } = require("../middlewares/cache");
 const subscriptionsService = require("../../../services/subscriptions");
+const { sleep } = require("../../../helpers/scheduler");
 
 router.use(disableCache);
 router.use(express.raw({ type: "*/*" }));
@@ -83,7 +84,6 @@ router.post(`/webhook`, async (req, res) => {
         stripeId,
       });
     },
-    // We only provision the subscription to the owner after confirming payment
     "checkout.session.completed": async (data) => {
       const checkout = data.object;
       const stripeId = checkout.subscription;
@@ -92,19 +92,41 @@ router.post(`/webhook`, async (req, res) => {
 
       if (!owner) {
         return logger.error(`[${stripeId}] Cannot provision subscription: missing client_reference_id.`, {
-          stripeId,
           checkout,
+          subscriptionProvision: {
+            stripe: stripeId,
+          },
         });
       }
       if (serverId) await subscriptionsService.unassignSubscriptionsByServerId(serverId);
+
+      // Sometimes the provision needs to wait for the subscription creation
+      let subscriptionExists = false;
+      while (!subscriptionExists) {
+        if (await subscriptionsService.getSubscriptionByStripeId(stripeId)) subscriptionExists = true;
+        else {
+          logger.warn(`[${stripeId}] Waiting for subscription creation to continue provisioning...`, {
+            subscriptionProvision: {
+              owner,
+              server: serverId,
+              stripe: stripeId,
+            },
+            subscriptionExists,
+          });
+          await sleep(3000);
+        }
+      }
+
       await subscriptionsService.updateSubscriptionByStripeId(stripeId, {
         owner,
         server: serverId,
       });
       logger.info(`[${stripeId}] Subscription provisioned to owner: ${owner}.`, {
-        owner,
-        serverId,
-        stripeId,
+        subscriptionProvision: {
+          owner,
+          server: serverId,
+          stripe: stripeId,
+        },
       });
     },
   }[type];
