@@ -25,7 +25,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.369.0",
     "amqplib": "^0.9.1",
-    "axios": "^1.6.2",
+    "axios": "^1.7.7",
     "canvas": "^2.11.2",
     "config": "^3.3.10",
     "connect-mongo": "^4.6.0",
@@ -48,7 +48,7 @@
     "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.4.0",
     "winston": "^3.8.1",
-    "winston-loggly-bulk": "^3.3.0"
+    "winston-loggly-bulk": "^3.3.1"
   },
   "devDependencies": {
     "eslint": "^8.55.0",
