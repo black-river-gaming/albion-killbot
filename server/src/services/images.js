@@ -20,9 +20,9 @@ registerFont(path.join(assetsPath, "fonts", "Roboto-Regular.ttf"), {
 });
 
 const drawImage = async (ctx, src, x, y, sw, sh) => {
-  if (!src) return;
   let img;
   try {
+    if (!src) throw new Error("Missing source.");
     img = await loadImage(src);
   } catch (e) {
     logger.error(`[images] Error loading image: ${src} (${e})`);
