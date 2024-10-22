@@ -22,8 +22,8 @@ registerFont(path.join(assetsPath, "fonts", "Roboto-Regular.ttf"), {
 const drawImage = async (ctx, src, x, y, sw, sh) => {
   let img;
   try {
-    if (!src) throw new Error("No source provided.");
-    img = await loadImage(src);
+    if (!src) img = await loadImage(path.join(assetsPath, "notfound.png"));
+    else img = await loadImage(src);
   } catch (error) {
     logger.error(`Error loading image: ${error.message}`, {
       src,
@@ -43,7 +43,7 @@ const drawItem = async (ctx, item, x, y, { size = 217, attunedPlayerName } = {})
     logger.warn(`Missing item image: ${item.Type}_Q${item.Quality}`, {
       item,
     });
-  else await drawImage(ctx, itemImage, x, y, size, size);
+  await drawImage(ctx, itemImage, x, y, size, size);
 
   // draw not attuned icon
   if (
